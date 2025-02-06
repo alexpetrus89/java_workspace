@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:th="https://www.thymeleaf.org"
+        xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
+<head>
+    <title>Professor Menu</title>
+</head>
+<body>
+    <h1>View a list of Professor</h1>
+    <p>Click <a th:href="@{/api/v1/professor/view}">here</a> for took all professors</p>
+
+    <h1>Read Professor information</h1>
+    <p>Click <a th:href="@{read/read}">here</a> for read professor information</p>
+
+    <h1>Create new Professor</h1>
+    <p>Click <a th:href="@{/api/v1/professor/create}">here</a> for create new Professor</p>
+
+    <h1>Update Professor</h1>
+    <p>Click <a th:href="@{/api/v1/professor/update}">here</a> for update professor</p>
+
+    <h1>Delete Professor</h1>
+    <p>Click <a th:href="@{delete/delete}">here</a> for delete professor</p>
+    <br>
+    <a href="#" th:href="@{/home}">Back to Home</a>
+</body>
+</html>

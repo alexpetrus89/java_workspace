@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en"
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:th="http://www.thymeleaf.org"
+        xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
+<head>
+    <title>Update user information</title>
+</head>
+
+<body>
+    <h1>Update user information</h1>
+    <form method="post" th:action="@{/api/v1/user/update}" id="updateForm">
+
+        <input type="hidden" name="_method" value="PUT" />
+
+        <label for="username">Username: </label>
+        <input type="text" name="username"
+            title="Please enter your username"><br/>
+
+        <label for="password">Password: </label>
+        <input type="password" name="password"
+            title="Please enter your password"/><br/>
+
+        <label for="confirm">Confirm password: </label>
+        <input type="password" name="confirm"
+            title="Please confirm your password"/><br/>
+
+        <label for="fullname">Full name: </label>
+        <input type="text" name="fullname"
+            title="Please enter your full name"/><br/>
+
+        <label for="street">Street: </label>
+        <input type="text" name="street"
+            title="Please enter your street name"/><br/>
+
+        <label for="city">City: </label>
+        <input type="text" name="city"
+            title="Please enter your city"/><br/>
+
+        <label for="state">State: </label>
+        <input type="text" name="state"
+            title="Please enter your state"/><br/>
+
+        <label for="zip">Zip: </label>
+        <input type="text" name="zip"
+            title="Please enter your zip code"/><br/>
+
+        <label for="phone">Phone: </label>
+        <input type="text" name="phone"
+            title="Please enter your phone number"/><br/>
+
+        <input type="submit" value="Register"/>
+    </form>
+    <br>
+    <a href="#" th:href="@{/home}">Torna alla home</a>
+</body>
+</body>

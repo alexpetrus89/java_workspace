@@ -1,0 +1,20 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+<head>
+    <title>New update information</title>
+</head>
+<body>
+	<h1>Result</h1>
+    <p th:text="'uniquecode: ' + ${professor.uniqueCode.code}">
+    <p th:text="'fiscalcode: ' + ${professor.fiscalCode}">
+    <p th:text="'name: ' + ${professor.name}">
+    <p th:text="'email: ' + ${professor.email}">
+    <h1>Professor update</h1>
+    <br>
+    <a href="/api/v1/professor/update">Update another professor</a>
+    <br>
+    <a href="#" th:href="@{/professor/professor-menu}">Back to Menu</a>
+</body>
+</html>

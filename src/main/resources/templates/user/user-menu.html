@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:th="https://www.thymeleaf.org"
+        xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
+<head>
+    <title>User Menu</title>
+</head>
+<body>
+    <h1>View a list of all Users</h1>
+    <p>Click <a th:href="@{/api/v1/user/view}">here</a> for took all users</p>
+    <h1>Update User information</h1>
+    <p>Click <a th:href="@{/user/update/update}">here</a> for update user information</p>
+    <br>
+    <a href="#" th:href="@{/home}">Back to Home</a>
+</body>
+</html>

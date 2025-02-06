@@ -1,0 +1,20 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+<head>
+    <title>New update information</title>
+</head>
+<body>
+	<h1>Result</h1>
+    <p th:text="'register: ' + ${student.register.register}">
+    <p th:text="'name: ' + ${student.name}">
+    <p th:text="'email: ' + ${student.email}">
+    <p th:text="'age: ' + ${student.age}">
+    <p th:text="'degree course: ' + ${student.degreeCourse.name}">
+    <h1>Student update</h1>
+    <a href="/api/v1/student/update">Update another student</a>
+    <br>
+    <a href="#" th:href="@{/student/student-menu}">Back to Menu</a>
+</body>
+</html>

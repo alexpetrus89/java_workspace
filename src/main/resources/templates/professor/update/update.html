@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en"
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:th="http://www.thymeleaf.org"
+        xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
+<head>
+    <title>Update existing Professor</title>
+</head>
+
+<body>
+    <h1>Update existing Professor</h1>
+    <form action="#" th:action="@{/api/v1/professor/update}"
+        th:object="${professor}" method="post">
+
+        <input type="hidden" name="_method" value="PUT" />
+
+        <label for="id">Unique code:</label>
+        <input type="text" th:field="*{uniqueCode}" title="Enter unique code"
+            placeholder="Your unique code "></p>
+
+        <label for="fiscalCode">Fiscal code:</label>
+        <input type="text" th:field="*{fiscalCode}" title="Enter fiscal code"
+            placeholder="Your fiscal code "></p>
+
+        <label for="name">Name:</label>
+        <input type="text" th:field="*{name}" title="Enter name"
+            placeholder="Your name"></p>
+
+        <label for="email">Email:</label>
+        <input type="text" th:field="*{email}" title="Enter email"
+            placeholder="Your email"></p>
+
+        <p><input type="submit" value="Update" /> <input type="reset" value="Reset" /></p>
+    </form>
+    <a href="#" th:href="@{/professor/professor-menu}">Back to Menu</a>
+</body>

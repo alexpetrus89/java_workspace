@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:th="https://www.thymeleaf.org"
+        xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
+<head>
+    <title>Courses List</title>
+    <link rel="stylesheet" type="text/css" href="css/object-list.css">
+</head>
+<body>
+    <h1>Courses List</h1>
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Category</th>
+            <th>Cfu</th>
+            <th>Professor name</th>
+        </tr>
+        <tr th:each="course : ${courses}">
+            <td th:text="${course.name}">Course name</td>
+            <td th:text="${course.category}">Category</td>
+            <td th:text="${course.cfu}">Cfu</td>
+            <td th:text="${course.professor.name}">Professor</td>
+        </tr>
+    </table>
+    <br>
+    <a href="#" th:href="@{/course/course-menu}">Back to Menu</a>
+</body>
+</html>

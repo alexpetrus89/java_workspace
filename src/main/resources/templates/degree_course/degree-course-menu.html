@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:th="https://www.thymeleaf.org"
+        xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
+<head>
+    <title>Degree Course Menu</title>
+</head>
+<body>
+    <h1>View a list of all Degree Courses</h1>
+    <p>Click <a th:href="@{/api/v1/degree-course/view}">here</a> for took all degree courses</p>
+
+    <h1>View a list of all courses of a given degree Courses</h1>
+    <p>Click <a th:href="@{/api/v1/degree-course/courses/view}">here</a> for took all courses</p>
+
+    <h1>View all professors of Degree course</h1>
+    <p>Click <a th:href="@{/api/v1/degree-course/professors/view}">here</a> for took all professors</p>
+
+    <a href="#" th:href="@{/home}">Back to Home</a>
+</body>
+</html>

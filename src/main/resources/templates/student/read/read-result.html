@@ -1,0 +1,15 @@
+<div th:if="${student}">
+    <p th:text="'student found:'"></p>
+    <p th:text="'registration number: ' + ${student.register.register}"></p>
+    <p th:text="'name: ' + ${student.name}"></p>
+    <p th:text="'email: ' + ${student.email}"></p>
+    <p th:text="'dob: ' + ${student.dob}"></p>
+    <p th:text="'age: ' + ${student.age}"></p>
+</div>
+<div th:if="${errorMessage}">
+    <p th:text="${errorMessage}"></p>
+</div>
+<br>
+<a href="#" th:href="@{/student/read/read}">Read Again</a>
+<br>
+<a href="#" th:href="@{/student/student-menu}">Back to Menu</a>

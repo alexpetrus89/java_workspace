@@ -1,0 +1,54 @@
+###
+GET http://localhost:8081/api/v1/student/view
+###
+
+###
+POST http://localhost:8081/api/v1/student/5
+Content-Type: application/json
+
+{
+    "name" : "ronzino",
+    "email" : "flashronz@baba.org",
+    "dob" : "1976-03-11"
+}
+###
+
+###
+POST http://localhost:8081/api/v1/student/insert/6?name=bastiano&email=ronzinucrnt@baba.org&dob=1993-12-11
+Content-Type: application/json
+###
+
+###
+POST http://localhost:8081/api/v1/student/insert/7?name=enrico&email=zinonorris@hotmail.it&dob=1971-04-09
+Content-Type: application/json
+###
+
+###
+POST http://localhost:8081/api/v1/student/insert/8?name=dino&email=benedica@hotmail.it&dob=1996-05-04
+Content-Type: application/json
+
+###
+POST http://localhost:8081/api/v1/student/insert/9?name=francesco&email=melonicriminale@hotmail.it&dob=1929-04-11
+Content-Type: application/json
+###
+
+###
+POST http://localhost:8081/api/v1/student/insert/10?name=dunot&email=staisentendo@rama.net&dob=1984-10-05
+Content-Type: application/json
+###
+
+###
+PUT http://localhost:8081/api/v1/student/update/10
+Content-Type: application/json
+
+{
+    "name" : "fedayn",
+    "email" : "giovanni@domino.com",
+    "dob" : "2023-06-10"
+}
+###
+
+###
+DELETE http://localhost:8081/api/v1/student/delete/10
+Content-Type: application/json
+###

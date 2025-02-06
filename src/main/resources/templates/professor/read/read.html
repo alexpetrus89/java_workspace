@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:th="https://www.thymeleaf.org"
+        xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+        <meta charset="utf-8" name="viewport"
+        content="width=device-width, initial-scale=1">
+<head>
+    <title>Read Professor Information</title>
+</head>
+<body>
+    <h1>Read Information of Professor by Unique Code</h1>
+    <form th:action="@{/api/v1/professor/read/uniquecode}" method="get">
+        <input type="text" name="uniqueCode" placeholder="Enter professor Unique Code" />
+        <button type="submit">Search</button>
+        <input type="reset" value="Reset" />
+    </form>
+    <h1>Read Information of Professor by Name</h1>
+    <form th:action="@{/api/v1/professor/read/name}" method="get">
+        <input type="text" name="professorName" placeholder="Enter professor name" />
+        <button type="submit">Search</button>
+        <input type="reset" value="Reset" />
+    </form>
+    <br>
+    <a href="#" th:href="@{/professor/professor-menu}">Back to Menu</a>
+</body>
+</html>

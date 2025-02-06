@@ -101,6 +101,8 @@ public class WebSecurityConfig implements Serializable {
 						"api/v1/course/delete/{courseId}",
 						// degree course
 						"api/v1/degree_course/view",
+						"api/v1/degree-course/read-courses",
+						"api/v1/degree-course/courses/view",
 						"api/v1/degree-course/professors/view",
 						// examination
 						"api/v1/examination/view",

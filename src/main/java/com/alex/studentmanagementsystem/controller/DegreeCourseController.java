@@ -3,12 +3,11 @@ package com.alex.studentmanagementsystem.controller;
 import java.util.List;
 
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.alex.studentmanagementsystem.domain.DegreeCourse;
 import com.alex.studentmanagementsystem.dto.CourseDto;
 import com.alex.studentmanagementsystem.dto.DegreeCourseDto;
 import com.alex.studentmanagementsystem.dto.ProfessorDto;
@@ -61,13 +60,17 @@ public class DegreeCourseController {
     }
 
     @GetMapping("/courses/view")
-    public ModelAndView getCourses(@RequestBody DegreeCourse degreeCourse) {
+    public ModelAndView getCourses(@RequestParam String degreeCourseName) {
 
         try {
             List<CourseDto> filteredCourses = courseServiceImplementation
                 .getCourses()
                 .stream()
-                .filter(course -> course.getDegreeCourse().equals(degreeCourse))
+                .filter(degreeCourse -> degreeCourse
+                    .getDegreeCourse()
+                    .getName()
+                    .equals(degreeCourseName)
+                )
                 .toList();
 
             return new ModelAndView(

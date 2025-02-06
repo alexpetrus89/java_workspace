@@ -18,7 +18,7 @@ import com.alex.studentmanagementsystem.utility.StringToDegreeCourseConverter;
 @Configuration
 public class MvcConfig implements WebMvcConfigurer, Serializable {
 
-      private transient DegreeCourseRepository degreeCourseRepository;
+      private final transient DegreeCourseRepository degreeCourseRepository;
 
       public MvcConfig(DegreeCourseRepository degreeCourseRepository) {
             this.degreeCourseRepository = degreeCourseRepository;
@@ -81,6 +81,8 @@ public class MvcConfig implements WebMvcConfigurer, Serializable {
             // degree course
             registry.addViewController("/degree_course/degree-course-menu")
                   .setViewName("degree_course/degree-course-menu");
+            registry.addViewController("/degree_course/read-courses")
+                  .setViewName("degree_course/read-courses");
 	}
 
       @Override

@@ -34,6 +34,10 @@
 
 @REM Begin all REM lines with '@' in case MAVEN_BATCH_ECHO is 'on'
 @echo off
+
+@REM Set GRAALVM_HOME as JAVA_HOME
+set JAVA_HOME=%GRAALVM_HOME%
+
 @REM set title of command window
 title %0
 @REM enable echoing by setting MAVEN_BATCH_ECHO to 'on'
@@ -160,14 +164,14 @@ FOR /F "usebackq tokens=1,2 delims==" %%A IN ("%MAVEN_PROJECTBASEDIR%\.mvn\wrapp
 )
 IF NOT %WRAPPER_SHA_256_SUM%=="" (
     powershell -Command "&{"^
-       "$hash = (Get-FileHash \"%WRAPPER_JAR%\" -Algorithm SHA256).Hash.ToLower();"^
-       "If('%WRAPPER_SHA_256_SUM%' -ne $hash){"^
-       "  Write-Output 'Error: Failed to validate Maven wrapper SHA-256, your Maven wrapper might be compromised.';"^
-       "  Write-Output 'Investigate or delete %WRAPPER_JAR% to attempt a clean download.';"^
-       "  Write-Output 'If you updated your Maven version, you need to update the specified wrapperSha256Sum property.';"^
-       "  exit 1;"^
-       "}"^
-       "}"
+        "$hash = (Get-FileHash \"%WRAPPER_JAR%\" -Algorithm SHA256).Hash.ToLower();"^
+        "If('%WRAPPER_SHA_256_SUM%' -ne $hash){"^
+        "  Write-Output 'Error: Failed to validate Maven wrapper SHA-256, your Maven wrapper might be compromised.';"^
+        "  Write-Output 'Investigate or delete %WRAPPER_JAR% to attempt a clean download.';"^
+        "  Write-Output 'If you updated your Maven version, you need to update the specified wrapperSha256Sum property.';"^
+        "  exit 1;"^
+        "}"^
+        "}"
     if ERRORLEVEL 1 goto error
 )
 
@@ -176,12 +180,12 @@ IF NOT %WRAPPER_SHA_256_SUM%=="" (
 set MAVEN_CMD_LINE_ARGS=%*
 
 %MAVEN_JAVA_EXE% ^
-  %JVM_CONFIG_MAVEN_PROPS% ^
-  %MAVEN_OPTS% ^
-  %MAVEN_DEBUG_OPTS% ^
-  -classpath %WRAPPER_JAR% ^
-  "-Dmaven.multiModuleProjectDirectory=%MAVEN_PROJECTBASEDIR%" ^
-  %WRAPPER_LAUNCHER% %MAVEN_CONFIG% %*
+    %JVM_CONFIG_MAVEN_PROPS% ^
+    %MAVEN_OPTS% ^
+    %MAVEN_DEBUG_OPTS% ^
+    -classpath %WRAPPER_JAR% ^
+    "-Dmaven.multiModuleProjectDirectory=%MAVEN_PROJECTBASEDIR%" ^
+    %WRAPPER_LAUNCHER% %MAVEN_CONFIG% %*
 if ERRORLEVEL 1 goto error
 goto end
 

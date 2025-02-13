@@ -13,6 +13,7 @@
         <th>Course</th>
         <th>Registration</th>
         <th>Grade</th>
+        <th>Date</th>
         <tr th:each="examination : ${examinations}">
             <td th:text="${examination.course.name}">Course name</td>
             <td th:text="${examination.student.register.register}">Student Register</td>
@@ -20,6 +21,7 @@
                 <span th:text="${examination.grade}">Grade</span>
                 <span th:if="${examination.withHonors}"> with honors</span>
             </td>
+            <td th:text="${examination.date}">Date</td>
         </tr>
     </table>
     <br>

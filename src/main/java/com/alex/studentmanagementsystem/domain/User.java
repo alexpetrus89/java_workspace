@@ -9,6 +9,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.alex.studentmanagementsystem.domain.immutable.UserId;
+import com.alex.studentmanagementsystem.utility.Builder;
 
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
@@ -21,7 +22,6 @@ public class User implements UserDetails {
     // instance variables
     @EmbeddedId
     private UserId id;
-
     private String username;
     private String password;
     private String fullname;
@@ -29,31 +29,22 @@ public class User implements UserDetails {
     private String city;
     private String state;
     private String zip;
-    private String phoneNumber;
+    private String phone;
 
     // default constructor
     public User() {}
 
     // constructor
-    public User(
-        String username,
-        String password,
-        String fullname,
-        String street,
-        String city,
-        String state,
-        String zip,
-        String phoneNumber
-    ) {
+    public User(Builder userBuilder) {
         this.id = new UserId(UUID.randomUUID());
-        this.username = username;
-        this.password = password;
-        this.fullname = fullname;
-        this.street = street;
-        this.city = city;
-        this.state = state;
-        this.zip = zip;
-        this.phoneNumber = phoneNumber;
+        this.username = userBuilder.getUsername();
+        this.password = userBuilder.getPassword();
+        this.fullname = userBuilder.getFullname();
+        this.street = userBuilder.getStreet();
+        this.city = userBuilder.getCity();
+        this.state = userBuilder.getState();
+        this.zip = userBuilder.getZip();
+        this.phone = userBuilder.getPhone();
     }
 
 
@@ -62,10 +53,12 @@ public class User implements UserDetails {
         return id;
     }
 
+    @Override
     public String getUsername() {
         return username;
     }
 
+    @Override
     public String getPassword() {
         return password;
     }
@@ -90,8 +83,8 @@ public class User implements UserDetails {
         return zip;
     }
 
-    public String getPhoneNumber() {
-        return phoneNumber;
+    public String getPhone() {
+        return phone;
     }
 
 
@@ -124,8 +117,8 @@ public class User implements UserDetails {
         this.zip = zip;
     }
 
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
+    public void setPhoneNumber(String phone) {
+        this.phone = phone;
     }
 
     // toString
@@ -140,7 +133,7 @@ public class User implements UserDetails {
             ", city='" + city + '\'' +
             ", state='" + state + '\'' +
             ", zip='" + zip + '\'' +
-            ", phoneNumber='" + phoneNumber + '\'' + '}';
+            ", phoneNumber='" + phone + '\'' + '}';
     }
 
     @Override

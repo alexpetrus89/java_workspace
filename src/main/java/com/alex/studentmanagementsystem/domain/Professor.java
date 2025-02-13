@@ -11,13 +11,15 @@ package com.alex.studentmanagementsystem.domain;
  * Course può essere associato uno ed un solo Professor.
  */
 
-import java.util.UUID;
 import java.io.Serializable;
+import java.util.Objects;
+import java.util.UUID;
 
 import com.alex.studentmanagementsystem.domain.immutable.ProfessorId;
 import com.alex.studentmanagementsystem.domain.immutable.UniqueCode;
 
-
+import jakarta.persistence.Access;
+import jakarta.persistence.AccessType;
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
@@ -25,8 +27,6 @@ import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Pattern;
-import jakarta.persistence.AccessType;
-import jakarta.persistence.Access;
 
 @Entity
 @Table(name = "professor")
@@ -120,6 +120,31 @@ public class Professor implements Serializable {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    @Override
+    public String toString() {
+        return "Professor [id=" + id + ", uniqueCode=" + uniqueCode + ", fiscalCode=" + fiscalCode + ", name=" + name + ", email=" + email + "]";
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(uniqueCode, fiscalCode, name, email);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+
+        if (obj == null || getClass() != obj.getClass())
+            return false;
+
+        Professor other = (Professor) obj;
+        return Objects.equals(uniqueCode, other.getUniqueCode()) &&
+            Objects.equals(fiscalCode, other.getFiscalCode()) &&
+            Objects.equals(name, other.getName()) &&
+            Objects.equals(email, other.getEmail());
     }
 
 

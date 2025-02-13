@@ -13,7 +13,7 @@ public class ExaminationMapper {
             examinationDto.getStudent(),
             examinationDto.getGrade(),
             examinationDto.isWithHonors(),
-            examinationDto.getExaminationDob()
+            examinationDto.getDate()
         );
     }
 
@@ -23,7 +23,7 @@ public class ExaminationMapper {
             examination.getStudent(),
             examination.getGrade(),
             examination.isWithHonors(),
-            examination.getExaminationDob()
+            examination.getDate()
         );
     }
 

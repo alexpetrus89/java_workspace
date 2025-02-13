@@ -1,0 +1,21 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+<head>
+    <title>Result</title>
+</head>
+<body>
+	<h1>Result</h1>
+    <p th:text="'course: ' + ${examination.course.name}">
+    <p th:text="'registration: ' + ${examination.student.register}">
+    <p th:text="'grade: ' + ${examination.grade}">
+    <p th:text="'date: ' + ${examination.date}">
+    <p th:if="${examination.withHonors}" th:text="'With honors: true'">
+    <h1>Examination insert</h1>
+    <br>
+    <a href="/api/v1/examination/create">Submit another examination</a>
+    <br>
+    <a href="#" th:href="@{/examination/examination-menu}">Back to Menu</a>
+</body>
+</html>

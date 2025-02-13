@@ -1,21 +1,20 @@
 package com.alex.studentmanagementsystem.domain;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
-import java.io.Serializable;
-
 import com.alex.studentmanagementsystem.domain.immutable.CourseId;
 
+import jakarta.persistence.Access;
+import jakarta.persistence.AccessType;
 import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.persistence.AccessType;
-import jakarta.persistence.Access;
 
 @Entity
 @Table(name = "course")
@@ -117,6 +116,18 @@ public class Course implements Serializable {
 
     public void setDegreeCourse(DegreeCourse degreeCourse) {
         this.degreeCourse = degreeCourse;
+    }
+
+    @Override
+    public String toString() {
+        return "Course{" +
+            "courseId=" + courseId +
+            ", name='" + name + '\'' +
+            ", category='" + category + '\'' +
+            ", cfu=" + cfu +
+            ", professor=" + professor +
+            ", degreeCourse=" + degreeCourse +
+            '}';
     }
 
 

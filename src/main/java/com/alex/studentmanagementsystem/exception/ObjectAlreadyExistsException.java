@@ -1,14 +1,13 @@
 package com.alex.studentmanagementsystem.exception;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import com.alex.studentmanagementsystem.domain.immutable.Register;
 import com.alex.studentmanagementsystem.domain.immutable.UniqueCode;
 
-import org.springframework.http.HttpStatus;
-
 @ResponseStatus(value = HttpStatus.CONFLICT)
-public class ObjectAlreadyExistsException extends IllegalStateException {
+public class ObjectAlreadyExistsException extends RuntimeException {
 
     // constants
     private static final String OBJECT_ALREADY_EXISTS = "object already exists";
@@ -47,23 +46,16 @@ public class ObjectAlreadyExistsException extends IllegalStateException {
 
     public ObjectAlreadyExistsException(String message, String identifier) {
         super(String.format(OBJECT_ALREADY_EXISTS));
-        if(identifier.equals("student"))
-            this.message = String.format(MIX, STUDENT_WITH_NAME, message, ALREADY_EXISTS);
-        else if(identifier.equals("professor"))
-            this.message = String.format(MIX, PROFESSOR_WITH_NAME, message, ALREADY_EXISTS);
-        else if(identifier.equals("professor_fiscal_code"))
-            this.message = String.format(MIX, PROFESSOR_WITH_FISCAL_CODE, message, ALREADY_EXISTS);
-        else if(identifier.equals("course"))
-            this.message = String.format(MIX, COURSE_WITH_NAME, message, ALREADY_EXISTS);
-        else if(identifier.equals("examination"))
-            this.message = String.format(MIX, EXAMINATION_OF_COURSE_NAMED, message, ALREADY_EXISTS);
-        else if (identifier.equals("user"))
-            this.message = String.format(message);
-        else {
-            this.message = "UNKNOWN ERROR";
+        switch(identifier) {
+            case "student" -> this.message = String.format(MIX, STUDENT_WITH_NAME, message, ALREADY_EXISTS);
+            case "professor" -> this.message = String.format(MIX, PROFESSOR_WITH_NAME, message, ALREADY_EXISTS);
+            case "professor_fiscal_code" -> this.message = String.format(MIX, PROFESSOR_WITH_FISCAL_CODE, message, ALREADY_EXISTS);
+            case "course" -> this.message = String.format(MIX, COURSE_WITH_NAME, message, ALREADY_EXISTS);
+            case "examination" -> this.message = String.format(MIX, EXAMINATION_OF_COURSE_NAMED, message, ALREADY_EXISTS);
+            case "user" -> this.message = String.format(message);
+            default -> this.message = "UNKNOWN ERROR";
         }
     }
-
 
     // getters
     @Override

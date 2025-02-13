@@ -1,5 +1,7 @@
 package com.alex.studentmanagementsystem.dto;
 
+import java.util.Objects;
+
 import com.alex.studentmanagementsystem.domain.immutable.UniqueCode;
 
 public class ProfessorDto {
@@ -60,6 +62,26 @@ public class ProfessorDto {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(uniqueCode, fiscalCode, name, email);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+
+        if (obj == null || getClass() != obj.getClass())
+            return false;
+
+        ProfessorDto other = (ProfessorDto) obj;
+        return Objects.equals(uniqueCode, other.getUniqueCode()) &&
+            Objects.equals(fiscalCode, other.getFiscalCode()) &&
+            Objects.equals(name, other.getName()) &&
+            Objects.equals(email, other.getEmail());
     }
 
 

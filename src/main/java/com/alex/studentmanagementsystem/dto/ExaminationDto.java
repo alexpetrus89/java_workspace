@@ -2,9 +2,9 @@ package com.alex.studentmanagementsystem.dto;
 
 import java.time.LocalDate;
 
-import com.alex.studentmanagementsystem.domain.immutable.ExaminationId;
 import com.alex.studentmanagementsystem.domain.Course;
 import com.alex.studentmanagementsystem.domain.Student;
+import com.alex.studentmanagementsystem.domain.immutable.ExaminationId;
 
 
 
@@ -17,7 +17,7 @@ public class ExaminationDto {
     private Student student;
     private int grade;
     private boolean withHonors;
-    private LocalDate examinationDob;
+    private LocalDate date;
 
     // default constructor
     public ExaminationDto() {}
@@ -27,13 +27,13 @@ public class ExaminationDto {
         Student student,
         int grade,
         boolean withHonors,
-        LocalDate examinationDob
+        LocalDate date
     ) {
         this.course = course;
         this.student = student;
         this.grade = grade;
         this.withHonors = withHonors;
-        this.examinationDob = examinationDob;
+        this.date = date;
     }
 
     // getters
@@ -57,8 +57,8 @@ public class ExaminationDto {
         return withHonors;
     }
 
-    public LocalDate getExaminationDob() {
-        return examinationDob;
+    public LocalDate getDate() {
+        return date;
     }
 
 

@@ -20,41 +20,33 @@ import com.alex.studentmanagementsystem.repository.UserRepository;
 @EnableWebSecurity
 public class WebSecurityConfig implements Serializable {
 
+    /**
+     * Password encoder for web security. Uses bcrypt algorithm.
+     * @return PasswordEncoder
+     */
 	@Bean
     PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    /**
+     * Provides a UserDetailsService bean for retrieving user details by username.
+     * @param userRepository the UserRepository to access user data
+     * @return UserDetailsService that searches for a user by username
+     * @throws UsernameNotFoundException if the user is not found
+     */
     @Bean
     UserDetailsService userDetailsService(UserRepository userRepository) {
 
         return username -> {
-			UserDetails userDetails =
-				userRepository.findByUsername(username);
-			if (userDetails != null) {
+			UserDetails userDetails = userRepository.findByUsername(username);
+
+			if (userDetails != null)
 				return userDetails;
-			}
-            throw new UsernameNotFoundException(
-				"User '" + username + "' not found"
-			);
+
+            throw new UsernameNotFoundException("User '" + username + "' not found");
         };
     }
-
-
-	// import org.springframework.security.core.userdetails.User;
-	// import org.springframework.security.provisioning.InMemoryUserDetailsManager;
-    /*@Bean
-	UserDetailsService userDetailsService() {
-		@SuppressWarnings("deprecation")
-		UserDetails user =
-			User.withDefaultPasswordEncoder()
-				.username("student")
-				.password("student")
-				.roles("USER")
-				.build();
-
-		return new InMemoryUserDetailsManager(user);
-	}*/
 
     @Bean
 	SecurityFilterChain securityFilterChain(HttpSecurity http)
@@ -103,12 +95,16 @@ public class WebSecurityConfig implements Serializable {
 						"api/v1/degree_course/view",
 						"api/v1/degree-course/read-courses",
 						"api/v1/degree-course/courses/view",
+						"api/v1/degree-course/read-professors",
 						"api/v1/degree-course/professors/view",
+						"api/v1/degree-course/read-students",
+						"api/v1/degree-course/students/view",
 						// examination
 						"api/v1/examination/view",
 						"api/v1/examination/course-name",
 						"api/v1/examination/student-register",
-						"api/v1/examination/professor-unique-code"
+						"api/v1/examination/professor-unique-code",
+						"api/v1/examination/create"
 					)
                     .hasRole("USER")
                     .anyRequest()

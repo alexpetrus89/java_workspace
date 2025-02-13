@@ -5,15 +5,11 @@ import org.springframework.web.servlet.ModelAndView;
 public class CreateView {
 
     // instance variables
-    private ModelAndView modelAndView = new ModelAndView();
+    private final ModelAndView modelAndView = new ModelAndView();
 
-    // No-arg constructor
-    public CreateView() {}
-
-    // constructor
+    // constructors
     public CreateView(String viewName) {
         this.modelAndView.setViewName(viewName);
-
     }
 
     public CreateView(Object object, String viewName) {

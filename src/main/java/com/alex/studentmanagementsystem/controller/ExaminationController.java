@@ -1,21 +1,25 @@
 package com.alex.studentmanagementsystem.controller;
 
-import java.util.List;
+import java.time.LocalDate;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.alex.studentmanagementsystem.domain.Examination;
 import com.alex.studentmanagementsystem.domain.immutable.Register;
 import com.alex.studentmanagementsystem.domain.immutable.UniqueCode;
-import com.alex.studentmanagementsystem.dto.CourseDto;
-import com.alex.studentmanagementsystem.dto.ExaminationDto;
+import com.alex.studentmanagementsystem.exception.ObjectAlreadyExistsException;
 import com.alex.studentmanagementsystem.exception.ObjectNotFoundException;
-import com.alex.studentmanagementsystem.service.implementation.CourseServiceImplementation;
-import com.alex.studentmanagementsystem.service.implementation.ExaminationServiceImplementation;
+import com.alex.studentmanagementsystem.mapper.ExaminationMapper;
+import com.alex.studentmanagementsystem.service.implementation.CourseServiceImpl;
+import com.alex.studentmanagementsystem.service.implementation.ExaminationServiceImpl;
 import com.alex.studentmanagementsystem.utility.CreateView;
+
+import jakarta.transaction.Transactional;
 
 @RestController
 @RequestMapping(path = "api/v1/examination")
@@ -25,51 +29,57 @@ public class ExaminationController {
     private static final String ERROR = "error";
     private static final String NOT_FOUND_PATH = "exception/object-not-found";
     private static final String ATTRIBUTE_NAME = "examinations";
-    private static final String VIEW_NAME = "examination/examination-list";
+    private static final String VIEW_PATH = "examination/examination-list";
 
     // instance variable
-    private final ExaminationServiceImplementation examinationServiceImplementation;
-    private final CourseServiceImplementation courseServiceImplementation;
+    private final ExaminationServiceImpl examinationServiceImpl;
+    private final CourseServiceImpl courseServiceImpl;
 
     // autowired - dependency injection - constructor
     public ExaminationController(
-        ExaminationServiceImplementation examinationServiceImplementation,
-        CourseServiceImplementation courseServiceImplementation
+        ExaminationServiceImpl examinationServiceImpl,
+        CourseServiceImpl courseServiceImpl
     ) {
-        this.examinationServiceImplementation = examinationServiceImplementation;
-        this.courseServiceImplementation = courseServiceImplementation;
+        this.examinationServiceImpl = examinationServiceImpl;
+        this.courseServiceImpl = courseServiceImpl;
     }
 
-    /** GET request */
+    // methods
+    /**
+     * Returns a list of examinations
+     * @return ModelAndView
+     */
     @GetMapping(path = "/view")
     public ModelAndView getExaminations() {
-        List<ExaminationDto> examinations =
-            examinationServiceImplementation.getExaminations();
 
         return new CreateView(
             ATTRIBUTE_NAME,
-            examinations,
-            VIEW_NAME
+            examinationServiceImpl.getExaminations(),
+            VIEW_PATH
         ).getModelAndView();
     }
 
-
+    /**
+     * Returns a list of examinations by course name
+     * @param String courseName
+     * @return ModelAndView
+     * @throws ObjectNotFoundException
+     * @throws NullPointerException
+     */
     @GetMapping(path = "/course-name")
     public ModelAndView getExaminationsByCourseName(
         @RequestParam String courseName
     ) {
         try {
-            CourseDto courseDto =
-                courseServiceImplementation.getCourseByName(courseName);
-
-            List<ExaminationDto> examinations =
-                examinationServiceImplementation
-                    .getExaminationsByCourseId(courseDto.getCourseId());
 
             return new CreateView(
                 ATTRIBUTE_NAME,
-                examinations,
-                VIEW_NAME
+                examinationServiceImpl.getExaminationsByCourseId(
+                    courseServiceImpl
+                        .getCourseByName(courseName)
+                        .getCourseId()
+                ),
+                VIEW_PATH
             ).getModelAndView();
 
         } catch (ObjectNotFoundException e) {
@@ -82,20 +92,52 @@ public class ExaminationController {
         }
     }
 
-
+    /**
+     * Returns a list of examinations by student register
+     * @param Register
+     * @return ModelAndView
+     */
     @GetMapping(path = "/student-register")
     public ModelAndView getExaminationsByStudentRegister(
         @RequestParam Register register
     ) {
         try {
-            List<ExaminationDto> examinations =
-                examinationServiceImplementation
-                    .getExaminationsByStudentRegister(register);
 
             return new CreateView(
                 ATTRIBUTE_NAME,
-                examinations,
-                VIEW_NAME
+                examinationServiceImpl.getExaminationsByStudentRegister(register),
+                VIEW_PATH
+            ).getModelAndView();
+
+        } catch (ObjectNotFoundException e) {
+
+            return new CreateView(
+                ERROR,
+                e.getMessage(),
+                NOT_FOUND_PATH
+            ).getModelAndView();
+        }
+    }
+
+    /**
+     * Returns a list of examinations by professor unique code
+     * @param UniqueCode
+     * @return ModelAndView
+     * @throws NullPointerException
+     * @throws UnsupportedOperationException
+     * @throws ClassCastException
+     * @throws IllegalArgumentException
+     */
+    @GetMapping(path = "/professor-unique-code")
+    public ModelAndView getExaminationsByProfessorUniqueCode(
+        @RequestParam UniqueCode uniqueCode
+    ) {
+        try {
+
+            return new CreateView(
+                ATTRIBUTE_NAME,
+                examinationServiceImpl.getExaminationsByProfessorUniqueCode(uniqueCode),
+                VIEW_PATH
             ).getModelAndView();
 
         } catch (ObjectNotFoundException e) {
@@ -109,23 +151,57 @@ public class ExaminationController {
     }
 
 
-    @GetMapping(path = "/professor-unique-code")
-    public ModelAndView getExaminationsByProfessorUniqueCode(
-        @RequestParam UniqueCode uniqueCode
-    ) {
-        try {
-            List<ExaminationDto> examinations =
-                examinationServiceImplementation
-                    .getExaminationsByProfessorUniqueCode(uniqueCode);
+    /**
+     * Creates a new Examination
+     * @return ModelAndView
+     */
+    @GetMapping("/create")
+    public ModelAndView createNewExaminationAndReturnView() {
+        return new CreateView(
+            new Examination(),
+            "examination/create/create"
+        ).getModelAndView();
+    }
 
+    /**
+     * Creates a new Examination
+     * @param registration the student's registration
+     * @param course the course name
+     * @param grade the grade obtained in the examination
+     * @param withHonors whether the examination was passed with honors
+     * @param date the date of the examination
+     * @return a ModelAndView containing the details of the newly added examination
+     * @throws ObjectAlreadyExistsException if the examination already exists
+     * @throws ObjectNotFoundException if the student or course does not exist
+     * @throws IllegalArgumentException if the date is in the past or the grade
+     *                                  is not between 0 and 30 or Degree course
+     *                                  does not match
+     */
+    @PostMapping(path = "/create")
+    @Transactional
+    public ModelAndView createNewExamination(
+        @RequestParam String registration,
+        @RequestParam String course,
+        @RequestParam String grade,
+        @RequestParam Boolean withHonors,
+        @RequestParam LocalDate date
+    ) {
+
+        try {
             return new CreateView(
-                ATTRIBUTE_NAME,
-                examinations,
-                VIEW_NAME
+                ExaminationMapper.mapToExamination(
+                    examinationServiceImpl.addNewExamination(
+                        new Register(registration),
+                        course,
+                        Integer.parseInt(grade),
+                        withHonors,
+                        date
+                    )
+                ),
+                "examination/create/create-result"
             ).getModelAndView();
 
         } catch (ObjectNotFoundException e) {
-
             return new CreateView(
                 ERROR,
                 e.getMessage(),

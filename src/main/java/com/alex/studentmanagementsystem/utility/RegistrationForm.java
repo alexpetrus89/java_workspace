@@ -1,5 +1,4 @@
 package com.alex.studentmanagementsystem.utility;
-
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.alex.studentmanagementsystem.domain.User;
@@ -16,28 +15,16 @@ public class RegistrationForm {
     private String zip;
     private String phone;
 
-    // default constructor
-    public RegistrationForm() { /* default constructor */ }
-
     // constructor
-    public RegistrationForm(
-        String username,
-        String password,
-        String fullname,
-        String street,
-        String city,
-        String state,
-        String zip,
-        String phone
-    ) {
-        this.username = username;
-        this.password = password;
-        this.fullname = fullname;
-        this.street = street;
-        this.city = city;
-        this.state = state;
-        this.zip = zip;
-        this.phone = phone;
+    public RegistrationForm(Builder formBuilder) {
+        this.username = formBuilder.getUsername();
+        this.password = formBuilder.getPassword();
+        this.fullname = formBuilder.getFullname();
+        this.street = formBuilder.getStreet();
+        this.city = formBuilder.getCity();
+        this.state = formBuilder.getState();
+        this.zip = formBuilder.getZip();
+        this.phone = formBuilder.getPhone();
     }
 
     // getters
@@ -110,16 +97,19 @@ public class RegistrationForm {
 
     // methods
     public User toUser(PasswordEncoder passwordEncoder) {
-        return new User(
-            username,
-            passwordEncoder.encode(password),
-            fullname,
-            street,
-            city,
-            state,
-            zip,
-            phone
-        );
+        // create a new user builder
+        Builder userBuilder = new Builder();
+        // set the values
+        userBuilder.withUsername(username);
+        userBuilder.withPassword(passwordEncoder.encode(password));
+        userBuilder.withFullname(fullname);
+        userBuilder.withStreet(street);
+        userBuilder.withCity(city);
+        userBuilder.withState(state);
+        userBuilder.withZip(zip);
+        userBuilder.withPhone(phone);
+        // create the user
+        return new User(userBuilder);
     }
 
 

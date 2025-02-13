@@ -16,9 +16,7 @@ import com.alex.studentmanagementsystem.service.CourseService;
 import jakarta.transaction.Transactional;
 
 @Service
-public class CourseServiceImplementation
-    implements CourseService
-{
+public class CourseServiceImpl implements CourseService {
 
     // constant
     private static final String EXCEPTION_COURSE_IDENTIFIER = "course";
@@ -27,13 +25,15 @@ public class CourseServiceImplementation
     private final CourseRepository courseRepository;
 
     // constructor
-    public CourseServiceImplementation(CourseRepository courseRepository) {
+    public CourseServiceImpl(CourseRepository courseRepository) {
         this.courseRepository = courseRepository;
     }
 
     /**
-     * @return List<CourseDto>
-     */
+    * Retrieves all courses from the repository.
+    *
+    * @return List of CourseDto objects representing all courses.
+    */
     @Override
     public List<CourseDto> getCourses() {
         return courseRepository.findAll()
@@ -44,9 +44,12 @@ public class CourseServiceImplementation
 
 
     /**
-     * @param id
-     * @return CourseDto
-     * @throws ObjectNotFoundException
+     * Retrieves a course from the repository by its id.
+     *
+     * @param CourseId id
+     * @return CourseDto object representing the course with the given id.
+     * @throws ObjectNotFoundException if no course with the given id exists.
+     * @throws NullPointerException if the id is null.
      */
     @Override
     public CourseDto getCourseById(CourseId id)
@@ -54,47 +57,52 @@ public class CourseServiceImplementation
     {
         Course course = courseRepository
             .findById(id)
-			// throw exception
 			.orElseThrow(() -> new ObjectNotFoundException(id.toString(), EXCEPTION_COURSE_IDENTIFIER));
 
 		return CourseMapper.mapToCourseDto(course);
     }
 
     /**
-     * @param name
-     * @return CourseDto
-     * @throws ObjectNotFoundException
+     * Retrieves a course from the repository by its name.
+     *
+     * @param String name
+     * @return CourseDto object representing the course with the given name.
+     * @throws ObjectNotFoundException if no course with the given name exists.
+     * @throws NullPointerException if the name is null.
      */
     @Override
     public CourseDto getCourseByName(String name)
         throws ObjectNotFoundException
     {
-        Course course = courseRepository
+        return courseRepository
             .findByName(name)
-            // throw exception
+            .map(CourseMapper::mapToCourseDto)
             .orElseThrow(() -> new ObjectNotFoundException(name, EXCEPTION_COURSE_IDENTIFIER));
-        return CourseMapper.mapToCourseDto(course);
     }
 
     /**
-     * @param courseDto
-     * @throws ObjectAlreadyExistsException
-     * @throws ObjectNotFoundException
-     */
+    * Adds a new course to the repository.
+    *
+    * @param courseDto the course data transfer object containing the details of the course to be added.
+    * @throws ObjectAlreadyExistsException if a course with the same name already exists in the repository.
+    */
     @Override
     @Transactional
     public void addNewCourse(CourseDto courseDto) {
 
         if(courseRepository.existsByName(courseDto.getName()))
-            // throw exception
             throw new ObjectAlreadyExistsException(courseDto.getName(), EXCEPTION_COURSE_IDENTIFIER);
 
         courseRepository.save(CourseMapper.mapToCourse(courseDto));
     }
 
     /**
-     * @param newCourseDto
-     * @throws ObjectNotFoundException
+     * Updates an existing course in the repository.
+     *
+     * @param courseDto the course data transfer object containing the new details of the course to be updated.
+     * @throws ObjectNotFoundException if no course with the given name exists in the repository.
+     * @throws NullPointerException if the courseDto is null.
+     * @throws IllegalArgumentException if the given course name is null or empty.
      */
     @Override
     @Transactional
@@ -103,7 +111,6 @@ public class CourseServiceImplementation
         // check if exist
         Course updatableCourse = courseRepository
             .findByName(newCourseDto.getName())
-            // else throw exception
             .orElseThrow(() -> new ObjectNotFoundException(newCourseDto.getName(), EXCEPTION_COURSE_IDENTIFIER));
 
         // new name, category and cfu
@@ -124,8 +131,11 @@ public class CourseServiceImplementation
     }
 
     /**
-     * @param id
-     * @throws ObjectNotFoundException
+     * Deletes a course from the repository by its id.
+     *
+     * @param CourseId id
+     * @throws ObjectNotFoundException if no course with the given id exists.
+     * @throws NullPointerException if the id is null.
      */
     @Override
     @Transactional

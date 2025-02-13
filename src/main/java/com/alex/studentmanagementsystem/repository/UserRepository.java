@@ -26,7 +26,7 @@ public interface UserRepository
             u.city = :city,
             u.state = :state,
             u.zip = :zip,
-            u.phoneNumber = :phoneNumber
+            u.phone = :phone
             WHERE u.username = :username
     """)
     public int updateUser(
@@ -36,7 +36,7 @@ public interface UserRepository
         @Param("city") String city,
         @Param("state") String state,
         @Param("zip") String zip,
-        @Param("phoneNumber") String phoneNumber
+        @Param("phone") String phone
     );
 
 }

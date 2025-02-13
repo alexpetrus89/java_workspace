@@ -3,6 +3,7 @@ package com.alex.studentmanagementsystem.config;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -31,6 +32,7 @@ import com.alex.studentmanagementsystem.repository.ExaminationRepository;
 import com.alex.studentmanagementsystem.repository.ProfessorRepository;
 import com.alex.studentmanagementsystem.repository.StudentRepository;
 import com.alex.studentmanagementsystem.repository.UserRepository;
+import com.alex.studentmanagementsystem.utility.Builder;
 import com.alex.studentmanagementsystem.utility.RegistrationForm;
 
 
@@ -43,7 +45,6 @@ public class StudentDatabaseInit implements Serializable {
     private static final String INGEGNERIA_ELETTRICA = "INGEGNERIA ELETTRICA";
     private static final String INGEGNERIA_CIVILE = "INGEGNERIA CIVILE";
     private static final String INGEGNERIA_INFORMATICA = "INGEGNERIA INFORMATICA";
-
     private static final String INGEGNERIA_GESTIONALE_MAGISTRALE = "INGEGNERIA GESTIONALE MAGISTRALE";
     private static final String INGEGNERIA_INFORMATICA_MAGISTRALE = "INGEGNERIA INFORMATICA MAGISTRALE";
 
@@ -70,11 +71,25 @@ public class StudentDatabaseInit implements Serializable {
 
     private static final String STUDENT_NOT_FOUND = "Student not found";
     private static final String COURSE_NOT_FOUND = "Course not found";
+    private static final String DEGREE_COURSE_NOT_FOUND = "Degree course not found";
 
 
     private final transient Logger logger =
         org.slf4j.LoggerFactory.getLogger(StudentDatabaseInit.class);
 
+    /**
+     * This method is called at the application startup and it populates the database
+     * with the initial values.
+     *
+     * @param degreeCourseRepository the repository for the degree courses
+     * @param studentRepository the repository for the students
+     * @param courseRepository the repository for the courses
+     * @param professorRepository the repository for the professors
+     * @param examinationRepository the repository for the examinations
+     * @param userRepository the repository for the users
+     * @param passwordEncoder the password encoder
+     * @return a CommandLineRunner
+     */
     @Bean
     @SuppressWarnings("unused")
     CommandLineRunner commandLineRunner(
@@ -209,7 +224,7 @@ public class StudentDatabaseInit implements Serializable {
                 LocalDate.of(2000, 6, 23),
                 degreeCourseRepository
                     .findByName(INGEGNERIA_GESTIONALE)
-                    .orElseThrow(null)
+                    .orElseThrow(() -> new ObjectNotFoundException(DEGREE_COURSE_NOT_FOUND, INGEGNERIA_GESTIONALE))
             )
         );
 
@@ -221,7 +236,7 @@ public class StudentDatabaseInit implements Serializable {
                 LocalDate.of(2001, 8, 23),
                 degreeCourseRepository
                     .findByName(INGEGNERIA_GESTIONALE)
-                    .orElseThrow(null)
+                    .orElseThrow(() -> new ObjectNotFoundException(DEGREE_COURSE_NOT_FOUND, INGEGNERIA_GESTIONALE))
             )
         );
 
@@ -233,7 +248,7 @@ public class StudentDatabaseInit implements Serializable {
                 LocalDate.of(2000, 2, 14),
                 degreeCourseRepository
                     .findByName(INGEGNERIA_GESTIONALE)
-                    .orElseThrow(null)
+                    .orElseThrow(() -> new ObjectNotFoundException(DEGREE_COURSE_NOT_FOUND, INGEGNERIA_GESTIONALE))
             )
         );
 
@@ -245,7 +260,7 @@ public class StudentDatabaseInit implements Serializable {
                 LocalDate.of(1990, 7, 15),
                 degreeCourseRepository
                     .findByName(INGEGNERIA_GESTIONALE)
-                    .orElseThrow(null)
+                    .orElseThrow(() -> new ObjectNotFoundException(DEGREE_COURSE_NOT_FOUND, INGEGNERIA_GESTIONALE))
             )
         );
 
@@ -257,7 +272,7 @@ public class StudentDatabaseInit implements Serializable {
                 LocalDate.of(1993, 8, 15),
                 degreeCourseRepository
                     .findByName(INGEGNERIA_GESTIONALE)
-                    .orElseThrow(null)
+                    .orElseThrow(() -> new ObjectNotFoundException(DEGREE_COURSE_NOT_FOUND, INGEGNERIA_GESTIONALE))
             )
         );
 
@@ -269,7 +284,19 @@ public class StudentDatabaseInit implements Serializable {
                 LocalDate.of(1991, 12, 4),
                 degreeCourseRepository
                     .findByName(INGEGNERIA_GESTIONALE)
-                    .orElseThrow(null)
+                    .orElseThrow(() -> new ObjectNotFoundException(DEGREE_COURSE_NOT_FOUND, INGEGNERIA_GESTIONALE))
+            )
+        );
+
+        students.add(
+            new StudentDto(
+                new Register("123468"),
+                "iginio",
+                "iginio.blood@gmail.com",
+                LocalDate.of(1990, 6, 3),
+                degreeCourseRepository
+                    .findByName(INGEGNERIA_MECCANICA)
+                    .orElseThrow(() -> new ObjectNotFoundException(DEGREE_COURSE_NOT_FOUND, INGEGNERIA_GESTIONALE))
             )
         );
 
@@ -281,7 +308,7 @@ public class StudentDatabaseInit implements Serializable {
                 LocalDate.of(1993, 11, 8),
                 degreeCourseRepository
                     .findByName(INGEGNERIA_GESTIONALE_MAGISTRALE)
-                    .orElseThrow(null)
+                    .orElseThrow(() -> new ObjectNotFoundException(DEGREE_COURSE_NOT_FOUND, INGEGNERIA_GESTIONALE_MAGISTRALE))
             )
         );
 
@@ -293,7 +320,7 @@ public class StudentDatabaseInit implements Serializable {
                 LocalDate.of(1990, 11, 8),
                 degreeCourseRepository
                     .findByName(INGEGNERIA_GESTIONALE_MAGISTRALE)
-                    .orElseThrow(null)
+                    .orElseThrow(() -> new ObjectNotFoundException(DEGREE_COURSE_NOT_FOUND, INGEGNERIA_GESTIONALE_MAGISTRALE))
             )
         );
 
@@ -305,7 +332,7 @@ public class StudentDatabaseInit implements Serializable {
                 LocalDate.of(1990, 11, 1),
                 degreeCourseRepository
                     .findByName(INGEGNERIA_ELETTRICA)
-                    .orElseThrow(null)
+                    .orElseThrow(() -> new ObjectNotFoundException(DEGREE_COURSE_NOT_FOUND, INGEGNERIA_ELETTRICA))
             )
         );
 
@@ -317,7 +344,7 @@ public class StudentDatabaseInit implements Serializable {
                 LocalDate.of(1990, 3, 29),
                 degreeCourseRepository
                     .findByName(INGEGNERIA_INFORMATICA_MAGISTRALE)
-                    .orElseThrow(null)
+                    .orElseThrow(() -> new ObjectNotFoundException(DEGREE_COURSE_NOT_FOUND, INGEGNERIA_INFORMATICA_MAGISTRALE))
             )
         );
 
@@ -329,7 +356,7 @@ public class StudentDatabaseInit implements Serializable {
                 LocalDate.of(1990, 3, 2),
                 degreeCourseRepository
                     .findByName(INGEGNERIA_INFORMATICA_MAGISTRALE)
-                    .orElseThrow(null)
+                    .orElseThrow(() -> new ObjectNotFoundException(DEGREE_COURSE_NOT_FOUND, INGEGNERIA_INFORMATICA_MAGISTRALE))
             )
         );
 
@@ -338,18 +365,19 @@ public class StudentDatabaseInit implements Serializable {
             throw new IllegalArgumentException("students list is empty");
 
         // save students
-        students.stream()
+        students
+            .stream()
             .map(StudentMapper::mapToStudent)
             .forEach(studentRepository::saveAndFlush);
 
 
         // save students for GESTIONALE degree course
-        DegreeCourse ingGestionale = degreeCourseRepository
+        DegreeCourse ingGest = degreeCourseRepository
             .findByName(INGEGNERIA_GESTIONALE)
             .orElseThrow(null);
 
         // set students of ING. GESTIONALE in degreeCourse object
-        ingGestionale.setStudents(
+        ingGest.setStudents(
             studentRepository
                 .findAll()
                 .stream()
@@ -358,7 +386,7 @@ public class StudentDatabaseInit implements Serializable {
         );
 
         // save degree course ING. GESTIONALE
-        degreeCourseRepository.save(ingGestionale);
+        degreeCourseRepository.saveAndFlush(ingGest);
 
 
         // save students for GESTIONALE MAGISTRALE degree course
@@ -376,7 +404,7 @@ public class StudentDatabaseInit implements Serializable {
         );
 
         // save degree course ING. GESTIONALE MAGISTRALE
-        degreeCourseRepository.save(ingGestMag);
+        degreeCourseRepository.saveAndFlush(ingGestMag);
 
 
         // save students for ING. INFORMATICA MAGISTRALE degree course
@@ -394,7 +422,7 @@ public class StudentDatabaseInit implements Serializable {
         );
 
         // save degree course ING. INFORMATICA MAGISTRALE
-        degreeCourseRepository.save(ingInfMag);
+        degreeCourseRepository.saveAndFlush(ingInfMag);
 
     }
 
@@ -406,55 +434,71 @@ public class StudentDatabaseInit implements Serializable {
     // INITIALIZE PROFESSORS
     void initializeProfessors(ProfessorRepository professorRepository) {
 
-        ProfessorDto giacinto = new ProfessorDto(
-            new UniqueCode(UC_GIACINTO),
-            "abc678rde217we56",
-            "giacinto",
-            "professore.giacinto@dominio.it"
+        List<ProfessorDto> professors = new ArrayList<>();
+
+        professors.add(
+            new ProfessorDto(
+                new UniqueCode(UC_GIACINTO),
+                "abc678rde217we56",
+                "giacinto",
+                "professore.giacinto@dominio.it"
+            )
         );
 
-        ProfessorDto genesio = new ProfessorDto(
-            new UniqueCode(UC_GENESIO),
-            "duf677rde22werf3",
-            "genesio",
-            "professore.genesio@dominio.it"
+        professors.add(
+            new ProfessorDto(
+                new UniqueCode(UC_GENESIO),
+                "duf677rde22werf3",
+                "genesio",
+                "professore.genesio@dominio.it"
+            )
         );
 
-        ProfessorDto fabio = new ProfessorDto(
-            new UniqueCode(UC_FABIO),
-            "ert678rde23123tr",
-            "fabio",
-            "professore.fabio@dominio.it"
+        professors.add(
+            new ProfessorDto(
+                new UniqueCode(UC_FABIO),
+                "ert678rde23123tr",
+                "fabio",
+                "professore.fabio@dominio.it"
+            )
         );
 
-        ProfessorDto giacomo = new ProfessorDto(
-            new UniqueCode(UC_GIACOMO),
-            "but678rde237e34v",
-            "giacomo",
-            "professore.giacomo@dominio.it"
+        professors.add(
+            new ProfessorDto(
+                new UniqueCode(UC_GIACOMO),
+                "but678rde237e34v",
+                "giacomo",
+                "professore.giacomo@dominio.it"
+            )
         );
 
-        ProfessorDto felice = new ProfessorDto(
-            new UniqueCode(UC_FELICE),
-            "flt985aba741o34v",
-            "felice",
-            "professore.felice@dominio.it"
+        professors.add(
+            new ProfessorDto(
+                new UniqueCode(UC_FELICE),
+                "flt985aba741o34v",
+                "felice",
+                "professore.felice@dominio.it"
+            )
         );
 
-        ProfessorDto vladimiro = new ProfessorDto(
-            new UniqueCode(UC_VLADIMIRO),
-            "pol236uii632u15f",
-            "vladimiro",
-            "professore.vladimiro@dominio.it"
+        professors.add(
+            new ProfessorDto(
+                new UniqueCode(UC_VLADIMIRO),
+                "pol236uii632u15f",
+                "vladimiro",
+                "professore.vladimiro@dominio.it"
+            )
         );
 
-        // create professors list
-        List<ProfessorDto> professors = List.of(giacinto, genesio, fabio, giacomo, felice, vladimiro);
+        // sanity check
+        if(professors.isEmpty())
+            throw new IllegalArgumentException("professors list is empty");
 
         // save professors
-        professors.stream()
+        professors
+            .stream()
             .map(ProfessorMapper::mapToProfessor)
-            .forEach(professorRepository::save);
+            .forEach(professorRepository::saveAndFlush);
 
     }
 
@@ -468,341 +512,392 @@ public class StudentDatabaseInit implements Serializable {
     ) {
 
         // retrieve degreeCourses
-        DegreeCourse ingGestionale = degreeCourseRepository
+        DegreeCourse ingGest = degreeCourseRepository
             .findByName(INGEGNERIA_GESTIONALE)
             .orElseThrow();
 
-        DegreeCourse ingGestionaleMagistrale = degreeCourseRepository
+        DegreeCourse ingMecc = degreeCourseRepository
+            .findByName(INGEGNERIA_MECCANICA)
+            .orElseThrow();
+
+        DegreeCourse ingGestMag = degreeCourseRepository
             .findByName(INGEGNERIA_GESTIONALE_MAGISTRALE)
             .orElseThrow();
 
-        DegreeCourse ingInformaticaMagistrale = degreeCourseRepository
+        DegreeCourse ingInfMag = degreeCourseRepository
             .findByName(INGEGNERIA_INFORMATICA_MAGISTRALE)
             .orElseThrow();
 
 
+        List<Course> courses = new ArrayList<>();
+
         // create courses
-        Course analisiMatematica = new Course(
-            "analisi matematica",
-            MATEMATICA,
-            12,
-            professorRepository
-                .findByUniqueCode(new UniqueCode(UC_GIACINTO))
-                .orElseThrow(() -> new ObjectNotFoundException(new UniqueCode(UC_GIACINTO))),
-            ingGestionale
+        courses.add(
+            new Course(
+                "analisi matematica",
+                MATEMATICA,
+                12,
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_GIACINTO))
+                    .orElseThrow(() -> new ObjectNotFoundException(new UniqueCode(UC_GIACINTO))),
+                ingGest
+            )
         );
 
-        Course economia = new Course(
-            "elementi di economia",
-            ECONOMIA,
-            6,
-            professorRepository
-                .findByUniqueCode(new UniqueCode(UC_GIACINTO))
-                .orElseThrow(() -> new ObjectNotFoundException(new UniqueCode(UC_GIACINTO))),
-            ingGestionale
+        courses.add(
+            new Course(
+                "elementi di economia",
+                ECONOMIA,
+                6,
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_GIACINTO))
+                    .orElseThrow(() -> new ObjectNotFoundException(new UniqueCode(UC_GIACINTO))),
+                ingGest
+            )
         );
 
-        Course geometria = new Course(
-            "geometria e algebra",
-            MATEMATICA,
-            6,
-            professorRepository
-                .findByUniqueCode(new UniqueCode(UC_GIACINTO))
-                .orElseThrow(() -> new ObjectNotFoundException(new UniqueCode(UC_GIACINTO))),
-            ingGestionale
+        courses.add(
+            new Course(
+                "geometria e algebra",
+                MATEMATICA,
+                6,
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_GIACINTO))
+                    .orElseThrow(() -> new ObjectNotFoundException(new UniqueCode(UC_GIACINTO))),
+                ingGest
+            )
         );
 
-        Course fisicaGenerale = new Course(
-            "fisica generale",
-            FISICA,
-            12,
-            professorRepository
-                .findByUniqueCode(new UniqueCode(UC_GIACINTO))
-                .orElseThrow(() -> new ObjectNotFoundException(new UniqueCode(UC_GIACINTO))),
-            ingGestionale
+        courses.add(
+            new Course(
+                "fisica generale",
+                FISICA,
+                12,
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_GIACINTO))
+                    .orElseThrow(() -> new ObjectNotFoundException(new UniqueCode(UC_GIACINTO))),
+                ingGest
+            )
         );
 
-        Course informatica = new Course(
-            "fondamenti di informatica",
-            INFORMATICA,
-            6,
-            professorRepository
-                .findByUniqueCode(new UniqueCode(UC_GENESIO))
-                .orElseThrow(() -> new ObjectNotFoundException(new UniqueCode(UC_GENESIO))),
-            ingGestionale
+        courses.add(
+            new Course(
+                "fondamenti di informatica",
+                INFORMATICA,
+                6,
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_GENESIO))
+                    .orElseThrow(() -> new ObjectNotFoundException(new UniqueCode(UC_GENESIO))),
+                ingGest
+            )
         );
 
-        Course chimica = new Course(
-            "chimica generale",
-            CHIMICA,
-            9,
-            professorRepository
-                .findByUniqueCode(new UniqueCode(UC_FABIO))
-                .orElseThrow(() -> new ObjectNotFoundException(new UniqueCode(UC_FABIO))),
-            ingGestionale
+        courses.add(
+            new Course(
+                "chimica generale",
+                CHIMICA,
+                9,
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_FABIO))
+                    .orElseThrow(() -> new ObjectNotFoundException(new UniqueCode(UC_FABIO))),
+                ingGest
+            )
         );
 
-        Course scienzaDelleCostruzioni = new Course(
-            "scienza delle costruzioni",
-            ING_MECCANICA,
-            6,
-            professorRepository
-                .findByUniqueCode(new UniqueCode(UC_FABIO))
-                .orElseThrow(() -> new ObjectNotFoundException(new UniqueCode(UC_FABIO))),
-            ingGestionale
+        courses.add(
+            new Course(
+                "scienza delle costruzioni",
+                ING_MECCANICA,
+                6,
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_FABIO))
+                    .orElseThrow(() -> new ObjectNotFoundException(new UniqueCode(UC_FABIO))),
+                ingGest
+            )
         );
 
-        Course ricercaOperativa = new Course(
-            "metodi di ottimizzazione",
-            MATEMATICA,
-            6,
-            professorRepository
-                .findByUniqueCode(new UniqueCode(UC_FABIO))
-                .orElseThrow(() -> new ObjectNotFoundException(new UniqueCode(UC_FABIO))),
-            ingGestionale
+        courses.add(
+            new Course(
+                "metodi di ottimizzazione",
+                MATEMATICA,
+                6,
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_FABIO))
+                    .orElseThrow(() -> new ObjectNotFoundException(new UniqueCode(UC_FABIO))),
+                ingGest
+            )
         );
 
-        Course disegno = new Course(
-            "metodi di rappresentazione tecnica",
-            DISEGNO,
-            6,
-            professorRepository
-                .findByUniqueCode(new UniqueCode(UC_FABIO))
-                .orElseThrow(() -> new ObjectNotFoundException(new UniqueCode(UC_FABIO))),
-            ingGestionale
+        courses.add(
+            new Course(
+                "metodi di rappresentazione tecnica",
+                DISEGNO,
+                6,
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_FABIO))
+                    .orElseThrow(() -> new ObjectNotFoundException(new UniqueCode(UC_FABIO))),
+                ingGest
+            )
         );
 
-        Course eMMEPM = new Course(
-            "elementi di meccanica delle macchine e progettazione meccanica",
-            ING_MECCANICA,
-            12,
-            professorRepository
-                .findByUniqueCode(new UniqueCode(UC_GIACOMO))
-                .orElseThrow(() -> new ObjectNotFoundException(new UniqueCode(UC_GIACOMO))),
-            ingGestionale
+        courses.add(
+            new Course(
+                "elementi di meccanica delle macchine e progettazione meccanica",
+                ING_MECCANICA,
+                12,
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_GIACOMO))
+                    .orElseThrow(() -> new ObjectNotFoundException(new UniqueCode(UC_GIACOMO))),
+                ingGest
+            )
         );
 
-        Course fisicaTecESE = new Course(
-            "fisica tecnica e sistemi energetici",
-            FISICA,
-            12,
-            professorRepository
-                .findByUniqueCode(new UniqueCode(UC_GIACOMO))
-                .orElseThrow(() -> new ObjectNotFoundException(new UniqueCode(UC_GIACOMO))),
-            ingGestionale
+        courses.add(
+            new Course(
+                "fisica tecnica e sistemi energetici",
+                FISICA,
+                12,
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_GIACOMO))
+                    .orElseThrow(() -> new ObjectNotFoundException(new UniqueCode(UC_GIACOMO))),
+                ingGest
+            )
         );
 
-        Course gestioneAziendale = new Course(
-            "gestione aziendale",
-            ECONOMIA,
-            6,
-            professorRepository
-                .findByUniqueCode(new UniqueCode(UC_GIACOMO))
-                .orElseThrow(() -> new ObjectNotFoundException(new UniqueCode(UC_GIACOMO))),
-            ingGestionale
+        courses.add(
+            new Course(
+                "gestione aziendale",
+                ECONOMIA,
+                6,
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_GIACOMO))
+                    .orElseThrow(() -> new ObjectNotFoundException(new UniqueCode(UC_GIACOMO))),
+                ingGest
+            )
         );
 
-        Course mecDeiFluidi = new Course(
-            "meccanica dei fluidi",
-            FISICA,
-            6,
-            professorRepository
-                .findByUniqueCode(new UniqueCode(UC_VLADIMIRO))
-                .orElseThrow(() -> new ObjectNotFoundException(new UniqueCode(UC_VLADIMIRO))),
-            ingGestionale
+        courses.add(
+            new Course(
+                "meccanica dei fluidi",
+                FISICA,
+                6,
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_VLADIMIRO))
+                    .orElseThrow(() -> new ObjectNotFoundException(new UniqueCode(UC_VLADIMIRO))),
+                ingGest
+            )
         );
 
-        Course principiDiIngElettrica = new Course(
-            "principi di ingegneria elettrica",
-            ING_ELETTRICA,
-            6,
-            professorRepository
-                .findByUniqueCode(new UniqueCode(UC_VLADIMIRO))
-                .orElseThrow(() -> new ObjectNotFoundException(new UniqueCode(UC_VLADIMIRO))),
-            ingGestionale
+        courses.add(
+            new Course(
+                "principi di ingegneria elettrica",
+                ING_ELETTRICA,
+                6,
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_VLADIMIRO))
+                    .orElseThrow(() -> new ObjectNotFoundException(new UniqueCode(UC_VLADIMIRO))),
+                ingGest
+            )
         );
 
-        Course tecMeccTecMat = new Course(
-            "tecnologia meccaniche e dei materiali",
-            ING_MECCANICA,
-            12,
-            professorRepository
-                .findByUniqueCode(new UniqueCode(UC_GIACOMO))
-                .orElseThrow(() -> new ObjectNotFoundException(new UniqueCode(UC_GIACOMO))),
-            ingGestionale
+        courses.add(
+            new Course(
+                "tecnologia meccaniche e dei materiali",
+                ING_MECCANICA,
+                12,
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_GIACOMO))
+                    .orElseThrow(() -> new ObjectNotFoundException(new UniqueCode(UC_GIACOMO))),
+                ingGest
+            )
         );
 
-        Course calcoloNumerico = new Course(
-            "calcolo numerico",
-            MATEMATICA,
-            6,
-            professorRepository
-                .findByUniqueCode(new UniqueCode(UC_GIACINTO))
-                .orElseThrow(() -> new ObjectNotFoundException(new UniqueCode(UC_GIACINTO))),
-            ingGestionale
+        courses.add(
+            new Course(
+                "calcolo numerico",
+                MATEMATICA,
+                6,
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_GIACINTO))
+                    .orElseThrow(() -> new ObjectNotFoundException(new UniqueCode(UC_GIACINTO))),
+                ingGest
+            )
         );
 
-        Course gp = new Course(
-            "gestione dei progetti",
-            ING_GESTIONALE,
-            9,
-            professorRepository
-                .findByUniqueCode(new UniqueCode(UC_FABIO))
-                .orElseThrow(() -> new ObjectNotFoundException(new UniqueCode(UC_FABIO))),
-            ingGestionale
+        courses.add(
+            new Course(
+                "gestione dei progetti",
+                ING_GESTIONALE,
+                9,
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_FABIO))
+                    .orElseThrow(() -> new ObjectNotFoundException(new UniqueCode(UC_FABIO))),
+                ingGest
+            )
         );
 
-        Course impiantiIndustriali = new Course(
-            "impianti industriali",
-            ING_MECCANICA,
-            9,
-            professorRepository
-                .findByUniqueCode(new UniqueCode(UC_FELICE))
-                .orElseThrow(() -> new ObjectNotFoundException(new UniqueCode(UC_FELICE))),
-            ingGestionale
+        courses.add(
+            new Course(
+                "impianti industriali",
+                ING_MECCANICA,
+                9,
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_FELICE))
+                    .orElseThrow(() -> new ObjectNotFoundException(new UniqueCode(UC_FELICE))),
+                ingGest
+            )
         );
 
-        Course inglese = new Course(
-            "inglese",
-            LINGUA,
-            3,
-            professorRepository
-                .findByUniqueCode(new UniqueCode(UC_FELICE))
-                .orElseThrow(() -> new ObjectNotFoundException(new UniqueCode(UC_FELICE))),
-            ingGestionale
+        courses.add(
+            new Course(
+                "inglese",
+                LINGUA,
+                3,
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_FELICE))
+                    .orElseThrow(() -> new ObjectNotFoundException(new UniqueCode(UC_FELICE))),
+                ingGest
+            )
         );
 
-        Course pPPqPP = new Course(
-            "progettazione dei processi produttivi e qualità dei processi produttivi",
-            ING_GESTIONALE,
-            12,
-            professorRepository
-                .findByUniqueCode(new UniqueCode(UC_FELICE))
-                .orElseThrow(() -> new ObjectNotFoundException(new UniqueCode(UC_FELICE))),
-            ingGestionale
+        courses.add(
+            new Course(
+                "progettazione dei processi produttivi e qualità dei processi produttivi",
+                ING_GESTIONALE,
+                12,
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_FELICE))
+                    .orElseThrow(() -> new ObjectNotFoundException(new UniqueCode(UC_FELICE))),
+                ingGest
+            )
         );
 
-        Course sicurezza = new Course(
-            "sicurezza degli impianti industriali",
-            ING_GESTIONALE,
-            6,
-            professorRepository
-                .findByUniqueCode(new UniqueCode(UC_FELICE))
-                .orElseThrow(() -> new ObjectNotFoundException(new UniqueCode(UC_FELICE))),
-            ingGestionale
+        courses.add(
+            new Course(
+                "sicurezza degli impianti industriali",
+                ING_GESTIONALE,
+                6,
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_FELICE))
+                    .orElseThrow(() -> new ObjectNotFoundException(new UniqueCode(UC_FELICE))),
+                ingGest
+            )
         );
 
-        Course matInnovativiIngElettrica = new Course(
-            "materiali innovativi per l'ingegneria elettrica",
-            ING_ELETTRICA,
-            6,
-            professorRepository
-                .findByUniqueCode(new UniqueCode(UC_GIACINTO))
-                .orElseThrow(() -> new ObjectNotFoundException(new UniqueCode(UC_GIACINTO))),
-            ingGestionale
+        courses.add(
+            new Course(
+                "materiali innovativi per l'ingegneria elettrica",
+                ING_ELETTRICA,
+                6,
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_GIACINTO))
+                    .orElseThrow(() -> new ObjectNotFoundException(new UniqueCode(UC_GIACINTO))),
+                ingGest
+            )
         );
 
-        Course sistemiInformativi = new Course(
-            "sistemi informativi",
-            INFORMATICA,
-            12,
-            professorRepository
-                .findByUniqueCode(new UniqueCode(UC_FABIO))
-                .orElseThrow(() -> new ObjectNotFoundException(new UniqueCode(UC_FABIO))),
-            ingGestionaleMagistrale
+        courses.add(
+            new Course(
+                "sistemi informativi",
+                INFORMATICA,
+                12,
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_FABIO))
+                    .orElseThrow(() -> new ObjectNotFoundException(new UniqueCode(UC_FABIO))),
+                ingGestMag
+            )
         );
 
-        Course bigData = new Course(
-            "big data",
-            INFORMATICA,
-            6,
-            professorRepository
-                .findByUniqueCode(new UniqueCode(UC_VLADIMIRO))
-                .orElseThrow(() -> new ObjectNotFoundException(new UniqueCode(UC_VLADIMIRO))),
-            ingGestionaleMagistrale
+        courses.add(
+            new Course(
+                "big data",
+                INFORMATICA,
+                6,
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_VLADIMIRO))
+                    .orElseThrow(() -> new ObjectNotFoundException(new UniqueCode(UC_VLADIMIRO))),
+                ingGestMag
+            )
         );
 
-        Course compilatori = new Course(
-            "compilatori",
-            INFORMATICA,
-            12,
-            professorRepository
-                .findByUniqueCode(new UniqueCode(UC_GENESIO))
-                .orElseThrow(() -> new ObjectNotFoundException(new UniqueCode(UC_GENESIO))),
-            ingInformaticaMagistrale
+        courses.add(
+            new Course(
+                "compilatori",
+                INFORMATICA,
+                12,
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_GENESIO))
+                    .orElseThrow(() -> new ObjectNotFoundException(new UniqueCode(UC_GENESIO))),
+                ingInfMag
+            )
         );
 
-        Course tirocinio = new Course(
-            "tirocinio",
-            ING_GESTIONALE,
-            6,
-            professorRepository
-                .findByUniqueCode(new UniqueCode(UC_FABIO))
-                .orElseThrow(() -> new ObjectNotFoundException(new UniqueCode(UC_FABIO))),
-            ingGestionale
+        courses.add(
+            new Course(
+                "tirocinio",
+                ING_GESTIONALE,
+                6,
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_FABIO))
+                    .orElseThrow(() -> new ObjectNotFoundException(new UniqueCode(UC_FABIO))),
+                ingGest
+            )
         );
 
-        Course provaFinale = new Course(
-            "prova finale",
-            ING_GESTIONALE,
-            3,
-            professorRepository
-                .findByUniqueCode(new UniqueCode(UC_FABIO))
-                .orElseThrow(() -> new ObjectNotFoundException(new UniqueCode(UC_FABIO))),
-            ingGestionale
+        courses.add(
+            new Course(
+                "prova finale",
+                ING_GESTIONALE,
+                3,
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_FABIO))
+                    .orElseThrow(() -> new ObjectNotFoundException(new UniqueCode(UC_FABIO))),
+                ingGest
+            )
         );
 
-        // create list of courses
-        List<Course> courses = List.of(
-            analisiMatematica,
-            chimica,
-            economia,
-            fisicaGenerale,
-            geometria,
-            economia,
-            informatica,
-            scienzaDelleCostruzioni,
-            ricercaOperativa,
-            disegno,
-            eMMEPM,
-            fisicaTecESE,
-            gestioneAziendale,
-            mecDeiFluidi,
-            principiDiIngElettrica,
-            tecMeccTecMat,
-            calcoloNumerico,
-            gp,
-            impiantiIndustriali,
-            inglese,
-            pPPqPP,
-            sicurezza,
-            matInnovativiIngElettrica,
-            sistemiInformativi,
-            bigData,
-            compilatori,
-            tirocinio,
-            provaFinale
+        courses.add(
+            new Course(
+                "impianti meccanici",
+                ING_MECCANICA,
+                3,
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_FABIO))
+                    .orElseThrow(() -> new ObjectNotFoundException(new UniqueCode(UC_FABIO))),
+                ingMecc
+            )
+        );
+
+        courses.add(
+            new Course(
+                "sistemi energetici e macchine a fluido",
+                ING_MECCANICA,
+                3,
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_FABIO))
+                    .orElseThrow(() -> new ObjectNotFoundException(new UniqueCode(UC_FABIO))),
+                ingMecc
+            )
         );
 
         // save courses
-        courses.forEach(courseRepository::save);
+        courses.forEach(courseRepository::saveAndFlush);
 
-        // find courses for the degree course
-        List<Course> allCourses = courseRepository.findAll();
-        for(Course course : allCourses) {
-            if(course.getDegreeCourse().equals(ingGestionale))
-                ingGestionale.addCourse(course);
-            if(course.getDegreeCourse().equals(ingInformaticaMagistrale))
-                ingInformaticaMagistrale.addCourse(course);
-            if(course.getDegreeCourse().equals(ingGestionaleMagistrale))
-                ingGestionaleMagistrale.addCourse(course);
-        }
+        // associate the respective courses to each degree course
+        courseRepository
+            .findAll()
+            .stream()
+            .forEach(course ->
+                Arrays.asList(ingGest, ingInfMag, ingGestMag)
+                .stream()
+                .filter(degreeCourse -> degreeCourse.equals(course.getDegreeCourse()))
+                .forEach(degreeCourse -> degreeCourse.addCourse(course)));
 
 
         // set courses in degreeCourse object
-        degreeCourseRepository.save(ingGestionale);
-        degreeCourseRepository.save(ingInformaticaMagistrale);
-        degreeCourseRepository.save(ingGestionaleMagistrale);
+        degreeCourseRepository.save(ingGest);
+        degreeCourseRepository.save(ingGestMag);
+        degreeCourseRepository.save(ingInfMag);
 
     }
 
@@ -872,119 +967,126 @@ public class StudentDatabaseInit implements Serializable {
             .orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND)
         );
 
-
+        List<ExaminationDto> examinations = new ArrayList<>();
 
         // create examination
-        ExaminationDto exam1 = new ExaminationDto(
-            analisiMatematica,
-            anacleto,
-            30,
-            true,
-            LocalDate.of(2022, 6, 23)
+        examinations.add(
+            new ExaminationDto(
+                analisiMatematica,
+                anacleto,
+                30,
+                true,
+                LocalDate.of(2022, 6, 23)
+            )
         );
 
-        ExaminationDto exam2 = new ExaminationDto(
-            calcoloNumerico,
-            filippo,
-            18,
-            false,
-            LocalDate.of(2024, 03, 14)
+        examinations.add(
+            new ExaminationDto(
+                calcoloNumerico,
+                filippo,
+                18,
+                false,
+                LocalDate.of(2024, 03, 14)
+            )
         );
 
-        ExaminationDto exam3 = new ExaminationDto(
-            scienzaDelleCostruzioni,
-            anacleto,
-            30,
-            true,
-            LocalDate.of(2022, 01, 13)
+        examinations.add(
+            new ExaminationDto(
+                scienzaDelleCostruzioni,
+                anacleto,
+                30,
+                true,
+                LocalDate.of(2022, 01, 13)
+            )
         );
 
-        ExaminationDto exam4 = new ExaminationDto(
-            chimica,
-            anacleto,
-            25,
-            false,
-            LocalDate.of(2023, 05, 15)
+        examinations.add(
+            new ExaminationDto(
+                chimica,
+                anacleto,
+                25,
+                false,
+                LocalDate.of(2023, 05, 15)
+            )
         );
 
-        ExaminationDto exam5 = new ExaminationDto(
-            gp,
-            anacleto,
-            30,
-            true,
-            LocalDate.of(2022, 07, 30)
+        examinations.add(
+            new ExaminationDto(
+                gp,
+                anacleto,
+                30,
+                true,
+                LocalDate.of(2022, 07, 30)
+            )
         );
 
-        ExaminationDto exam6 = new ExaminationDto(
-            matInnovativiIngElettrica,
-            anacleto,
-            30,
-            true,
-            LocalDate.of(2024, 06, 06)
+        examinations.add(
+            new ExaminationDto(
+                matInnovativiIngElettrica,
+                anacleto,
+                30,
+                true,
+                LocalDate.of(2024, 06, 06)
+            )
         );
 
-        ExaminationDto exam7 = new ExaminationDto(
-            fisicaGenerale,
-            filippo,
-            18,
-            false,
-            LocalDate.of(2024, 07, 20)
+        examinations.add(
+            new ExaminationDto(
+                fisicaGenerale,
+                filippo,
+                18,
+                false,
+                LocalDate.of(2024, 07, 20)
+            )
         );
 
-        ExaminationDto exam8 = new ExaminationDto(
-            gp,
-            angelo,
-            24,
-            false,
-            LocalDate.of(2021, 03, 11)
+        examinations.add(
+            new ExaminationDto(
+                gp,
+                angelo,
+                24,
+                false,
+                LocalDate.of(2021, 03, 11)
+            )
         );
 
-        ExaminationDto exam9 = new ExaminationDto(
-            calcoloNumerico,
-            angelo,
-            30,
-            false,
-            LocalDate.of(2022, 01, 20)
+        examinations.add(
+            new ExaminationDto(
+                calcoloNumerico,
+                angelo,
+                30,
+                false,
+                LocalDate.of(2022, 01, 20)
+            )
         );
 
-        ExaminationDto exam10 = new ExaminationDto(
-            chimica,
-            angelo,
-            22,
-            false,
-            LocalDate.of(2021, 05, 20)
+        examinations.add(
+            new ExaminationDto(
+                chimica,
+                angelo,
+                22,
+                false,
+                LocalDate.of(2021, 05, 20)
+            )
         );
 
-        ExaminationDto exam11 = new ExaminationDto(
-            scienzaDelleCostruzioni,
-            angelo,
-            30,
-            true,
-            LocalDate.of(2021, 07, 03)
-        );
-
-
-        // create examinations list
-        List<ExaminationDto> examinations = List.of(
-            exam1,
-            exam2,
-            exam3,
-            exam4,
-            exam5,
-            exam6,
-            exam7,
-            exam8,
-            exam9,
-            exam10,
-            exam11
+        examinations.add(
+            new ExaminationDto(
+                scienzaDelleCostruzioni,
+                angelo,
+                30,
+                true,
+                LocalDate.of(2021, 07, 03)
+            )
         );
 
         // save examination
-        examinations.stream()
+        examinations
+            .stream()
             .map(ExaminationMapper::mapToExamination)
             .forEach(examination -> {
                 try {
-                    examinationRepository.save(examination);
+                    examinationRepository.saveAndFlush(examination);
                 } catch (Exception e) {
                     logger.info("Error: {}", e.getMessage());
                 }
@@ -1001,33 +1103,36 @@ public class StudentDatabaseInit implements Serializable {
     ) {
 
         // create user
+        Builder formBuilderOne = new Builder();
+        formBuilderOne.withUsername("rico");
+        formBuilderOne.withPassword("rico");
+        formBuilderOne.withFullname("damiano ruggieri");
+        formBuilderOne.withStreet("via della nazione");
+        formBuilderOne.withCity("fasano");
+        formBuilderOne.withState("italia");
+        formBuilderOne.withZip("72015");
+        formBuilderOne.withPhone("3815674128");
+
+        Builder formBuilderTwo = new Builder();
+        formBuilderTwo.withUsername("fido");
+        formBuilderTwo.withPassword("fido");
+        formBuilderTwo.withFullname("enrico ruggieri");
+        formBuilderTwo.withStreet("via del calvario");
+        formBuilderTwo.withCity("pezze di greco");
+        formBuilderTwo.withState("italia");
+        formBuilderTwo.withZip("72015");
+        formBuilderTwo.withPhone("3815674128");
+
+        // create users
         List<RegistrationForm> users = List.of(
-            new RegistrationForm(
-            "rico",
-            "rico",
-            "damiano ruggieri",
-            "via della nazione",
-            "fasano",
-            "italia",
-            "72015",
-            "3815674128"
-        ),
-            new RegistrationForm(
-                "fido",
-                "fido",
-                "enrico ruggieri",
-                "via del calvario",
-                "pezze di greco",
-                "italia",
-                "72015",
-                "3815674128"
-            )
+            new RegistrationForm(formBuilderOne),
+            new RegistrationForm(formBuilderTwo)
         );
 
         // save user
         users.forEach(form -> {
             try {
-                userRepository.save(form.toUser(passwordEncoder));
+                userRepository.saveAndFlush(form.toUser(passwordEncoder));
             } catch (Exception e) {
                 logger.info("Error: {}", e.getMessage());
             }

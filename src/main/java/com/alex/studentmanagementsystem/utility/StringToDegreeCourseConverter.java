@@ -12,14 +12,27 @@ public class StringToDegreeCourseConverter
     implements Converter<String, DegreeCourse>
 {
 
+    // instance variables
     private final DegreeCourseRepository degreeCourseRepository;
 
+    // constructor
     public StringToDegreeCourseConverter(
         DegreeCourseRepository degreeCourseRepository
     ) {
         this.degreeCourseRepository = degreeCourseRepository;
     }
 
+    /**
+     * Converts a string representation of a degree course name into a
+     * DegreeCourse object by searching the repository.
+     *
+     * @param source the name of the degree course to convert
+     * @return the DegreeCourse object if found, otherwise throws an
+     *         ObjectNotFoundException
+     * @throws ObjectNotFoundException if no degree course with the given name
+     *                                 exists
+     * @throws NullPointerException if the source is null
+     */
     @Override
     @Nullable
     public DegreeCourse convert(@NonNull String source) {

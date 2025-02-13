@@ -1,15 +1,16 @@
 package com.alex.studentmanagementsystem.domain;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.UUID;
-import java.io.Serializable;
 
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import com.alex.studentmanagementsystem.domain.immutable.ExaminationId;
 
-
+import jakarta.persistence.Access;
+import jakarta.persistence.AccessType;
 import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
@@ -18,10 +19,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrimaryKeyJoinColumn;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Max;
-import jakarta.persistence.Access;
-import jakarta.persistence.AccessType;
+import jakarta.validation.constraints.Min;
 
 @Entity
 @Table(name = "examination")
@@ -34,7 +33,7 @@ public class Examination implements Serializable {
     private Student student;
     private int grade;
     private boolean withHonors;
-    private LocalDate examinationDob;
+    private LocalDate date;
 
     // default constructor
     public Examination() {}
@@ -44,14 +43,14 @@ public class Examination implements Serializable {
         Student student,
         int grade,
         boolean withHonors,
-        LocalDate examinationDob
+        LocalDate date
     ) {
         this.id = new ExaminationId(UUID.randomUUID());
         this.course = course;
         this.student = student;
         this.grade = grade;
         this.withHonors = withHonors;
-        this.examinationDob = examinationDob;
+        this.date = date;
     }
 
 
@@ -97,8 +96,8 @@ public class Examination implements Serializable {
     }
 
     @Column(name = "examination_dob")
-    public LocalDate getExaminationDob() {
-        return examinationDob;
+    public LocalDate getDate() {
+        return date;
     }
 
     // setters
@@ -128,8 +127,8 @@ public class Examination implements Serializable {
         this.withHonors = withHonors;
     }
 
-    public void setExaminationDob(LocalDate examinationDob) {
-        this.examinationDob = examinationDob;
+    public void setDate(LocalDate date) {
+        this.date = date;
     }
 
 

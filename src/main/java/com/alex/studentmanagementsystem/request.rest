@@ -3,13 +3,18 @@ GET http://localhost:8081/api/v1/student/view
 ###
 
 ###
-POST http://localhost:8081/api/v1/student/5
+POST http://localhost:8081/api/v1/student/create
 Content-Type: application/json
+Authorization: Basic ZmlkbzpmaWRv, role=USER
 
 {
-    "name" : "ronzino",
-    "email" : "flashronz@baba.org",
-    "dob" : "1976-03-11"
+    "register": "123457",
+    "name": "edoardo",
+    "email": "edoardo@dominio.com",
+    "dob": "2000-02-16",
+    "degreeCourse": {
+        "name": "INGEGNERIA MECCANICA"
+    }
 }
 ###
 

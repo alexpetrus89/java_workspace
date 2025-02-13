@@ -6,6 +6,7 @@
         content="width=device-width, initial-scale=1">
 <head>
     <title>Student Management Application</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/login.css">
 </head>
 <body>
     <div th:if="${param.error}">
@@ -18,8 +19,8 @@
     <div th:if="${error}">
         Unable to login. Check your username and password.
     </div>
-    <p>New here? Click
-        <a th:href="@{/register}">here</a> to register.</p>
+    <p>New user? Click&nbsp;
+        <a th:href="@{/register}">here</a>&nbsp; to register.</p>
 
         <form method="POST" th:action="@{/login}" id="loginForm">
             <label for="username">Username: </label>

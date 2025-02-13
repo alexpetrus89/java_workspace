@@ -18,9 +18,8 @@ import jakarta.transaction.Transactional;
 
 // business logic
 @Service
-public class ProfessorServiceImplementation
-    implements ProfessorService
-{
+public class ProfessorServiceImpl implements ProfessorService {
+
     // constants
     private static final String EXCEPTION_FISCAL_CODE_IDENTIFIER = "professor_fiscal_code";
     private static final String EXCEPTION_NAME_IDENTIFIER = "professor_name";
@@ -28,12 +27,13 @@ public class ProfessorServiceImplementation
     private final ProfessorRepository professorRepository;
 
     // autowired - dependency injection - constructor
-    public ProfessorServiceImplementation(ProfessorRepository professorRepository) {
+    public ProfessorServiceImpl(ProfessorRepository professorRepository) {
         this.professorRepository = professorRepository;
     }
 
     /**
-     * @return List<ProfessorDto>
+     * Retrieves all professors.
+     * @return List of ProfessorDto objects containing all professors' data.
      */
     @Override
     public List<ProfessorDto> getProfessors() {
@@ -46,82 +46,95 @@ public class ProfessorServiceImplementation
 
 
     /**
-     * @param String fiscalCode
-     * @return ProfessorDto
-     * @throws ObjectNotFoundException
+     * Retrieves a professor by fiscal code.
+     * @param fiscalCode the fiscal code of the professor to retrieve.
+     * @return ProfessorDto object containing the professor's data.
+     * @throws ObjectNotFoundException if no professor with the given fiscal
+     *                                 code exists.
+     *
+     * @throws NullPointerException
      */
     @Override
     public ProfessorDto getProfessorByFiscalCode(String fiscalCode)
         throws ObjectNotFoundException
     {
-
-        Professor professor = professorRepository
-            .findByFiscalCode(fiscalCode)
-            // throws exception
-            .orElseThrow(() -> new ObjectNotFoundException(fiscalCode, EXCEPTION_FISCAL_CODE_IDENTIFIER));
-
-        return ProfessorMapper.mapToProfessorDto(professor);
+        return ProfessorMapper.mapToProfessorDto(
+            professorRepository
+                .findByFiscalCode(fiscalCode)
+                .orElseThrow(() -> new ObjectNotFoundException(fiscalCode, EXCEPTION_FISCAL_CODE_IDENTIFIER))
+        );
     }
 
 
     /**
-     * @param UniqueCode uniqueCode
+     * Retrieves a professor by unique code
+     * @param uniqueCode the unique code of the professor to retrieve
      * @return ProfessorDto
-     * @throws ObjectNotFoundException
+     * @throws ObjectNotFoundException if no professor with the given unique
+     *                                  code is found
+     * @throws NullPointerException if the unique code is null
      */
     @Override
     public ProfessorDto getProfessorByUniqueCode(UniqueCode uniqueCode)
         throws ObjectNotFoundException
     {
-
-        Professor professor = professorRepository
-            .findByUniqueCode(uniqueCode)
-            // throws exception
-            .orElseThrow(() -> new ObjectNotFoundException(uniqueCode));
-
-        return ProfessorMapper.mapToProfessorDto(professor);
+        return ProfessorMapper.mapToProfessorDto(
+            professorRepository
+                .findByUniqueCode(uniqueCode)
+                .orElseThrow(() -> new ObjectNotFoundException(uniqueCode))
+        );
     }
 
     /**
-     * @param String name
-     * @return ProfessorDto
-     * @throws ObjectNotFoundException
+     * Retrieves a professor by name.
+     * @param String name the name of the professor.
+     * @return ProfessorDto object containing the professor's data.
+     * @throws ObjectNotFoundException if no professor with the given name exists.
+     * @throws NullPointerException if the name is null.
      */
     @Override
     public ProfessorDto getProfessorByName(String name)
         throws ObjectNotFoundException
     {
-
-        Professor professor = professorRepository
+        return professorRepository
             .findByName(name)
-            // throws exception
+            .map(ProfessorMapper::mapToProfessorDto)
             .orElseThrow(() -> new ObjectNotFoundException(name, EXCEPTION_NAME_IDENTIFIER));
-
-        return ProfessorMapper.mapToProfessorDto(professor);
     }
 
 
-
     /**
-     * @param ProfessorDto professorDto
-     * @throws ObjectAlreadyExistsException
+     * Adds a new professor to the repository.
+     *
+     * @param professorDto the professor data transfer object containing
+     *                     the details of the professor to be added.
+     * @throws ObjectAlreadyExistsException if a professor with the same
+     *                                      unique code already exists in the
+     *                                      repository.
      */
     @Override
     @Transactional
     public void addNewProfessor(ProfessorDto professorDto)
         throws ObjectAlreadyExistsException
     {
-
         if(professorRepository.existsByUniqueCode(professorDto.getUniqueCode()))
             throw new ObjectAlreadyExistsException(professorDto.getUniqueCode());
 
-        professorRepository.save(ProfessorMapper.mapToProfessor(professorDto));
+        if(professorRepository.existsByFiscalCode(professorDto.getFiscalCode()))
+            throw new ObjectAlreadyExistsException(professorDto.getFiscalCode(), EXCEPTION_FISCAL_CODE_IDENTIFIER);
+
+        professorRepository.saveAndFlush(ProfessorMapper.mapToProfessor(professorDto));
     }
 
 
     /**
-     * @param ProfessorDto newProfessorDto
-     * @throws ObjectNotFoundException
+     * Updates an existing professor's information.
+     * @param newProfessorDto the data transfer object containing the new details
+     *                        of the professor to be updated.
+     * @throws ObjectNotFoundException if no professor with the given unique code
+     *                                 exists in the repository.
+     * @throws NullPointerException if the newProfessorDto is null.
+     * @throws IllegalArgumentException if the given register is null or empty.
      */
     @Override
     @Transactional
@@ -129,7 +142,6 @@ public class ProfessorServiceImplementation
 
         Professor updatableProfessor = professorRepository
             .findByUniqueCode(newProfessorDto.getUniqueCode())
-            // throws exception
             .orElseThrow(() -> new ObjectNotFoundException(newProfessorDto.getUniqueCode()));
 
         Professor newProfessor = ProfessorMapper.mapToProfessor(newProfessorDto);
@@ -153,16 +165,22 @@ public class ProfessorServiceImplementation
 
 
     /**
-     * @param UniqueCode uniqueCode
-     * @throws ObjectNotFoundException
+     * Deletes a professor by unique code.
+     * If the professor with the given unique code exists, it will be
+     * removed from the repository.
+     *
+     * @param uniqueCode the unique code of the professor to delete
+     * @throws ObjectNotFoundException if no professor with the given unique
+     *                                 code is found
+     * @throws NullPointerException if the unique code is null
      */
     @Override
     @Transactional
     public void deleteProfessor(@NonNull UniqueCode uniqueCode) {
         professorRepository
             .findByUniqueCode(uniqueCode)
-            .ifPresent(
-                professor -> professorRepository
+            .ifPresent(professor ->
+                professorRepository
                     .deleteByUniqueCode(professor.getUniqueCode())
             );
     }

@@ -18,17 +18,22 @@ import com.alex.studentmanagementsystem.utility.StringToDegreeCourseConverter;
 @Configuration
 public class MvcConfig implements WebMvcConfigurer, Serializable {
 
+      // constants
+      @Value("${spring.web.resources.static-locations}")
+      private String staticCssResourcesPath;
+
+      // instance variables
       private final transient DegreeCourseRepository degreeCourseRepository;
 
+      // constructor
       public MvcConfig(DegreeCourseRepository degreeCourseRepository) {
             this.degreeCourseRepository = degreeCourseRepository;
       }
 
-      @Value("${spring.web.resources.static-locations}")
-      private String staticCssResourcesPath;
-
+      // methods
       @Override
       public void addViewControllers(@NonNull ViewControllerRegistry registry) {
+            // home page
 		registry.addViewController("/")
                   .setViewName("home");
             registry.addViewController("/home")
@@ -37,12 +42,12 @@ public class MvcConfig implements WebMvcConfigurer, Serializable {
                   .setViewName("hello");
 		registry.addViewController("/login")
                   .setViewName("login");
-            // user
+            // user page
             registry.addViewController("/user/user-menu")
                   .setViewName("user/user-menu");
             registry.addViewController("/user/update/update")
                   .setViewName("user/update/update");
-            // student
+            // student page
             registry.addViewController("/student/student-menu")
                   .setViewName("student/student-menu");
             registry.addViewController("/student/read/read")
@@ -53,7 +58,7 @@ public class MvcConfig implements WebMvcConfigurer, Serializable {
                   .setViewName("student/update/update");
             registry.addViewController("/student/delete/delete")
                   .setViewName("student/delete/delete");
-            // professor
+            // professor page
             registry.addViewController("/professor/professor-menu")
                   .setViewName("professor/professor-menu");
             registry.addViewController("/professor/read/read")
@@ -64,7 +69,7 @@ public class MvcConfig implements WebMvcConfigurer, Serializable {
                   .setViewName("professor/update/update");
             registry.addViewController("/professor/delete/delete")
                   .setViewName("professor/delete/delete");
-            // examination
+            // examination page
             registry.addViewController("/examination/examination-menu")
                   .setViewName("examination/examination-menu");
             registry.addViewController("/examination/examination-course")
@@ -73,16 +78,22 @@ public class MvcConfig implements WebMvcConfigurer, Serializable {
                   .setViewName("examination/examination-student");
             registry.addViewController("/examination/examination-professor")
                   .setViewName("examination/examination-professor");
-            // course
+            registry.addViewController("/examination/create/create")
+                  .setViewName("examination/create/create");
+            // course page
             registry.addViewController("/course/course-menu")
                   .setViewName("course/course-menu");
             registry.addViewController("/course/read/read")
                   .setViewName("course/read/read");
-            // degree course
+            // degree course page
             registry.addViewController("/degree_course/degree-course-menu")
                   .setViewName("degree_course/degree-course-menu");
             registry.addViewController("/degree_course/read-courses")
                   .setViewName("degree_course/read-courses");
+            registry.addViewController("/degree_course/read-professors")
+                  .setViewName("degree_course/read-professors");
+            registry.addViewController("/degree_course/read-students")
+                  .setViewName("degree_course/read-students");
 	}
 
       @Override
@@ -103,14 +114,14 @@ public class MvcConfig implements WebMvcConfigurer, Serializable {
                   .addResourceLocations(staticCssResourcesPath);
       }
 
-      @Bean
-      HiddenHttpMethodFilter hiddenHttpMethodFilter() {
-            return new HiddenHttpMethodFilter();
-      }
-
       @Override
       public void addFormatters(@NonNull FormatterRegistry registry) {
             registry.addConverter(new StringToDegreeCourseConverter(degreeCourseRepository));
+      }
+
+      @Bean
+      HiddenHttpMethodFilter hiddenHttpMethodFilter() {
+            return new HiddenHttpMethodFilter();
       }
 
 }

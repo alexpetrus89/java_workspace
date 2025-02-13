@@ -1,16 +1,16 @@
 package com.alex.studentmanagementsystem.domain;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.Objects;
 import java.util.UUID;
 
 import com.alex.studentmanagementsystem.domain.immutable.Register;
 import com.alex.studentmanagementsystem.domain.immutable.StudentId;
 
-import java.io.Serializable;
-
-
-
+import jakarta.persistence.Access;
+import jakarta.persistence.AccessType;
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
@@ -19,8 +19,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
-import jakarta.persistence.AccessType;
-import jakarta.persistence.Access;
 
 @Entity
 @Table(name = "student")
@@ -134,6 +132,25 @@ public class Student implements Serializable {
             ",email=" + email + ", dob=" + dob + ", age=" + age + "]";
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(register, name, email, dob);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+
+        if (obj == null || getClass() != obj.getClass())
+            return false;
+
+        Student other = (Student) obj;
+        return Objects.equals(register, other.getRegister()) &&
+            Objects.equals(name, other.getName()) &&
+            Objects.equals(email, other.getEmail()) &&
+            Objects.equals(dob, other.getDob());
+    }
 
     private int calculateAge() {
         return Period.between(dob, LocalDate.now()).getYears();

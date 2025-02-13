@@ -1,7 +1,5 @@
 package com.alex.studentmanagementsystem.controller;
 
-import java.util.List;
-
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,8 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.alex.studentmanagementsystem.domain.User;
-import com.alex.studentmanagementsystem.repository.UserRepository;
 import com.alex.studentmanagementsystem.exception.ObjectNotFoundException;
+import com.alex.studentmanagementsystem.repository.UserRepository;
 import com.alex.studentmanagementsystem.utility.CreateView;
 import com.alex.studentmanagementsystem.utility.RegistrationForm;
 
@@ -28,8 +26,7 @@ public class UserController {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-
-    /** Autowired - dependency injection */
+    /** Autowired - dependency injection - constructor */
     public UserController(
         UserRepository userRepository,
         PasswordEncoder passwordEncoder
@@ -38,21 +35,26 @@ public class UserController {
         this.passwordEncoder = passwordEncoder;
     }
 
-
-
+    // methods
+    /**
+     * Retrieves all users
+     * @return ModelAndView
+     */
     @GetMapping("/view")
     public ModelAndView getAllUsers() {
-        List<User> users = userRepository.findAll();
 
         return new CreateView(
             "users",
-            users,
+            userRepository.findAll(),
             "user/read/user-list"
         ).getModelAndView();
     }
 
 
-
+    /**
+     * Updates the user
+     * @return ModelAndView
+     */
     @GetMapping("/update")
     public ModelAndView updateUserAndReturnView() {
 
@@ -63,9 +65,16 @@ public class UserController {
     }
 
 
+
     /**
-	 * @param newStudentDto
-	 * @throws UserNotFoundException
+     * Updates the current authenticated user's information and saves it to the repository.
+     * This method is transactional and mapped to the HTTP PUT request for "/update".
+     *
+     * @param form RegistrationForm containing updated user details.
+     * @return String representing the redirect URL after the update process.
+     * @throws ObjectNotFoundException if the authenticated user is not found.
+	 * @throws UserNotFoundException if the user is not found.
+     * @throws IllegalArgumentException if the updated user details are invalid.
 	 */
 	@Transactional
     @PutMapping("/update")
@@ -76,9 +85,8 @@ public class UserController {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         User user = (User) userDetails;
 
-        if(user == null) {
+        if(user == null)
             throw new ObjectNotFoundException("User not found", "user");
-        }
 
         try {
             user.setUsername(form.getUsername());

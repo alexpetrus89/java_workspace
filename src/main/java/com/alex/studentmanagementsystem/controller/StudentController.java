@@ -20,9 +20,10 @@ import org.springframework.web.servlet.ModelAndView;
 import com.alex.studentmanagementsystem.domain.Student;
 import com.alex.studentmanagementsystem.domain.immutable.Register;
 import com.alex.studentmanagementsystem.dto.StudentDto;
+import com.alex.studentmanagementsystem.exception.ObjectAlreadyExistsException;
 import com.alex.studentmanagementsystem.exception.ObjectNotFoundException;
 import com.alex.studentmanagementsystem.mapper.StudentMapper;
-import com.alex.studentmanagementsystem.service.implementation.StudentServiceImplementation;
+import com.alex.studentmanagementsystem.service.implementation.StudentServiceImpl;
 import com.alex.studentmanagementsystem.utility.CreateView;
 
 import jakarta.transaction.Transactional;
@@ -31,67 +32,87 @@ import jakarta.transaction.Transactional;
 @RequestMapping(path = "api/v1/student")
 public class StudentController {
 
+    // constants
     private static final String ERROR = "error";
     private static final String NOT_FOUND_PATH = "exception/object-not-found";
     private static final String ALREADY_EXISTS_PATH = "exception/object-already-exists";
 
     // instance variable
-    private final StudentServiceImplementation studentServiceImplementation;
+    private final StudentServiceImpl studentServiceImpl;
 
-    /** Autowired - dependency injection */
-    public StudentController(
-        StudentServiceImplementation studentServiceImplementation
-    ) {
-        this.studentServiceImplementation = studentServiceImplementation;
+    /** Autowired - dependency injection  - constructor */
+    public StudentController(StudentServiceImpl studentServiceImpl) {
+        this.studentServiceImpl = studentServiceImpl;
     }
 
 
-
+    // methods
     /** GET request */
+
+    /**
+     * Retrieves all students
+     * @return ResponseEntity<List<StudentDto>>
+     */
     @GetMapping(path = "/view/all")
 	public ResponseEntity<List<StudentDto>> getStudents() {
-        return new ResponseEntity<>(
-            studentServiceImplementation.getStudents(),
-            HttpStatus.OK
-        );
+        return new ResponseEntity<>(studentServiceImpl.getStudents(), HttpStatus.OK);
     }
 
+    /**
+     * Retrieves a student by register
+     * @param Register studentRegister
+     * @return ResponseEntity<Optional<StudentDto>>
+     * @throws ObjectNotFoundException
+     */
     @GetMapping(path = "/view/{studentRegister}")
     public ResponseEntity<Optional<StudentDto>> getStudentsByRegister(
         @PathVariable Register studentRegister
     ) {
         try {
-            StudentDto studentDto =
-                studentServiceImplementation.getStudentByRegister(studentRegister);
-            return new ResponseEntity<>(Optional.of(studentDto), HttpStatus.OK);
+            return new ResponseEntity<>(
+                Optional.of(studentServiceImpl.getStudentByRegister(studentRegister)),
+                HttpStatus.OK
+            );
         } catch (ObjectNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
+    /**
+     * Retrieves a student by name
+     * @param String studentName
+     * @return ResponseEntity<Optional<StudentDto>>
+     * @throws ObjectNotFoundException
+     */
     @GetMapping("/view/{studentName}")
     public ResponseEntity<Optional<StudentDto>> getStudentsByName(
         @PathVariable String studentName
     ) {
         try {
-            StudentDto studentDto =
-                studentServiceImplementation.getStudentByName(studentName);
-                return new ResponseEntity<>(Optional.of(studentDto), HttpStatus.OK);
+                return new ResponseEntity<>(
+                    Optional.of(studentServiceImpl.getStudentByName(studentName)),
+                    HttpStatus.OK
+                );
         } catch (ObjectNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
 
-
     /** PUT request */
+    /**
+     * Updates a student
+     * @param Register studentRegister
+     * @param StudentDto studentDto
+     * @throws ObjectNotFoundException
+     */
     @PutMapping(path = "/update/{studentRegister}")
     @Transactional
     public void updateStudentOld(
         @PathVariable Register studentRegister,
         @RequestBody StudentDto studentDto
     ) {
-        studentServiceImplementation.updateStudent(studentDto);
+        studentServiceImpl.updateStudent(studentDto);
     }
 
 
@@ -118,29 +139,38 @@ public class StudentController {
 
     // model and view methods
     /** GET request */
+
+    /**
+     * Retrieves all students
+     * @return ModelAndView
+     */
     @GetMapping(path = "/view")
 	public ModelAndView getStudentsAndReturnView() {
-        List<StudentDto> students = studentServiceImplementation.getStudents();
 
         return new CreateView(
             "students",
-            students,
+            studentServiceImpl.getStudents(),
             "student/student-list"
         ).getModelAndView();
     }
 
-    /**GET request*/
+    /**
+     * Retrieves a student by register
+     * @param studentRegister the registration number to search
+     * @return ModelAndView
+     * @throws ObjectNotFoundException if the student is not found
+     * @throws NullPointerException if the register is null
+     */
     @GetMapping(path = "/read/register")
 	public ModelAndView getStudentByRegisterAndReturnView(
         @RequestParam String studentRegister
     ) {
         try {
-            StudentDto studentDto =
-                studentServiceImplementation
-                    .getStudentByRegister(new Register(studentRegister));
 
             return new CreateView(
-                StudentMapper.mapToStudent(studentDto),
+                StudentMapper.mapToStudent(
+                    studentServiceImpl.getStudentByRegister(new Register(studentRegister))
+                ),
                 "student/read/read-result"
             ).getModelAndView();
 
@@ -153,16 +183,21 @@ public class StudentController {
         }
     }
 
+    /**
+     * Retrieves a student by name
+     * @param String studentName
+     * @return ModelAndView
+     * @throws ObjectNotFoundException if the student is not found
+     * @throws NullPointerException if the name is null
+     */
     @GetMapping(path = "/read/name")
 	public ModelAndView getStudentByNameAndReturnView(
         @RequestParam String studentName
     ) {
         try{
-            StudentDto studentDto =
-                studentServiceImplementation.getStudentByName(studentName);
 
             return new CreateView(
-                StudentMapper.mapToStudent(studentDto),
+                StudentMapper.mapToStudent(studentServiceImpl.getStudentByName(studentName)),
                 "student/read/read-result"
             ).getModelAndView();
 
@@ -175,7 +210,10 @@ public class StudentController {
         }
     }
 
-
+    /**
+     * Creates a new student
+     * @return ModelAndView
+     */
     @GetMapping("/create")
     public ModelAndView createNewStudentAndReturnView() {
         return new CreateView(
@@ -184,7 +222,10 @@ public class StudentController {
         ).getModelAndView();
     }
 
-
+    /**
+     * Updates a student
+     * @return ModelAndView
+     */
     @GetMapping("/update")
     public ModelAndView updateStudentAndReturnView() {
         return new CreateView(
@@ -194,14 +235,22 @@ public class StudentController {
     }
 
 
-
-
     /**POST request*/
+
+    /**
+     * Creates a new student
+     * @param studentDto the student data transfer object
+     * @return ModelAndView
+     * @throws ObjectAlreadyExistsException if the student already exists
+     * @throws ObjectNotFoundException if the degree course does not exist.
+     * @throws NullPointerException if the student data transfer object is null
+     * @throws IllegalArgumentException if the register is null or empty
+     */
     @PostMapping("/create")
     @Transactional // con l'annotazione transactional effettua una gestione propria degli errori
     public ModelAndView createNewStudent(@ModelAttribute StudentDto studentDto){
         try{
-            studentServiceImplementation.addNewStudent(studentDto);
+            studentServiceImpl.addNewStudent(studentDto);
 
             return new CreateView(
                 StudentMapper.mapToStudent(studentDto),
@@ -218,23 +267,29 @@ public class StudentController {
     }
 
 
-
-
-
     /**PUT request*/
+
+    /**
+     * Updates a student
+     * @param studentDto the student data transfer object
+     * @return ModelAndView
+     * @throws ObjectNotFoundException if the student does not exist
+     * @throws NullPointerException if the student data transfer object is null
+     * @throws IllegalArgumentException if the register is null or empty
+     */
     @PutMapping("/update")
-    @Transactional
+    @Transactional // con l'annotazione transactional effettua una gestione propria degli errori
     public ModelAndView updateStudent(@ModelAttribute StudentDto studentDto) {
 
         try {
-            studentServiceImplementation.updateStudent(studentDto);
+            studentServiceImpl.updateStudent(studentDto);
 
             return new CreateView(
                 StudentMapper.mapToStudent(studentDto),
                 "student/update/update-result"
             ).getModelAndView();
 
-        } catch (ObjectNotFoundException e) {
+        } catch (RuntimeException e) {
             return new CreateView(
                 ERROR,
                 e.getMessage(),
@@ -242,22 +297,26 @@ public class StudentController {
             ).getModelAndView();
         }
     }
-
-
 
 
     /**DELETE request*/
+    /**
+     * Deletes a student
+     * @param Register studentRegister
+     * @return ModelAndView
+     * @throws ObjectNotFoundException if the student does not exist
+     */
     @DeleteMapping(path = "/delete/register")
-    @Transactional
-    public ModelAndView deleteStudentByRegister(@RequestParam Register studentRegister)
+    @Transactional // con l'annotazione transactional effettua una gestione propria degli errori
+    public ModelAndView deleteStudentByRegister(@RequestParam Register register)
     {
         try {
-            studentServiceImplementation.deleteStudent(studentRegister);
+            studentServiceImpl.deleteStudent(register);
 
             return new CreateView("student/delete/delete-result")
                 .getModelAndView();
 
-        } catch (ObjectNotFoundException e) {
+        } catch (RuntimeException e) {
             return new CreateView(
                 ERROR,
                 e.getMessage(),
@@ -266,18 +325,24 @@ public class StudentController {
         }
     }
 
+    /**
+     * Deletes a student
+     * @param String name
+     * @return ModelAndView
+     * @throws ObjectNotFoundException
+     * @throws NullPointerException
+     */
     @DeleteMapping(path = "/delete/name")
-    @Transactional
-    public ModelAndView deleteStudentByName(@RequestParam String studentName) {
+    @Transactional // con l'annotazione transactional effettua una gestione propria degli errori
+    public ModelAndView deleteStudentByName(@RequestParam String name) {
         try{
-            StudentDto studentDto =
-                studentServiceImplementation.getStudentByName(studentName);
-            studentServiceImplementation.deleteStudent(studentDto.getRegister());
+            StudentDto studentDto = studentServiceImpl.getStudentByName(name);
+            studentServiceImpl.deleteStudent(studentDto.getRegister());
 
             return new CreateView("student/delete/delete-result")
                 .getModelAndView();
 
-        } catch (ObjectNotFoundException e) {
+        } catch (RuntimeException e) {
             return new CreateView(
                 ERROR,
                 e.getMessage(),

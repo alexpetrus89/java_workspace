@@ -1,6 +1,5 @@
 package com.alex.studentmanagementsystem.controller;
 
-import java.util.List;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,13 +11,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.alex.studentmanagementsystem.domain.Professor;
+import com.alex.studentmanagementsystem.domain.immutable.UniqueCode;
 import com.alex.studentmanagementsystem.dto.ProfessorDto;
 import com.alex.studentmanagementsystem.exception.ObjectAlreadyExistsException;
 import com.alex.studentmanagementsystem.exception.ObjectNotFoundException;
 import com.alex.studentmanagementsystem.mapper.ProfessorMapper;
-import com.alex.studentmanagementsystem.domain.Professor;
-import com.alex.studentmanagementsystem.domain.immutable.UniqueCode;
-import com.alex.studentmanagementsystem.service.implementation.ProfessorServiceImplementation;
+import com.alex.studentmanagementsystem.service.implementation.ProfessorServiceImpl;
 import com.alex.studentmanagementsystem.utility.CreateView;
 
 import jakarta.transaction.Transactional;
@@ -33,39 +32,46 @@ public class ProfessorController {
     private static final String ALREADY_EXISTS_PATH = "exception/object-already-exists";
 
     // instance variable
-    private final ProfessorServiceImplementation professorServiceImplementation;
+    private final ProfessorServiceImpl professorServiceImpl;
 
-    /** Autowired - dependency injection */
-    public ProfessorController(
-        ProfessorServiceImplementation professorServiceImplementation
-    ) {
-        this.professorServiceImplementation = professorServiceImplementation;
+    /** Autowired - dependency injection - constructor */
+    public ProfessorController(ProfessorServiceImpl professorServiceImpl) {
+        this.professorServiceImpl = professorServiceImpl;
     }
 
+    // methods
     /** GET request */
+    /**
+     * Retrieves all professors
+     * @return ResponseEntity<List<ProfessorDto>>
+     */
     @GetMapping(path = "/view")
     public ModelAndView getProfessors() {
-        List<ProfessorDto> professors =
-            professorServiceImplementation.getProfessors();
 
         return new CreateView(
             "professors",
-            professors,
+            professorServiceImpl.getProfessors(),
             "professor/professor-list"
         ).getModelAndView();
     }
 
+    /**
+     * Retrieves a professor by unique code
+     * @param uniqueCode
+     * @return ModelAndView
+     * @throws NullPointerException
+     */
     @GetMapping(path = "/read/uniquecode")
     public ModelAndView getProfessorsByUniqueCodeAndReturnView(
         @RequestParam UniqueCode uniqueCode
     ) {
 
         try {
-            ProfessorDto professorDto =
-                professorServiceImplementation.getProfessorByUniqueCode(uniqueCode);
 
             return new CreateView(
-                ProfessorMapper.mapToProfessor(professorDto),
+                ProfessorMapper.mapToProfessor(
+                    professorServiceImpl.getProfessorByUniqueCode(uniqueCode)
+                ),
                 "professor/read/read-result"
             ).getModelAndView();
 
@@ -79,16 +85,22 @@ public class ProfessorController {
         }
     }
 
+    /**
+     * Retrieves a professor by name
+     * @param professorName
+     * @return ModelAndView
+     * @throws NullPointerException
+     */
     @GetMapping(path = "/read/name")
     public ModelAndView getProfessorsByNameAndReturnView(
         @RequestParam String professorName
     ) {
         try {
-            ProfessorDto professorDto =
-                professorServiceImplementation.getProfessorByName(professorName);
 
             return new CreateView(
-                ProfessorMapper.mapToProfessor(professorDto),
+                ProfessorMapper.mapToProfessor(
+                    professorServiceImpl.getProfessorByName(professorName)
+                ),
                 "professor/read/read-result"
             ).getModelAndView();
 
@@ -102,6 +114,10 @@ public class ProfessorController {
         }
     }
 
+    /**
+     * Creates a new professor
+     * @return ModelAndView
+     */
     @GetMapping("/create")
     public ModelAndView createNewProfessorAndReturnView() {
 
@@ -111,6 +127,10 @@ public class ProfessorController {
         ).getModelAndView();
     }
 
+    /**
+     * Updates a professor
+     * @return ModelAndView
+     */
     @GetMapping("/update")
     public ModelAndView updateProfessorAndReturnView() {
 
@@ -123,17 +143,24 @@ public class ProfessorController {
 
 
     /** POST request */
+    /**
+     * Creates a new professor
+     * @param professorDto
+     * @return ModelAndView
+     * @throws ObjectAlreadyExistsException
+     */
     @PostMapping("/create")
+    @Transactional // con l'annotazione transactional effettua una gestione propria degli errori
     public ModelAndView createNewProfessor(@ModelAttribute ProfessorDto professorDto) {
         try {
-            professorServiceImplementation.addNewProfessor(professorDto);
+            professorServiceImpl.addNewProfessor(professorDto);
 
             return new CreateView(
                 ProfessorMapper.mapToProfessor(professorDto),
                 "professor/create/create-result"
             ).getModelAndView();
 
-        } catch (ObjectAlreadyExistsException e) {
+        } catch (RuntimeException e) {
 
             return new CreateView(
                 ERROR,
@@ -146,18 +173,26 @@ public class ProfessorController {
 
 
     /** PUT request */
+    /**
+     * Updates a professor
+     * @param professorDto
+     * @return ModelAndView
+     * @throws ObjectNotFoundException
+     * @throws NullPointerException
+     */
     @PutMapping("/update")
+    @Transactional // con l'annotazione transactional effettua una gestione propria degli errori
     public ModelAndView updateProfessor(@ModelAttribute ProfessorDto professorDto) {
 
         try {
-            professorServiceImplementation.updateProfessor(professorDto);
+            professorServiceImpl.updateProfessor(professorDto);
 
             return new CreateView(
                 ProfessorMapper.mapToProfessor(professorDto),
                 "professor/update/update-result"
             ).getModelAndView();
 
-        } catch (ObjectNotFoundException e) {
+        } catch (RuntimeException e) {
 
             return new CreateView(
                 ERROR,
@@ -169,18 +204,25 @@ public class ProfessorController {
 
 
     /** DELETE request */
+    /**
+     * Deletes a professor
+     * @param uniqueCode
+     * @return ModelAndView
+     * @throws ObjectNotFoundException
+     * @throws NullPointerException
+     */
     @DeleteMapping(path = "/delete/uniquecode")
-    @Transactional
+    @Transactional // con l'annotazione transactional effettua una gestione propria degli errori
     public ModelAndView deleteProfessorByUniqueCode(@RequestParam UniqueCode uniqueCode) {
 
         try {
-            professorServiceImplementation.deleteProfessor(uniqueCode);
+            professorServiceImpl.deleteProfessor(uniqueCode);
 
             return new CreateView(
                 "professor/delete/delete-result"
             ).getModelAndView();
 
-        } catch (ObjectNotFoundException e) {
+        } catch (RuntimeException e) {
             return new CreateView(
                 ERROR,
                 e.getMessage(),

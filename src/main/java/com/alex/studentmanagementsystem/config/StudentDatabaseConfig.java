@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 public class StudentDatabaseConfig implements Serializable {
 
     @Value("${spring.datasource.password}")
-    private String password;
+    private final String password;
 
     public StudentDatabaseConfig() {
         password = System.getenv("DB_PASSWORD");

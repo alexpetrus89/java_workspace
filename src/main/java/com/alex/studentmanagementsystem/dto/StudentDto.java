@@ -1,8 +1,10 @@
 package com.alex.studentmanagementsystem.dto;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 import com.alex.studentmanagementsystem.domain.DegreeCourse;
+import com.alex.studentmanagementsystem.domain.Student;
 import com.alex.studentmanagementsystem.domain.immutable.Register;
 
 public class StudentDto {
@@ -72,6 +74,26 @@ public class StudentDto {
 
     public void setDegreeCourse(DegreeCourse degreeCourse) {
         this.degreeCourse = degreeCourse;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(register, name, email, dob);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+
+        if (obj == null || getClass() != obj.getClass())
+            return false;
+
+        Student other = (Student) obj;
+        return Objects.equals(register, other.getRegister()) &&
+            Objects.equals(name, other.getName()) &&
+            Objects.equals(email, other.getEmail()) &&
+            Objects.equals(dob, other.getDob());
     }
 
 }

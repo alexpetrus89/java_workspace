@@ -104,7 +104,9 @@ public class WebSecurityConfig implements Serializable {
 						"api/v1/examination/course-name",
 						"api/v1/examination/student-register",
 						"api/v1/examination/professor-unique-code",
-						"api/v1/examination/create"
+						"api/v1/examination/create",
+						"api/v1/examination/update",
+						"api/v1/examination/delete"
 					)
                     .hasRole("USER")
                     .anyRequest()

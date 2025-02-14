@@ -62,12 +62,9 @@ public class ProfessorController {
      * @throws NullPointerException
      */
     @GetMapping(path = "/read/uniquecode")
-    public ModelAndView getProfessorsByUniqueCodeAndReturnView(
-        @RequestParam UniqueCode uniqueCode
-    ) {
+    public ModelAndView getProfessorsByUniqueCode(@RequestParam UniqueCode uniqueCode) {
 
         try {
-
             return new CreateView(
                 ProfessorMapper.mapToProfessor(
                     professorServiceImpl.getProfessorByUniqueCode(uniqueCode)
@@ -92,14 +89,12 @@ public class ProfessorController {
      * @throws NullPointerException
      */
     @GetMapping(path = "/read/name")
-    public ModelAndView getProfessorsByNameAndReturnView(
-        @RequestParam String professorName
-    ) {
+    public ModelAndView getProfessorsByName(@RequestParam String name) {
         try {
 
             return new CreateView(
                 ProfessorMapper.mapToProfessor(
-                    professorServiceImpl.getProfessorByName(professorName)
+                    professorServiceImpl.getProfessorByName(name)
                 ),
                 "professor/read/read-result"
             ).getModelAndView();
@@ -152,6 +147,7 @@ public class ProfessorController {
     @PostMapping("/create")
     @Transactional // con l'annotazione transactional effettua una gestione propria degli errori
     public ModelAndView createNewProfessor(@ModelAttribute ProfessorDto professorDto) {
+
         try {
             professorServiceImpl.addNewProfessor(professorDto);
 

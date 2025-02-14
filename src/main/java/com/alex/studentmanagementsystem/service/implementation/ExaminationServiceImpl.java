@@ -181,7 +181,7 @@ public class ExaminationServiceImpl implements ExaminationService {
      */
     @Override
 	@Transactional
-    public ExaminationDto addNewExamination(
+    public Examination addNewExamination(
         Register registration,
         String courseName,
         int grade,
@@ -204,13 +204,18 @@ public class ExaminationServiceImpl implements ExaminationService {
                 throw new ObjectAlreadyExistsException(courseName + " for student with register " + registration, EXCEPTION_EXAMINATION_IDENTIFIER);
         });
 
-        // sanity check
+        // sanity checks
         if(!student.getDegreeCourse().getName().equals(course.getDegreeCourse().getName()))
             throw new IllegalArgumentException("Degree course does not match");
 
-        // sanity check
-        if (date.isAfter(LocalDate.now()))
-            throw new IllegalArgumentException("Examination Date must be in the future");
+        if(grade < 0 || grade > 30)
+            throw new IllegalArgumentException("Grade must be between 0 and 30");
+
+        if(withHonors && grade != 30)
+            throw new IllegalArgumentException("With honors can only be true if the grade is 30");
+
+        if(date == null || date.isAfter(java.time.LocalDate.now()))
+            throw new IllegalArgumentException("The date must be at least less than today");
 
         Examination examination = new Examination(
             course,
@@ -222,7 +227,74 @@ public class ExaminationServiceImpl implements ExaminationService {
 
 		examinationRepository.saveAndFlush(examination);
 
-        return ExaminationMapper.mapToExaminationDto(examination);
+        return examination;
+    }
+
+    /**
+     * Update existing examination
+     * @param Register oldRegistration
+     * @param String oldCourseName
+     * @param Register newRegistration
+     * @param String newCourseName
+     * @param int grade
+     * @param boolean withHonors
+     * @param LocalDate date
+     * @return Examination
+     * @throws ObjectNotFoundException if the student or course does not exist.
+     * @throws IllegalArgumentException if the date is in the past or the grade
+     *                                  is not between 0 and 30 or Degree course
+     *                                  does not match
+     */
+    @Override
+	@Transactional
+    public Examination updateExamination(
+        Register oldRegistration,
+        String oldCourseName,
+        Register newRegistration,
+        String newCourseName,
+        int grade,
+        boolean withHonors,
+        LocalDate date
+    ) throws ObjectAlreadyExistsException {
+
+		Student newStudent = studentRepository
+			.findByRegister(newRegistration)
+			.orElseThrow(() -> new ObjectNotFoundException(newRegistration));
+
+		Course newCourse = courseRepository
+			.findByName(newCourseName)
+            .orElseThrow(() -> new ObjectNotFoundException(newCourseName, EXCEPTION_COURSE_IDENTIFIER));
+
+        Examination updatableExamination = examinationRepository
+            .findExaminationsByCourseName(oldCourseName)
+            .stream()
+            .filter(exam -> exam.getStudent().getRegister().equals(oldRegistration))
+            .findFirst()
+            .orElseThrow(() -> new ObjectNotFoundException("Examination of course " + oldCourseName + " and student register " + oldRegistration, EXCEPTION_EXAMINATION_IDENTIFIER));
+
+        // sanity checks
+        if(!newStudent.getDegreeCourse().getName().equals(newCourse.getDegreeCourse().getName()))
+            throw new IllegalArgumentException("Degree course does not match");
+
+        if(grade < 0 || grade > 30)
+            throw new IllegalArgumentException("Grade must be between 0 and 30");
+
+        if(withHonors && grade != 30)
+            throw new IllegalArgumentException("With honors can only be true if the grade is 30");
+
+        if(date == null || date.isAfter(java.time.LocalDate.now()))
+            throw new IllegalArgumentException("The date must be at least less than today");
+
+        updatableExamination.setCourse(newCourse);
+        updatableExamination.setStudent(newStudent);
+        updatableExamination.setGrade(grade);
+        updatableExamination.setWithHonors(withHonors);
+        updatableExamination.setDate(date);
+
+		// save
+        examinationRepository.saveAndFlush(updatableExamination);
+
+        return updatableExamination;
     }
 
 }

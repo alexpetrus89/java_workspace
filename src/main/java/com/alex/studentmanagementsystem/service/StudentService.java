@@ -61,7 +61,7 @@ public interface StudentService {
      * @throws NullPointerException if the newStudentDto is null
      */
     @Transactional
-    public void updateStudent(StudentDto studentDto)
+    void updateStudent(StudentDto studentDto)
         throws ObjectNotFoundException;
 
     /**

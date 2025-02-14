@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jacoco>
+    <execution>
+        <id>default</id>
+        <phase>test</phase>
+        <goals>
+            <goal>prepare-agent</goal>
+            <goal>report</goal>
+        </goals>
+    </execution>
+</jacoco>

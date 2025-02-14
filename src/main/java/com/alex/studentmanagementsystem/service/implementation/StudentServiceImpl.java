@@ -155,14 +155,14 @@ public class StudentServiceImpl implements StudentService {
 		studentRepository.saveAndFlush(updatableStudent);
     }
 
-
 	/**
- 	 * Deletes a student from the repository based on their register.
- 	 *
- 	 * @param register the register of the student to be deleted.
- 	 * @throws ObjectNotFoundException if no student with the given register
- 	 * 								   exists in the repository.
- 	 */
+	 * Deletes a student from the repository.
+	 * @param Register register the register of the student to be deleted.
+	 * @throws ObjectNotFoundException if no student with the given register exists in
+	 * 								   the repository.
+	 * @throws NullPointerException if the register is null.
+	 * @throws IllegalArgumentException if the given register is empty.
+	 */
 	@Override
 	@Transactional
 	public void deleteStudent(@NonNull Register register)

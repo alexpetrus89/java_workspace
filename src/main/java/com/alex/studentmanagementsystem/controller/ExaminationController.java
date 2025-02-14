@@ -4,6 +4,7 @@ import java.time.LocalDate;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,7 +15,6 @@ import com.alex.studentmanagementsystem.domain.immutable.Register;
 import com.alex.studentmanagementsystem.domain.immutable.UniqueCode;
 import com.alex.studentmanagementsystem.exception.ObjectAlreadyExistsException;
 import com.alex.studentmanagementsystem.exception.ObjectNotFoundException;
-import com.alex.studentmanagementsystem.mapper.ExaminationMapper;
 import com.alex.studentmanagementsystem.service.implementation.CourseServiceImpl;
 import com.alex.studentmanagementsystem.service.implementation.ExaminationServiceImpl;
 import com.alex.studentmanagementsystem.utility.CreateView;
@@ -164,6 +164,18 @@ public class ExaminationController {
     }
 
     /**
+     * Update Examination
+     * @return ModelAndView
+     */
+    @GetMapping("/update")
+    public ModelAndView updateExaminationAndReturnView() {
+        return new CreateView(
+            new Examination(),
+            "examination/update/update"
+        ).getModelAndView();
+    }
+
+    /**
      * Creates a new Examination
      * @param registration the student's registration
      * @param course the course name
@@ -189,14 +201,62 @@ public class ExaminationController {
 
         try {
             return new CreateView(
-                ExaminationMapper.mapToExamination(
-                    examinationServiceImpl.addNewExamination(
-                        new Register(registration),
-                        course,
-                        Integer.parseInt(grade),
-                        withHonors,
-                        date
-                    )
+                examinationServiceImpl.addNewExamination(
+                    new Register(registration),
+                    course,
+                    Integer.parseInt(grade),
+                    withHonors,
+                    date
+                ),
+                "examination/create/create-result"
+            ).getModelAndView();
+
+        } catch (ObjectNotFoundException e) {
+            return new CreateView(
+                ERROR,
+                e.getMessage(),
+                NOT_FOUND_PATH
+            ).getModelAndView();
+        }
+    }
+
+    /**
+     * Updates an existing Examination
+     * @param oldRegistration the old student's registration
+     * @param oldCourseName the old course name
+     * @param newRegistration the new student's registration
+     * @param newCourseName the new course name
+     * @param grade the new grade obtained in the examination
+     * @param withHonors whether the examination was passed with honors
+     * @param date the new date of the examination
+     * @return a ModelAndView containing the details of the updated examination
+     * @throws ObjectNotFoundException if the student or course does not exist
+     * @throws IllegalArgumentException if the date is in the past or the grade
+     *                                  is not between 0 and 30 or Degree course
+     *                                  does not match
+     */
+    @PutMapping(path = "/update")
+    @Transactional
+    public ModelAndView updateExamination(
+        @RequestParam("old_registration") String oldRegistration,
+        @RequestParam("old_course") String oldCourseName,
+        @RequestParam("new_registration") String newRegistration,
+        @RequestParam("new_course") String newCourseName,
+        @RequestParam("grade") String grade,
+        @RequestParam("withHonors") Boolean withHonors,
+        @RequestParam("date") LocalDate date
+    ) {
+
+        try {
+            return new CreateView(
+                examinationServiceImpl.updateExamination(
+                    new Register(oldRegistration),
+                    oldCourseName,
+                    new Register(newRegistration),
+                    newCourseName,
+                    Integer.parseInt(grade),
+                    withHonors,
+                    date
                 ),
                 "examination/create/create-result"
             ).getModelAndView();

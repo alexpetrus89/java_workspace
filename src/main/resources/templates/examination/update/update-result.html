@@ -3,17 +3,19 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 <head>
-    <title>Result of Student update</title>
+    <title>Result</title>
 </head>
 <body>
 	<h1>Result</h1>
-    <p th:text="'register: ' + ${student.register.register}">
-    <p th:text="'name: ' + ${student.name}">
-    <p th:text="'email: ' + ${student.email}">
-    <p th:text="'age: ' + ${student.age}">
-    <h1>Student update</h1>
-    <a href="/api/v1/student/update">Update another student</a>
+    <p th:text="'course: ' + ${examination.course.name}">
+    <p th:text="'registration: ' + ${examination.student.register}">
+    <p th:text="'grade: ' + ${examination.grade}">
+    <p th:text="'date: ' + ${examination.date}">
+    <p th:if="${examination.withHonors}" th:text="'With honors: true'">
+    <h1>Examination insert</h1>
     <br>
-    <a href="#" th:href="@{/student/student-menu}">Back to Menu</a>
+    <a href="/api/v1/examination/create">Submit another examination</a>
+    <br>
+    <a href="#" th:href="@{/examination/examination-menu}">Back to Menu</a>
 </body>
 </html>

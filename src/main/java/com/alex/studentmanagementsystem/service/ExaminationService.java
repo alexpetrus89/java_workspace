@@ -3,6 +3,7 @@ package com.alex.studentmanagementsystem.service;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.alex.studentmanagementsystem.domain.Examination;
 import com.alex.studentmanagementsystem.domain.immutable.CourseId;
 import com.alex.studentmanagementsystem.domain.immutable.Register;
 import com.alex.studentmanagementsystem.domain.immutable.UniqueCode;
@@ -65,7 +66,32 @@ public interface ExaminationService {
      * @return ExaminationDto containing the details of the newly added examination
      * @throws ObjectNotFoundException if the student or course does not exist
      */
-    ExaminationDto addNewExamination(Register registration, String courseName, int grade, boolean withHonors, LocalDate date)
-        throws ObjectNotFoundException;
+    Examination addNewExamination(
+        Register registration,
+        String courseName,
+        int grade,
+        boolean withHonors,
+        LocalDate date
+    ) throws ObjectNotFoundException;
+
+    /**
+     * Update an existing examination for a student.
+     * @param registration the student's registration details
+     * @param courseName the name of the course
+     * @param grade the grade obtained in the examination
+     * @param withHonors whether the examination was passed with honors
+     * @param date the date of the examination
+     * @return Examination containing the details of the updated examination
+     * @throws ObjectNotFoundException if the student or course does not exist
+     */
+    Examination updateExamination(
+        Register oldRegistration,
+        String oldCourseName,
+        Register newRegistration,
+        String newCourseName,
+        int grade,
+        boolean withHonors,
+        LocalDate date
+    ) throws ObjectNotFoundException;
 
 }

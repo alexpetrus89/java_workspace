@@ -7,10 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.alex.studentmanagementsystem.exception.ObjectNotFoundException;
-import com.alex.studentmanagementsystem.mapper.ProfessorMapper;
-import com.alex.studentmanagementsystem.service.implementation.CourseServiceImpl;
 import com.alex.studentmanagementsystem.service.implementation.DegreeCourseServiceImpl;
-import com.alex.studentmanagementsystem.service.implementation.StudentServiceImpl;
 import com.alex.studentmanagementsystem.utility.CreateView;
 
 
@@ -24,19 +21,12 @@ public class DegreeCourseController {
 
     // instance variables
     private final DegreeCourseServiceImpl degreeCourseServiceImpl;
-    private final CourseServiceImpl courseServiceImpl;
-    private final StudentServiceImpl studentServiceImpl;
 
     // autowired - dependency injection - constructor
-    public DegreeCourseController(
-        DegreeCourseServiceImpl degreeCourseServiceImpl,
-        CourseServiceImpl courseServiceImpl,
-        StudentServiceImpl studentServiceImpl
-    ) {
+    public DegreeCourseController(DegreeCourseServiceImpl degreeCourseServiceImpl) {
         this.degreeCourseServiceImpl = degreeCourseServiceImpl;
-        this.courseServiceImpl = courseServiceImpl;
-        this.studentServiceImpl = studentServiceImpl;
     }
+
 
     // methods
     /**
@@ -53,52 +43,36 @@ public class DegreeCourseController {
         );
     }
 
+
     /**
      * retrieves all courses of a given degree course
-     * @param String
+     * @param String name the name of the degree course
      * @return ModelAndView
      */
     @GetMapping("/courses/view")
-    public ModelAndView getCourses(@RequestParam String degreeCourseName) {
+    public ModelAndView getCourses(@RequestParam String name) {
 
         return new ModelAndView(
             "degree_course/course-list",
             "courses",
-            courseServiceImpl
-                .getCourses()
-                .stream()
-                .filter(degreeCourse -> degreeCourse
-                    .getDegreeCourse()
-                    .getName()
-                    .equals(degreeCourseName)
-                )
-                .toList()
+            degreeCourseServiceImpl.getCourses(name)
         );
     }
 
+
     /**
      * retrieves all professors of a given degree course
+     * @param String name the name of the degree course
      * @return ModelAndView
      */
     @GetMapping("/professors/view")
-    public ModelAndView getProfessors(@RequestParam String degreeCourseName) {
+    public ModelAndView getProfessors(@RequestParam String name) {
 
         try {
-
             return new ModelAndView(
                 "degree_course/professor-with-course-list",
                 "professors",
-                courseServiceImpl
-                    .getCourses()
-                    .stream()
-                    .filter(degreeCourse -> degreeCourse
-                        .getDegreeCourse()
-                        .getName()
-                        .equals(degreeCourseName)
-                    )
-                    .map(course -> ProfessorMapper.mapToProfessorDto(course.getProfessor()))
-                    .distinct()
-                    .toList()
+                degreeCourseServiceImpl.getProfessors(name)
             );
 
         } catch (ObjectNotFoundException e) {
@@ -112,26 +86,19 @@ public class DegreeCourseController {
 
     }
 
+
     /**
      * retrieves all students of a given degree course
-     * @param String
+     * @param String name the name of the degree course
      * @return ModelAndView
      */
     @GetMapping("/students/view")
-    public ModelAndView getStudents(@RequestParam String degreeCourseName) {
+    public ModelAndView getStudents(@RequestParam String name) {
 
         return new ModelAndView(
             "degree_course/student-list",
             "students",
-            studentServiceImpl
-                .getStudents()
-                .stream()
-                .filter(degreeCourse -> degreeCourse
-                    .getDegreeCourse()
-                    .getName()
-                    .equals(degreeCourseName)
-                )
-                .toList()
+            degreeCourseServiceImpl.getStudents(name)
         );
     }
 

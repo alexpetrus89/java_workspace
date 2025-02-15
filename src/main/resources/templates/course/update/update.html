@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en"
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:th="http://www.thymeleaf.org"
+        xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
+<head>
+    <title>Update Course</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/examination-update.css">
+</head>
+
+<body>
+    <h1>Insert course information for update</h1>
+    <form action="#" th:action="@{/api/v1/course/update}" method="post">
+
+        <input type="hidden" name="_method" value="PUT" />
+
+        <label for="course">Old Course Name:</label>
+        <input type="text" name="old_name" title="Enter old course name"
+            placeholder="old course name"></p>
+
+        <label for="course">New Course name:</label>
+        <input type="text" name="new_name" title="Enter new course name"
+            placeholder="new course"></p>
+
+        <label for="type">New Type:</label>
+            <select id="type-select" name="new_type" title="Select new course type">
+                <option th:each="type : ${T(com.alex.studentmanagementsystem.utility.CourseType).values()}" th:value="${type}" th:text="${type.name()}"></option>
+            </select></p>
+
+        <label for="course">New Cfu value:</label>
+        <input type="text" name="new_cfu" title="Enter new cfu value"
+            placeholder="new cfu value"></p>
+
+        <label for="uniqueCode">New professor unique code:</label>
+        <input type="text" name="new_unique_code" title="Enter professor unique code"
+            placeholder="unique code"></p>
+
+        <label for="grade">New Degree Course Name:</label>
+        <input type="text" name="new_degree_course_name" title="Enter new degree course name"
+            placeholder="degree course name"></p>
+
+        <p><input type="submit" value="Submit" /> <input type="reset" value="Reset" /></p>
+    </form>
+    <a href="#" th:href="@{/course/course-menu}">Back to Menu</a>
+</body>
+</html>

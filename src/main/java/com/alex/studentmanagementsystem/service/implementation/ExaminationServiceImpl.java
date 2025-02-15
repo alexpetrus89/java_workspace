@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
 import com.alex.studentmanagementsystem.domain.Course;
@@ -74,7 +75,7 @@ public class ExaminationServiceImpl implements ExaminationService {
      * @throws ObjectNotFoundException if the student does not exist
      */
     @Override
-    public List<ExaminationDto> getExaminationsByStudentRegister(Register register)
+    public List<ExaminationDto> getExaminationsByStudentRegister(@NonNull Register register)
         throws ObjectNotFoundException
     {
 
@@ -88,6 +89,7 @@ public class ExaminationServiceImpl implements ExaminationService {
             .toList();
     }
 
+
     /**
      * Get all examinations by professor unique code
      * @param UniqueCode uniqueCode
@@ -99,7 +101,7 @@ public class ExaminationServiceImpl implements ExaminationService {
      * @throws IllegalArgumentException if the unique code is empty
      */
     @Override
-    public List<ExaminationDto> getExaminationsByProfessorUniqueCode(UniqueCode uniqueCode)
+    public List<ExaminationDto> getExaminationsByProfessorUniqueCode(@NonNull UniqueCode uniqueCode)
         throws ObjectNotFoundException
     {
 
@@ -131,7 +133,7 @@ public class ExaminationServiceImpl implements ExaminationService {
      * @throws ObjectNotFoundException if the course does not exist
      */
     @Override
-    public List<ExaminationDto> getExaminationsByCourseId(CourseId courseId)
+    public List<ExaminationDto> getExaminationsByCourseId(@NonNull CourseId courseId)
         throws ObjectNotFoundException
     {
 
@@ -145,29 +147,31 @@ public class ExaminationServiceImpl implements ExaminationService {
             .toList();
     }
 
+
     /**
      * @param String courseName
      * @return List<ExaminationDto>
      * @throws ObjectNotFoundException
      */
     @Override
-    public List<ExaminationDto> getExaminationsByCourseName(String courseName)
+    public List<ExaminationDto> getExaminationsByCourseName(@NonNull String name)
         throws ObjectNotFoundException
     {
 
-        if (!courseRepository.existsByName(courseName))
-            throw new ObjectNotFoundException(courseName, EXCEPTION_COURSE_IDENTIFIER);
+        if (!courseRepository.existsByName(name))
+            throw new ObjectNotFoundException(name, EXCEPTION_COURSE_IDENTIFIER);
 
         return examinationRepository
-            .findExaminationsByCourseName(courseName)
+            .findExaminationsByCourseName(name)
             .stream()
             .map(ExaminationMapper::mapToExaminationDto)
             .toList();
     }
 
+
     /**
      * Add new examination
-     * @param Register registration
+     * @param Register register
      * @param String courseName
      * @param int grade
      * @param boolean withHonors
@@ -182,7 +186,7 @@ public class ExaminationServiceImpl implements ExaminationService {
     @Override
 	@Transactional
     public Examination addNewExamination(
-        Register registration,
+        Register register,
         String courseName,
         int grade,
         boolean withHonors,
@@ -194,14 +198,14 @@ public class ExaminationServiceImpl implements ExaminationService {
             .orElseThrow(() -> new ObjectNotFoundException(courseName, EXCEPTION_COURSE_IDENTIFIER));
 
         Student student = studentRepository
-            .findByRegister(registration)
-            .orElseThrow(() -> new ObjectNotFoundException(registration));
+            .findByRegister(register)
+            .orElseThrow(() -> new ObjectNotFoundException(register));
 
         // sanity check
         List<Examination> examinations = examinationRepository.findExaminationsByCourseName(courseName);
         examinations.forEach(examination -> {
-            if (examination.getStudent().getRegister().equals(registration))
-                throw new ObjectAlreadyExistsException(courseName + " for student with register " + registration, EXCEPTION_EXAMINATION_IDENTIFIER);
+            if (examination.getStudent().getRegister().equals(register))
+                throw new ObjectAlreadyExistsException(courseName + " for student with register " + register, EXCEPTION_EXAMINATION_IDENTIFIER);
         });
 
         // sanity checks
@@ -217,14 +221,9 @@ public class ExaminationServiceImpl implements ExaminationService {
         if(date == null || date.isAfter(java.time.LocalDate.now()))
             throw new IllegalArgumentException("The date must be at least less than today");
 
-        Examination examination = new Examination(
-            course,
-            student,
-            grade,
-            withHonors,
-            date
-        );
-
+        // create
+        Examination examination = new Examination(course, student, grade, withHonors, date);
+        // save
 		examinationRepository.saveAndFlush(examination);
 
         return examination;
@@ -232,9 +231,9 @@ public class ExaminationServiceImpl implements ExaminationService {
 
     /**
      * Update existing examination
-     * @param Register oldRegistration
+     * @param Register oldRegister
      * @param String oldCourseName
-     * @param Register newRegistration
+     * @param Register newRegister
      * @param String newCourseName
      * @param int grade
      * @param boolean withHonors
@@ -248,9 +247,9 @@ public class ExaminationServiceImpl implements ExaminationService {
     @Override
 	@Transactional
     public Examination updateExamination(
-        Register oldRegistration,
+        Register oldRegister,
         String oldCourseName,
-        Register newRegistration,
+        Register newRegister,
         String newCourseName,
         int grade,
         boolean withHonors,
@@ -258,8 +257,8 @@ public class ExaminationServiceImpl implements ExaminationService {
     ) throws ObjectAlreadyExistsException {
 
 		Student newStudent = studentRepository
-			.findByRegister(newRegistration)
-			.orElseThrow(() -> new ObjectNotFoundException(newRegistration));
+			.findByRegister(newRegister)
+			.orElseThrow(() -> new ObjectNotFoundException(newRegister));
 
 		Course newCourse = courseRepository
 			.findByName(newCourseName)
@@ -268,9 +267,9 @@ public class ExaminationServiceImpl implements ExaminationService {
         Examination updatableExamination = examinationRepository
             .findExaminationsByCourseName(oldCourseName)
             .stream()
-            .filter(exam -> exam.getStudent().getRegister().equals(oldRegistration))
+            .filter(exam -> exam.getStudent().getRegister().equals(oldRegister))
             .findFirst()
-            .orElseThrow(() -> new ObjectNotFoundException("Examination of course " + oldCourseName + " and student register " + oldRegistration, EXCEPTION_EXAMINATION_IDENTIFIER));
+            .orElseThrow(() -> new ObjectNotFoundException("Examination of course " + oldCourseName + " and student register " + oldRegister, EXCEPTION_EXAMINATION_IDENTIFIER));
 
         // sanity checks
         if(!newStudent.getDegreeCourse().getName().equals(newCourse.getDegreeCourse().getName()))
@@ -295,6 +294,29 @@ public class ExaminationServiceImpl implements ExaminationService {
         examinationRepository.saveAndFlush(updatableExamination);
 
         return updatableExamination;
+    }
+
+
+    /**
+     * Delete existing examination
+     * @param Register register
+     * @param String name
+     * @throws ObjectNotFoundException if the examination does not exist
+     */
+    @Override
+	@Transactional
+	public void deleteExamination(@NonNull Register register, @NonNull String name)
+		throws ObjectNotFoundException
+	{
+
+        Examination examination = examinationRepository
+            .findExaminationsByCourseName(name)
+            .stream()
+            .filter(exam -> exam.getStudent().getRegister().equals(register))
+            .findFirst()
+            .orElseThrow(() -> new ObjectNotFoundException("Examination of course " + name + " and student register " + register, EXCEPTION_EXAMINATION_IDENTIFIER));
+
+        examinationRepository.delete(examination);
     }
 
 }

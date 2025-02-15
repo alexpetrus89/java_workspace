@@ -3,6 +3,8 @@ package com.alex.studentmanagementsystem.service;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.springframework.lang.NonNull;
+
 import com.alex.studentmanagementsystem.domain.Examination;
 import com.alex.studentmanagementsystem.domain.immutable.CourseId;
 import com.alex.studentmanagementsystem.domain.immutable.Register;
@@ -25,7 +27,7 @@ public interface ExaminationService {
      * @return List<ExaminationDto>
      * @throws ObjectNotFoundException if the student does not exist
      */
-    List<ExaminationDto> getExaminationsByStudentRegister(Register register)
+    List<ExaminationDto> getExaminationsByStudentRegister(@NonNull Register register)
         throws ObjectNotFoundException;
 
     /**
@@ -34,7 +36,7 @@ public interface ExaminationService {
      * @return List<ExaminationDto>
      * @throws ObjectNotFoundException if the professor does not exist
      */
-    List<ExaminationDto> getExaminationsByProfessorUniqueCode(UniqueCode uniqueCode)
+    List<ExaminationDto> getExaminationsByProfessorUniqueCode(@NonNull UniqueCode uniqueCode)
         throws ObjectNotFoundException;
 
     /**
@@ -43,16 +45,16 @@ public interface ExaminationService {
      * @return List<ExaminationDto>
      * @throws ObjectNotFoundException if the course does not exist
      */
-    List<ExaminationDto> getExaminationsByCourseId(CourseId courseId)
+    List<ExaminationDto> getExaminationsByCourseId(@NonNull CourseId courseId)
         throws ObjectNotFoundException;
 
     /**
      * Get all examinations by course name
-     * @param String courseName
+     * @param String name
      * @return List<ExaminationDto>
      * @throws ObjectNotFoundException if the course does not exist
      */
-    List<ExaminationDto> getExaminationsByCourseName(String courseName)
+    List<ExaminationDto> getExaminationsByCourseName(@NonNull String name)
         throws ObjectNotFoundException;
 
 
@@ -94,4 +96,12 @@ public interface ExaminationService {
         LocalDate date
     ) throws ObjectNotFoundException;
 
+
+    /**
+     * Delete an existing examination for a student.
+     * @param ExaminationDto examination
+     * @throws ObjectNotFoundException if the student or course does not exist
+     */
+    void deleteExamination(@NonNull Register register, @NonNull String courseName)
+        throws ObjectNotFoundException;
 }

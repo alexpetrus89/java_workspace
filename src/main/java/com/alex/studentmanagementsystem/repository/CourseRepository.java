@@ -5,12 +5,14 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
 
 import com.alex.studentmanagementsystem.domain.Course;
 import com.alex.studentmanagementsystem.domain.immutable.CourseId;
 import com.alex.studentmanagementsystem.domain.immutable.UniqueCode;
+import com.alex.studentmanagementsystem.utility.CourseType;
 
 
 
@@ -32,6 +34,7 @@ public interface CourseRepository
     @NonNull
     Optional<Course> findById(@NonNull CourseId id);
 
+
     /**
      * Retrieves a course from the repository by its name.
      *
@@ -42,15 +45,17 @@ public interface CourseRepository
     @Query("SELECT c FROM Course c WHERE c.name = ?1")
     Optional<Course> findByName(String name);
 
+
     /**
-     * Retrieves a course from the repository by its category.
+     * Retrieves a course from the repository by its type.
      *
-     * @param category the category of the course to retrieve
+     * @param type the type of the course to retrieve
      * @return an Optional containing the course if found, otherwise an
      *         empty Optional
      */
-    @Query("SELECT c FROM Course c WHERE c.category = ?1")
-    Optional<Course> findByCategory(String category);
+    @Query("SELECT c FROM Course c WHERE c.type = :type")
+    Optional<Course> findByType(@Param("type") CourseType type);
+
 
     /**
      * Retrieves a list of courses associated with a specific professor.
@@ -61,6 +66,12 @@ public interface CourseRepository
     @Query("SELECT c FROM Course c JOIN c.professor p WHERE p.uniqueCode = ?1")
     Optional<List<Course>> findByProfessor(UniqueCode uniqueCode);
 
+
+    /**
+     * Checks if a course exists by its name.
+     * @param name
+     * @return boolean
+     */
     boolean existsByName(String name);
 
 }

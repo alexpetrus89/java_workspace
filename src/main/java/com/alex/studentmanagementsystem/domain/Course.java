@@ -7,12 +7,14 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import com.alex.studentmanagementsystem.domain.immutable.CourseId;
+import com.alex.studentmanagementsystem.utility.CourseType;
 
 import jakarta.persistence.Access;
 import jakarta.persistence.AccessType;
 import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
@@ -24,7 +26,7 @@ public class Course implements Serializable {
     // instance variables
     private CourseId courseId;
     private String name;
-    private String category;
+    private CourseType type;
     private Integer cfu;
     private Professor professor;
     private DegreeCourse degreeCourse;
@@ -34,25 +36,25 @@ public class Course implements Serializable {
 
     public Course(
         String name,
-        String category,
+        CourseType type,
         Integer cfu
     ) {
         this.courseId = new CourseId(UUID.randomUUID());
         this.name = name;
-        this.category = category;
+        this.type = type;
         this.cfu = cfu;
     }
 
     public Course(
         String name,
-        String category,
+        CourseType type,
         Integer cfu,
         Professor professor,
         DegreeCourse degreeCourse
     ) {
         this.courseId = new CourseId(UUID.randomUUID());
         this.name = name;
-        this.category = category;
+        this.type = type;
         this.cfu = cfu;
         this.professor = professor;
         this.degreeCourse = degreeCourse;
@@ -71,9 +73,9 @@ public class Course implements Serializable {
         return name;
     }
 
-    @Column(name = "category")
-    public String getCategory() {
-        return category;
+    @Column(name = "type")
+    public CourseType getType() {
+        return type;
     }
 
     @Column(name = "cfu")
@@ -87,6 +89,7 @@ public class Course implements Serializable {
     }
 
     @ManyToOne // owning side
+    @JoinColumn(name = "degree_course_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
     public DegreeCourse getDegreeCourse() {
         return degreeCourse;
@@ -102,8 +105,8 @@ public class Course implements Serializable {
         this.name = name;
     }
 
-    public void setCategory(String category) {
-        this.category = category;
+    public void setType(CourseType type) {
+        this.type = type;
     }
 
     public void setCfu(Integer cfu) {
@@ -123,7 +126,7 @@ public class Course implements Serializable {
         return "Course{" +
             "courseId=" + courseId +
             ", name='" + name + '\'' +
-            ", category='" + category + '\'' +
+            ", type='" + type.name() + '\'' +
             ", cfu=" + cfu +
             ", professor=" + professor +
             ", degreeCourse=" + degreeCourse +

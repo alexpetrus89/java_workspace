@@ -10,7 +10,7 @@ public class CourseMapper {
     public static Course mapToCourse(CourseDto courseDto) {
         return new Course(
             courseDto.getName(),
-            courseDto.getCategory(),
+            courseDto.getType(),
             courseDto.getCfu(),
             courseDto.getProfessor(),
             courseDto.getDegreeCourse()
@@ -21,7 +21,7 @@ public class CourseMapper {
         return new CourseDto(
             course.getCourseId(),
             course.getName(),
-            course.getCategory(),
+            course.getType(),
             course.getCfu(),
             course.getProfessor(),
             course.getDegreeCourse()

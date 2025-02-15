@@ -33,6 +33,8 @@ import com.alex.studentmanagementsystem.repository.ProfessorRepository;
 import com.alex.studentmanagementsystem.repository.StudentRepository;
 import com.alex.studentmanagementsystem.repository.UserRepository;
 import com.alex.studentmanagementsystem.utility.Builder;
+import com.alex.studentmanagementsystem.utility.CourseType;
+import com.alex.studentmanagementsystem.utility.DegreeType;
 import com.alex.studentmanagementsystem.utility.RegistrationForm;
 
 
@@ -47,20 +49,6 @@ public class StudentDatabaseInit implements Serializable {
     private static final String INGEGNERIA_INFORMATICA = "INGEGNERIA INFORMATICA";
     private static final String INGEGNERIA_GESTIONALE_MAGISTRALE = "INGEGNERIA GESTIONALE MAGISTRALE";
     private static final String INGEGNERIA_INFORMATICA_MAGISTRALE = "INGEGNERIA INFORMATICA MAGISTRALE";
-
-    private static final String TRIENNALE = "triennale";
-    private static final String MAGISTRALE = "magistrale";
-
-    private static final String MATEMATICA = "matematica";
-    private static final String INFORMATICA = "informatica";
-    private static final String ECONOMIA = "economia";
-    private static final String FISICA = "fisica";
-    private static final String CHIMICA = "chimica";
-    private static final String DISEGNO = "disegno";
-    private static final String ING_MECCANICA = "ing. meccanica";
-    private static final String ING_GESTIONALE = "ing. gestionale";
-    private static final String ING_ELETTRICA = "ing. elettrica";
-    private static final String LINGUA = "lingua straniera";
 
     private static final String UC_GIACINTO = "wer456er";
     private static final String UC_GENESIO = "ert456er";
@@ -142,7 +130,7 @@ public class StudentDatabaseInit implements Serializable {
         degreeCourses.add(
             new DegreeCourse(
                 INGEGNERIA_GESTIONALE,
-                TRIENNALE,
+                DegreeType.BACHELOR,
                 3
             )
         );
@@ -150,7 +138,7 @@ public class StudentDatabaseInit implements Serializable {
         degreeCourses.add(
             new DegreeCourse(
                 INGEGNERIA_MECCANICA,
-                TRIENNALE,
+                DegreeType.BACHELOR,
                 3
             )
         );
@@ -158,7 +146,7 @@ public class StudentDatabaseInit implements Serializable {
         degreeCourses.add(
             new DegreeCourse(
                 INGEGNERIA_ELETTRICA,
-                TRIENNALE,
+                DegreeType.BACHELOR,
                 3
             )
         );
@@ -166,7 +154,7 @@ public class StudentDatabaseInit implements Serializable {
         degreeCourses.add(
             new DegreeCourse(
                 INGEGNERIA_CIVILE,
-                TRIENNALE,
+                DegreeType.BACHELOR,
                 3
             )
         );
@@ -174,7 +162,7 @@ public class StudentDatabaseInit implements Serializable {
         degreeCourses.add(
             new DegreeCourse(
                 INGEGNERIA_INFORMATICA,
-                TRIENNALE,
+                DegreeType.BACHELOR,
                 3
             )
         );
@@ -182,7 +170,7 @@ public class StudentDatabaseInit implements Serializable {
         degreeCourses.add(
             new DegreeCourse(
                 INGEGNERIA_GESTIONALE_MAGISTRALE,
-                MAGISTRALE,
+                DegreeType.MASTER,
                 2
             )
         );
@@ -190,7 +178,7 @@ public class StudentDatabaseInit implements Serializable {
         degreeCourses.add(
             new DegreeCourse(
                 INGEGNERIA_INFORMATICA_MAGISTRALE,
-                MAGISTRALE,
+                DegreeType.MASTER,
                 2
             )
         );
@@ -535,7 +523,7 @@ public class StudentDatabaseInit implements Serializable {
         courses.add(
             new Course(
                 "analisi matematica",
-                MATEMATICA,
+                CourseType.MATEMATICA,
                 12,
                 professorRepository
                     .findByUniqueCode(new UniqueCode(UC_GIACINTO))
@@ -547,7 +535,7 @@ public class StudentDatabaseInit implements Serializable {
         courses.add(
             new Course(
                 "elementi di economia",
-                ECONOMIA,
+                CourseType.ECONOMIA,
                 6,
                 professorRepository
                     .findByUniqueCode(new UniqueCode(UC_GIACINTO))
@@ -559,7 +547,7 @@ public class StudentDatabaseInit implements Serializable {
         courses.add(
             new Course(
                 "geometria e algebra",
-                MATEMATICA,
+                CourseType.MATEMATICA,
                 6,
                 professorRepository
                     .findByUniqueCode(new UniqueCode(UC_GIACINTO))
@@ -571,7 +559,7 @@ public class StudentDatabaseInit implements Serializable {
         courses.add(
             new Course(
                 "fisica generale",
-                FISICA,
+                CourseType.FISICA,
                 12,
                 professorRepository
                     .findByUniqueCode(new UniqueCode(UC_GIACINTO))
@@ -583,7 +571,7 @@ public class StudentDatabaseInit implements Serializable {
         courses.add(
             new Course(
                 "fondamenti di informatica",
-                INFORMATICA,
+                CourseType.INFORMATICA,
                 6,
                 professorRepository
                     .findByUniqueCode(new UniqueCode(UC_GENESIO))
@@ -595,7 +583,7 @@ public class StudentDatabaseInit implements Serializable {
         courses.add(
             new Course(
                 "chimica generale",
-                CHIMICA,
+                CourseType.CHIMICA,
                 9,
                 professorRepository
                     .findByUniqueCode(new UniqueCode(UC_FABIO))
@@ -607,7 +595,7 @@ public class StudentDatabaseInit implements Serializable {
         courses.add(
             new Course(
                 "scienza delle costruzioni",
-                ING_MECCANICA,
+                CourseType.ING_MECCANICA,
                 6,
                 professorRepository
                     .findByUniqueCode(new UniqueCode(UC_FABIO))
@@ -619,7 +607,7 @@ public class StudentDatabaseInit implements Serializable {
         courses.add(
             new Course(
                 "metodi di ottimizzazione",
-                MATEMATICA,
+                CourseType.MATEMATICA,
                 6,
                 professorRepository
                     .findByUniqueCode(new UniqueCode(UC_FABIO))
@@ -631,7 +619,7 @@ public class StudentDatabaseInit implements Serializable {
         courses.add(
             new Course(
                 "metodi di rappresentazione tecnica",
-                DISEGNO,
+                CourseType.DISEGNO,
                 6,
                 professorRepository
                     .findByUniqueCode(new UniqueCode(UC_FABIO))
@@ -643,7 +631,7 @@ public class StudentDatabaseInit implements Serializable {
         courses.add(
             new Course(
                 "elementi di meccanica delle macchine e progettazione meccanica",
-                ING_MECCANICA,
+                CourseType.ING_MECCANICA,
                 12,
                 professorRepository
                     .findByUniqueCode(new UniqueCode(UC_GIACOMO))
@@ -655,7 +643,7 @@ public class StudentDatabaseInit implements Serializable {
         courses.add(
             new Course(
                 "fisica tecnica e sistemi energetici",
-                FISICA,
+                CourseType.FISICA,
                 12,
                 professorRepository
                     .findByUniqueCode(new UniqueCode(UC_GIACOMO))
@@ -667,7 +655,7 @@ public class StudentDatabaseInit implements Serializable {
         courses.add(
             new Course(
                 "gestione aziendale",
-                ECONOMIA,
+                CourseType.ECONOMIA,
                 6,
                 professorRepository
                     .findByUniqueCode(new UniqueCode(UC_GIACOMO))
@@ -679,7 +667,7 @@ public class StudentDatabaseInit implements Serializable {
         courses.add(
             new Course(
                 "meccanica dei fluidi",
-                FISICA,
+                CourseType.IDRAULICA,
                 6,
                 professorRepository
                     .findByUniqueCode(new UniqueCode(UC_VLADIMIRO))
@@ -691,7 +679,7 @@ public class StudentDatabaseInit implements Serializable {
         courses.add(
             new Course(
                 "principi di ingegneria elettrica",
-                ING_ELETTRICA,
+                CourseType.ING_ELETTRICA,
                 6,
                 professorRepository
                     .findByUniqueCode(new UniqueCode(UC_VLADIMIRO))
@@ -703,7 +691,7 @@ public class StudentDatabaseInit implements Serializable {
         courses.add(
             new Course(
                 "tecnologia meccaniche e dei materiali",
-                ING_MECCANICA,
+                CourseType.ING_MECCANICA,
                 12,
                 professorRepository
                     .findByUniqueCode(new UniqueCode(UC_GIACOMO))
@@ -715,7 +703,7 @@ public class StudentDatabaseInit implements Serializable {
         courses.add(
             new Course(
                 "calcolo numerico",
-                MATEMATICA,
+                CourseType.MATEMATICA,
                 6,
                 professorRepository
                     .findByUniqueCode(new UniqueCode(UC_GIACINTO))
@@ -727,7 +715,7 @@ public class StudentDatabaseInit implements Serializable {
         courses.add(
             new Course(
                 "gestione dei progetti",
-                ING_GESTIONALE,
+                CourseType.ING_GESTIONALE,
                 9,
                 professorRepository
                     .findByUniqueCode(new UniqueCode(UC_FABIO))
@@ -739,7 +727,7 @@ public class StudentDatabaseInit implements Serializable {
         courses.add(
             new Course(
                 "impianti industriali",
-                ING_MECCANICA,
+                CourseType.ING_MECCANICA,
                 9,
                 professorRepository
                     .findByUniqueCode(new UniqueCode(UC_FELICE))
@@ -751,7 +739,7 @@ public class StudentDatabaseInit implements Serializable {
         courses.add(
             new Course(
                 "inglese",
-                LINGUA,
+                CourseType.LINGUA_STRANIERA,
                 3,
                 professorRepository
                     .findByUniqueCode(new UniqueCode(UC_FELICE))
@@ -763,7 +751,7 @@ public class StudentDatabaseInit implements Serializable {
         courses.add(
             new Course(
                 "progettazione dei processi produttivi e qualità dei processi produttivi",
-                ING_GESTIONALE,
+                CourseType.ING_GESTIONALE,
                 12,
                 professorRepository
                     .findByUniqueCode(new UniqueCode(UC_FELICE))
@@ -775,7 +763,7 @@ public class StudentDatabaseInit implements Serializable {
         courses.add(
             new Course(
                 "sicurezza degli impianti industriali",
-                ING_GESTIONALE,
+                CourseType.ING_GESTIONALE,
                 6,
                 professorRepository
                     .findByUniqueCode(new UniqueCode(UC_FELICE))
@@ -787,7 +775,7 @@ public class StudentDatabaseInit implements Serializable {
         courses.add(
             new Course(
                 "materiali innovativi per l'ingegneria elettrica",
-                ING_ELETTRICA,
+                CourseType.ING_ELETTRICA,
                 6,
                 professorRepository
                     .findByUniqueCode(new UniqueCode(UC_GIACINTO))
@@ -799,7 +787,7 @@ public class StudentDatabaseInit implements Serializable {
         courses.add(
             new Course(
                 "sistemi informativi",
-                INFORMATICA,
+                CourseType.ING_INFORMATICA,
                 12,
                 professorRepository
                     .findByUniqueCode(new UniqueCode(UC_FABIO))
@@ -811,7 +799,7 @@ public class StudentDatabaseInit implements Serializable {
         courses.add(
             new Course(
                 "big data",
-                INFORMATICA,
+                CourseType.ING_INFORMATICA,
                 6,
                 professorRepository
                     .findByUniqueCode(new UniqueCode(UC_VLADIMIRO))
@@ -823,7 +811,7 @@ public class StudentDatabaseInit implements Serializable {
         courses.add(
             new Course(
                 "compilatori",
-                INFORMATICA,
+                CourseType.ING_INFORMATICA,
                 12,
                 professorRepository
                     .findByUniqueCode(new UniqueCode(UC_GENESIO))
@@ -835,7 +823,7 @@ public class StudentDatabaseInit implements Serializable {
         courses.add(
             new Course(
                 "tirocinio",
-                ING_GESTIONALE,
+                CourseType.ING_GESTIONALE,
                 6,
                 professorRepository
                     .findByUniqueCode(new UniqueCode(UC_FABIO))
@@ -847,7 +835,7 @@ public class StudentDatabaseInit implements Serializable {
         courses.add(
             new Course(
                 "prova finale",
-                ING_GESTIONALE,
+                CourseType.ING_GESTIONALE,
                 3,
                 professorRepository
                     .findByUniqueCode(new UniqueCode(UC_FABIO))
@@ -859,7 +847,7 @@ public class StudentDatabaseInit implements Serializable {
         courses.add(
             new Course(
                 "impianti meccanici",
-                ING_MECCANICA,
+                CourseType.ING_MECCANICA,
                 3,
                 professorRepository
                     .findByUniqueCode(new UniqueCode(UC_FABIO))
@@ -871,12 +859,24 @@ public class StudentDatabaseInit implements Serializable {
         courses.add(
             new Course(
                 "sistemi energetici e macchine a fluido",
-                ING_MECCANICA,
+                CourseType.ING_MECCANICA,
                 3,
                 professorRepository
                     .findByUniqueCode(new UniqueCode(UC_FABIO))
                     .orElseThrow(() -> new ObjectNotFoundException(new UniqueCode(UC_FABIO))),
                 ingMecc
+            )
+        );
+
+        courses.add(
+            new Course(
+                "basi di dati",
+                CourseType.ING_INFORMATICA,
+                6,
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_VLADIMIRO))
+                    .orElseThrow(() -> new ObjectNotFoundException(new UniqueCode(UC_VLADIMIRO))),
+                ingGestMag
             )
         );
 

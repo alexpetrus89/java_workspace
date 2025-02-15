@@ -39,6 +39,7 @@ public class ProfessorController {
         this.professorServiceImpl = professorServiceImpl;
     }
 
+
     // methods
     /** GET request */
     /**
@@ -54,6 +55,7 @@ public class ProfessorController {
             "professor/professor-list"
         ).getModelAndView();
     }
+
 
     /**
      * Retrieves a professor by unique code
@@ -82,6 +84,7 @@ public class ProfessorController {
         }
     }
 
+
     /**
      * Retrieves a professor by name
      * @param professorName
@@ -109,6 +112,7 @@ public class ProfessorController {
         }
     }
 
+
     /**
      * Creates a new professor
      * @return ModelAndView
@@ -122,6 +126,7 @@ public class ProfessorController {
         ).getModelAndView();
     }
 
+
     /**
      * Updates a professor
      * @return ModelAndView
@@ -134,7 +139,6 @@ public class ProfessorController {
             "professor/update/update"
         ).getModelAndView();
     }
-
 
 
     /** POST request */
@@ -165,7 +169,6 @@ public class ProfessorController {
             ).getModelAndView();
         }
     }
-
 
 
     /** PUT request */

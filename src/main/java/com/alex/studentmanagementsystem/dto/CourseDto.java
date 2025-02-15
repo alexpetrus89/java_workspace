@@ -3,13 +3,14 @@ package com.alex.studentmanagementsystem.dto;
 import com.alex.studentmanagementsystem.domain.DegreeCourse;
 import com.alex.studentmanagementsystem.domain.Professor;
 import com.alex.studentmanagementsystem.domain.immutable.CourseId;
+import com.alex.studentmanagementsystem.utility.CourseType;
 
 public class CourseDto {
 
     // instance variables
     private CourseId courseId;
     private String name;
-    private String category;
+    private CourseType type;
     private Integer cfu;
     private Professor professor;
     private DegreeCourse degreeCourse;
@@ -20,7 +21,7 @@ public class CourseDto {
     public CourseDto(
         CourseId courseId,
         String name,
-        String category,
+        CourseType type,
         Integer cfu,
         Professor professor,
         DegreeCourse degreeCourse
@@ -28,7 +29,7 @@ public class CourseDto {
     ) {
         this.courseId = courseId;
         this.name = name;
-        this.category = category;
+        this.type = type;
         this.cfu = cfu;
         this.professor = professor;
         this.degreeCourse = degreeCourse;
@@ -45,8 +46,8 @@ public class CourseDto {
         return name;
     }
 
-    public String getCategory() {
-        return category;
+    public CourseType getType() {
+        return type;
     }
 
     public Integer getCfu() {
@@ -72,8 +73,8 @@ public class CourseDto {
         this.name = name;
     }
 
-    public void setCategory(String category) {
-        this.category = category;
+    public void setType(CourseType type) {
+        this.type = type;
     }
 
     public void setCfu(Integer cfu) {

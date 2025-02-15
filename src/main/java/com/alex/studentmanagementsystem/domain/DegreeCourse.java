@@ -9,6 +9,7 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import com.alex.studentmanagementsystem.domain.immutable.DegreeCourseId;
+import com.alex.studentmanagementsystem.utility.DegreeType;
 
 import jakarta.persistence.Access;
 import jakarta.persistence.AccessType;
@@ -28,7 +29,7 @@ public class DegreeCourse implements Serializable {
     // instance variables
     private DegreeCourseId id;
     private String name;
-    private String graduationClass;
+    private DegreeType graduationClass;
     private int duration;
     private Collection<Course> courses = new HashSet<>();
     private Collection<Student> students = new HashSet<>();
@@ -39,7 +40,7 @@ public class DegreeCourse implements Serializable {
 
     public DegreeCourse(
         String name,
-        String graduationClass,
+        DegreeType graduationClass,
         int duration
     ) {
         this.id = new DegreeCourseId(UUID.randomUUID());
@@ -50,7 +51,7 @@ public class DegreeCourse implements Serializable {
 
     public DegreeCourse(
         String name,
-        String graduationClass,
+        DegreeType graduationClass,
         int duration,
         Collection<Course> courses,
         Collection<Student> students
@@ -77,7 +78,7 @@ public class DegreeCourse implements Serializable {
     }
 
     @Column(name = "graduationClass")
-    public String getGraduationClass() {
+    public DegreeType getGraduationClass() {
         return graduationClass;
     }
 
@@ -87,7 +88,7 @@ public class DegreeCourse implements Serializable {
     }
 
     // DegreeCourse is the owner of the relationship
-    @OneToMany
+    @OneToMany(mappedBy = "degreeCourse")
     public Collection<Course> getCourses() {
         return courses;
     }
@@ -112,7 +113,7 @@ public class DegreeCourse implements Serializable {
         this.name = name;
     }
 
-    public void setGraduationClass(String graduationClass) {
+    public void setGraduationClass(DegreeType graduationClass) {
         this.graduationClass = graduationClass;
     }
 

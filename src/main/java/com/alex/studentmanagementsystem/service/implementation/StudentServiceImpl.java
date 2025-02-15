@@ -62,7 +62,7 @@ public class StudentServiceImpl implements StudentService {
 	 * @throws NullPointerException if the register is null.
 	 */
 	@Override
-	public StudentDto getStudentByRegister(Register register)
+	public StudentDto getStudentByRegister(@NonNull Register register)
 		throws ObjectNotFoundException
 	{
 		return studentRepository
@@ -154,6 +154,7 @@ public class StudentServiceImpl implements StudentService {
 		// save
 		studentRepository.saveAndFlush(updatableStudent);
     }
+
 
 	/**
 	 * Deletes a student from the repository.

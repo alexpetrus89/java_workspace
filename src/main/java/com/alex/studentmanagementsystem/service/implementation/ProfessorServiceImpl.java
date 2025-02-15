@@ -31,6 +31,7 @@ public class ProfessorServiceImpl implements ProfessorService {
         this.professorRepository = professorRepository;
     }
 
+
     /**
      * Retrieves all professors.
      * @return List of ProfessorDto objects containing all professors' data.
@@ -85,6 +86,7 @@ public class ProfessorServiceImpl implements ProfessorService {
         );
     }
 
+
     /**
      * Retrieves a professor by name.
      * @param String name the name of the professor.
@@ -138,7 +140,9 @@ public class ProfessorServiceImpl implements ProfessorService {
      */
     @Override
     @Transactional
-    public void updateProfessor(ProfessorDto newProfessorDto) {
+    public void updateProfessor(ProfessorDto newProfessorDto)
+        throws ObjectNotFoundException
+    {
 
         Professor updatableProfessor = professorRepository
             .findByUniqueCode(newProfessorDto.getUniqueCode())

@@ -48,75 +48,70 @@ public class WebSecurityConfig implements Serializable {
         };
     }
 
+	/**
+	 * Configures the security filter chain for the application.
+	 * @param http the HttpSecurity object
+	 * @return SecurityFilterChain for the application
+	 * @throws Exception if an error occurs
+	 */
     @Bean
-	SecurityFilterChain securityFilterChain(HttpSecurity http)
-        throws Exception
-	{
-        http
-			.authorizeHttpRequests(
-                requests -> requests
-					.requestMatchers(
-						"api/v1/student",
-						"api/v1/student/home",
-						// user
-						"api/v1/user",
-						// student
-						"api/v1/student/view",
-						"api/v1/student/view/{studentName}",
-						"api/v1/student/view/{studentRegister}",
-						"api/v1/student/read",
-						"api/v1/student/read/{studentName}",
-						"api/v1/student/read/{studentRegister}",
-						"api/v1/student/create",
-						"api/v1/student/create/{studentRegister}",
-						"api/v1/student/update",
-						"api/v1/student/update/{studentRegister}",
-						"api/v1/student/delete/{studentRegister}",
-						// professor
-						"api/v1/professor/view",
-						"api/v1/professor/read",
-						"api/v1/professor/read/{professorName}",
-						"api/v1/professor/read/{uniqueCode}",
-						"api/v1/professor/create",
-						"api/v1/professor/create/{uniqueCode}",
-						"api/v1/professor/update",
-						"api/v1/professor/update/{uniqueCode}",
-						"api/v1/professor/delete/{uniqueCode}",
-						// course
-						"api/v1/course",
-						"api/v1/course/home",
-						"api/v1/course/view",
-						"api/v1/course/view/{courseId}",
-						"api/v1/course/view/{courseName}",
-						"api/v1/course/create/{courseId}",
-						"api/v1/course/update/{courseId}",
-						"api/v1/course/delete/{courseId}",
-						// degree course
-						"api/v1/degree_course/view",
-						"api/v1/degree-course/read-courses",
-						"api/v1/degree-course/courses/view",
-						"api/v1/degree-course/read-professors",
-						"api/v1/degree-course/professors/view",
-						"api/v1/degree-course/read-students",
-						"api/v1/degree-course/students/view",
-						// examination
-						"api/v1/examination/view",
-						"api/v1/examination/course-name",
-						"api/v1/examination/student-register",
-						"api/v1/examination/professor-unique-code",
-						"api/v1/examination/create",
-						"api/v1/examination/update",
-						"api/v1/examination/delete"
-					)
-                    .hasRole("USER")
-                    .anyRequest()
-                    .permitAll()
+	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+
+		http.authorizeHttpRequests(requests ->
+			requests.requestMatchers(
+				// user
+				"user/user-menu",
+				"api/v1/user",
+				// student
+				"student/student-menu",
+				"api/v1/student/view",
+				"api/v1/student/read/read",
+				"api/v1/student/read/{name}",
+				"api/v1/student/create/create",
+				"api/v1/student/update/update",
+				"api/v1/student/delete/delete",
+				"api/v1/student/read/{register}",
+				"api/v1/student/delete/{register}",
+				"api/v1/student/delete/{name}",
+				// professor
+				"professor/professor-menu",
+				"api/v1/professor/view",
+				"api/v1/professor/read/read",
+				"api/v1/professor/create/create",
+				"api/v1/professor/update/update",
+				"api/v1/professor/delete/delete",
+				// course
+				"course/course-menu",
+				"api/v1/course/view",
+				"api/v1/course/read/read",
+				"api/v1/course/create/create",
+				"api/v1/course/update/update",
+				"api/v1/course/delete/delete",
+				// degree course
+				"degree_course/degree-course-menu",
+				"degree_course/read/read-courses",
+				"degree_course/read/read-professors",
+				"degree_course/read/read-students",
+				"api/v1/degree_course/view",
+				"api/v1/degree-course/professors/view",
+				"api/v1/degree-course/courses/view",
+				"api/v1/degree-course/students/view",
+				// examination
+				"examination/examination-menu",
+				"api/v1/examination/view",
+				"api/v1/examination/create/create",
+				"api/v1/examination/update/update",
+				"api/v1/examination/delete/delete",
+				"api/v1/examination/read/course-name",
+				"api/v1/examination/read/student-register",
+				"api/v1/examination/read/professor-unique-code"
 			)
-			.formLogin(form -> form
-				.loginPage("/login")
-				.permitAll()
-			)
-			.logout(LogoutConfigurer::permitAll);
+            .hasRole("USER")
+            .anyRequest()
+            .permitAll()
+		)
+		.formLogin(form -> form.loginPage("/login").permitAll())
+		.logout(LogoutConfigurer::permitAll);
 
 		return http.build();
 	}

@@ -26,7 +26,7 @@ public interface StudentService {
      * @return StudentDto object
      * @throws ObjectNotFoundException if the student does not exist
      */
-    StudentDto getStudentByRegister(Register register)
+    StudentDto getStudentByRegister(@NonNull Register register)
         throws ObjectNotFoundException;
 
     /**
@@ -67,12 +67,12 @@ public interface StudentService {
     /**
      * Deletes a student from the repository based on their register.
      *
-     * @param Register studentRegister the register of the student to be deleted.
+     * @param Register register the register of the student to be deleted.
      * @throws ObjectNotFoundException if no student with the given register
      *                                  exists in the repository.
      */
 	@Transactional
-    void deleteStudent(@NonNull Register studentRegister)
+    void deleteStudent(@NonNull Register register)
         throws ObjectNotFoundException;
 
 }

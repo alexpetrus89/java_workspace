@@ -1,13 +1,14 @@
 package com.alex.studentmanagementsystem.dto;
 
 import com.alex.studentmanagementsystem.domain.immutable.DegreeCourseId;
+import com.alex.studentmanagementsystem.utility.DegreeType;
 
 public class DegreeCourseDto {
 
     // instance variables
     private DegreeCourseId id;
     private String name;
-    private String graduationClass;
+    private DegreeType graduationClass;
     private int duration;
 
 
@@ -18,7 +19,7 @@ public class DegreeCourseDto {
     public DegreeCourseDto(
         DegreeCourseId id,
         String name,
-        String graduationClass,
+        DegreeType graduationClass,
         int duration
     ) {
         this.id = id;
@@ -37,7 +38,7 @@ public class DegreeCourseDto {
         return name;
     }
 
-    public String getGraduationClass() {
+    public DegreeType getGraduationClass() {
         return graduationClass;
     }
 
@@ -55,7 +56,7 @@ public class DegreeCourseDto {
         this.name = name;
     }
 
-    public void setGraduationClass(String graduationClass) {
+    public void setGraduationClass(DegreeType graduationClass) {
         this.graduationClass = graduationClass;
     }
 

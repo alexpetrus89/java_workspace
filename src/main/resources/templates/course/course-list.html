@@ -12,13 +12,13 @@
     <table>
         <tr>
             <th>Name</th>
-            <th>Category</th>
+            <th>Type</th>
             <th>Cfu</th>
             <th>Professor name</th>
         </tr>
         <tr th:each="course : ${courses}">
             <td th:text="${course.name}">Course name</td>
-            <td th:text="${course.category}">Category</td>
+            <td th:text="${course.type.name()}">Course type</td>
             <td th:text="${course.cfu}">Cfu</td>
             <td th:text="${course.professor.name}">Professor</td>
         </tr>

@@ -38,8 +38,8 @@ public class MvcConfig implements WebMvcConfigurer, Serializable {
                   .setViewName("home");
             registry.addViewController("/home")
                   .setViewName("home");
-		registry.addViewController("/hello")
-                  .setViewName("hello");
+		registry.addViewController("/logout")
+                  .setViewName("logout");
 		registry.addViewController("/login")
                   .setViewName("login");
             // user page
@@ -72,30 +72,38 @@ public class MvcConfig implements WebMvcConfigurer, Serializable {
             // examination page
             registry.addViewController("/examination/examination-menu")
                   .setViewName("examination/examination-menu");
-            registry.addViewController("/examination/examination-course")
-                  .setViewName("examination/examination-course");
-            registry.addViewController("/examination/examination-student")
-                  .setViewName("examination/examination-student");
-            registry.addViewController("/examination/examination-professor")
-                  .setViewName("examination/examination-professor");
+            registry.addViewController("/examination/read/examination-course")
+                  .setViewName("examination/read/examination-course");
+            registry.addViewController("/examination/read/examination-student")
+                  .setViewName("examination/read/examination-student");
+            registry.addViewController("/examination/read/examination-professor")
+                  .setViewName("examination/read/examination-professor");
             registry.addViewController("/examination/create/create")
                   .setViewName("examination/create/create");
             registry.addViewController("/examination/update/update")
                   .setViewName("examination/update/update");
+                  registry.addViewController("/examination/delete/delete")
+                  .setViewName("examination/delete/delete");
             // course page
             registry.addViewController("/course/course-menu")
                   .setViewName("course/course-menu");
             registry.addViewController("/course/read/read")
                   .setViewName("course/read/read");
+            registry.addViewController("/course/create/create")
+                  .setViewName("course/create/create");
+            registry.addViewController("/course/update/update")
+                  .setViewName("course/update/update");
+            registry.addViewController("/course/delete/delete")
+                  .setViewName("course/delete/delete");
             // degree course page
             registry.addViewController("/degree_course/degree-course-menu")
                   .setViewName("degree_course/degree-course-menu");
-            registry.addViewController("/degree_course/read-courses")
-                  .setViewName("degree_course/read-courses");
-            registry.addViewController("/degree_course/read-professors")
-                  .setViewName("degree_course/read-professors");
-            registry.addViewController("/degree_course/read-students")
-                  .setViewName("degree_course/read-students");
+            registry.addViewController("/degree_course/read/read-courses")
+                  .setViewName("degree_course/read/read-courses");
+            registry.addViewController("/degree_course/read/read-professors")
+                  .setViewName("degree_course/read/read-professors");
+            registry.addViewController("/degree_course/read/read-students")
+                  .setViewName("degree_course/read/read-students");
 	}
 
       @Override

@@ -7,7 +7,7 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import com.alex.studentmanagementsystem.domain.immutable.CourseId;
-import com.alex.studentmanagementsystem.utility.CourseType;
+import com.alex.studentmanagementsystem.utils.CourseType;
 
 import jakarta.persistence.Access;
 import jakarta.persistence.AccessType;

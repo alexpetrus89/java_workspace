@@ -16,8 +16,8 @@ import com.alex.studentmanagementsystem.domain.immutable.Register;
 import com.alex.studentmanagementsystem.domain.immutable.UniqueCode;
 import com.alex.studentmanagementsystem.exception.ObjectAlreadyExistsException;
 import com.alex.studentmanagementsystem.exception.ObjectNotFoundException;
-import com.alex.studentmanagementsystem.service.implementation.ExaminationServiceImpl;
-import com.alex.studentmanagementsystem.utility.CreateView;
+import com.alex.studentmanagementsystem.service.impl.ExaminationServiceImpl;
+import com.alex.studentmanagementsystem.utils.CreateView;
 
 import jakarta.transaction.Transactional;
 

@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.alex.studentmanagementsystem.exception.ObjectNotFoundException;
-import com.alex.studentmanagementsystem.service.implementation.DegreeCourseServiceImpl;
-import com.alex.studentmanagementsystem.utility.CreateView;
+import com.alex.studentmanagementsystem.service.impl.DegreeCourseServiceImpl;
+import com.alex.studentmanagementsystem.utils.CreateView;
 
 
 @RestController

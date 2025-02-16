@@ -9,7 +9,7 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import com.alex.studentmanagementsystem.domain.immutable.DegreeCourseId;
-import com.alex.studentmanagementsystem.utility.DegreeType;
+import com.alex.studentmanagementsystem.utils.DegreeType;
 
 import jakarta.persistence.Access;
 import jakarta.persistence.AccessType;

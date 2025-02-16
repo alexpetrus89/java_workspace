@@ -1,4 +1,4 @@
-package com.alex.studentmanagementsystem.service.implementation;
+package com.alex.studentmanagementsystem.service.impl;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -56,10 +56,11 @@ public class StudentServiceImpl implements StudentService {
 
 	/**
 	 * Retrieves a student by register.
-	 * @param Register register the register of the student.
+	 * @param register the register of the student.
 	 * @return StudentDto object containing the student's data.
 	 * @throws ObjectNotFoundException if the student does not exist.
 	 * @throws IllegalArgumentException if the register is null.
+	 * @throws UnsupportedOperationException if the register is not unique
 	 */
 	@Override
 	public StudentDto getStudentByRegister(@NonNull Register register)
@@ -74,10 +75,11 @@ public class StudentServiceImpl implements StudentService {
 
 	/**
 	 * Retrieves a student by name.
-	 * @param String name the name of the student.
+	 * @param name the name of the student.
 	 * @return StudentDto object containing the student's data.
 	 * @throws ObjectNotFoundException if no student with the given name exists.
 	 * @throws IllegalArgumentException if the name is null.
+	 * @throws UnsupportedOperationException if the name is not unique
 	 */
 	@Override
 	public StudentDto getStudentByName(@NonNull String name)
@@ -92,7 +94,7 @@ public class StudentServiceImpl implements StudentService {
 
 	/**
 	 * Adds a new student to the repository.
-	 * @param StudentDto studentDto the student data transfer object containing
+	 * @param studentDto the student data transfer object containing
 	 * 					 the details of the student to be added.
 	 * @throws ObjectAlreadyExistsException if a student with the same register
 	 * 										already exists in the repository.
@@ -121,18 +123,21 @@ public class StudentServiceImpl implements StudentService {
 		if(!degreeCourseRepository.existsByName(degreeCourse))
 			throw new ObjectNotFoundException(degreeCourse, EXCEPTION_DEGREE_COURSE_IDENTIFIER);
 
+		// save
 		studentRepository.saveAndFlush(StudentMapper.mapToStudent(studentDto));
     }
 
 
 	/**
 	 * Updates an existing student's information.
-	 * @param StudentDto studentDto the data transfer object containing the new
+	 * @param studentDto the data transfer object containing the new
 	 * 					 details of the student to be updated.
 	 * @throws ObjectNotFoundException if no student with the given register exists
 	 *                                 in the repository or if the specified degree
 	 *                                 course does not exist.
 	 * @throws IllegalArgumentException if the newStudentDto is null.
+	 * @throws UnsupportedOperationException if the register is not unique or if
+	 * 										the degree course is not unique
 	 */
 	@Override
 	@Transactional
@@ -158,7 +163,6 @@ public class StudentServiceImpl implements StudentService {
 			updatableStudent.setEmail(newEmail);
 		if(newDob != null && newDob != java.time.LocalDate.now())
 			updatableStudent.setDob(newDob);
-
 		updatableStudent.setDegreeCourse(newDegreeCourse);
 
 		// save
@@ -168,7 +172,7 @@ public class StudentServiceImpl implements StudentService {
 
 	/**
 	 * Deletes a student from the repository.
-	 * @param Register register the register of the student to be deleted.
+	 * @param register the register of the student to be deleted.
 	 * @throws ObjectNotFoundException if no student with the given register exists in
 	 * 								   the repository.
 	 * @throws IllegalArgumentException if the given register is empty.

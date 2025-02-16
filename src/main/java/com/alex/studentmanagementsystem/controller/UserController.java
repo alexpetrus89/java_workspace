@@ -13,8 +13,8 @@ import org.springframework.web.servlet.ModelAndView;
 import com.alex.studentmanagementsystem.domain.User;
 import com.alex.studentmanagementsystem.exception.ObjectNotFoundException;
 import com.alex.studentmanagementsystem.repository.UserRepository;
-import com.alex.studentmanagementsystem.utility.CreateView;
-import com.alex.studentmanagementsystem.utility.RegistrationForm;
+import com.alex.studentmanagementsystem.utils.CreateView;
+import com.alex.studentmanagementsystem.utils.RegistrationForm;
 
 import jakarta.transaction.Transactional;
 
@@ -69,7 +69,6 @@ public class UserController {
     /**
      * Updates the current authenticated user's information and saves it to the repository.
      * This method is transactional and mapped to the HTTP PUT request for "/update".
-     *
      * @param form RegistrationForm containing updated user details.
      * @return String representing the redirect URL after the update process.
      * @throws ObjectNotFoundException if the authenticated user is not found.

@@ -16,8 +16,8 @@ import com.alex.studentmanagementsystem.dto.StudentDto;
 import com.alex.studentmanagementsystem.exception.ObjectAlreadyExistsException;
 import com.alex.studentmanagementsystem.exception.ObjectNotFoundException;
 import com.alex.studentmanagementsystem.mapper.StudentMapper;
-import com.alex.studentmanagementsystem.service.implementation.StudentServiceImpl;
-import com.alex.studentmanagementsystem.utility.CreateView;
+import com.alex.studentmanagementsystem.service.impl.StudentServiceImpl;
+import com.alex.studentmanagementsystem.utils.CreateView;
 
 import jakarta.transaction.Transactional;
 
@@ -58,10 +58,11 @@ public class StudentController {
 
     /**
      * Retrieves a student by register
-     * @param Register register
+     * @param register the register of the student
      * @return ModelAndView
      * @throws ObjectNotFoundException if the student is not found
      * @throws IllegalArgumentException if the register is null or is empty
+     * @throws UnsupportedOperationException if the register is not unique
      */
     @GetMapping(path = "/read/register")
 	public ModelAndView getStudentByRegister(@RequestParam String register) {
@@ -85,10 +86,11 @@ public class StudentController {
 
     /**
      * Retrieves a student by name
-     * @param String studentName
+     * @param name the name of the student
      * @return ModelAndView
      * @throws ObjectNotFoundException if the student is not found
      * @throws IllegalArgumentException if the name is null or is empty
+     * @throws UnsupportedOperationException if the name is not unique
      */
     @GetMapping(path = "/read/name")
 	public ModelAndView getStudentByName(@RequestParam String name) {
@@ -142,7 +144,7 @@ public class StudentController {
 
     /**
      * Creates a new student
-     * @param StudentDto studentDto the student data transfer object
+     * @param studentDto the student data transfer object
      * @return ModelAndView
      * @throws ObjectAlreadyExistsException if the student already exists
      * @throws ObjectNotFoundException if the degree course does not exist.
@@ -174,10 +176,11 @@ public class StudentController {
 
     /**
      * Updates a student
-     * @param StudentDto studentDto the student data transfer object
+     * @param studentDto the student data transfer object
      * @return ModelAndView
      * @throws ObjectNotFoundException if the student does not exist
      * @throws IllegalArgumentException if the register is null or empty
+     * @throws UnsupportedOperationException if the register is not unique
      */
     @PutMapping("/update")
     @Transactional // con l'annotazione transactional effettua una gestione propria degli errori
@@ -204,7 +207,7 @@ public class StudentController {
     /**DELETE request*/
     /**
      * Deletes a student
-     * @param String register the register of the student
+     * @param register the register of the student
      * @return ModelAndView
      * @throws ObjectNotFoundException if the student does not exist
      * @throws IllegalArgumentException if the register is null or empty
@@ -230,7 +233,7 @@ public class StudentController {
 
     /**
      * Deletes a student
-     * @param String name the name of the student
+     * @param name the name of the student
      * @return ModelAndView
      * @throws ObjectNotFoundException if the student does not exist
      * @throws IllegalArgumentException if the name is null or empty

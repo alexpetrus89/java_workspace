@@ -1,4 +1,4 @@
-package com.alex.studentmanagementsystem.utility;
+package com.alex.studentmanagementsystem.utils;
 
 public enum DegreeType {
 

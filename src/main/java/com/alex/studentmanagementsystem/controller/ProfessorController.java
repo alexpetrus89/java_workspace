@@ -17,8 +17,8 @@ import com.alex.studentmanagementsystem.dto.ProfessorDto;
 import com.alex.studentmanagementsystem.exception.ObjectAlreadyExistsException;
 import com.alex.studentmanagementsystem.exception.ObjectNotFoundException;
 import com.alex.studentmanagementsystem.mapper.ProfessorMapper;
-import com.alex.studentmanagementsystem.service.implementation.ProfessorServiceImpl;
-import com.alex.studentmanagementsystem.utility.CreateView;
+import com.alex.studentmanagementsystem.service.impl.ProfessorServiceImpl;
+import com.alex.studentmanagementsystem.utils.CreateView;
 
 import jakarta.transaction.Transactional;
 
@@ -59,19 +59,21 @@ public class ProfessorController {
 
     /**
      * Retrieves a professor by unique code
-     * @param uniqueCode
+     * @param uniqueCode the unique code of the professor
      * @return ModelAndView
-     * @throws NullPointerException if the unique code is null
      * @throws ObjectNotFoundException if the professor does not exist
+     * @throws IllegalArgumentException if the unique code is empty
+     * @throws UnsupportedOperationException if the unique code is not unique
+     * @throws NullPointerException if the unique code is null
      */
     @GetMapping(path = "/read/uniquecode")
     public ModelAndView getProfessorsByUniqueCode(@RequestParam UniqueCode uniqueCode) {
 
         try {
+            ProfessorDto professorDto = professorServiceImpl.getProfessorByUniqueCode(uniqueCode);
+
             return new CreateView(
-                ProfessorMapper.mapToProfessor(
-                    professorServiceImpl.getProfessorByUniqueCode(uniqueCode)
-                ),
+                ProfessorMapper.mapToProfessor(professorDto),
                 "professor/read/read-result"
             ).getModelAndView();
 
@@ -88,19 +90,21 @@ public class ProfessorController {
 
     /**
      * Retrieves a professor by name
-     * @param professorName
+     * @param name the name of the professor
      * @return ModelAndView
-     * @throws NullPointerException if the name is null
      * @throws ObjectNotFoundException if the professor does not exist
+     * @throws IllegalArgumentException if the name is empty or null
+     * @throws UnsupportedOperationException if the name is not unique
+     * @throws NullPointerException if the name is null
      */
     @GetMapping(path = "/read/name")
     public ModelAndView getProfessorsByName(@RequestParam String name) {
+
         try {
+            ProfessorDto professorDto = professorServiceImpl.getProfessorByName(name);
 
             return new CreateView(
-                ProfessorMapper.mapToProfessor(
-                    professorServiceImpl.getProfessorByName(name.toLowerCase())
-                ),
+                ProfessorMapper.mapToProfessor(professorDto),
                 "professor/read/read-result"
             ).getModelAndView();
 
@@ -146,9 +150,14 @@ public class ProfessorController {
     /** POST request */
     /**
      * Creates a new professor
-     * @param professorDto
+     * @param professorDto the data transfer object containing the details
+     *                     of the professor to be added
      * @return ModelAndView
-     * @throws ObjectAlreadyExistsException
+     * @throws ObjectAlreadyExistsException if a professor with the same unique
+     *                                      code already exists
+     * @throws IllegalArgumentException if the unique code is empty or null
+     * @throws UnsupportedOperationException if the unique code is not unique
+     * @throws NullPointerException if the unique code is null
      */
     @PostMapping("/create")
     @Transactional // con l'annotazione transactional effettua una gestione propria degli errori
@@ -176,10 +185,13 @@ public class ProfessorController {
     /** PUT request */
     /**
      * Updates a professor
-     * @param professorDto
+     * @param professorDto thr data transfer object containing the new details
+     *                     of the professor to be updated
      * @return ModelAndView
-     * @throws ObjectNotFoundException
-     * @throws NullPointerException
+     * @throws ObjectNotFoundException if the professor does not exist
+     * @throws IllegalArgumentException if the unique code is empty or null
+     * @throws UnsupportedOperationException if the unique code is not unique
+     * @throws NullPointerException if the unique code is null
      */
     @PutMapping("/update")
     @Transactional // con l'annotazione transactional effettua una gestione propria degli errori
@@ -207,9 +219,11 @@ public class ProfessorController {
     /** DELETE request */
     /**
      * Deletes a professor
-     * @param uniqueCode
+     * @param uniqueCode the unique code of the professor
      * @return ModelAndView
      * @throws ObjectNotFoundException if the professor does not exist
+     * @throws IllegalArgumentException if the unique code is empty
+     * @throws UnsupportedOperationException if the unique code is not unique
      * @throws NullPointerException if the unique code is null
      */
     @DeleteMapping(path = "/delete/uniquecode")

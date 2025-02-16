@@ -9,7 +9,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.alex.studentmanagementsystem.domain.immutable.UserId;
-import com.alex.studentmanagementsystem.utility.Builder;
+import com.alex.studentmanagementsystem.utils.Builder;
 
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;

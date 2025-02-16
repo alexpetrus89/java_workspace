@@ -1,7 +1,7 @@
 package com.alex.studentmanagementsystem.dto;
 
 import com.alex.studentmanagementsystem.domain.immutable.DegreeCourseId;
-import com.alex.studentmanagementsystem.utility.DegreeType;
+import com.alex.studentmanagementsystem.utils.DegreeType;
 
 public class DegreeCourseDto {
 

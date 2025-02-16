@@ -1,4 +1,4 @@
-package com.alex.studentmanagementsystem.utility;
+package com.alex.studentmanagementsystem.utils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.alex.studentmanagementsystem.domain.User;

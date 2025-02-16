@@ -9,7 +9,7 @@ import com.alex.studentmanagementsystem.domain.immutable.CourseId;
 import com.alex.studentmanagementsystem.dto.CourseDto;
 import com.alex.studentmanagementsystem.exception.ObjectAlreadyExistsException;
 import com.alex.studentmanagementsystem.exception.ObjectNotFoundException;
-import com.alex.studentmanagementsystem.utility.CourseType;
+import com.alex.studentmanagementsystem.utils.CourseType;
 
 
 

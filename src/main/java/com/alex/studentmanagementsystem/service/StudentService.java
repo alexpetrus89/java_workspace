@@ -22,7 +22,7 @@ public interface StudentService {
 
     /**
      * Return a student by register
-     * @param Register register
+     * @param register the register of the student
      * @return StudentDto object
      * @throws ObjectNotFoundException if the student does not exist
      * @throws IllegalArgumentException if the register is null
@@ -32,7 +32,7 @@ public interface StudentService {
 
     /**
      * Retrieves a student by their name.
-     * @param String name the name of the student.
+     * @param name the name of the student.
      * @return StudentDto object containing the student's data.
      * @throws ObjectNotFoundException if no student with the given name exists.
      * @throws IllegalArgumentException if the name is null.
@@ -42,7 +42,7 @@ public interface StudentService {
 
     /**
      * Adds a new student to the repository
-     * @param StudentDto studentDto the student data transfer object containing
+     * @param studentDto the student data transfer object containing
      *                   the details of the student to be added
      * @throws ObjectAlreadyExistsException if a student with the same register
      *                                      already exists in the repository
@@ -54,7 +54,7 @@ public interface StudentService {
 
     /**
      * Update an existing student's information
-     * @param StudentDto studentDto the data transfer object containing the new
+     * @param studentDto the data transfer object containing the new
      *                   details of the student to be updated
      * @throws ObjectNotFoundException if no student with the given register exists
      *                                 in the repository or if the specified degree
@@ -67,14 +67,13 @@ public interface StudentService {
 
     /**
      * Deletes a student from the repository based on their register.
-     * @param Register register the register of the student to be deleted.
-     * @throws ObjectNotFoundException if no student with the given register
+     * @param register the register of the student to be deleted.
+     * @throw ObjectNotFoundException if no student with the given register
      *                                  exists in the repository.
      * @throws IllegalArgumentException if the register is null.
      * @throws NullPointerException if the register is null.
      */
 	@Transactional
-    void deleteStudent(@NonNull Register register)
-        throws ObjectNotFoundException;
+    void deleteStudent(@NonNull Register register) throws ObjectNotFoundException;
 
 }

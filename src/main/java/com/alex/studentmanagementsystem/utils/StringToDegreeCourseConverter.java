@@ -1,4 +1,4 @@
-package com.alex.studentmanagementsystem.utility;
+package com.alex.studentmanagementsystem.utils;
 
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.lang.NonNull;

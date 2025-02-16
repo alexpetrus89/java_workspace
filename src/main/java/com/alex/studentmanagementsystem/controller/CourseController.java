@@ -10,9 +10,9 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.alex.studentmanagementsystem.domain.Course;
 import com.alex.studentmanagementsystem.exception.ObjectAlreadyExistsException;
-import com.alex.studentmanagementsystem.service.implementation.CourseServiceImpl;
-import com.alex.studentmanagementsystem.utility.CourseType;
-import com.alex.studentmanagementsystem.utility.CreateView;
+import com.alex.studentmanagementsystem.service.impl.CourseServiceImpl;
+import com.alex.studentmanagementsystem.utils.CourseType;
+import com.alex.studentmanagementsystem.utils.CreateView;
 
 import jakarta.transaction.Transactional;
 

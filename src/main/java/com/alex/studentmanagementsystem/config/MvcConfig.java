@@ -13,7 +13,7 @@ import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.alex.studentmanagementsystem.repository.DegreeCourseRepository;
-import com.alex.studentmanagementsystem.utility.StringToDegreeCourseConverter;
+import com.alex.studentmanagementsystem.utils.StringToDegreeCourseConverter;
 
 @Configuration
 public class MvcConfig implements WebMvcConfigurer, Serializable {

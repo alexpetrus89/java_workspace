@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
 import com.alex.studentmanagementsystem.domain.Course;
 import com.alex.studentmanagementsystem.domain.immutable.CourseId;
 import com.alex.studentmanagementsystem.domain.immutable.UniqueCode;
-import com.alex.studentmanagementsystem.utility.CourseType;
+import com.alex.studentmanagementsystem.utils.CourseType;
 
 
 

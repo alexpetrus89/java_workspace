@@ -1,4 +1,4 @@
-package com.alex.studentmanagementsystem.service.implementation;
+package com.alex.studentmanagementsystem.service.impl;
 
 import java.util.List;
 
@@ -17,7 +17,7 @@ import com.alex.studentmanagementsystem.repository.CourseRepository;
 import com.alex.studentmanagementsystem.repository.DegreeCourseRepository;
 import com.alex.studentmanagementsystem.repository.ProfessorRepository;
 import com.alex.studentmanagementsystem.service.CourseService;
-import com.alex.studentmanagementsystem.utility.CourseType;
+import com.alex.studentmanagementsystem.utils.CourseType;
 
 import jakarta.transaction.Transactional;
 

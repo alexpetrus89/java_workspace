@@ -1,4 +1,4 @@
-package com.alex.studentmanagementsystem.utility;
+package com.alex.studentmanagementsystem.utils;
 
 import org.springframework.web.servlet.ModelAndView;
 

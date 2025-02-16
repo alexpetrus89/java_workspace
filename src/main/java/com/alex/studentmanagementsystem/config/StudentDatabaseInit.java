@@ -32,10 +32,10 @@ import com.alex.studentmanagementsystem.repository.ExaminationRepository;
 import com.alex.studentmanagementsystem.repository.ProfessorRepository;
 import com.alex.studentmanagementsystem.repository.StudentRepository;
 import com.alex.studentmanagementsystem.repository.UserRepository;
-import com.alex.studentmanagementsystem.utility.Builder;
-import com.alex.studentmanagementsystem.utility.CourseType;
-import com.alex.studentmanagementsystem.utility.DegreeType;
-import com.alex.studentmanagementsystem.utility.RegistrationForm;
+import com.alex.studentmanagementsystem.utils.Builder;
+import com.alex.studentmanagementsystem.utils.CourseType;
+import com.alex.studentmanagementsystem.utils.DegreeType;
+import com.alex.studentmanagementsystem.utils.RegistrationForm;
 
 
 @Configuration

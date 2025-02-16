@@ -19,60 +19,74 @@ public interface ProfessorService {
      */
     List<ProfessorDto> getProfessors();
 
+
     /**
      * get professor by unique code
-     * @param UniqueCode uniqueCode
-     * @return ProfessorDto object
+     * @param uniqueCode the unique code of the professor to retrieve
+     * @return ProfessorDto
      * @throws ObjectNotFoundException if no professor with the given unique
      *                                 code exists
+     * @throws IllegalArgumentException if the unique code is empty or null
      */
-    ProfessorDto getProfessorByUniqueCode(UniqueCode uniqueCode)
+    ProfessorDto getProfessorByUniqueCode(@NonNull UniqueCode uniqueCode)
         throws ObjectNotFoundException;
+
 
     /**
      * get professor by fiscal code
-     * @param fiscalCode
-     * @return ProfessorDto object
+     * @param fiscalCode the fiscal code of the professor
+     * @return ProfessorDto
      * @throws ObjectNotFoundException if no professor with the given fiscal
      *                                 code exists
+     * @throws IllegalArgumentException if the fiscal code is empty or null
      */
-    ProfessorDto getProfessorByFiscalCode(String fiscalCode)
+    ProfessorDto getProfessorByFiscalCode(@NonNull String fiscalCode)
         throws ObjectNotFoundException;
+
 
     /**
      * get professor by name
-     * @param name
-     * @return ProfessorDto object
+     * @param name the name of the professor
+     * @return ProfessorDto
      * @throws ObjectNotFoundException if no professor with the given name exists
+     * @throws IllegalArgumentException if the name is empty or null
      */
-    ProfessorDto getProfessorByName(String name)
+    ProfessorDto getProfessorByName(@NonNull String name)
         throws ObjectNotFoundException;
+
 
     /**
      * add new professor
-     * @param ProfessorDto professorDto
+     * @param professorDto the data transfer object containing the details
+     *                     of the professor to be added
      * @throws ObjectAlreadyExistsException if a professor with the same unique
      *                                      code already exists
+     * @throws IllegalArgumentException if the unique code is empty or null
      */
     @Transactional
-    void addNewProfessor(ProfessorDto professorDto)
+    void addNewProfessor(@NonNull ProfessorDto professorDto)
         throws ObjectAlreadyExistsException;
+
 
     /**
      * update professor
-     * @param ProfessorDto professorDto
+     * @param professorDto the data transfer object containing the new
+     *                     details of the professor to be updated
      * @throws ObjectNotFoundException if no professor with the given unique
      *                                 code exists
+     * @throws IllegalArgumentException if the unique code is empty or null
      */
     @Transactional
-    void updateProfessor(ProfessorDto professorDto)
+    void updateProfessor(@NonNull ProfessorDto professorDto)
         throws ObjectNotFoundException;
+
 
     /**
      * delete professor
-     * @param UniqueCode uniqueCode
+     * @param uniqueCode the unique code of the professor to delete
      * @throws ObjectNotFoundException if no professor with the given unique
      *                                 code exists
+     * @throws IllegalArgumentException if the unique code is empty or null
      */
 	@Transactional
     void deleteProfessor(@NonNull UniqueCode uniqueCode)

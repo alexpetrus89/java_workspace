@@ -3,7 +3,7 @@ package com.alex.studentmanagementsystem.dto;
 import com.alex.studentmanagementsystem.domain.DegreeCourse;
 import com.alex.studentmanagementsystem.domain.Professor;
 import com.alex.studentmanagementsystem.domain.immutable.CourseId;
-import com.alex.studentmanagementsystem.utility.CourseType;
+import com.alex.studentmanagementsystem.utils.CourseType;
 
 public class CourseDto {
 

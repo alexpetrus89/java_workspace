@@ -1,4 +1,4 @@
-package com.alex.studentmanagementsystem.service.implementation;
+package com.alex.studentmanagementsystem.service.impl;
 
 import java.util.List;
 

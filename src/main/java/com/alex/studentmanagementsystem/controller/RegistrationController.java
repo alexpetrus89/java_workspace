@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.alex.studentmanagementsystem.repository.UserRepository;
-import com.alex.studentmanagementsystem.utility.Builder;
-import com.alex.studentmanagementsystem.utility.RegistrationForm;
+import com.alex.studentmanagementsystem.utils.Builder;
+import com.alex.studentmanagementsystem.utils.RegistrationForm;
 
 
 

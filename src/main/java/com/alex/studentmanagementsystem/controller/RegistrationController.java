@@ -65,7 +65,7 @@ public class RegistrationController {
         // set the values
         form.withUsername(username);
         form.withPassword(password);
-        form.withFullname(fullname);
+        form.withFullname(fullname.toLowerCase());
         form.withStreet(street);
         form.withCity(city);
         form.withState(state);

@@ -94,11 +94,11 @@ public class CourseController {
         try{
             return new CreateView(
                 courseServiceImpl.addNewCourse(
-                    name,
+                    name.toLowerCase(),
                     type,
                     cfu,
-                    uniqueCode,
-                    degreeCourseName
+                    uniqueCode.toLowerCase(),
+                    degreeCourseName.toUpperCase()
                 ),
                 "course/create/create-result"
             ).getModelAndView();
@@ -127,12 +127,12 @@ public class CourseController {
         try {
             return new CreateView(
                 courseServiceImpl.updateCourse(
-                    newName,
-                    oldName,
+                    newName.toLowerCase(),
+                    oldName.toLowerCase(),
                     newType,
                     newCfu,
-                    newUniqueCode,
-                    newDegreeCourseName
+                    newUniqueCode.toLowerCase(),
+                    newDegreeCourseName.toUpperCase()
                 ),
                 "course/update/update-result"
             ).getModelAndView();

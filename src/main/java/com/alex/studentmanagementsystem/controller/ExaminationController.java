@@ -67,7 +67,7 @@ public class ExaminationController {
 
             return new CreateView(
                 ATTRIBUTE_NAME,
-                examinationServiceImpl.getExaminationsByCourseName(name),
+                examinationServiceImpl.getExaminationsByCourseName(name.toLowerCase()),
                 VIEW_PATH
             ).getModelAndView();
 

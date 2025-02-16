@@ -15,6 +15,10 @@ public record Register(String register) implements Serializable {
         Assert.isTrue(register.matches("\\d{6}"), "register must be a string of exactly 6 digits");
     }
 
+    public boolean isEmpty() {
+        return register.isEmpty();
+    }
+
     @Override
     public String toString() {
         return String.format(register);

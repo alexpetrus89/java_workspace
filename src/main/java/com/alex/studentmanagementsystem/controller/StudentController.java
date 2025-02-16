@@ -58,10 +58,10 @@ public class StudentController {
 
     /**
      * Retrieves a student by register
-     * @param studentRegister the registration number to search
+     * @param Register register
      * @return ModelAndView
      * @throws ObjectNotFoundException if the student is not found
-     * @throws NullPointerException if the register is null
+     * @throws IllegalArgumentException if the register is null or is empty
      */
     @GetMapping(path = "/read/register")
 	public ModelAndView getStudentByRegister(@RequestParam String register) {
@@ -69,7 +69,7 @@ public class StudentController {
         try {
             return new CreateView(
                 StudentMapper.mapToStudent(
-                    studentServiceImpl.getStudentByRegister(new Register(register))
+                    studentServiceImpl.getStudentByRegister(new Register(register.toLowerCase()))
                 ),
                 "student/read/read-result"
             ).getModelAndView();
@@ -88,14 +88,17 @@ public class StudentController {
      * @param String studentName
      * @return ModelAndView
      * @throws ObjectNotFoundException if the student is not found
-     * @throws NullPointerException if the name is null
+     * @throws IllegalArgumentException if the name is null or is empty
      */
     @GetMapping(path = "/read/name")
 	public ModelAndView getStudentByName(@RequestParam String name) {
 
         try{
+            StudentDto studentDto =
+                studentServiceImpl.getStudentByName(name.toLowerCase());
+
             return new CreateView(
-                StudentMapper.mapToStudent(studentServiceImpl.getStudentByName(name)),
+                StudentMapper.mapToStudent(studentDto),
                 "student/read/read-result"
             ).getModelAndView();
 
@@ -108,6 +111,7 @@ public class StudentController {
         }
     }
 
+
     /**
      * Creates a new student
      * @return ModelAndView
@@ -119,6 +123,7 @@ public class StudentController {
             "student/create/create"
         ).getModelAndView();
     }
+
 
     /**
      * Updates a student
@@ -137,11 +142,10 @@ public class StudentController {
 
     /**
      * Creates a new student
-     * @param studentDto the student data transfer object
+     * @param StudentDto studentDto the student data transfer object
      * @return ModelAndView
      * @throws ObjectAlreadyExistsException if the student already exists
      * @throws ObjectNotFoundException if the degree course does not exist.
-     * @throws NullPointerException if the student data transfer object is null
      * @throws IllegalArgumentException if the register is null or empty
      */
     @PostMapping("/create")
@@ -170,10 +174,9 @@ public class StudentController {
 
     /**
      * Updates a student
-     * @param studentDto the student data transfer object
+     * @param StudentDto studentDto the student data transfer object
      * @return ModelAndView
      * @throws ObjectNotFoundException if the student does not exist
-     * @throws NullPointerException if the student data transfer object is null
      * @throws IllegalArgumentException if the register is null or empty
      */
     @PutMapping("/update")
@@ -201,16 +204,17 @@ public class StudentController {
     /**DELETE request*/
     /**
      * Deletes a student
-     * @param Register studentRegister
+     * @param String register the register of the student
      * @return ModelAndView
      * @throws ObjectNotFoundException if the student does not exist
+     * @throws IllegalArgumentException if the register is null or empty
      */
     @DeleteMapping(path = "/delete/register")
     @Transactional // con l'annotazione transactional effettua una gestione propria degli errori
-    public ModelAndView deleteStudentByRegister(@RequestParam Register register)
+    public ModelAndView deleteStudentByRegister(@RequestParam String register)
     {
         try {
-            studentServiceImpl.deleteStudent(register);
+            studentServiceImpl.deleteStudent(new Register(register));
 
             return new CreateView("student/delete/delete-result")
                 .getModelAndView();
@@ -226,17 +230,17 @@ public class StudentController {
 
     /**
      * Deletes a student
-     * @param String name
+     * @param String name the name of the student
      * @return ModelAndView
-     * @throws ObjectNotFoundException
-     * @throws NullPointerException
+     * @throws ObjectNotFoundException if the student does not exist
+     * @throws IllegalArgumentException if the name is null or empty
      */
     @DeleteMapping(path = "/delete/name")
     @Transactional // con l'annotazione transactional effettua una gestione propria degli errori
     public ModelAndView deleteStudentByName(@RequestParam String name) {
 
         try{
-            StudentDto studentDto = studentServiceImpl.getStudentByName(name);
+            StudentDto studentDto = studentServiceImpl.getStudentByName(name.toLowerCase());
             studentServiceImpl.deleteStudent(studentDto.getRegister());
 
             return new CreateView("student/delete/delete-result")

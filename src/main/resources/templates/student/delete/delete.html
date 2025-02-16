@@ -11,7 +11,7 @@
     <h1>Delete Student by Registration Number</h1>
     <form th:action="@{/api/v1/student/delete/register}" method="post">
         <input type="hidden" name="_method" value="DELETE" />
-        <input type="number" name="register" placeholder="Enter student Registration Number" />
+        <input type="text" name="register" placeholder="Enter student Registration Number" />
         <button type="submit">Delete</button>
         <input type="reset" value="Reset" />
     </form>

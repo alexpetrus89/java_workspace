@@ -25,17 +25,19 @@ public interface StudentService {
      * @param Register register
      * @return StudentDto object
      * @throws ObjectNotFoundException if the student does not exist
+     * @throws IllegalArgumentException if the register is null
      */
     StudentDto getStudentByRegister(@NonNull Register register)
         throws ObjectNotFoundException;
 
     /**
      * Retrieves a student by their name.
-     * @param name the name of the student.
+     * @param String name the name of the student.
      * @return StudentDto object containing the student's data.
      * @throws ObjectNotFoundException if no student with the given name exists.
+     * @throws IllegalArgumentException if the name is null.
      */
-    StudentDto getStudentByName(String name)
+    StudentDto getStudentByName(@NonNull String name)
         throws ObjectNotFoundException;
 
     /**
@@ -44,11 +46,10 @@ public interface StudentService {
      *                   the details of the student to be added
      * @throws ObjectAlreadyExistsException if a student with the same register
      *                                      already exists in the repository
-     * @throws ObjectNotFoundException if the degree course does not exist
-     * @throws IllegalArgumentException if the given register is null or empty
+     * @throws IllegalArgumentException if the StudentDto object is null
      */
     @Transactional
-    void addNewStudent(StudentDto studentDto)
+    void addNewStudent(@NonNull StudentDto studentDto)
         throws ObjectAlreadyExistsException;
 
     /**
@@ -58,18 +59,19 @@ public interface StudentService {
      * @throws ObjectNotFoundException if no student with the given register exists
      *                                 in the repository or if the specified degree
      *                                 course does not exist
-     * @throws NullPointerException if the newStudentDto is null
+     * @throws IllegalArgumentException if the StudentDto object is null
      */
     @Transactional
-    void updateStudent(StudentDto studentDto)
+    void updateStudent(@NonNull StudentDto studentDto)
         throws ObjectNotFoundException;
 
     /**
      * Deletes a student from the repository based on their register.
-     *
      * @param Register register the register of the student to be deleted.
      * @throws ObjectNotFoundException if no student with the given register
      *                                  exists in the repository.
+     * @throws IllegalArgumentException if the register is null.
+     * @throws NullPointerException if the register is null.
      */
 	@Transactional
     void deleteStudent(@NonNull Register register)

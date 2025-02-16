@@ -59,7 +59,7 @@ public class StudentServiceImpl implements StudentService {
 	 * @param Register register the register of the student.
 	 * @return StudentDto object containing the student's data.
 	 * @throws ObjectNotFoundException if the student does not exist.
-	 * @throws NullPointerException if the register is null.
+	 * @throws IllegalArgumentException if the register is null.
 	 */
 	@Override
 	public StudentDto getStudentByRegister(@NonNull Register register)
@@ -77,10 +77,10 @@ public class StudentServiceImpl implements StudentService {
 	 * @param String name the name of the student.
 	 * @return StudentDto object containing the student's data.
 	 * @throws ObjectNotFoundException if no student with the given name exists.
-	 * @throws NullPointerException if the name is null.
+	 * @throws IllegalArgumentException if the name is null.
 	 */
 	@Override
-	public StudentDto getStudentByName(String name)
+	public StudentDto getStudentByName(@NonNull String name)
 		throws ObjectNotFoundException
 	{
 		return studentRepository
@@ -97,18 +97,29 @@ public class StudentServiceImpl implements StudentService {
 	 * @throws ObjectAlreadyExistsException if a student with the same register
 	 * 										already exists in the repository.
 	 * @throws ObjectNotFoundException if the degree course does not exist.
-	 * @throws IllegalArgumentException if the given register is null or empty.
+	 * @throws IllegalArgumentException if the given register is null or empty
+	 * 							 		or if the degree course is null or empty.
 	 */
 	@Override
 	@Transactional
-    public void addNewStudent(StudentDto studentDto)
+    public void addNewStudent(@NonNull StudentDto studentDto)
 		throws ObjectAlreadyExistsException
 	{
-		if(studentRepository.existsByRegister(studentDto.getRegister()))
-			throw new ObjectAlreadyExistsException(studentDto.getRegister());
+		Register register = studentDto.getRegister();
+		String degreeCourse = studentDto.getDegreeCourse().getName();
 
-		if(!degreeCourseRepository.existsByName(studentDto.getDegreeCourse().getName()))
-			throw new ObjectNotFoundException(studentDto.getDegreeCourse().getName(), EXCEPTION_DEGREE_COURSE_IDENTIFIER);
+		// sanity check
+		if(register == null || register.isEmpty())
+			throw new IllegalArgumentException("Register cannot be null or empty.");
+
+		if(degreeCourse == null || degreeCourse.isEmpty())
+			throw new IllegalArgumentException("Degree course cannot be null or empty.");
+
+		if(studentRepository.existsByRegister(register))
+			throw new ObjectAlreadyExistsException(register);
+
+		if(!degreeCourseRepository.existsByName(degreeCourse))
+			throw new ObjectNotFoundException(degreeCourse, EXCEPTION_DEGREE_COURSE_IDENTIFIER);
 
 		studentRepository.saveAndFlush(StudentMapper.mapToStudent(studentDto));
     }
@@ -116,30 +127,29 @@ public class StudentServiceImpl implements StudentService {
 
 	/**
 	 * Updates an existing student's information.
-	 * @param newStudentDto the data transfer object containing the new details of the
-	 * 						student to be updated.
-	 * @throws ObjectNotFoundException if no student with the given register exists in
-	 * 								   the repository or if the specified degree course
-	 *  							   does not exist.
-	 * @throws NullPointerException if the newStudentDto is null.
-	 * @throws IllegalArgumentException if the given register is null or empty.
+	 * @param StudentDto studentDto the data transfer object containing the new
+	 * 					 details of the student to be updated.
+	 * @throws ObjectNotFoundException if no student with the given register exists
+	 *                                 in the repository or if the specified degree
+	 *                                 course does not exist.
+	 * @throws IllegalArgumentException if the newStudentDto is null.
 	 */
 	@Override
 	@Transactional
-    public void updateStudent(StudentDto newStudentDto)
+    public void updateStudent(@NonNull StudentDto studentDto)
 		throws ObjectNotFoundException
 	{
 		Student updatableStudent = studentRepository
-			.findByRegister(newStudentDto.getRegister())
-			.orElseThrow(() -> new ObjectNotFoundException(newStudentDto.getRegister()));
+			.findByRegister(studentDto.getRegister())
+			.orElseThrow(() -> new ObjectNotFoundException(studentDto.getRegister()));
 
 		// new name, email and dob
-		String newName = newStudentDto.getName();
-		String newEmail = newStudentDto.getEmail();
-		LocalDate newDob = newStudentDto.getDob();
+		String newName = studentDto.getName();
+		String newEmail = studentDto.getEmail();
+		LocalDate newDob = studentDto.getDob();
 		DegreeCourse newDegreeCourse = degreeCourseRepository
-			.findByName(newStudentDto.getDegreeCourse().getName())
-			.orElseThrow(() -> new ObjectNotFoundException(newStudentDto.getDegreeCourse().getName(), EXCEPTION_DEGREE_COURSE_IDENTIFIER));
+			.findByName(studentDto.getDegreeCourse().getName())
+			.orElseThrow(() -> new ObjectNotFoundException(studentDto.getDegreeCourse().getName(), EXCEPTION_DEGREE_COURSE_IDENTIFIER));
 
 		// update
 		if(newName != null && !newName.isEmpty())
@@ -161,7 +171,6 @@ public class StudentServiceImpl implements StudentService {
 	 * @param Register register the register of the student to be deleted.
 	 * @throws ObjectNotFoundException if no student with the given register exists in
 	 * 								   the repository.
-	 * @throws NullPointerException if the register is null.
 	 * @throws IllegalArgumentException if the given register is empty.
 	 */
 	@Override
@@ -169,9 +178,11 @@ public class StudentServiceImpl implements StudentService {
 	public void deleteStudent(@NonNull Register register)
 		throws ObjectNotFoundException
 	{
+		// sanity check
 		if(!studentRepository.existsByRegister(register))
 			throw new ObjectNotFoundException(register);
 
+		// delete
 		studentRepository.deleteByRegister(register);
     }
 

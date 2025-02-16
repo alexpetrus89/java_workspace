@@ -61,7 +61,8 @@ public class ProfessorController {
      * Retrieves a professor by unique code
      * @param uniqueCode
      * @return ModelAndView
-     * @throws NullPointerException
+     * @throws NullPointerException if the unique code is null
+     * @throws ObjectNotFoundException if the professor does not exist
      */
     @GetMapping(path = "/read/uniquecode")
     public ModelAndView getProfessorsByUniqueCode(@RequestParam UniqueCode uniqueCode) {
@@ -89,7 +90,8 @@ public class ProfessorController {
      * Retrieves a professor by name
      * @param professorName
      * @return ModelAndView
-     * @throws NullPointerException
+     * @throws NullPointerException if the name is null
+     * @throws ObjectNotFoundException if the professor does not exist
      */
     @GetMapping(path = "/read/name")
     public ModelAndView getProfessorsByName(@RequestParam String name) {
@@ -97,7 +99,7 @@ public class ProfessorController {
 
             return new CreateView(
                 ProfessorMapper.mapToProfessor(
-                    professorServiceImpl.getProfessorByName(name)
+                    professorServiceImpl.getProfessorByName(name.toLowerCase())
                 ),
                 "professor/read/read-result"
             ).getModelAndView();
@@ -207,8 +209,8 @@ public class ProfessorController {
      * Deletes a professor
      * @param uniqueCode
      * @return ModelAndView
-     * @throws ObjectNotFoundException
-     * @throws NullPointerException
+     * @throws ObjectNotFoundException if the professor does not exist
+     * @throws NullPointerException if the unique code is null
      */
     @DeleteMapping(path = "/delete/uniquecode")
     @Transactional // con l'annotazione transactional effettua una gestione propria degli errori

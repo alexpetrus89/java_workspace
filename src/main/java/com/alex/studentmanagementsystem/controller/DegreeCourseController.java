@@ -55,7 +55,7 @@ public class DegreeCourseController {
         return new ModelAndView(
             "degree_course/course-list",
             "courses",
-            degreeCourseServiceImpl.getCourses(name)
+            degreeCourseServiceImpl.getCourses(name.toLowerCase())
         );
     }
 
@@ -72,7 +72,7 @@ public class DegreeCourseController {
             return new ModelAndView(
                 "degree_course/professor-with-course-list",
                 "professors",
-                degreeCourseServiceImpl.getProfessors(name)
+                degreeCourseServiceImpl.getProfessors(name.toLowerCase())
             );
 
         } catch (ObjectNotFoundException e) {
@@ -98,7 +98,7 @@ public class DegreeCourseController {
         return new ModelAndView(
             "degree_course/student-list",
             "students",
-            degreeCourseServiceImpl.getStudents(name)
+            degreeCourseServiceImpl.getStudents(name.toUpperCase())
         );
     }
 

@@ -5,6 +5,7 @@ public class Builder {
     // instance variables
     private String username;
     private String password;
+    private String confirm;
     private String fullname;
     private String street;
     private String city;
@@ -19,6 +20,10 @@ public class Builder {
 
     public String getPassword() {
         return password;
+    }
+
+    public String getConfirm() {
+        return confirm;
     }
 
     public String getFullname() {
@@ -50,11 +55,27 @@ public class Builder {
         this.username = username;
     }
 
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
     public void withPassword(String password) {
         this.password = password;
     }
 
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setConfirm(String confirm) {
+        this.confirm = confirm;
+    }
+
     public void withFullname(String fullname) {
+        this.fullname = fullname;
+    }
+
+    public void setFullname(String fullname) {
         this.fullname = fullname;
     }
 
@@ -62,7 +83,15 @@ public class Builder {
         this.street = street;
     }
 
+    public void setStreet(String street) {
+        this.street = street;
+    }
+
     public void withCity(String city) {
+        this.city = city;
+    }
+
+    public void setCity(String city) {
         this.city = city;
     }
 
@@ -70,11 +99,23 @@ public class Builder {
         this.state = state;
     }
 
+    public void setState(String state) {
+        this.state = state;
+    }
+
     public void withZip(String zip) {
         this.zip = zip;
     }
 
+    public void setZip(String zip) {
+        this.zip = zip;
+    }
+
     public void withPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public void setPhone(String phone) {
         this.phone = phone;
     }
 

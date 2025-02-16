@@ -76,10 +76,17 @@ public class CourseController {
 
 
     /**
-     * creates a new course
-     * @param courseDto
+     * create a new course
+     * @param name name of the course
+     * @param type type of the course
+     * @param cfu cfu of the course
+     * @param uniqueCode unique code of the professor
+     * @param degreeCourseName degree course name
      * @return ModelAndView
-     * @throws ObjectAlreadyExistsException if a course with the same name already exists
+     * @throws ObjectAlreadyExistsException if a course with the given name already exists
+     * @throws IllegalArgumentException if any of the parameters is invalid
+     * @throws UnsupportedOperationException if any of the parameters is not unique
+     * @throws NullPointerException if any of the parameters is null
      */
     @PostMapping("/create")
     @Transactional // con l'annotazione transactional effettua una gestione propria degli errori
@@ -113,6 +120,21 @@ public class CourseController {
     }
 
 
+    /**
+     * update a course
+     * @param oldName old name of the course
+     * @param newName new name of the course
+     * @param newType new type of the course
+     * @param newCfu new cfu of the course
+     * @param newUniqueCode new unique code of the course
+     * @param newDegreeCourseName new degree course name
+     * @return ModelAndView
+     * @throws ObjectNotFoundException if no course with the given name exists.
+     * @throws ObjectAlreadyExistsException if a course with the new name already exists
+     * @throws IllegalArgumentException - if any of the parameters is invalid.
+     * @throws UnsupportedOperationException - if any of the parameters is not unique.
+     * @throws NullPointerException - if any of the parameters is null.
+     */
     @PutMapping(path = "/update")
     @Transactional
     public ModelAndView updateCourse(

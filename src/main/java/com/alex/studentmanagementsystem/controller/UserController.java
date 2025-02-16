@@ -1,18 +1,27 @@
 package com.alex.studentmanagementsystem.controller;
 
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.alex.studentmanagementsystem.domain.User;
 import com.alex.studentmanagementsystem.exception.ObjectNotFoundException;
 import com.alex.studentmanagementsystem.repository.UserRepository;
+import com.alex.studentmanagementsystem.utils.Builder;
 import com.alex.studentmanagementsystem.utils.CreateView;
 import com.alex.studentmanagementsystem.utils.RegistrationForm;
 
@@ -59,15 +68,39 @@ public class UserController {
     public ModelAndView updateUserAndReturnView() {
 
         return new CreateView(
-            new User(),
+            new Builder(),
             "user/update/update"
         ).getModelAndView();
     }
 
 
+    /**
+     * Updates the user
+     * @param formBuilder
+     * @return String
+     * @throws RuntimeException if the updated user details are invalid
+     * @throws IllegalArgumentException if the updated user details are invalid
+     */
+    @PostMapping("/update/form")
+    public String updateUserForm(@ModelAttribute Builder formBuilder) {
+        RegistrationForm form = new RegistrationForm(formBuilder);
+        try {
+            RestTemplate restTemplate = new RestTemplate();
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            HttpEntity<RegistrationForm> entity = new HttpEntity<>(form, headers);
+            ResponseEntity<String> response = restTemplate.exchange("api/v1/user/update", HttpMethod.PUT, entity, String.class);
+            return response.getBody();
+        } catch (RuntimeException e) {
+        // gestisci l'eccezione e restituisci un messaggio di errore significativo all'utente
+            return "redirect:/error-page";
+        }
+    }
+
 
     /**
-     * Updates the current authenticated user's information and saves it to the repository.
+     * Updates the current authenticated user's information and saves it to the
+     * repository.
      * This method is transactional and mapped to the HTTP PUT request for "/update".
      * @param form RegistrationForm containing updated user details.
      * @return String representing the redirect URL after the update process.

@@ -15,9 +15,4 @@ public record UniqueCode(String code) implements Serializable {
         Assert.isTrue(code.matches("\\w{8}"), "unique code must be a string of exactly 8 digits");
     }
 
-    public boolean isEmpty() {
-        return code.isEmpty();
-    }
-
-
 }

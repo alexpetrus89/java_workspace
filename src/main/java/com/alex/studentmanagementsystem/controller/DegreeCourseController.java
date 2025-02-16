@@ -46,8 +46,14 @@ public class DegreeCourseController {
 
     /**
      * retrieves all courses of a given degree course
-     * @param String name the name of the degree course
+     * @param name the name of the degree course
      * @return ModelAndView
+     * @throws ObjectNotFoundException if no degree course with the
+     *                                 given name exists
+     * @throws NullPointerException if the name is null
+     * @throws IllegalArgumentException if the name is empty
+     * @throws UnsupportedOperationException if the name is not unique
+     * @throws ClassCastException if the name is not a string
      */
     @GetMapping("/courses/view")
     public ModelAndView getCourses(@RequestParam String name) {
@@ -62,8 +68,12 @@ public class DegreeCourseController {
 
     /**
      * retrieves all professors of a given degree course
-     * @param String name the name of the degree course
+     * @param name the name of the degree course
      * @return ModelAndView
+     * @throws ObjectNotFoundException if no degree course with the given name exists
+     * @throws NullPointerException if the name is null
+     * @throws IllegalArgumentException if the name is empty
+     * @throws UnsupportedOperationException if the name is not unique
      */
     @GetMapping("/professors/view")
     public ModelAndView getProfessors(@RequestParam String name) {
@@ -89,8 +99,12 @@ public class DegreeCourseController {
 
     /**
      * retrieves all students of a given degree course
-     * @param String name the name of the degree course
+     * @param name the name of the degree course
      * @return ModelAndView
+     * @throws ObjectNotFoundException if no degree course with the given name exists
+     * @throws NullPointerException if the name is null
+     * @throws IllegalArgumentException if the name is empty
+     * @throws UnsupportedOperationException if the name is not unique
      */
     @GetMapping("/students/view")
     public ModelAndView getStudents(@RequestParam String name) {

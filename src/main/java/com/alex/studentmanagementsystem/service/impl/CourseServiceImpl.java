@@ -2,6 +2,7 @@ package com.alex.studentmanagementsystem.service.impl;
 
 import java.util.List;
 
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
 import com.alex.studentmanagementsystem.domain.Course;
@@ -46,7 +47,6 @@ public class CourseServiceImpl implements CourseService {
 
     /**
     * Retrieves all courses from the repository.
-    *
     * @return List of CourseDto objects representing all courses.
     */
     @Override
@@ -60,14 +60,13 @@ public class CourseServiceImpl implements CourseService {
 
     /**
      * Retrieves a course from the repository by its id.
-     *
      * @param CourseId id
      * @return CourseDto object representing the course with the given id.
      * @throws ObjectNotFoundException if no course with the given id exists.
      * @throws NullPointerException if the id is null.
      */
     @Override
-    public CourseDto getCourseById(CourseId id)
+    public CourseDto getCourseById(@NonNull CourseId id)
         throws ObjectNotFoundException
     {
         Course course = courseRepository
@@ -80,14 +79,15 @@ public class CourseServiceImpl implements CourseService {
 
     /**
      * Retrieves a course from the repository by its name.
-     *
-     * @param String name
+     * @param name the name of the course
      * @return CourseDto object representing the course with the given name.
      * @throws ObjectNotFoundException if no course with the given name exists.
      * @throws NullPointerException if the name is null.
+     * @throws IllegalArgumentException if the name is empty.
+     * @throws UnsupportedOperationException if the name is not unique
      */
     @Override
-    public CourseDto getCourseByName(String name)
+    public CourseDto getCourseByName(@NonNull String name)
         throws ObjectNotFoundException
     {
         return courseRepository
@@ -99,16 +99,19 @@ public class CourseServiceImpl implements CourseService {
 
     /**
      * Adds a new course to the repository.
-     * @param name
-     * @param type
-     * @param cfu
-     * @param uniqueCode
-     * @param degreeCourseName
+     * @param name the name of the course
+     * @param type the type of the course
+     * @param cfu the cfu of the course
+     * @param uniqueCode the unique code of the professor
+     * @param degreeCourseName the name of the degree course
      * @return Course object representing the newly added course.
      * @throws ObjectAlreadyExistsException if a course with the same name already exists.
      * @throws NullPointerException if any of the parameters is null.
+     * @throws IllegalArgumentException if any of the parameters is invalid.
+     * @throws UnsupportedOperationException if any of the parameters is not unique.
      */
     @Override
+    @NonNull
     @Transactional
     public Course addNewCourse(
         String name,
@@ -140,18 +143,20 @@ public class CourseServiceImpl implements CourseService {
 
     /**
      * Updates a course in the repository.
-     * @param oldName
-     * @param newName
-     * @param newType
-     * @param newCfu
-     * @param newUniqueCode
-     * @param newDegreeCourseName
+     * @param oldName the name of the course to be updated
+     * @param newName the new name of the course
+     * @param newType the new type of the course
+     * @param newCfu the new cfu of the course
+     * @param newUniqueCode the new unique code of the professor
+     * @param newDegreeCourseName the new name of the degree course
      * @return Course object representing the updated course.
      * @throws ObjectNotFoundException if no course with the given name exists.
      * @throws NullPointerException if any of the parameters is null.
      * @throws IllegalArgumentException if any of the parameters is invalid.
+     * @throws UnsupportedOperationException if any of the parameters is not unique.
      */
     @Override
+    @NonNull
     @Transactional
     public Course updateCourse(
         String oldName,
@@ -197,14 +202,15 @@ public class CourseServiceImpl implements CourseService {
 
     /**
      * Deletes a course from the repository by its id.
-     *
      * @param CourseId id
      * @throws ObjectNotFoundException if no course with the given id exists.
      * @throws NullPointerException if the id is null.
+     * @throws IllegalArgumentException if the id is empty.
+     * @throws UnsupportedOperationException if the id is not unique.
      */
     @Override
     @Transactional
-    public void deleteCourse(CourseId id)
+    public void deleteCourse(@NonNull CourseId id)
         throws ObjectNotFoundException
     {
         if(!courseRepository.existsById(id))

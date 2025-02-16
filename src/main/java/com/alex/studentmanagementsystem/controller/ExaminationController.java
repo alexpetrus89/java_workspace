@@ -54,11 +54,15 @@ public class ExaminationController {
         ).getModelAndView();
     }
 
+
     /**
      * Returns a list of examinations by course name
-     * @param String name
+     * @param name name of the course
      * @return ModelAndView
      * @throws ObjectNotFoundException if the course does not exist
+     * @throws IllegalArgumentException if the name is null or empty
+     * @throws ClassCastException if the name is not a string
+     * @throws UnsupportedOperationException if the name is not unique
      * @throws NullPointerException if the name is null
      */
     @GetMapping(path = "/course-name")
@@ -83,19 +87,21 @@ public class ExaminationController {
 
     /**
      * Returns a list of examinations by student register
-     * @param Register register
+     * @param register register of the student
      * @return ModelAndView
      * @throws ObjectNotFoundException if the student does not exist
+     * @throws IllegalArgumentException if the register is null or empty
+     * @throws ClassCastException if the register is not a string
+     * @throws UnsupportedOperationException if the register is not unique
+     * @throws NullPointerException if the register is null or empty
      */
     @GetMapping(path = "/student-register")
-    public ModelAndView getExaminationsByStudentRegister(
-        @RequestParam Register register
-    ) {
+    public ModelAndView getExaminationsByStudentRegister(@RequestParam String register) {
         try {
 
             return new CreateView(
                 ATTRIBUTE_NAME,
-                examinationServiceImpl.getExaminationsByStudentRegister(register),
+                examinationServiceImpl.getExaminationsByStudentRegister(new Register(register.toLowerCase())),
                 VIEW_PATH
             ).getModelAndView();
 
@@ -109,9 +115,10 @@ public class ExaminationController {
         }
     }
 
+
     /**
      * Returns a list of examinations by professor unique code
-     * @param UniqueCode uniqueCode of the professor
+     * @param uniqueCode unique code of the professor
      * @return ModelAndView
      * @throws ObjectNotFoundException if the professor does not exist
      * @throws NullPointerException if the unique code is null
@@ -120,14 +127,12 @@ public class ExaminationController {
      * @throws IllegalArgumentException if the unique code is empty
      */
     @GetMapping(path = "/professor-unique-code")
-    public ModelAndView getExaminationsByProfessorUniqueCode(
-        @RequestParam UniqueCode uniqueCode
-    ) {
+    public ModelAndView getExaminationsByProfessorUniqueCode(@RequestParam String uniqueCode) {
         try {
 
             return new CreateView(
                 ATTRIBUTE_NAME,
-                examinationServiceImpl.getExaminationsByProfessorUniqueCode(uniqueCode),
+                examinationServiceImpl.getExaminationsByProfessorUniqueCode(new UniqueCode(uniqueCode.toLowerCase())),
                 VIEW_PATH
             ).getModelAndView();
 
@@ -170,8 +175,8 @@ public class ExaminationController {
 
     /**
      * Creates a new Examination
-     * @param registration the student's registration
-     * @param course the course name
+     * @param register the student's registration
+     * @param courseName the course name
      * @param grade the grade obtained in the examination
      * @param withHonors whether the examination was passed with honors
      * @param date the date of the examination
@@ -186,7 +191,7 @@ public class ExaminationController {
     @Transactional
     public ModelAndView createNewExamination(
         @RequestParam String register,
-        @RequestParam String course,
+        @RequestParam String courseName,
         @RequestParam String grade,
         @RequestParam Boolean withHonors,
         @RequestParam LocalDate date
@@ -196,7 +201,7 @@ public class ExaminationController {
             return new CreateView(
                 examinationServiceImpl.addNewExamination(
                     new Register(register),
-                    course,
+                    courseName,
                     Integer.parseInt(grade),
                     withHonors,
                     date
@@ -216,9 +221,9 @@ public class ExaminationController {
 
     /**
      * Updates an existing Examination
-     * @param oldRegistration the old student's registration
+     * @param oldRegister the old student's registration number
      * @param oldCourseName the old course name
-     * @param newRegistration the new student's registration
+     * @param newRegister the new student's registration number
      * @param newCourseName the new course name
      * @param grade the new grade obtained in the examination
      * @param withHonors whether the examination was passed with honors
@@ -244,10 +249,10 @@ public class ExaminationController {
         try {
             return new CreateView(
                 examinationServiceImpl.updateExamination(
-                    new Register(oldRegister),
-                    oldCourseName,
-                    new Register(newRegister),
-                    newCourseName,
+                    new Register(oldRegister.toLowerCase()),
+                    oldCourseName.toLowerCase(),
+                    new Register(newRegister.toLowerCase()),
+                    newCourseName.toLowerCase(),
                     Integer.parseInt(grade),
                     withHonors,
                     date
@@ -267,20 +272,29 @@ public class ExaminationController {
 
     /**
      * Deletes an existing Examination
-     * @param register
-     * @param name
+     * @param register the student's registration
+     * @param courseName the course name
      * @return ModelAndView
-     * @throws RuntimeException if the examination does not exist
+     * @throws ObjectNotFoundException if the student or course does not exist
+     * @throws IllegalArgumentException if the course name is null or empty
+     *                                  or the register is null or empty
+     * @throws UnsupportedOperationException if the course name is not unique
+     *                                   or if the register is not unique
+     * @throws NullPointerException if the course name is null or the register
+     *                              is null
      */
     @DeleteMapping(path = "/delete")
     @Transactional
     public ModelAndView deleteExamination(
         @RequestParam String register,
-        @RequestParam String name
+        @RequestParam String courseName
     ) {
 
         try {
-            examinationServiceImpl.deleteExamination(new Register(register), name);
+            examinationServiceImpl.deleteExamination(
+                new Register(register.toLowerCase()),
+                courseName.toLowerCase()
+            );
 
             return new CreateView("examination/delete/delete-result")
                 .getModelAndView();

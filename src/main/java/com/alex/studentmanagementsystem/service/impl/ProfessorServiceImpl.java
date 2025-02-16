@@ -128,7 +128,7 @@ public class ProfessorServiceImpl implements ProfessorService {
         UniqueCode uniqueCode = professorDto.getUniqueCode();
         String fiscalCode = professorDto.getFiscalCode();
 
-        if(uniqueCode == null || uniqueCode.isEmpty())
+        if(uniqueCode == null || uniqueCode.toString().isEmpty())
             throw new IllegalArgumentException("Unique Code cannot be null or empty");
 
         if(fiscalCode == null || fiscalCode.isEmpty())

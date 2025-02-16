@@ -44,10 +44,17 @@ public class RegistrationController {
 
     /** POST request */
     /**
-     * processRegistration
-     * @param RegistrationForm
-     * @return String
-     * @throws IllegalArgumentException
+     * Process registration
+     * @param username
+     * @param password
+     * @param fullname
+     * @param street
+     * @param city
+     * @param state
+     * @param zip
+     * @param phone
+     * @return String - redirect
+     * @throws IllegalArgumentException if the username is already taken
      */
     @PostMapping
     public String processRegistration(
@@ -73,7 +80,7 @@ public class RegistrationController {
         form.withPhone(phone);
         // create the form
         RegistrationForm registrationForm = new RegistrationForm(form);
-        userRepository.save(registrationForm.toUser(passwordEncoder));
+        userRepository.saveAndFlush(registrationForm.toUser(passwordEncoder));
         return "redirect:/login";
     }
 

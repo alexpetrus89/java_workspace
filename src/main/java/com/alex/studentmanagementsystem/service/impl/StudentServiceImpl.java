@@ -111,7 +111,7 @@ public class StudentServiceImpl implements StudentService {
 		String degreeCourse = studentDto.getDegreeCourse().getName();
 
 		// sanity check
-		if(register == null || register.isEmpty())
+		if(register == null || register.toString().isEmpty())
 			throw new IllegalArgumentException("Register cannot be null or empty.");
 
 		if(degreeCourse == null || degreeCourse.isEmpty())

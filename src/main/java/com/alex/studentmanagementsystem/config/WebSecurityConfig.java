@@ -62,6 +62,11 @@ public class WebSecurityConfig implements Serializable {
 				// user
 				"user/user-menu",
 				"api/v1/user",
+				"api/v1/user/view",
+				"api/v1/user/read/read",
+				"api/v1/user/create/create",
+				"api/v1/user/update/update",
+				"api/v1/user/delete/delete",
 				// student
 				"student/student-menu",
 				"api/v1/student/view",

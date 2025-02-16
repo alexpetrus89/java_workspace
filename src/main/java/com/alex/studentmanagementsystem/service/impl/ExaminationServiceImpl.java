@@ -73,6 +73,9 @@ public class ExaminationServiceImpl implements ExaminationService {
      * @param Register register
      * @return List<ExaminationDto>
      * @throws ObjectNotFoundException if the student does not exist
+     * @throws IllegalArgumentException if the register is null
+     * @throws UnsupportedOperationException if the register is not unique
+     * @throws NullPointerException if the register is null
      */
     @Override
     public List<ExaminationDto> getExaminationsByStudentRegister(@NonNull Register register)
@@ -92,13 +95,12 @@ public class ExaminationServiceImpl implements ExaminationService {
 
     /**
      * Get all examinations by professor unique code
-     * @param UniqueCode uniqueCode
+     * @param uniqueCode unique code of the professor
      * @return List<ExaminationDto>
      * @throws ObjectNotFoundException if the professor does not exist
-     * @throws NullPointerException if the unique code is null
-     * @throws UnsupportedOperationException if the unique code is not unique
-     * @throws ClassCastException if the unique code is not a string
      * @throws IllegalArgumentException if the unique code is empty
+     * @throws UnsupportedOperationException if the unique code is not unique
+     * @throws NullPointerException if the unique code is null
      */
     @Override
     public List<ExaminationDto> getExaminationsByProfessorUniqueCode(@NonNull UniqueCode uniqueCode)
@@ -128,9 +130,11 @@ public class ExaminationServiceImpl implements ExaminationService {
 
     /**
      * Get all examinations by course id
-     * @param CourseId courseId
+     * @param courseId course id of the course
      * @return List<ExaminationDto>
      * @throws ObjectNotFoundException if the course does not exist
+     * @throws IllegalArgumentException if the courseId is null
+     * @throws UnsupportedOperationException if the courseId is not unique
      */
     @Override
     public List<ExaminationDto> getExaminationsByCourseId(@NonNull CourseId courseId)
@@ -149,9 +153,12 @@ public class ExaminationServiceImpl implements ExaminationService {
 
 
     /**
-     * @param String courseName
+     * Get all examinations by course name
+     * @param name name of the course
      * @return List<ExaminationDto>
-     * @throws ObjectNotFoundException
+     * @throws ObjectNotFoundException if the course does not exist
+     * @throws IllegalArgumentException if the name is null or empty
+     * @throws UnsupportedOperationException if the unique code is not unique
      */
     @Override
     public List<ExaminationDto> getExaminationsByCourseName(@NonNull String name)
@@ -171,19 +178,25 @@ public class ExaminationServiceImpl implements ExaminationService {
 
     /**
      * Add new examination
-     * @param Register register
-     * @param String courseName
-     * @param int grade
-     * @param boolean withHonors
-     * @param LocalDate date
-     * @return ExaminationDto
+     * @param register register of the student
+     * @param courseName name of the course
+     * @param grade grade of the examination
+     * @param withHonors whether the examination was passed with honors
+     * @param date date of the examination
+     * @return Examination
      * @throws ObjectAlreadyExistsException if the examination already exists.
      * @throws ObjectNotFoundException if the student or course does not exist.
      * @throws IllegalArgumentException if the date is in the past or the grade
      *                                  is not between 0 and 30 or Degree course
-     *                                  does not match
+     *                                  does not match or the unique code is null
+     *                                  or the unique code is empty or the course
+     *                                  name is null or the course name is empty
+     * @throws UnsupportedOperationException if the unique code is not unique
+     *                                        or if the course name is not unique
+     * @throws NullPointerException if the unique code is null or the course name is null
      */
     @Override
+    @NonNull
 	@Transactional
     public Examination addNewExamination(
         Register register,
@@ -191,7 +204,7 @@ public class ExaminationServiceImpl implements ExaminationService {
         int grade,
         boolean withHonors,
         LocalDate date
-    ) throws ObjectAlreadyExistsException {
+    ) throws ObjectAlreadyExistsException, ObjectNotFoundException {
 
         Course course = courseRepository
             .findByName(courseName)
@@ -229,22 +242,28 @@ public class ExaminationServiceImpl implements ExaminationService {
         return examination;
     }
 
+
     /**
      * Update existing examination
-     * @param Register oldRegister
-     * @param String oldCourseName
-     * @param Register newRegister
-     * @param String newCourseName
-     * @param int grade
-     * @param boolean withHonors
-     * @param LocalDate date
+     * @param oldRegister the old student's register
+     * @param oldCourseName the old course name
+     * @param newRegister the new student's register
+     * @param newCourseName the new course name
+     * @param grade the new grade
+     * @param withHonors whether the examination was passed with honors
+     * @param date the new date
      * @return Examination
      * @throws ObjectNotFoundException if the student or course does not exist.
      * @throws IllegalArgumentException if the date is in the past or the grade
      *                                  is not between 0 and 30 or Degree course
-     *                                  does not match
+     *                                  does not match or the unique code is null
+     *                                  or the unique code is empty or the course
+     *                                  name is null or the course name is empty
+     * @throws UnsupportedOperationException if the unique code is not unique
+     * @throws NullPointerException if the unique code is null or the course name is null
      */
     @Override
+    @NonNull
 	@Transactional
     public Examination updateExamination(
         Register oldRegister,
@@ -254,7 +273,7 @@ public class ExaminationServiceImpl implements ExaminationService {
         int grade,
         boolean withHonors,
         LocalDate date
-    ) throws ObjectAlreadyExistsException {
+    ) throws ObjectNotFoundException {
 
 		Student newStudent = studentRepository
 			.findByRegister(newRegister)
@@ -284,6 +303,7 @@ public class ExaminationServiceImpl implements ExaminationService {
         if(date == null || date.isAfter(java.time.LocalDate.now()))
             throw new IllegalArgumentException("The date must be at least less than today");
 
+        // update
         updatableExamination.setCourse(newCourse);
         updatableExamination.setStudent(newStudent);
         updatableExamination.setGrade(grade);
@@ -299,9 +319,13 @@ public class ExaminationServiceImpl implements ExaminationService {
 
     /**
      * Delete existing examination
-     * @param Register register
-     * @param String name
+     * @param register register of the student
+     * @param name name of the course
      * @throws ObjectNotFoundException if the examination does not exist
+     * @throws IllegalArgumentException if the course name is null or empty
+     *                                  or the register is null or empty
+     * @throws UnsupportedOperationException if the register is not unique
+     *                                       or if the course name is not unique
      */
     @Override
 	@Transactional

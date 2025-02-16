@@ -242,7 +242,7 @@ public class StudentDatabaseInit implements Serializable {
 
         students.add(
             new StudentDto(
-                new Register("123459"),
+                new Register("123458"),
                 "graziano",
                 "cofano.graziano@gmail.com",
                 LocalDate.of(1990, 7, 15),
@@ -254,7 +254,7 @@ public class StudentDatabaseInit implements Serializable {
 
         students.add(
             new StudentDto(
-                new Register("123460"),
+                new Register("123459"),
                 "edmondo",
                 "edmondo.albanas@gmail.com",
                 LocalDate.of(1993, 8, 15),
@@ -266,7 +266,7 @@ public class StudentDatabaseInit implements Serializable {
 
         students.add(
             new StudentDto(
-                new Register("123461"),
+                new Register("123460"),
                 "ernesto",
                 "ernesto.blood@gmail.com",
                 LocalDate.of(1991, 12, 4),
@@ -278,12 +278,12 @@ public class StudentDatabaseInit implements Serializable {
 
         students.add(
             new StudentDto(
-                new Register("123468"),
-                "iginio",
-                "iginio.blood@gmail.com",
-                LocalDate.of(1990, 6, 3),
+                new Register("123461"),
+                "alfredo",
+                "alfredo.blood@gmail.com",
+                LocalDate.of(1993, 11, 8),
                 degreeCourseRepository
-                    .findByName(INGEGNERIA_MECCANICA)
+                    .findByName(INGEGNERIA_GESTIONALE)
                     .orElseThrow(() -> new ObjectNotFoundException(DEGREE_COURSE_NOT_FOUND, INGEGNERIA_GESTIONALE))
             )
         );
@@ -314,18 +314,6 @@ public class StudentDatabaseInit implements Serializable {
 
         students.add(
             new StudentDto(
-                new Register("123465"),
-                "renzi",
-                "renzi.blood@gmail.com",
-                LocalDate.of(1990, 11, 1),
-                degreeCourseRepository
-                    .findByName(INGEGNERIA_ELETTRICA)
-                    .orElseThrow(() -> new ObjectNotFoundException(DEGREE_COURSE_NOT_FOUND, INGEGNERIA_ELETTRICA))
-            )
-        );
-
-        students.add(
-            new StudentDto(
                 new Register("123464"),
                 "uccio",
                 "uccio.blood@gmail.com",
@@ -338,6 +326,18 @@ public class StudentDatabaseInit implements Serializable {
 
         students.add(
             new StudentDto(
+                new Register("123465"),
+                "renzi",
+                "renzi.blood@gmail.com",
+                LocalDate.of(1990, 11, 1),
+                degreeCourseRepository
+                    .findByName(INGEGNERIA_ELETTRICA)
+                    .orElseThrow(() -> new ObjectNotFoundException(DEGREE_COURSE_NOT_FOUND, INGEGNERIA_ELETTRICA))
+            )
+        );
+
+        students.add(
+            new StudentDto(
                 new Register("123466"),
                 "bomba",
                 "bomba.blood@gmail.com",
@@ -345,6 +345,30 @@ public class StudentDatabaseInit implements Serializable {
                 degreeCourseRepository
                     .findByName(INGEGNERIA_INFORMATICA_MAGISTRALE)
                     .orElseThrow(() -> new ObjectNotFoundException(DEGREE_COURSE_NOT_FOUND, INGEGNERIA_INFORMATICA_MAGISTRALE))
+            )
+        );
+
+        students.add(
+            new StudentDto(
+                new Register("123467"),
+                "segafredo",
+                "segafredo.caffe@gmail.com",
+                LocalDate.of(19, 3, 8),
+                degreeCourseRepository
+                    .findByName(INGEGNERIA_INFORMATICA_MAGISTRALE)
+                    .orElseThrow(() -> new ObjectNotFoundException(DEGREE_COURSE_NOT_FOUND, INGEGNERIA_INFORMATICA_MAGISTRALE))
+            )
+        );
+
+        students.add(
+            new StudentDto(
+                new Register("123468"),
+                "iginio",
+                "iginio.blood@gmail.com",
+                LocalDate.of(1990, 6, 3),
+                degreeCourseRepository
+                    .findByName(INGEGNERIA_MECCANICA)
+                    .orElseThrow(() -> new ObjectNotFoundException(DEGREE_COURSE_NOT_FOUND, INGEGNERIA_GESTIONALE))
             )
         );
 

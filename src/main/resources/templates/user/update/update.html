@@ -10,9 +10,7 @@
 
 <body>
     <h1>Update user information</h1>
-    <form method="post" th:action="@{/api/v1/user/update}" id="updateForm">
-
-        <input type="hidden" name="_method" value="PUT" />
+    <form method="post" th:action="@{/api/v1/user/update/form}" id="updateForm">
 
         <label for="username">Username: </label>
         <input type="text" name="username"

@@ -10,13 +10,13 @@
 <body>
     <h1>Read student by Registration Number</h1>
     <form th:action="@{/api/v1/student/read/register}" method="get">
-        <input type="text" name="studentRegister" placeholder="Enter student registration number" />
+        <input type="text" name="register" placeholder="Enter student registration number" />
         <button type="submit">Search</button>
         <input type="reset" value="Reset" />
     </form>
     <h1>Read student information by Name</h1>
     <form th:action="@{/api/v1/student/read/name}" method="get">
-        <input type="text" name="studentName" placeholder="Enter student name" />
+        <input type="text" name="name" placeholder="Enter student name" />
         <button type="submit">Search</button>
         <input type="reset" value="Reset" />
     </form>

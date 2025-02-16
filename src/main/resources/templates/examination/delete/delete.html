@@ -11,7 +11,7 @@
     <h1>Delete Examination by Registration Number and Course</h1>
     <form th:action="@{/api/v1/examination/delete}" method="post">
         <input type="hidden" name="_method" value="DELETE" />
-        <input type="number" name="register" placeholder="Enter student registration Number" />
+        <input type="text" name="register" placeholder="Enter student registration Number" />
         <input type="text" name="name" placeholder="Enter course name" />
         <button type="submit">Delete</button>
         <input type="reset" value="Reset" />

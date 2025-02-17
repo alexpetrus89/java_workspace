@@ -115,7 +115,7 @@ public class StudentDatabaseInit implements Serializable {
             initializeCourses(courseRepository, professorRepository, degreeCourseRepository);
 
             // examination initializer
-            initializeExaminations(studentRepository, courseRepository, examinationRepository);
+            initializeExaminations(studentRepository, courseRepository, degreeCourseRepository, examinationRepository);
 
             // user initializer
             initializeUsers(userRepository, passwordEncoder);
@@ -1127,7 +1127,7 @@ public class StudentDatabaseInit implements Serializable {
         courses.add(
             new Course(
                 "macchine elettriche",
-                CourseType.ING_MECCANICA,
+                CourseType.ING_ELETTRICA,
                 12,
                 professorRepository
                     .findByUniqueCode(new UniqueCode(UC_FABIO))
@@ -1139,7 +1139,7 @@ public class StudentDatabaseInit implements Serializable {
         courses.add(
             new Course(
                 "elettrica di potenza",
-                CourseType.ING_MECCANICA,
+                CourseType.ING_ELETTRICA,
                 12,
                 professorRepository
                     .findByUniqueCode(new UniqueCode(UC_FABIO))
@@ -1196,6 +1196,7 @@ public class StudentDatabaseInit implements Serializable {
     private void initializeExaminations(
         StudentRepository studentRepository,
         CourseRepository courseRepository,
+        DegreeCourseRepository degreeCourseRepository,
         ExaminationRepository examinationRepository
     ) {
 
@@ -1263,144 +1264,230 @@ public class StudentDatabaseInit implements Serializable {
 
         // Retrieve existing Course entity from the database
         Course analisiMatematica = courseRepository
-            .findByName("analisi matematica")
-            .orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND)
-        );
+            .findByNameAndDegreeCourse(
+                "analisi matematica",
+                degreeCourseRepository.findByName(INGEGNERIA_GESTIONALE)
+                    .orElseThrow(() -> new NoSuchElementException(DEGREE_COURSE_NOT_FOUND)).getId()
+            ).orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND));
 
         Course gp = courseRepository
-            .findByName("gestione dei progetti")
-            .orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND)
-        );
+            .findByNameAndDegreeCourse(
+                "gestione dei progetti",
+                degreeCourseRepository.findByName(INGEGNERIA_GESTIONALE)
+                    .orElseThrow(() -> new NoSuchElementException(DEGREE_COURSE_NOT_FOUND))
+                    .getId()
+            ).orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND));
 
         Course scienzaDelleCostruzioni = courseRepository
-            .findByName("scienza delle costruzioni")
-            .orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND)
-        );
+            .findByNameAndDegreeCourse(
+                "scienza delle costruzioni",
+                degreeCourseRepository.findByName(INGEGNERIA_GESTIONALE)
+                    .orElseThrow(() -> new NoSuchElementException(DEGREE_COURSE_NOT_FOUND))
+                    .getId()
+            ).orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND));
 
         Course chimica = courseRepository
-            .findByName("chimica generale")
-            .orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND)
-        );
+            .findByNameAndDegreeCourse(
+                "chimica generale",
+                degreeCourseRepository.findByName(INGEGNERIA_GESTIONALE)
+                    .orElseThrow(() -> new NoSuchElementException(DEGREE_COURSE_NOT_FOUND))
+                    .getId()
+            ).orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND));
 
         Course eMMePM = courseRepository
-            .findByName("elementi di meccanica delle macchine e progettazione meccanica")
-            .orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND)
-        );
+            .findByNameAndDegreeCourse(
+                "elementi di meccanica delle macchine e progettazione meccanica",
+                degreeCourseRepository.findByName(INGEGNERIA_GESTIONALE)
+                    .orElseThrow(() -> new NoSuchElementException(DEGREE_COURSE_NOT_FOUND))
+                    .getId()
+            ).orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND));
 
         Course fisicaGenerale = courseRepository
-            .findByName("fisica generale")
-            .orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND)
-        );
+            .findByNameAndDegreeCourse(
+                "fisica generale",
+                degreeCourseRepository.findByName(INGEGNERIA_GESTIONALE)
+                    .orElseThrow(() -> new NoSuchElementException(DEGREE_COURSE_NOT_FOUND))
+                    .getId()
+            ).orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND));
 
         Course calcoloNumerico = courseRepository
-            .findByName("calcolo numerico")
-            .orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND)
-        );
+            .findByNameAndDegreeCourse(
+                "calcolo numerico",
+                degreeCourseRepository.findByName(INGEGNERIA_GESTIONALE)
+                    .orElseThrow(() -> new NoSuchElementException(DEGREE_COURSE_NOT_FOUND))
+                    .getId()
+            ).orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND));
 
         Course matInnovativiIngElettrica = courseRepository
-            .findByName("materiali innovativi per l'ingegneria elettrica")
-            .orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND)
-        );
+            .findByNameAndDegreeCourse(
+                "materiali innovativi per l'ingegneria elettrica",
+                degreeCourseRepository.findByName(INGEGNERIA_GESTIONALE)
+                    .orElseThrow(() -> new NoSuchElementException(DEGREE_COURSE_NOT_FOUND))
+                    .getId()
+            ).orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND));
 
         Course sistemiInformativi = courseRepository
-            .findByName("sistemi informativi")
-            .orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND)
-        );
+            .findByNameAndDegreeCourse(
+                "sistemi informativi",
+                degreeCourseRepository.findByName(INGEGNERIA_GESTIONALE_MAGISTRALE)
+                    .orElseThrow(() -> new NoSuchElementException(DEGREE_COURSE_NOT_FOUND))
+                    .getId()
+            ).orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND));
 
         Course bigData = courseRepository
-            .findByName("big data")
-            .orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND)
-        );
+            .findByNameAndDegreeCourse(
+                "big data",
+                degreeCourseRepository
+                    .findByName(INGEGNERIA_INFORMATICA_MAGISTRALE)
+                    .orElseThrow(() -> new NoSuchElementException(DEGREE_COURSE_NOT_FOUND))
+                    .getId()
+            ).orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND));
 
         Course bigDataAna = courseRepository
-            .findByName("big data analytics")
-            .orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND)
-        );
+            .findByNameAndDegreeCourse(
+                "big data analytics",
+                degreeCourseRepository.findByName(INGEGNERIA_GESTIONALE_MAGISTRALE)
+                    .orElseThrow(() -> new NoSuchElementException(DEGREE_COURSE_NOT_FOUND))
+                    .getId()
+            ).orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND));
 
         Course anSisDin = courseRepository
-            .findByName("analisi dei sistemi dinamici")
-            .orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND)
-        );
+            .findByNameAndDegreeCourse(
+                "analisi dei sistemi dinamici",
+                degreeCourseRepository.findByName(INGEGNERIA_GESTIONALE_MAGISTRALE)
+                    .orElseThrow(() -> new NoSuchElementException(DEGREE_COURSE_NOT_FOUND))
+                    .getId()
+            ).orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND));
 
         Course pAFD = courseRepository
-            .findByName("produzione avanzata nella fabbrica digitale")
-            .orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND)
-        );
+            .findByNameAndDegreeCourse(
+                "produzione avanzata nella fabbrica digitale",
+                degreeCourseRepository.findByName(INGEGNERIA_GESTIONALE_MAGISTRALE)
+                    .orElseThrow(() -> new NoSuchElementException(DEGREE_COURSE_NOT_FOUND))
+                    .getId()
+            ).orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND));
 
         Course iOT = courseRepository
-            .findByName("internet of things")
-            .orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND)
-        );
+            .findByNameAndDegreeCourse(
+                "internet of things",
+                degreeCourseRepository.findByName(INGEGNERIA_GESTIONALE_MAGISTRALE)
+                    .orElseThrow(() -> new NoSuchElementException(DEGREE_COURSE_NOT_FOUND))
+                    .getId()
+            ).orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND));
 
         Course cyberSecurity = courseRepository
-            .findByName("fondamenti di cybersecurity")
-            .orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND)
-        );
+            .findByNameAndDegreeCourse(
+                "fondamenti di cybersecurity",
+                degreeCourseRepository
+                    .findByName(INGEGNERIA_GESTIONALE_MAGISTRALE)
+                    .orElseThrow(() -> new NoSuchElementException(DEGREE_COURSE_NOT_FOUND))
+                    .getId()
+            ).orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND));
 
         Course telecomunicazioni = courseRepository
-            .findByName("fondamenti di telecomunicazioni")
-            .orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND)
-        );
+            .findByNameAndDegreeCourse(
+                "fondamenti di telecomunicazioni",
+                degreeCourseRepository.findByName(INGEGNERIA_INFORMATICA)
+                    .orElseThrow(() -> new NoSuchElementException(DEGREE_COURSE_NOT_FOUND))
+                    .getId()
+            ).orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND));
 
         Course basiDiDati = courseRepository
-            .findByName("basi di dati")
-            .orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND)
-        );
+            .findByNameAndDegreeCourse(
+                "basi di dati",
+                degreeCourseRepository.findByName(INGEGNERIA_GESTIONALE_MAGISTRALE)
+                    .orElseThrow(() -> new NoSuchElementException(DEGREE_COURSE_NOT_FOUND))
+                    .getId()
+            ).orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND));
 
         Course compilatori = courseRepository
-            .findByName("compilatori")
-            .orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND)
-        );
+            .findByNameAndDegreeCourse(
+                "compilatori",
+                degreeCourseRepository.findByName(INGEGNERIA_INFORMATICA_MAGISTRALE)
+                    .orElseThrow(() -> new NoSuchElementException(DEGREE_COURSE_NOT_FOUND))
+                    .getId()
+            ).orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND));
 
         Course alInJava = courseRepository
-            .findByName("algoritmi e strutture dati in java")
-            .orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND)
-        );
+            .findByNameAndDegreeCourse(
+                "algoritmi e strutture dati in java",
+                degreeCourseRepository.findByName(INGEGNERIA_INFORMATICA)
+                    .orElseThrow(() -> new NoSuchElementException(DEGREE_COURSE_NOT_FOUND))
+                    .getId()
+            ).orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND));
 
         Course fondElet = courseRepository
-            .findByName("fondamenti di elettronica")
-            .orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND)
-        );
+            .findByNameAndDegreeCourse(
+                "fondamenti di elettronica",
+                degreeCourseRepository.findByName(INGEGNERIA_INFORMATICA)
+                    .orElseThrow(() -> new NoSuchElementException(DEGREE_COURSE_NOT_FOUND))
+                    .getId()
+            ).orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND));
 
         Course sisEneMaFlu = courseRepository
-            .findByName("energetica e macchine a fluido")
-            .orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND)
-        );
+            .findByNameAndDegreeCourse(
+                "energetica e macchine a fluido",
+                degreeCourseRepository.findByName(INGEGNERIA_MECCANICA)
+                    .orElseThrow(() -> new NoSuchElementException(DEGREE_COURSE_NOT_FOUND))
+                    .getId()
+            ).orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND));
 
         Course impiantiMecc = courseRepository
-            .findByName("impianti meccanici")
-            .orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND)
-        );
+            .findByNameAndDegreeCourse(
+                "impianti meccanici",
+                degreeCourseRepository.findByName(INGEGNERIA_MECCANICA)
+                    .orElseThrow(() -> new NoSuchElementException(DEGREE_COURSE_NOT_FOUND))
+                    .getId()
+            ).orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND));
 
         Course misMeccTerm = courseRepository
-            .findByName("misure meccaniche e termiche")
-            .orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND)
-        );
+            .findByNameAndDegreeCourse(
+                "misure meccaniche e termiche",
+                degreeCourseRepository
+                    .findByName(INGEGNERIA_MECCANICA)
+                    .orElseThrow(() -> new NoSuchElementException(DEGREE_COURSE_NOT_FOUND))
+                    .getId()
+            ).orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND));
 
         Course gasDinFluDin = courseRepository
-            .findByName("gasdinamica e fluidodinamica")
-            .orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND)
-        );
+            .findByNameAndDegreeCourse(
+                "gasdinamica e fluidodinamica",
+                degreeCourseRepository.findByName(INGEGNERIA_MECCANICA_MAGISTRALE)
+                    .orElseThrow(() -> new NoSuchElementException(DEGREE_COURSE_NOT_FOUND))
+                    .getId()
+            ).orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND));
 
         Course turboMacchine = courseRepository
-            .findByName("turbomacchine")
-            .orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND)
-        );
+            .findByNameAndDegreeCourse(
+                "turbomacchine",
+                degreeCourseRepository.findByName(INGEGNERIA_MECCANICA_MAGISTRALE)
+                    .orElseThrow(() -> new NoSuchElementException(DEGREE_COURSE_NOT_FOUND))
+                    .getId()
+            ).orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND));
 
         Course maccEle = courseRepository
-            .findByName("macchine elettriche")
-            .orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND)
-        );
+            .findByNameAndDegreeCourse(
+                "macchine elettriche",
+                degreeCourseRepository.findByName(INGEGNERIA_ELETTRICA)
+                    .orElseThrow(() -> new NoSuchElementException(DEGREE_COURSE_NOT_FOUND))
+                    .getId()
+            ).orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND));
 
         Course elePot = courseRepository
-            .findByName("elettrica di potenza")
-            .orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND)
-        );
+            .findByNameAndDegreeCourse(
+                "elettrica di potenza",
+                degreeCourseRepository.findByName(INGEGNERIA_ELETTRICA_MAGISTRALE)
+                    .orElseThrow(() -> new NoSuchElementException(DEGREE_COURSE_NOT_FOUND))
+                    .getId()
+            ).orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND));
 
         Course impEleCivInd = courseRepository
-            .findByName("impianti elettrici civili e industriali")
-            .orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND)
-        );
+            .findByNameAndDegreeCourse(
+                "impianti elettrici civili e industriali",
+                degreeCourseRepository.findByName(INGEGNERIA_ELETTRICA_MAGISTRALE)
+                    .orElseThrow(() -> new NoSuchElementException(DEGREE_COURSE_NOT_FOUND))
+                    .getId()
+            ).orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND));
 
 
         List<ExaminationDto> examinations = new ArrayList<>();

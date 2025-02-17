@@ -25,7 +25,7 @@ public class StringToDegreeCourseConverter
     /**
      * Converts a string representation of a degree course name into a
      * DegreeCourse object by searching the repository.
-     *
+     * Resolve problem of upper case
      * @param source the name of the degree course to convert
      * @return the DegreeCourse object if found, otherwise throws an
      *         ObjectNotFoundException
@@ -37,7 +37,7 @@ public class StringToDegreeCourseConverter
     @Nullable
     public DegreeCourse convert(@NonNull String source) {
         return degreeCourseRepository
-            .findByName(source)
+            .findByName(source.trim().toUpperCase())
             .orElseThrow(() -> new ObjectNotFoundException(source, "degree_course"));
     }
 

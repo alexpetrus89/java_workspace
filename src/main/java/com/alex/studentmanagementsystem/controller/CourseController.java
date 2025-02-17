@@ -11,7 +11,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.alex.studentmanagementsystem.domain.Course;
 import com.alex.studentmanagementsystem.dto.CourseDto;
-import com.alex.studentmanagementsystem.dto.StudentDto;
 import com.alex.studentmanagementsystem.exception.ObjectAlreadyExistsException;
 import com.alex.studentmanagementsystem.exception.ObjectNotFoundException;
 import com.alex.studentmanagementsystem.service.impl.CourseServiceImpl;

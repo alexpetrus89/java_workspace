@@ -76,19 +76,22 @@ public class StudentServiceImpl implements StudentService {
 	/**
 	 * Retrieves a student by name.
 	 * @param name the name of the student.
-	 * @return StudentDto object containing the student's data.
+	 * @return List<StudentDto> List of StudentDto object containing the
+	 * 		   student's data.
 	 * @throws ObjectNotFoundException if no student with the given name exists.
 	 * @throws IllegalArgumentException if the name is null.
 	 * @throws UnsupportedOperationException if the name is not unique
 	 */
 	@Override
-	public StudentDto getStudentByName(@NonNull String name)
+	public List<StudentDto> getStudentsByName(@NonNull String name)
 		throws ObjectNotFoundException
 	{
 		return studentRepository
 			.findByName(name)
+			.orElseThrow(() -> new ObjectNotFoundException(name, EXCEPTION_STUDENT_IDENTIFIER))
+			.stream()
 			.map(StudentMapper::mapToStudentDto)
-			.orElseThrow(() -> new ObjectNotFoundException(name, EXCEPTION_STUDENT_IDENTIFIER));
+			.toList();
 	}
 
 

@@ -12,16 +12,20 @@
     <table>
         <th>Course</th>
         <th>Registration</th>
+        <th>Name</th>
         <th>Grade</th>
         <th>Date</th>
+        <th>Degree course</th>
         <tr th:each="examination : ${examinations}">
             <td th:text="${examination.course.name}">Course name</td>
             <td th:text="${examination.student.register.register}">Student Register</td>
+            <td th:text="${examination.student.name}">Student Name</td>
             <td>
                 <span th:text="${examination.grade}">Grade</span>
                 <span th:if="${examination.withHonors}"> with honors</span>
             </td>
             <td th:text="${examination.date}">Date</td>
+            <td th:text="${examination.course.degreeCourse.name}">Degree course name</td>
         </tr>
     </table>
     <br>

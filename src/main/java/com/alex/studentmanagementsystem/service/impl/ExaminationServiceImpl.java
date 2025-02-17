@@ -32,7 +32,6 @@ import jakarta.transaction.Transactional;
 public class ExaminationServiceImpl implements ExaminationService {
 
     // constants
-    private static final String EXCEPTION_STUDENT_IDENTIFIER = "student";
     private static final String EXCEPTION_COURSE_IDENTIFIER = "course";
     private static final String EXCEPTION_DEGREE_COURSE_IDENTIFIER = "degree course";
     private static final String EXCEPTION_EXAMINATION_IDENTIFIER = "examination";

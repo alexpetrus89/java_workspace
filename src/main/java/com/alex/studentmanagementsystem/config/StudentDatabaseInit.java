@@ -59,6 +59,8 @@ public class StudentDatabaseInit implements Serializable {
     private static final String UC_FELICE = "uba789lo";
     private static final String UC_VLADIMIRO = "rot111ad";
     private static final String UC_ORAZIO = "ret987ws";
+    private static final String UC_GRIGNANI = "ner111tt";
+    private static final String UC_SILVESTRI = "tyi389ua";
 
     private static final String STUDENT_NOT_FOUND = "Student not found";
     private static final String COURSE_NOT_FOUND = "Course not found";
@@ -262,7 +264,7 @@ public class StudentDatabaseInit implements Serializable {
 
         students.add(
             new StudentDto(
-                new Register("123458"),
+                new Register("123741"),
                 "graziano",
                 "cofano.graziano@gmail.com",
                 LocalDate.of(1990, 7, 15),
@@ -394,6 +396,19 @@ public class StudentDatabaseInit implements Serializable {
 
         students.add(
             new StudentDto(
+                new Register("123528"),
+                "anacleto",
+                "ananana.tuo@gmail.com",
+                LocalDate.of(1988, 4, 7),
+                degreeCourseRepository
+                    .findByName(INGEGNERIA_ELETTRICA_MAGISTRALE)
+                    .orElseThrow(() -> new ObjectNotFoundException(DEGREE_COURSE_NOT_FOUND, INGEGNERIA_INFORMATICA_MAGISTRALE))
+            )
+        );
+
+
+        students.add(
+            new StudentDto(
                 new Register("123468"),
                 "iginio",
                 "iginio.blood@gmail.com",
@@ -409,9 +424,21 @@ public class StudentDatabaseInit implements Serializable {
                 new Register("123467"),
                 "benny",
                 "segafredo.caffe@gmail.com",
-                LocalDate.of(19, 3, 8),
+                LocalDate.of(1996, 3, 8),
                 degreeCourseRepository
                     .findByName(INGEGNERIA_MECCANICA_MAGISTRALE)
+                    .orElseThrow(() -> new ObjectNotFoundException(DEGREE_COURSE_NOT_FOUND, INGEGNERIA_INFORMATICA_MAGISTRALE))
+            )
+        );
+
+        students.add(
+            new StudentDto(
+                new Register("120689"),
+                "anacleto",
+                "willy.wonka@gmail.com",
+                LocalDate.of(1992, 8, 4),
+                degreeCourseRepository
+                    .findByName(INGEGNERIA_INFORMATICA_MAGISTRALE)
                     .orElseThrow(() -> new ObjectNotFoundException(DEGREE_COURSE_NOT_FOUND, INGEGNERIA_INFORMATICA_MAGISTRALE))
             )
         );
@@ -574,6 +601,24 @@ public class StudentDatabaseInit implements Serializable {
             )
         );
 
+        professors.add(
+            new ProfessorDto(
+                new UniqueCode(UC_GRIGNANI),
+                "tfr127qua639t11a",
+                "grignani",
+                "professore.grignani@dominio.it"
+            )
+        );
+
+        professors.add(
+            new ProfessorDto(
+                new UniqueCode(UC_SILVESTRI),
+                "rua712sas597u55r",
+                "silvestri",
+                "professore.silvestri@dominio.it"
+            )
+        );
+
         // sanity check
         if(professors.isEmpty())
             throw new IllegalArgumentException("professors list is empty");
@@ -650,8 +695,8 @@ public class StudentDatabaseInit implements Serializable {
                 CourseType.ECONOMIA,
                 6,
                 professorRepository
-                    .findByUniqueCode(new UniqueCode(UC_GIACINTO))
-                    .orElseThrow(() -> new ObjectNotFoundException(new UniqueCode(UC_GIACINTO))),
+                    .findByUniqueCode(new UniqueCode(UC_SILVESTRI))
+                    .orElseThrow(() -> new ObjectNotFoundException(new UniqueCode(UC_SILVESTRI))),
                 ingGest
             )
         );
@@ -662,8 +707,8 @@ public class StudentDatabaseInit implements Serializable {
                 CourseType.MATEMATICA,
                 6,
                 professorRepository
-                    .findByUniqueCode(new UniqueCode(UC_GIACINTO))
-                    .orElseThrow(() -> new ObjectNotFoundException(new UniqueCode(UC_GIACINTO))),
+                    .findByUniqueCode(new UniqueCode(UC_GIACOMO))
+                    .orElseThrow(() -> new ObjectNotFoundException(new UniqueCode(UC_GIACOMO))),
                 ingGest
             )
         );
@@ -1160,6 +1205,54 @@ public class StudentDatabaseInit implements Serializable {
             )
         );
 
+        courses.add(
+            new Course(
+                "analisi matematica",
+                CourseType.MATEMATICA,
+                12,
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_GRIGNANI))
+                    .orElseThrow(() -> new ObjectNotFoundException(new UniqueCode(UC_GIACINTO))),
+                ingInf
+            )
+        );
+
+        courses.add(
+            new Course(
+                "elementi di economia",
+                CourseType.ECONOMIA,
+                6,
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_SILVESTRI))
+                    .orElseThrow(() -> new ObjectNotFoundException(new UniqueCode(UC_GIACINTO))),
+                ingInf
+            )
+        );
+
+        courses.add(
+            new Course(
+                "geometria e algebra",
+                CourseType.MATEMATICA,
+                6,
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_GRIGNANI))
+                    .orElseThrow(() -> new ObjectNotFoundException(new UniqueCode(UC_GIACINTO))),
+                ingInf
+            )
+        );
+
+        courses.add(
+            new Course(
+                "fondamenti di informatica",
+                CourseType.INFORMATICA,
+                6,
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_ORAZIO))
+                    .orElseThrow(() -> new ObjectNotFoundException(new UniqueCode(UC_ORAZIO))),
+                ingInf
+            )
+        );
+
         // save courses
         courses.forEach(courseRepository::saveAndFlush);
 
@@ -1202,62 +1295,67 @@ public class StudentDatabaseInit implements Serializable {
 
         // Retrieve existing Student entity from the database
         Student anacleto = studentRepository
-            .findByName("anacleto")
+            .findByRegister(new Register("123456"))
             .orElseThrow(() -> new NoSuchElementException(STUDENT_NOT_FOUND)
         );
 
         Student feluccio = studentRepository
-            .findByName("feluccio")
+            .findByRegister(new Register("123463"))
             .orElseThrow(() -> new NoSuchElementException(STUDENT_NOT_FOUND)
         );
 
         Student filippo = studentRepository
-            .findByName("filippo")
+            .findByRegister(new Register("123457"))
             .orElseThrow(() -> new NoSuchElementException(STUDENT_NOT_FOUND)
         );
 
         Student angelo = studentRepository
-            .findByName("angelo")
+            .findByRegister(new Register("123458"))
             .orElseThrow(() -> new NoSuchElementException(STUDENT_NOT_FOUND)
         );
 
         Student jonspencer = studentRepository
-            .findByName("jonspencer")
+            .findByRegister(new Register("123462"))
             .orElseThrow(() -> new NoSuchElementException(STUDENT_NOT_FOUND)
         );
 
         Student mark = studentRepository
-            .findByName("marklanegan")
+            .findByRegister(new Register("123470"))
             .orElseThrow(() -> new NoSuchElementException(STUDENT_NOT_FOUND)
         );
 
         Student iggypop = studentRepository
-            .findByName("iggypop")
+            .findByRegister(new Register("123469"))
             .orElseThrow(() -> new NoSuchElementException(STUDENT_NOT_FOUND)
         );
 
         Student uccio = studentRepository
-            .findByName("uccio")
+            .findByRegister(new Register("123464"))
             .orElseThrow(() -> new NoSuchElementException(STUDENT_NOT_FOUND)
         );
 
         Student iginio = studentRepository
-            .findByName("iginio")
+            .findByRegister(new Register("123468"))
             .orElseThrow(() -> new NoSuchElementException(STUDENT_NOT_FOUND)
         );
 
         Student renzi = studentRepository
-            .findByName("renzi")
+            .findByRegister(new Register("123465"))
             .orElseThrow(() -> new NoSuchElementException(STUDENT_NOT_FOUND)
         );
 
         Student santana = studentRepository
-            .findByName("santana")
+            .findByRegister(new Register("123466"))
             .orElseThrow(() -> new NoSuchElementException(STUDENT_NOT_FOUND)
         );
 
         Student benny = studentRepository
-            .findByName("benny")
+            .findByRegister(new Register("123467"))
+            .orElseThrow(() -> new NoSuchElementException(STUDENT_NOT_FOUND)
+        );
+
+        Student anacletoTwo = studentRepository
+            .findByRegister(new Register("120689"))
             .orElseThrow(() -> new NoSuchElementException(STUDENT_NOT_FOUND)
         );
 
@@ -1267,6 +1365,34 @@ public class StudentDatabaseInit implements Serializable {
             .findByNameAndDegreeCourse(
                 "analisi matematica",
                 degreeCourseRepository.findByName(INGEGNERIA_GESTIONALE)
+                    .orElseThrow(() -> new NoSuchElementException(DEGREE_COURSE_NOT_FOUND)).getId()
+            ).orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND));
+
+        Course analisiMatematicaInf = courseRepository
+            .findByNameAndDegreeCourse(
+                "analisi matematica",
+                degreeCourseRepository.findByName(INGEGNERIA_INFORMATICA)
+                    .orElseThrow(() -> new NoSuchElementException(DEGREE_COURSE_NOT_FOUND)).getId()
+            ).orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND));
+
+        Course geometriaInf = courseRepository
+            .findByNameAndDegreeCourse(
+                "geometria e algebra",
+                degreeCourseRepository.findByName(INGEGNERIA_INFORMATICA)
+                    .orElseThrow(() -> new NoSuchElementException(DEGREE_COURSE_NOT_FOUND)).getId()
+            ).orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND));
+
+        Course economiaInf = courseRepository
+            .findByNameAndDegreeCourse(
+                "elementi di economia",
+                degreeCourseRepository.findByName(INGEGNERIA_INFORMATICA)
+                    .orElseThrow(() -> new NoSuchElementException(DEGREE_COURSE_NOT_FOUND)).getId()
+            ).orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND));
+
+        Course fondInfInf = courseRepository
+            .findByNameAndDegreeCourse(
+                "fondamenti di informatica",
+                degreeCourseRepository.findByName(INGEGNERIA_INFORMATICA)
                     .orElseThrow(() -> new NoSuchElementException(DEGREE_COURSE_NOT_FOUND)).getId()
             ).orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND));
 
@@ -1510,6 +1636,46 @@ public class StudentDatabaseInit implements Serializable {
                 30,
                 true,
                 LocalDate.of(2018, 2, 18)
+            )
+        );
+
+        examinations.add(
+            new ExaminationDto(
+                analisiMatematicaInf,
+                mark,
+                30,
+                true,
+                LocalDate.of(2018, 2, 18)
+            )
+        );
+
+        examinations.add(
+            new ExaminationDto(
+                economiaInf,
+                mark,
+                30,
+                true,
+                LocalDate.of(2018, 2, 18)
+            )
+        );
+
+        examinations.add(
+            new ExaminationDto(
+                geometriaInf,
+                mark,
+                30,
+                true,
+                LocalDate.of(2023, 9, 18)
+            )
+        );
+
+        examinations.add(
+            new ExaminationDto(
+                fondInfInf,
+                mark,
+                30,
+                true,
+                LocalDate.of(2021, 10, 11)
             )
         );
 
@@ -1872,6 +2038,116 @@ public class StudentDatabaseInit implements Serializable {
                 30,
                 false,
                 LocalDate.of(2023, 11, 12)
+            )
+        );
+
+        examinations.add(
+            new ExaminationDto(
+                sistemiInformativi,
+                anacletoTwo,
+                25,
+                false,
+                LocalDate.of(2021, 04, 03)
+            )
+        );
+
+        examinations.add(
+            new ExaminationDto(
+                pAFD,
+                anacletoTwo,
+                30,
+                false,
+                LocalDate.of(2025, 01, 21)
+            )
+        );
+
+        examinations.add(
+            new ExaminationDto(
+                anSisDin,
+                anacletoTwo,
+                28,
+                false,
+                LocalDate.of(2024, 05, 18)
+            )
+        );
+
+        examinations.add(
+            new ExaminationDto(
+                iOT,
+                anacletoTwo,
+                30,
+                true,
+                LocalDate.of(2021, 06, 03)
+            )
+        );
+
+        examinations.add(
+            new ExaminationDto(
+                bigDataAna,
+                anacletoTwo,
+                30,
+                true,
+                LocalDate.of(2021, 06, 03)
+            )
+        );
+
+        examinations.add(
+            new ExaminationDto(
+                cyberSecurity,
+                anacletoTwo,
+                30,
+                true,
+                LocalDate.of(2021, 02, 03)
+            )
+        );
+
+        examinations.add(
+            new ExaminationDto(
+                basiDiDati,
+                anacletoTwo,
+                30,
+                true,
+                LocalDate.of(2024, 04, 12)
+            )
+        );
+
+        examinations.add(
+            new ExaminationDto(
+                compilatori,
+                anacletoTwo,
+                30,
+                true,
+                LocalDate.of(2021, 06, 03)
+            )
+        );
+
+        examinations.add(
+            new ExaminationDto(
+                bigData,
+                anacletoTwo,
+                27,
+                true,
+                LocalDate.of(2021, 06, 03)
+            )
+        );
+
+        examinations.add(
+            new ExaminationDto(
+                alInJava,
+                anacletoTwo,
+                29,
+                false,
+                LocalDate.of(2021, 06, 8)
+            )
+        );
+
+        examinations.add(
+            new ExaminationDto(
+                fondElet,
+                anacletoTwo,
+                24,
+                false,
+                LocalDate.of(2022, 12, 16)
             )
         );
 

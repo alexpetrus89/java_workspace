@@ -1,5 +1,7 @@
 package com.alex.studentmanagementsystem.controller;
 
+import java.util.List;
+
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -93,15 +95,23 @@ public class StudentController {
      * @throws UnsupportedOperationException if the name is not unique
      */
     @GetMapping(path = "/read/name")
-	public ModelAndView getStudentByName(@RequestParam String name) {
+	public ModelAndView getStudentsByName(@RequestParam String name) {
 
         try{
-            StudentDto studentDto =
-                studentServiceImpl.getStudentByName(name.toLowerCase());
+            List<Student> students = studentServiceImpl
+                .getStudentsByName(name.toLowerCase())
+                .stream()
+                .map(StudentMapper::mapToStudent)
+                .toList();
+
+            System.out.println("\n---- INIZIO TEST ----");
+            students.forEach(System.out::println);
+            System.out.println("\n---- FINE TEST ----");
 
             return new CreateView(
-                StudentMapper.mapToStudent(studentDto),
-                "student/read/read-result"
+                "students",
+                students,
+                "student/read/read-results"
             ).getModelAndView();
 
         } catch (ObjectNotFoundException e) {
@@ -218,33 +228,6 @@ public class StudentController {
     {
         try {
             studentServiceImpl.deleteStudent(new Register(register));
-
-            return new CreateView("student/delete/delete-result")
-                .getModelAndView();
-
-        } catch (RuntimeException e) {
-            return new CreateView(
-                ERROR,
-                e.getMessage(),
-                NOT_FOUND_PATH
-            ).getModelAndView();
-        }
-    }
-
-    /**
-     * Deletes a student
-     * @param name the name of the student
-     * @return ModelAndView
-     * @throws ObjectNotFoundException if the student does not exist
-     * @throws IllegalArgumentException if the name is null or empty
-     */
-    @DeleteMapping(path = "/delete/name")
-    @Transactional // con l'annotazione transactional effettua una gestione propria degli errori
-    public ModelAndView deleteStudentByName(@RequestParam String name) {
-
-        try{
-            StudentDto studentDto = studentServiceImpl.getStudentByName(name.toLowerCase());
-            studentServiceImpl.deleteStudent(studentDto.getRegister());
 
             return new CreateView("student/delete/delete-result")
                 .getModelAndView();

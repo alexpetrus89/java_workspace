@@ -1,5 +1,6 @@
 package com.alex.studentmanagementsystem.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -31,24 +32,24 @@ public interface StudentRepository
     /**
      * Retrieves a student by name
      * @param name the name of the student
-     * @return Optional<Student> with the student if found, or an empty
+     * @return Optional<List<Student>> with the student if found, or an empty
      *         Optional if no student is found
      * @throws IllegalArgumentException if the name is null
      * @throws UnsupportedOperationException if the name is not unique
      */
     @Query("SELECT s FROM Student s WHERE s.name = ?1")
-    Optional<Student> findByName(@NonNull String name);
+    Optional<List<Student>> findByName(@NonNull String name);
 
     /**
      * Retrieves a student by email
      * @param email the email of the student
-     * @return Optional<Student> with the student if found, or an empty
+     * @return Optional<List<Student>> with the student if found, or an empty
      *         Optional if no student is found
      * @throws IllegalArgumentException if the email is null
      * @throws UnsupportedOperationException if the email is not unique
      */
     @Query("SELECT s FROM Student s WHERE s.email = ?1")
-    Optional<Student> findByEmail(@NonNull String email);
+    Optional<List<Student>> findByEmail(@NonNull String email);
 
     /**
      * Checks if a student exists by register

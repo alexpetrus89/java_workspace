@@ -1,5 +1,6 @@
 package com.alex.studentmanagementsystem.controller;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -9,7 +10,10 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.alex.studentmanagementsystem.domain.Course;
+import com.alex.studentmanagementsystem.dto.CourseDto;
+import com.alex.studentmanagementsystem.dto.StudentDto;
 import com.alex.studentmanagementsystem.exception.ObjectAlreadyExistsException;
+import com.alex.studentmanagementsystem.exception.ObjectNotFoundException;
 import com.alex.studentmanagementsystem.service.impl.CourseServiceImpl;
 import com.alex.studentmanagementsystem.utils.CourseType;
 import com.alex.studentmanagementsystem.utils.CreateView;
@@ -158,6 +162,36 @@ public class CourseController {
                 ),
                 "course/update/update-result"
             ).getModelAndView();
+        } catch (RuntimeException e) {
+            return new CreateView(
+                ERROR,
+                e.getMessage(),
+                NOT_FOUND_PATH
+            ).getModelAndView();
+        }
+    }
+
+
+    /**
+     * deletes a course by name
+     * @param name name of the course
+     * @return ModelAndView
+     * @throws ObjectNotFoundException if no course with the given name exists
+     * @throws IllegalArgumentException if the name is null or empty
+     * @throws UnsupportedOperationException if the name is not unique
+     * @throws NullPointerException if the name is null
+     */
+    @DeleteMapping(path = "/delete/name")
+    @Transactional // con l'annotazione transactional effettua una gestione propria degli errori
+    public ModelAndView deleteStudentByName(@RequestParam String name) {
+
+        try{
+            CourseDto courseDto = courseServiceImpl.getCourseByName(name.toLowerCase());
+            courseServiceImpl.deleteCourse(courseDto.getCourseId());
+
+            return new CreateView("student/delete/delete-result")
+                .getModelAndView();
+
         } catch (RuntimeException e) {
             return new CreateView(
                 ERROR,

@@ -137,7 +137,7 @@ public class StudentServiceImpl implements StudentService {
 	 *                                 course does not exist.
 	 * @throws IllegalArgumentException if the newStudentDto is null.
 	 * @throws UnsupportedOperationException if the register is not unique or if
-	 * 										the degree course is not unique
+	 * 										the degree course is not unique.
 	 */
 	@Override
 	@Transactional

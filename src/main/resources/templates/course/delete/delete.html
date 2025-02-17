@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<meta charset="utf-8" name="viewport"
+    content="width=device-width, initial-scale=1">
+<head>
+    <title>Delete Course</title>
+</head>
+<body>
+    <h1>Delete course by name</h1>
+    <form th:action="@{/api/v1/course/delete/name}" method="post">
+        <input type="hidden" name="_method" value="DELETE" />
+        <input type="text" name="name" placeholder="Enter course name" />
+        <button type="submit">Delete</button>
+        <input type="reset" value="Reset" />
+    </form>
+    <br>
+    <a href="#" th:href="@{/course/course-menu}">Back to Menu</a>
+</body>

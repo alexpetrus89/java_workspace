@@ -83,14 +83,8 @@ public class UserController {
      */
     @PostMapping("/update/form")
     public String updateUserForm(@ModelAttribute Builder formBuilder) {
-        RegistrationForm form = new RegistrationForm(formBuilder);
         try {
-            RestTemplate restTemplate = new RestTemplate();
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
-            HttpEntity<RegistrationForm> entity = new HttpEntity<>(form, headers);
-            ResponseEntity<String> response = restTemplate.exchange("api/v1/user/update", HttpMethod.PUT, entity, String.class);
-            return response.getBody();
+            return updateUser(new RegistrationForm(formBuilder));
         } catch (RuntimeException e) {
         // gestisci l'eccezione e restituisci un messaggio di errore significativo all'utente
             return "redirect:/error-page";

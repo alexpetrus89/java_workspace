@@ -37,7 +37,6 @@ public class DegreeCourseServiceImpl implements DegreeCourseService {
 
     /**
      * Retrieves all degree courses from the repository and maps them to DTOs.
-     *
      * @return List of DegreeCourseDto objects representing all degree courses.
      */
     @Override

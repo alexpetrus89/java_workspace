@@ -49,6 +49,8 @@ public class StudentDatabaseInit implements Serializable {
     private static final String INGEGNERIA_INFORMATICA = "INGEGNERIA INFORMATICA";
     private static final String INGEGNERIA_GESTIONALE_MAGISTRALE = "INGEGNERIA GESTIONALE MAGISTRALE";
     private static final String INGEGNERIA_INFORMATICA_MAGISTRALE = "INGEGNERIA INFORMATICA MAGISTRALE";
+    private static final String INGEGNERIA_MECCANICA_MAGISTRALE = "INGEGNERIA MECCANICA MAGISTRALE";
+    private static final String INGEGNERIA_ELETTRICA_MAGISTRALE = "INGEGNERIA ELETTRICA MAGISTRALE";
 
     private static final String UC_GIACINTO = "wer456er";
     private static final String UC_GENESIO = "ert456er";
@@ -56,10 +58,12 @@ public class StudentDatabaseInit implements Serializable {
     private static final String UC_GIACOMO = "frt456er";
     private static final String UC_FELICE = "uba789lo";
     private static final String UC_VLADIMIRO = "rot111ad";
+    private static final String UC_ORAZIO = "ret987ws";
 
     private static final String STUDENT_NOT_FOUND = "Student not found";
     private static final String COURSE_NOT_FOUND = "Course not found";
     private static final String DEGREE_COURSE_NOT_FOUND = "Degree course not found";
+    private static final String NO_STUDENTS_FOR_THIS_DEGREE = "No students found for this degree course";
 
 
     private final transient Logger logger =
@@ -137,7 +141,7 @@ public class StudentDatabaseInit implements Serializable {
 
         degreeCourses.add(
             new DegreeCourse(
-                INGEGNERIA_MECCANICA,
+                INGEGNERIA_INFORMATICA,
                 DegreeType.BACHELOR,
                 3
             )
@@ -161,7 +165,7 @@ public class StudentDatabaseInit implements Serializable {
 
         degreeCourses.add(
             new DegreeCourse(
-                INGEGNERIA_INFORMATICA,
+                INGEGNERIA_MECCANICA,
                 DegreeType.BACHELOR,
                 3
             )
@@ -178,6 +182,22 @@ public class StudentDatabaseInit implements Serializable {
         degreeCourses.add(
             new DegreeCourse(
                 INGEGNERIA_INFORMATICA_MAGISTRALE,
+                DegreeType.MASTER,
+                2
+            )
+        );
+
+        degreeCourses.add(
+            new DegreeCourse(
+                INGEGNERIA_ELETTRICA_MAGISTRALE,
+                DegreeType.MASTER,
+                2
+            )
+        );
+
+        degreeCourses.add(
+            new DegreeCourse(
+                INGEGNERIA_MECCANICA_MAGISTRALE,
                 DegreeType.MASTER,
                 2
             )
@@ -291,9 +311,9 @@ public class StudentDatabaseInit implements Serializable {
         students.add(
             new StudentDto(
                 new Register("123462"),
-                "alfonso",
-                "alfonso.blood@gmail.com",
-                LocalDate.of(1993, 11, 8),
+                "jonspencer",
+                "jonspencer.blues@gmail.com",
+                LocalDate.of(1991, 02, 8),
                 degreeCourseRepository
                     .findByName(INGEGNERIA_GESTIONALE_MAGISTRALE)
                     .orElseThrow(() -> new ObjectNotFoundException(DEGREE_COURSE_NOT_FOUND, INGEGNERIA_GESTIONALE_MAGISTRALE))
@@ -303,8 +323,8 @@ public class StudentDatabaseInit implements Serializable {
         students.add(
             new StudentDto(
                 new Register("123463"),
-                "fedayno",
-                "fedayno.blood@gmail.com",
+                "feluccio",
+                "feluccio.dart@gmail.com",
                 LocalDate.of(1990, 11, 8),
                 degreeCourseRepository
                     .findByName(INGEGNERIA_GESTIONALE_MAGISTRALE)
@@ -314,10 +334,34 @@ public class StudentDatabaseInit implements Serializable {
 
         students.add(
             new StudentDto(
+                new Register("123470"),
+                "marklanegan",
+                "screeming.trees@gmail.com",
+                LocalDate.of(1989, 12, 21),
+                degreeCourseRepository
+                    .findByName(INGEGNERIA_INFORMATICA)
+                    .orElseThrow(() -> new ObjectNotFoundException(DEGREE_COURSE_NOT_FOUND, INGEGNERIA_INFORMATICA))
+            )
+        );
+
+        students.add(
+            new StudentDto(
                 new Register("123464"),
                 "uccio",
-                "uccio.blood@gmail.com",
+                "uccio.fasanboy@gmail.com",
                 LocalDate.of(1990, 3, 29),
+                degreeCourseRepository
+                    .findByName(INGEGNERIA_INFORMATICA_MAGISTRALE)
+                    .orElseThrow(() -> new ObjectNotFoundException(DEGREE_COURSE_NOT_FOUND, INGEGNERIA_INFORMATICA_MAGISTRALE))
+            )
+        );
+
+        students.add(
+            new StudentDto(
+                new Register("123469"),
+                "iggypop",
+                "iggyandthe.stooges@gmail.com",
+                LocalDate.of(1989, 12, 21),
                 degreeCourseRepository
                     .findByName(INGEGNERIA_INFORMATICA_MAGISTRALE)
                     .orElseThrow(() -> new ObjectNotFoundException(DEGREE_COURSE_NOT_FOUND, INGEGNERIA_INFORMATICA_MAGISTRALE))
@@ -339,23 +383,11 @@ public class StudentDatabaseInit implements Serializable {
         students.add(
             new StudentDto(
                 new Register("123466"),
-                "bomba",
-                "bomba.blood@gmail.com",
+                "santana",
+                "santana.blood@gmail.com",
                 LocalDate.of(1990, 3, 2),
                 degreeCourseRepository
-                    .findByName(INGEGNERIA_INFORMATICA_MAGISTRALE)
-                    .orElseThrow(() -> new ObjectNotFoundException(DEGREE_COURSE_NOT_FOUND, INGEGNERIA_INFORMATICA_MAGISTRALE))
-            )
-        );
-
-        students.add(
-            new StudentDto(
-                new Register("123467"),
-                "segafredo",
-                "segafredo.caffe@gmail.com",
-                LocalDate.of(19, 3, 8),
-                degreeCourseRepository
-                    .findByName(INGEGNERIA_INFORMATICA_MAGISTRALE)
+                    .findByName(INGEGNERIA_ELETTRICA_MAGISTRALE)
                     .orElseThrow(() -> new ObjectNotFoundException(DEGREE_COURSE_NOT_FOUND, INGEGNERIA_INFORMATICA_MAGISTRALE))
             )
         );
@@ -371,6 +403,19 @@ public class StudentDatabaseInit implements Serializable {
                     .orElseThrow(() -> new ObjectNotFoundException(DEGREE_COURSE_NOT_FOUND, INGEGNERIA_GESTIONALE))
             )
         );
+
+        students.add(
+            new StudentDto(
+                new Register("123467"),
+                "benny",
+                "segafredo.caffe@gmail.com",
+                LocalDate.of(19, 3, 8),
+                degreeCourseRepository
+                    .findByName(INGEGNERIA_MECCANICA_MAGISTRALE)
+                    .orElseThrow(() -> new ObjectNotFoundException(DEGREE_COURSE_NOT_FOUND, INGEGNERIA_INFORMATICA_MAGISTRALE))
+            )
+        );
+
 
         // sanity check
         if(students.isEmpty())
@@ -404,7 +449,7 @@ public class StudentDatabaseInit implements Serializable {
         // save students for GESTIONALE MAGISTRALE degree course
         DegreeCourse ingGestMag = degreeCourseRepository
             .findByName(INGEGNERIA_GESTIONALE_MAGISTRALE)
-            .orElseThrow(null);
+            .orElseThrow(() -> new RuntimeException(NO_STUDENTS_FOR_THIS_DEGREE));
 
         // set students of ING. GESTIONALE MAGISTRALE in degreeCourse object
         ingGestMag.setStudents(
@@ -419,13 +464,31 @@ public class StudentDatabaseInit implements Serializable {
         degreeCourseRepository.saveAndFlush(ingGestMag);
 
 
+        // save students for ING. INFORMATICA degree course
+        DegreeCourse ingInf = degreeCourseRepository
+            .findByName(INGEGNERIA_INFORMATICA)
+            .orElseThrow(() -> new RuntimeException(NO_STUDENTS_FOR_THIS_DEGREE));
+
+        // set students of ING. INFORMATICA in degreeCourse object
+        ingInf.setStudents(
+            studentRepository
+                .findAll()
+                .stream()
+                .filter(student -> student.getDegreeCourse().getName().equals(INGEGNERIA_INFORMATICA))
+                .toList()
+        );
+
+        // save degree course ING. INFORMATICA MAGISTRALE
+        degreeCourseRepository.saveAndFlush(ingInf);
+
+
         // save students for ING. INFORMATICA MAGISTRALE degree course
         DegreeCourse ingInfMag = degreeCourseRepository
             .findByName(INGEGNERIA_INFORMATICA_MAGISTRALE)
-            .orElseThrow(null);
+            .orElseThrow(() -> new RuntimeException(NO_STUDENTS_FOR_THIS_DEGREE));
 
         // set students of ING. INFORMATICA MAGISTRALE in degreeCourse object
-        ingGestMag.setStudents(
+        ingInfMag.setStudents(
             studentRepository
                 .findAll()
                 .stream()
@@ -502,6 +565,15 @@ public class StudentDatabaseInit implements Serializable {
             )
         );
 
+        professors.add(
+            new ProfessorDto(
+                new UniqueCode(UC_ORAZIO),
+                "acd784tre415y48r",
+                "orazio",
+                "professore.orazio@dominio.it"
+            )
+        );
+
         // sanity check
         if(professors.isEmpty())
             throw new IllegalArgumentException("professors list is empty");
@@ -532,12 +604,28 @@ public class StudentDatabaseInit implements Serializable {
             .findByName(INGEGNERIA_MECCANICA)
             .orElseThrow();
 
+        DegreeCourse ingInf = degreeCourseRepository
+            .findByName(INGEGNERIA_INFORMATICA)
+            .orElseThrow();
+
+        DegreeCourse ingEle = degreeCourseRepository
+            .findByName(INGEGNERIA_ELETTRICA)
+            .orElseThrow();
+
         DegreeCourse ingGestMag = degreeCourseRepository
             .findByName(INGEGNERIA_GESTIONALE_MAGISTRALE)
             .orElseThrow();
 
         DegreeCourse ingInfMag = degreeCourseRepository
             .findByName(INGEGNERIA_INFORMATICA_MAGISTRALE)
+            .orElseThrow();
+
+        DegreeCourse ingMeccMag = degreeCourseRepository
+            .findByName(INGEGNERIA_MECCANICA_MAGISTRALE)
+            .orElseThrow();
+
+        DegreeCourse ingEleMag = degreeCourseRepository
+            .findByName(INGEGNERIA_ELETTRICA_MAGISTRALE)
             .orElseThrow();
 
 
@@ -810,42 +898,6 @@ public class StudentDatabaseInit implements Serializable {
 
         courses.add(
             new Course(
-                "sistemi informativi",
-                CourseType.ING_INFORMATICA,
-                12,
-                professorRepository
-                    .findByUniqueCode(new UniqueCode(UC_FABIO))
-                    .orElseThrow(() -> new ObjectNotFoundException(new UniqueCode(UC_FABIO))),
-                ingGestMag
-            )
-        );
-
-        courses.add(
-            new Course(
-                "big data",
-                CourseType.ING_INFORMATICA,
-                6,
-                professorRepository
-                    .findByUniqueCode(new UniqueCode(UC_VLADIMIRO))
-                    .orElseThrow(() -> new ObjectNotFoundException(new UniqueCode(UC_VLADIMIRO))),
-                ingGestMag
-            )
-        );
-
-        courses.add(
-            new Course(
-                "compilatori",
-                CourseType.ING_INFORMATICA,
-                12,
-                professorRepository
-                    .findByUniqueCode(new UniqueCode(UC_GENESIO))
-                    .orElseThrow(() -> new ObjectNotFoundException(new UniqueCode(UC_GENESIO))),
-                ingInfMag
-            )
-        );
-
-        courses.add(
-            new Course(
                 "tirocinio",
                 CourseType.ING_GESTIONALE,
                 6,
@@ -870,25 +922,49 @@ public class StudentDatabaseInit implements Serializable {
 
         courses.add(
             new Course(
-                "impianti meccanici",
-                CourseType.ING_MECCANICA,
-                3,
+                "sistemi informativi",
+                CourseType.ING_INFORMATICA,
+                12,
                 professorRepository
                     .findByUniqueCode(new UniqueCode(UC_FABIO))
                     .orElseThrow(() -> new ObjectNotFoundException(new UniqueCode(UC_FABIO))),
-                ingMecc
+                ingGestMag
             )
         );
 
         courses.add(
             new Course(
-                "sistemi energetici e macchine a fluido",
-                CourseType.ING_MECCANICA,
-                3,
+                "big data analytics",
+                CourseType.ING_INFORMATICA,
+                6,
                 professorRepository
-                    .findByUniqueCode(new UniqueCode(UC_FABIO))
-                    .orElseThrow(() -> new ObjectNotFoundException(new UniqueCode(UC_FABIO))),
-                ingMecc
+                    .findByUniqueCode(new UniqueCode(UC_VLADIMIRO))
+                    .orElseThrow(() -> new ObjectNotFoundException(new UniqueCode(UC_VLADIMIRO))),
+                ingGestMag
+            )
+        );
+
+        courses.add(
+            new Course(
+                "internet of things",
+                CourseType.ING_INFORMATICA,
+                6,
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_ORAZIO))
+                    .orElseThrow(() -> new ObjectNotFoundException(new UniqueCode(UC_ORAZIO))),
+                ingGestMag
+            )
+        );
+
+        courses.add(
+            new Course(
+                "fondamenti di cybersecurity",
+                CourseType.ING_INFORMATICA,
+                6,
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_ORAZIO))
+                    .orElseThrow(() -> new ObjectNotFoundException(new UniqueCode(UC_ORAZIO))),
+                ingGestMag
             )
         );
 
@@ -904,6 +980,186 @@ public class StudentDatabaseInit implements Serializable {
             )
         );
 
+        courses.add(
+            new Course(
+                "produzione avanzata nella fabbrica digitale",
+                CourseType.ING_MECCANICA,
+                6,
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_GENESIO))
+                    .orElseThrow(() -> new ObjectNotFoundException(new UniqueCode(UC_GENESIO))),
+                ingGestMag
+            )
+        );
+
+        courses.add(
+            new Course(
+                "analisi dei sistemi dinamici",
+                CourseType.MATEMATICA,
+                6,
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_ORAZIO))
+                    .orElseThrow(() -> new ObjectNotFoundException(new UniqueCode(UC_ORAZIO))),
+                ingGestMag
+            )
+        );
+
+        courses.add(
+            new Course(
+                "algoritmi e strutture dati in java",
+                CourseType.ING_INFORMATICA,
+                6,
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_ORAZIO))
+                    .orElseThrow(() -> new ObjectNotFoundException(new UniqueCode(UC_ORAZIO))),
+                ingInf
+            )
+        );
+
+        courses.add(
+            new Course(
+                "fondamenti di telecomunicazioni",
+                CourseType.ING_INFORMATICA,
+                6,
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_ORAZIO))
+                    .orElseThrow(() -> new ObjectNotFoundException(new UniqueCode(UC_ORAZIO))),
+                ingInf
+            )
+        );
+
+        courses.add(
+            new Course(
+                "fondamenti di elettronica",
+                CourseType.ING_INFORMATICA,
+                6,
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_ORAZIO))
+                    .orElseThrow(() -> new ObjectNotFoundException(new UniqueCode(UC_ORAZIO))),
+                ingInf
+            )
+        );
+
+        courses.add(
+            new Course(
+                "compilatori",
+                CourseType.ING_INFORMATICA,
+                12,
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_ORAZIO))
+                    .orElseThrow(() -> new ObjectNotFoundException(new UniqueCode(UC_ORAZIO))),
+                ingInfMag
+            )
+        );
+
+        courses.add(
+            new Course(
+                "big data",
+                CourseType.ING_INFORMATICA,
+                6,
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_ORAZIO))
+                    .orElseThrow(() -> new ObjectNotFoundException(new UniqueCode(UC_ORAZIO))),
+                ingInfMag
+            )
+        );
+
+        courses.add(
+            new Course(
+                "impianti meccanici",
+                CourseType.ING_MECCANICA,
+                3,
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_FABIO))
+                    .orElseThrow(() -> new ObjectNotFoundException(new UniqueCode(UC_FABIO))),
+                ingMecc
+            )
+        );
+
+        courses.add(
+            new Course(
+                "energetica e macchine a fluido",
+                CourseType.ING_MECCANICA,
+                6,
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_FABIO))
+                    .orElseThrow(() -> new ObjectNotFoundException(new UniqueCode(UC_FABIO))),
+                ingMecc
+            )
+        );
+
+        courses.add(
+            new Course(
+                "misure meccaniche e termiche",
+                CourseType.ING_MECCANICA,
+                12,
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_FABIO))
+                    .orElseThrow(() -> new ObjectNotFoundException(new UniqueCode(UC_FABIO))),
+                ingMecc
+            )
+        );
+
+        courses.add(
+            new Course(
+                "turbomacchine",
+                CourseType.ING_MECCANICA,
+                12,
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_FABIO))
+                    .orElseThrow(() -> new ObjectNotFoundException(new UniqueCode(UC_FABIO))),
+                ingMeccMag
+            )
+        );
+
+        courses.add(
+            new Course(
+                "gasdinamica e fluidodinamica",
+                CourseType.ING_MECCANICA,
+                12,
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_FABIO))
+                    .orElseThrow(() -> new ObjectNotFoundException(new UniqueCode(UC_FABIO))),
+                ingMeccMag
+            )
+        );
+
+        courses.add(
+            new Course(
+                "macchine elettriche",
+                CourseType.ING_MECCANICA,
+                12,
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_FABIO))
+                    .orElseThrow(() -> new ObjectNotFoundException(new UniqueCode(UC_FABIO))),
+                ingEle
+            )
+        );
+
+        courses.add(
+            new Course(
+                "elettrica di potenza",
+                CourseType.ING_MECCANICA,
+                12,
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_FABIO))
+                    .orElseThrow(() -> new ObjectNotFoundException(new UniqueCode(UC_FABIO))),
+                ingEleMag
+            )
+        );
+
+        courses.add(
+            new Course(
+                "impianti elettrici civili e industriali",
+                CourseType.ING_MECCANICA,
+                12,
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_FABIO))
+                    .orElseThrow(() -> new ObjectNotFoundException(new UniqueCode(UC_FABIO))),
+                ingEleMag
+            )
+        );
+
         // save courses
         courses.forEach(courseRepository::saveAndFlush);
 
@@ -912,7 +1168,7 @@ public class StudentDatabaseInit implements Serializable {
             .findAll()
             .stream()
             .forEach(course ->
-                Arrays.asList(ingGest, ingInfMag, ingGestMag)
+                Arrays.asList(ingGest, ingInf, ingMecc, ingEle, ingInfMag, ingGestMag, ingEleMag, ingMeccMag)
                 .stream()
                 .filter(degreeCourse -> degreeCourse.equals(course.getDegreeCourse()))
                 .forEach(degreeCourse -> degreeCourse.addCourse(course)));
@@ -920,8 +1176,13 @@ public class StudentDatabaseInit implements Serializable {
 
         // set courses in degreeCourse object
         degreeCourseRepository.save(ingGest);
+        degreeCourseRepository.save(ingInf);
+        degreeCourseRepository.save(ingEle);
+        degreeCourseRepository.save(ingMecc);
         degreeCourseRepository.save(ingGestMag);
         degreeCourseRepository.save(ingInfMag);
+        degreeCourseRepository.save(ingEleMag);
+        degreeCourseRepository.save(ingMeccMag);
 
     }
 
@@ -944,6 +1205,11 @@ public class StudentDatabaseInit implements Serializable {
             .orElseThrow(() -> new NoSuchElementException(STUDENT_NOT_FOUND)
         );
 
+        Student feluccio = studentRepository
+            .findByName("feluccio")
+            .orElseThrow(() -> new NoSuchElementException(STUDENT_NOT_FOUND)
+        );
+
         Student filippo = studentRepository
             .findByName("filippo")
             .orElseThrow(() -> new NoSuchElementException(STUDENT_NOT_FOUND)
@@ -951,6 +1217,46 @@ public class StudentDatabaseInit implements Serializable {
 
         Student angelo = studentRepository
             .findByName("angelo")
+            .orElseThrow(() -> new NoSuchElementException(STUDENT_NOT_FOUND)
+        );
+
+        Student jonspencer = studentRepository
+            .findByName("jonspencer")
+            .orElseThrow(() -> new NoSuchElementException(STUDENT_NOT_FOUND)
+        );
+
+        Student mark = studentRepository
+            .findByName("marklanegan")
+            .orElseThrow(() -> new NoSuchElementException(STUDENT_NOT_FOUND)
+        );
+
+        Student iggypop = studentRepository
+            .findByName("iggypop")
+            .orElseThrow(() -> new NoSuchElementException(STUDENT_NOT_FOUND)
+        );
+
+        Student uccio = studentRepository
+            .findByName("uccio")
+            .orElseThrow(() -> new NoSuchElementException(STUDENT_NOT_FOUND)
+        );
+
+        Student iginio = studentRepository
+            .findByName("iginio")
+            .orElseThrow(() -> new NoSuchElementException(STUDENT_NOT_FOUND)
+        );
+
+        Student renzi = studentRepository
+            .findByName("renzi")
+            .orElseThrow(() -> new NoSuchElementException(STUDENT_NOT_FOUND)
+        );
+
+        Student santana = studentRepository
+            .findByName("santana")
+            .orElseThrow(() -> new NoSuchElementException(STUDENT_NOT_FOUND)
+        );
+
+        Student benny = studentRepository
+            .findByName("benny")
             .orElseThrow(() -> new NoSuchElementException(STUDENT_NOT_FOUND)
         );
 
@@ -976,6 +1282,11 @@ public class StudentDatabaseInit implements Serializable {
             .orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND)
         );
 
+        Course eMMePM = courseRepository
+            .findByName("elementi di meccanica delle macchine e progettazione meccanica")
+            .orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND)
+        );
+
         Course fisicaGenerale = courseRepository
             .findByName("fisica generale")
             .orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND)
@@ -991,6 +1302,107 @@ public class StudentDatabaseInit implements Serializable {
             .orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND)
         );
 
+        Course sistemiInformativi = courseRepository
+            .findByName("sistemi informativi")
+            .orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND)
+        );
+
+        Course bigData = courseRepository
+            .findByName("big data")
+            .orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND)
+        );
+
+        Course bigDataAna = courseRepository
+            .findByName("big data analytics")
+            .orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND)
+        );
+
+        Course anSisDin = courseRepository
+            .findByName("analisi dei sistemi dinamici")
+            .orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND)
+        );
+
+        Course pAFD = courseRepository
+            .findByName("produzione avanzata nella fabbrica digitale")
+            .orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND)
+        );
+
+        Course iOT = courseRepository
+            .findByName("internet of things")
+            .orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND)
+        );
+
+        Course cyberSecurity = courseRepository
+            .findByName("fondamenti di cybersecurity")
+            .orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND)
+        );
+
+        Course telecomunicazioni = courseRepository
+            .findByName("fondamenti di telecomunicazioni")
+            .orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND)
+        );
+
+        Course basiDiDati = courseRepository
+            .findByName("basi di dati")
+            .orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND)
+        );
+
+        Course compilatori = courseRepository
+            .findByName("compilatori")
+            .orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND)
+        );
+
+        Course alInJava = courseRepository
+            .findByName("algoritmi e strutture dati in java")
+            .orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND)
+        );
+
+        Course fondElet = courseRepository
+            .findByName("fondamenti di elettronica")
+            .orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND)
+        );
+
+        Course sisEneMaFlu = courseRepository
+            .findByName("energetica e macchine a fluido")
+            .orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND)
+        );
+
+        Course impiantiMecc = courseRepository
+            .findByName("impianti meccanici")
+            .orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND)
+        );
+
+        Course misMeccTerm = courseRepository
+            .findByName("misure meccaniche e termiche")
+            .orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND)
+        );
+
+        Course gasDinFluDin = courseRepository
+            .findByName("gasdinamica e fluidodinamica")
+            .orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND)
+        );
+
+        Course turboMacchine = courseRepository
+            .findByName("turbomacchine")
+            .orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND)
+        );
+
+        Course maccEle = courseRepository
+            .findByName("macchine elettriche")
+            .orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND)
+        );
+
+        Course elePot = courseRepository
+            .findByName("elettrica di potenza")
+            .orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND)
+        );
+
+        Course impEleCivInd = courseRepository
+            .findByName("impianti elettrici civili e industriali")
+            .orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND)
+        );
+
+
         List<ExaminationDto> examinations = new ArrayList<>();
 
         // create examination
@@ -1001,6 +1413,16 @@ public class StudentDatabaseInit implements Serializable {
                 30,
                 true,
                 LocalDate.of(2022, 6, 23)
+            )
+        );
+
+        examinations.add(
+            new ExaminationDto(
+                eMMePM,
+                anacleto,
+                30,
+                true,
+                LocalDate.of(2018, 2, 18)
             )
         );
 
@@ -1104,6 +1526,269 @@ public class StudentDatabaseInit implements Serializable {
             )
         );
 
+        examinations.add(
+            new ExaminationDto(
+                bigDataAna,
+                feluccio,
+                30,
+                true,
+                LocalDate.of(2021, 06, 03)
+            )
+        );
+
+        examinations.add(
+            new ExaminationDto(
+                cyberSecurity,
+                feluccio,
+                30,
+                false,
+                LocalDate.of(2021, 02, 03)
+            )
+        );
+
+        examinations.add(
+            new ExaminationDto(
+                basiDiDati,
+                feluccio,
+                21,
+                false,
+                LocalDate.of(2024, 04, 12)
+            )
+        );
+
+        examinations.add(
+            new ExaminationDto(
+                sistemiInformativi,
+                feluccio,
+                18,
+                false,
+                LocalDate.of(2023, 06, 8)
+            )
+        );
+
+
+        examinations.add(
+            new ExaminationDto(
+                sistemiInformativi,
+                jonspencer,
+                25,
+                false,
+                LocalDate.of(2021, 04, 03)
+            )
+        );
+
+        examinations.add(
+            new ExaminationDto(
+                pAFD,
+                jonspencer,
+                30,
+                false,
+                LocalDate.of(2025, 01, 21)
+            )
+        );
+
+        examinations.add(
+            new ExaminationDto(
+                anSisDin,
+                jonspencer,
+                28,
+                false,
+                LocalDate.of(2024, 05, 18)
+            )
+        );
+
+        examinations.add(
+            new ExaminationDto(
+                iOT,
+                jonspencer,
+                30,
+                true,
+                LocalDate.of(2021, 06, 03)
+            )
+        );
+
+        examinations.add(
+            new ExaminationDto(
+                bigDataAna,
+                jonspencer,
+                30,
+                true,
+                LocalDate.of(2021, 06, 03)
+            )
+        );
+
+        examinations.add(
+            new ExaminationDto(
+                cyberSecurity,
+                jonspencer,
+                30,
+                true,
+                LocalDate.of(2021, 02, 03)
+            )
+        );
+
+        examinations.add(
+            new ExaminationDto(
+                basiDiDati,
+                jonspencer,
+                30,
+                true,
+                LocalDate.of(2024, 04, 12)
+            )
+        );
+
+        examinations.add(
+            new ExaminationDto(
+                bigData,
+                iggypop,
+                30,
+                true,
+                LocalDate.of(2021, 06, 03)
+            )
+        );
+
+        examinations.add(
+            new ExaminationDto(
+                compilatori,
+                iggypop,
+                30,
+                true,
+                LocalDate.of(2021, 06, 03)
+            )
+        );
+
+        examinations.add(
+            new ExaminationDto(
+                bigData,
+                uccio,
+                27,
+                true,
+                LocalDate.of(2021, 06, 03)
+            )
+        );
+
+        examinations.add(
+            new ExaminationDto(
+                compilatori,
+                uccio,
+                18,
+                false,
+                LocalDate.of(2021, 06, 03)
+            )
+        );
+
+        examinations.add(
+            new ExaminationDto(
+                alInJava,
+                mark,
+                21,
+                false,
+                LocalDate.of(2021, 06, 8)
+            )
+        );
+
+        examinations.add(
+            new ExaminationDto(
+                fondElet,
+                mark,
+                28,
+                false,
+                LocalDate.of(2020, 12, 16)
+            )
+        );
+
+        examinations.add(
+            new ExaminationDto(
+                telecomunicazioni,
+                mark,
+                26,
+                false,
+                LocalDate.of(2024, 10, 4)
+            )
+        );
+
+        examinations.add(
+            new ExaminationDto(
+                sisEneMaFlu,
+                iginio,
+                30,
+                true,
+                LocalDate.of(2021, 06, 03)
+            )
+        );
+
+        examinations.add(
+            new ExaminationDto(
+                impiantiMecc,
+                iginio,
+                30,
+                true,
+                LocalDate.of(2024, 7, 01)
+            )
+        );
+
+        examinations.add(
+            new ExaminationDto(
+                misMeccTerm,
+                iginio,
+                30,
+                true,
+                LocalDate.of(2021, 01, 22)
+            )
+        );
+
+
+        examinations.add(
+            new ExaminationDto(
+                gasDinFluDin,
+                benny,
+                26,
+                false,
+                LocalDate.of(2021, 05, 03)
+            )
+        );
+
+        examinations.add(
+            new ExaminationDto(
+                turboMacchine,
+                benny,
+                22,
+                false,
+                LocalDate.of(2022, 07, 7)
+            )
+        );
+
+        examinations.add(
+            new ExaminationDto(
+                maccEle,
+                renzi,
+                18,
+                false,
+                LocalDate.of(2021, 03, 12)
+            )
+        );
+
+        examinations.add(
+            new ExaminationDto(
+                elePot,
+                santana,
+                30,
+                false,
+                LocalDate.of(2024, 5, 12)
+            )
+        );
+
+        examinations.add(
+            new ExaminationDto(
+                impEleCivInd,
+                santana,
+                30,
+                false,
+                LocalDate.of(2023, 11, 12)
+            )
+        );
+
+
         // save examination
         examinations
             .stream()
@@ -1164,5 +1849,13 @@ public class StudentDatabaseInit implements Serializable {
 
     }
 
-
 }
+
+
+
+
+
+
+
+
+

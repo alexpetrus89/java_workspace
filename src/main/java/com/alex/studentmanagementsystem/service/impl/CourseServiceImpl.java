@@ -27,6 +27,8 @@ public class CourseServiceImpl implements CourseService {
 
     // constant
     private static final String EXCEPTION_COURSE_IDENTIFIER = "course";
+    private static final String EXCEPTION_PROFESSOR_IDENTIFIER = "professor";
+    private static final String EXCEPTION_DEGREE_COURSE_IDENTIFIER = "degree course";
 
     // instance variables
     private final CourseRepository courseRepository;
@@ -78,22 +80,27 @@ public class CourseServiceImpl implements CourseService {
 
 
     /**
-     * Retrieves a course from the repository by its name.
-     * @param name the name of the course
-     * @return CourseDto object representing the course with the given name.
-     * @throws ObjectNotFoundException if no course with the given name exists.
-     * @throws NullPointerException if the name is null.
-     * @throws IllegalArgumentException if the name is empty.
-     * @throws UnsupportedOperationException if the name is not unique
+     * Retrieves a course from the repository by its name and degree course name.
+     * @param courseName the name of the course
+     * @param degreeCourseName the name of the degree course
+     * @return CourseDto object representing the course with the given name and degree course name.
+     * @throws ObjectNotFoundException if no course with the given name and degree course name exists.
+     * @throws NullPointerException if the course name or degree course name is null.
+     * @throws IllegalArgumentException if the course name or degree course name is empty.
+     * @throws UnsupportedOperationException if the course name or degree course name is not unique
      */
     @Override
-    public CourseDto getCourseByName(@NonNull String name)
-        throws ObjectNotFoundException
-    {
-        return courseRepository
-            .findByName(name)
-            .map(CourseMapper::mapToCourseDto)
-            .orElseThrow(() -> new ObjectNotFoundException(name, EXCEPTION_COURSE_IDENTIFIER));
+    public CourseDto getCourseByNameAndDegreeCourseName(@NonNull String courseName, @NonNull String degreeCourseName) {
+        // retrieve degree course
+        DegreeCourse degreeCourse = degreeCourseRepository
+            .findByName(degreeCourseName)
+            .orElseThrow(() -> new ObjectNotFoundException(degreeCourseName, EXCEPTION_DEGREE_COURSE_IDENTIFIER));
+
+        // find course
+        return courseRepository.
+                findByNameAndDegreeCourse(courseName, degreeCourse.getId())
+                .map(CourseMapper::mapToCourseDto)
+                .orElseThrow(() -> new ObjectNotFoundException(courseName, EXCEPTION_COURSE_IDENTIFIER));
     }
 
 
@@ -123,11 +130,11 @@ public class CourseServiceImpl implements CourseService {
 
         Professor professor = professorRepository
             .findByUniqueCode(new UniqueCode(uniqueCode))
-            .orElseThrow(() -> new ObjectNotFoundException(uniqueCode, "professor"));
+            .orElseThrow(() -> new ObjectNotFoundException(uniqueCode, EXCEPTION_PROFESSOR_IDENTIFIER));
 
         DegreeCourse degreeCourse = degreeCourseRepository
             .findByName(degreeCourseName)
-            .orElseThrow(() -> new ObjectNotFoundException(degreeCourseName, "degree course"));
+            .orElseThrow(() -> new ObjectNotFoundException(degreeCourseName, EXCEPTION_DEGREE_COURSE_IDENTIFIER));
 
         // sanity check
         if(cfu == null || cfu < 0)
@@ -143,12 +150,13 @@ public class CourseServiceImpl implements CourseService {
 
     /**
      * Updates a course in the repository.
-     * @param oldName the name of the course to be updated
+     * @param oldCourseName the name of the course to be updated
+     * @param oldDegreeCourseName the old the degree course
      * @param newName the new name of the course
+     * @param newDegreeCourseName the new the degree course
      * @param newType the new type of the course
      * @param newCfu the new cfu of the course
      * @param newUniqueCode the new unique code of the professor
-     * @param newDegreeCourseName the new name of the degree course
      * @return Course object representing the updated course.
      * @throws ObjectNotFoundException if no course with the given name exists.
      * @throws NullPointerException if any of the parameters is null.
@@ -159,39 +167,44 @@ public class CourseServiceImpl implements CourseService {
     @NonNull
     @Transactional
     public Course updateCourse(
-        String oldName,
-        String newName,
+        String oldCourseName,
+        String oldDegreeCourseName,
+        String newCourseName,
+        String newDegreeCourseName,
         CourseType newType,
         Integer newCfu,
-        String newUniqueCode,
-        String newDegreeCourseName
+        String newUniqueCode
     ) {
 
         // check if exist
+        DegreeCourse oldDegreeCourse = degreeCourseRepository
+            .findByName(oldDegreeCourseName)
+            .orElseThrow(() -> new ObjectNotFoundException(oldDegreeCourseName, EXCEPTION_DEGREE_COURSE_IDENTIFIER));
+
         Course updatableCourse = courseRepository
-            .findByName(oldName)
-            .orElseThrow(() -> new ObjectNotFoundException(oldName, EXCEPTION_COURSE_IDENTIFIER));
+            .findByNameAndDegreeCourse(oldCourseName, oldDegreeCourse.getId())
+            .orElseThrow(() -> new ObjectNotFoundException(oldCourseName, EXCEPTION_COURSE_IDENTIFIER));
 
         Professor professor = professorRepository
             .findByUniqueCode(new UniqueCode(newUniqueCode))
-            .orElseThrow(() -> new ObjectNotFoundException(newUniqueCode, "professor"));
+            .orElseThrow(() -> new ObjectNotFoundException(newUniqueCode, EXCEPTION_PROFESSOR_IDENTIFIER));
 
-        DegreeCourse degreeCourse = degreeCourseRepository
+        DegreeCourse newDegreeCourse = degreeCourseRepository
             .findByName(newDegreeCourseName)
-            .orElseThrow(() -> new ObjectNotFoundException(newDegreeCourseName, "degree course"));
+            .orElseThrow(() -> new ObjectNotFoundException(newDegreeCourseName, "EXCEPTION_DEGREE_COURSE_IDENTIFIER"));
 
         // sanity check
-        if(newName == null || newName.isEmpty())
+        if(newCourseName == null || newCourseName.isEmpty())
             throw new IllegalArgumentException("name must not be null or empty");
 
         if(newCfu == null || newCfu < 0)
             throw new IllegalArgumentException("cfu must be a positive number");
 
-        updatableCourse.setName(newName);
+        updatableCourse.setName(newCourseName);
         updatableCourse.setType(newType);
         updatableCourse.setCfu(newCfu);
         updatableCourse.setProfessor(professor);
-        updatableCourse.setDegreeCourse(degreeCourse);
+        updatableCourse.setDegreeCourse(newDegreeCourse);
 
         // save
         courseRepository.save(updatableCourse);

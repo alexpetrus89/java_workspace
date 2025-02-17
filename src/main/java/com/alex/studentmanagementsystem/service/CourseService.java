@@ -26,7 +26,7 @@ public interface CourseService {
     /**
      * retrieve a course by id
      * @param CourseId id
-     * @return CourseDto object
+     * @return CourseDto object representing the course with the given id
      * @throws ObjectNotFoundException if no course with the given id exists
      * @throws NullPointerException if the id is null
      * @throws IllegalArgumentException if the id is empty
@@ -37,17 +37,17 @@ public interface CourseService {
 
 
     /**
-     * retrieve a course by name
-     * @param String name
-     * @return CourseDto object
-     * @throws ObjectNotFoundException if no course with the given name exists
-     * @throws NullPointerException if the name is null
-     * @throws IllegalArgumentException if the name is empty
-     * @throws UnsupportedOperationException if the name is not unique
+     * retrieve a course by name and degree course name
+     * @param courseName the name of the course
+     * @param degreeCourseName the name of the degree course
+     * @return CourseDto object representing the course with the given name and degree course name
+     * @throws ObjectNotFoundException if no course with the given name and degree course name exists
+     * @throws NullPointerException if the course name or degree course name is null
+     * @throws IllegalArgumentException if the course name or degree course name is empty
+     * @throws UnsupportedOperationException if the course name or degree course name is not unique
      */
-    CourseDto getCourseByName(@NonNull String name)
+    CourseDto getCourseByNameAndDegreeCourseName(@NonNull String courseName, @NonNull String degreeCourseName)
         throws ObjectNotFoundException;
-
 
     /**
      * add a new course
@@ -70,12 +70,13 @@ public interface CourseService {
 
     /**
      * update a course
-     * @param oldName the name of the course to be updated
-     * @param newName the new name of the course
+     * @param oldCourseName the name of the course to be updated
+     * @param oldDegreeCourseName the old degree course
+     * @param newCourseName the new name of the course
+     * @param newDegreeCourseName the new degree course
      * @param newType the new type of the course
      * @param newCfu the new cfu of the course
      * @param newUniqueCode the new unique code of the course
-     * @param newDegreeCourseName the new name of the degree course
      * @return Course
      * @throws ObjectNotFoundException if no course with the given name exists
      * @throws NullPointerException if any of the parameters is null
@@ -85,12 +86,13 @@ public interface CourseService {
     @NonNull
     @Transactional
     Course updateCourse(
-        String oldName,
-        String newName,
+        String oldCourseName,
+        String oldDegreeCourseName,
+        String newCourseName,
+        String newDegreeCourseName,
         CourseType newType,
         Integer newCfu,
-        String newUniqueCode,
-        String newDegreeCourseName
+        String newUniqueCode
     ) throws ObjectNotFoundException;
 
 

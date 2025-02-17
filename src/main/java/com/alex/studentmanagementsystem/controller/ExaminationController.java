@@ -177,6 +177,7 @@ public class ExaminationController {
      * Creates a new Examination
      * @param register the student's registration
      * @param courseName the course name
+     * @param degreeCourseName the degree course name
      * @param grade the grade obtained in the examination
      * @param withHonors whether the examination was passed with honors
      * @param date the date of the examination
@@ -192,6 +193,7 @@ public class ExaminationController {
     public ModelAndView createNewExamination(
         @RequestParam String register,
         @RequestParam String courseName,
+        @RequestParam String degreeCourseName,
         @RequestParam String grade,
         @RequestParam Boolean withHonors,
         @RequestParam LocalDate date
@@ -202,6 +204,7 @@ public class ExaminationController {
                 examinationServiceImpl.addNewExamination(
                     new Register(register),
                     courseName,
+                    degreeCourseName.toUpperCase(),
                     Integer.parseInt(grade),
                     withHonors,
                     date
@@ -223,8 +226,10 @@ public class ExaminationController {
      * Updates an existing Examination
      * @param oldRegister the old student's registration number
      * @param oldCourseName the old course name
+     * @param oldDegreeCourseName the old degree course name
      * @param newRegister the new student's registration number
      * @param newCourseName the new course name
+     * @param newDegreeCourseName the new degree course name
      * @param grade the new grade obtained in the examination
      * @param withHonors whether the examination was passed with honors
      * @param date the new date of the examination
@@ -239,8 +244,10 @@ public class ExaminationController {
     public ModelAndView updateExamination(
         @RequestParam("old_register") String oldRegister,
         @RequestParam("old_course") String oldCourseName,
+        @RequestParam("old_degree_course_name") String oldDegreeCourseName,
         @RequestParam("new_register") String newRegister,
         @RequestParam("new_course") String newCourseName,
+        @RequestParam("new_degree_course") String newDegreeCourseName,
         @RequestParam("grade") String grade,
         @RequestParam("withHonors") Boolean withHonors,
         @RequestParam("date") LocalDate date
@@ -251,8 +258,10 @@ public class ExaminationController {
                 examinationServiceImpl.updateExamination(
                     new Register(oldRegister.toLowerCase()),
                     oldCourseName.toLowerCase(),
+                    oldDegreeCourseName.toUpperCase(),
                     new Register(newRegister.toLowerCase()),
                     newCourseName.toLowerCase(),
+                    newDegreeCourseName.toUpperCase(),
                     Integer.parseInt(grade),
                     withHonors,
                     date

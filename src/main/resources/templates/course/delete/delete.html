@@ -8,10 +8,13 @@
     <title>Delete Course</title>
 </head>
 <body>
-    <h1>Delete course by name</h1>
+    <h1>Delete course</h1>
     <form th:action="@{/api/v1/course/delete/name}" method="post">
         <input type="hidden" name="_method" value="DELETE" />
-        <input type="text" name="name" placeholder="Enter course name" />
+        <input type="text" name="courseName" placeholder="Enter course name" />
+    </p>
+        <input type="text" name="degreeCourseName" placeholder="Enter degree course name" />
+    </p>
         <button type="submit">Delete</button>
         <input type="reset" value="Reset" />
     </form>

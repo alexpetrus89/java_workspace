@@ -8,6 +8,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
 import com.alex.studentmanagementsystem.domain.Course;
+import com.alex.studentmanagementsystem.domain.DegreeCourse;
 import com.alex.studentmanagementsystem.domain.Examination;
 import com.alex.studentmanagementsystem.domain.Student;
 import com.alex.studentmanagementsystem.domain.immutable.CourseId;
@@ -18,6 +19,7 @@ import com.alex.studentmanagementsystem.exception.ObjectAlreadyExistsException;
 import com.alex.studentmanagementsystem.exception.ObjectNotFoundException;
 import com.alex.studentmanagementsystem.mapper.ExaminationMapper;
 import com.alex.studentmanagementsystem.repository.CourseRepository;
+import com.alex.studentmanagementsystem.repository.DegreeCourseRepository;
 import com.alex.studentmanagementsystem.repository.ExaminationRepository;
 import com.alex.studentmanagementsystem.repository.ProfessorRepository;
 import com.alex.studentmanagementsystem.repository.StudentRepository;
@@ -30,13 +32,16 @@ import jakarta.transaction.Transactional;
 public class ExaminationServiceImpl implements ExaminationService {
 
     // constants
+    private static final String EXCEPTION_STUDENT_IDENTIFIER = "student";
     private static final String EXCEPTION_COURSE_IDENTIFIER = "course";
+    private static final String EXCEPTION_DEGREE_COURSE_IDENTIFIER = "degree course";
     private static final String EXCEPTION_EXAMINATION_IDENTIFIER = "examination";
 
     // instance variables
     private final StudentRepository studentRepository;
     private final ProfessorRepository professorRepository;
     private final CourseRepository courseRepository;
+    private final DegreeCourseRepository degreeCourseRepository;
     private final ExaminationRepository examinationRepository;
 
 
@@ -45,11 +50,13 @@ public class ExaminationServiceImpl implements ExaminationService {
         StudentRepository studentRepository,
         ProfessorRepository professorRepository,
         CourseRepository courseRepository,
+        DegreeCourseRepository degreeCourseRepository,
         ExaminationRepository examinationRepository
     ) {
         this.studentRepository = studentRepository;
         this.professorRepository = professorRepository;
         this.courseRepository = courseRepository;
+        this.degreeCourseRepository = degreeCourseRepository;
         this.examinationRepository = examinationRepository;
     }
 
@@ -180,6 +187,7 @@ public class ExaminationServiceImpl implements ExaminationService {
      * Add new examination
      * @param register register of the student
      * @param courseName name of the course
+     * @param degreeCourseName name of the degree course
      * @param grade grade of the examination
      * @param withHonors whether the examination was passed with honors
      * @param date date of the examination
@@ -201,13 +209,18 @@ public class ExaminationServiceImpl implements ExaminationService {
     public Examination addNewExamination(
         Register register,
         String courseName,
+        String degreeCourseName,
         int grade,
         boolean withHonors,
         LocalDate date
     ) throws ObjectAlreadyExistsException, ObjectNotFoundException {
 
+        DegreeCourse degreeCourse = degreeCourseRepository
+            .findByName(degreeCourseName.toUpperCase())
+            .orElseThrow(() -> new ObjectNotFoundException(degreeCourseName, EXCEPTION_DEGREE_COURSE_IDENTIFIER));
+
         Course course = courseRepository
-            .findByName(courseName)
+            .findByNameAndDegreeCourse(courseName, degreeCourse.getId())
             .orElseThrow(() -> new ObjectNotFoundException(courseName, EXCEPTION_COURSE_IDENTIFIER));
 
         Student student = studentRepository
@@ -247,8 +260,10 @@ public class ExaminationServiceImpl implements ExaminationService {
      * Update existing examination
      * @param oldRegister the old student's register
      * @param oldCourseName the old course name
+     * @param oldDegreeCourseName the old degree course name
      * @param newRegister the new student's register
      * @param newCourseName the new course name
+     * @param newDegreeCourseName the new degree course name
      * @param grade the new grade
      * @param withHonors whether the examination was passed with honors
      * @param date the new date
@@ -268,8 +283,10 @@ public class ExaminationServiceImpl implements ExaminationService {
     public Examination updateExamination(
         Register oldRegister,
         String oldCourseName,
+        String oldDegreeCourseName,
         Register newRegister,
         String newCourseName,
+        String newDegreeCourseName,
         int grade,
         boolean withHonors,
         LocalDate date
@@ -279,13 +296,18 @@ public class ExaminationServiceImpl implements ExaminationService {
 			.findByRegister(newRegister)
 			.orElseThrow(() -> new ObjectNotFoundException(newRegister));
 
+        DegreeCourse newDegreeCourse = degreeCourseRepository
+            .findByName(newDegreeCourseName.toUpperCase())
+            .orElseThrow(() -> new ObjectNotFoundException(newDegreeCourseName, EXCEPTION_DEGREE_COURSE_IDENTIFIER));
+
 		Course newCourse = courseRepository
-			.findByName(newCourseName)
+			.findByNameAndDegreeCourse(newCourseName, newDegreeCourse.getId())
             .orElseThrow(() -> new ObjectNotFoundException(newCourseName, EXCEPTION_COURSE_IDENTIFIER));
 
         Examination updatableExamination = examinationRepository
             .findExaminationsByCourseName(oldCourseName)
             .stream()
+            .filter(exam -> exam.getCourse().getDegreeCourse().getName().equals(oldDegreeCourseName))
             .filter(exam -> exam.getStudent().getRegister().equals(oldRegister))
             .findFirst()
             .orElseThrow(() -> new ObjectNotFoundException("Examination of course " + oldCourseName + " and student register " + oldRegister, EXCEPTION_EXAMINATION_IDENTIFIER));

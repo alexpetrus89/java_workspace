@@ -15,30 +15,34 @@
 
         <input type="hidden" name="_method" value="PUT" />
 
-        <label for="course">Old Course Name:</label>
+        <label for="course">Old course Name:</label>
         <input type="text" name="old_name" title="Enter old course name"
             placeholder="old course name"></p>
 
-        <label for="course">New Course name:</label>
+        <label for="grade">Old degree course Name:</label>
+        <input type="text" name="old_degree_course_name" title="Enter old degree course name"
+            placeholder="old degree course name"></p>
+
+        <label for="course">New course name:</label>
         <input type="text" name="new_name" title="Enter new course name"
             placeholder="new course name"></p>
 
-        <label for="type">New Type:</label>
+        <label for="grade">New degree course Name:</label>
+        <input type="text" name="new_degree_course_name" title="Enter new degree course name"
+            placeholder="new degree course name"></p>
+
+        <label for="type">New type:</label>
             <select id="type-select" name="new_type" title="Select new course type">
-                <option th:each="type : ${T(com.alex.studentmanagementsystem.utility.CourseType).values()}" th:value="${type}" th:text="${type.name()}"></option>
+                <option th:each="type : ${T(com.alex.studentmanagementsystem.utils.CourseType).values()}" th:value="${type}" th:text="${type.name()}"></option>
             </select></p>
 
-        <label for="course">New Cfu value:</label>
+        <label for="course">New cfu value:</label>
         <input type="text" name="new_cfu" title="Enter new cfu value"
             placeholder="new cfu value"></p>
 
         <label for="uniqueCode">New professor unique code:</label>
         <input type="text" name="new_unique_code" title="Enter professor unique code"
             placeholder="unique code"></p>
-
-        <label for="grade">New Degree Course Name:</label>
-        <input type="text" name="new_degree_course_name" title="Enter new degree course name"
-            placeholder="degree course name"></p>
 
         <p><input type="submit" value="Submit" /> <input type="reset" value="Reset" /></p>
     </form>

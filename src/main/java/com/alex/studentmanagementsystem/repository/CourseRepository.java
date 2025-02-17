@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import com.alex.studentmanagementsystem.domain.Course;
 import com.alex.studentmanagementsystem.domain.immutable.CourseId;
+import com.alex.studentmanagementsystem.domain.immutable.DegreeCourseId;
 import com.alex.studentmanagementsystem.domain.immutable.UniqueCode;
 import com.alex.studentmanagementsystem.utils.CourseType;
 
@@ -38,30 +39,34 @@ public interface CourseRepository
 
 
     /**
-     * Retrieves a course from the repository by its name.
-     * @param name the name of the course to retrieve
-     * @return an Optional containing the course if found, otherwise an
+     * Retrieves a course from the repository by its name and degree course.
+     * @param courseName the name of the course
+     * @param degreeCourseId the id of the degree course
+     * @return Optional<Course> containing the course if found, otherwise an
      *         empty Optional
-     * @throws IllegalArgumentException if the name is empty or null or not unique
-     * @throws UnsupportedOperationException if the name is not unique
-     * @throws NullPointerException if the name is null
+     * @throws IllegalArgumentException if the course name or degree course id is null
+     * @throws UnsupportedOperationException if the course name or degree course id is not unique
+     * @throws NullPointerException if the course name or degree course id is null
      */
-    @Query("SELECT c FROM Course c WHERE c.name = ?1")
-    Optional<Course> findByName(String name);
+    @Query("SELECT c FROM Course c WHERE c.name = :courseName AND c.degreeCourse.id = :degreeCourseId")
+    Optional<Course> findByNameAndDegreeCourse(
+        @Param("courseName") @NonNull String courseName,
+        @Param("degreeCourseId") @NonNull DegreeCourseId degreeCourseId
+    );
 
 
     /**
      * Retrieves a course from the repository by its type.
      * @param type the type of the course to retrieve
-     * @return an Optional containing the course if found, otherwise an
-     *         empty Optional
+     * @return List<Optional<Course>> with the course if found, or an empty
+     *         List<Optional<Course>>
      * @throws IllegalArgumentException if the type is null
      * @throws UnsupportedOperationException if the type is not unique
      * @throws NullPointerException if the type is null
      * @see CourseType
      */
     @Query("SELECT c FROM Course c WHERE c.type = :type")
-    Optional<Course> findByType(@Param("type") CourseType type);
+    List<Optional<Course>> findByType(@Param("type") CourseType type);
 
 
     /**
@@ -88,5 +93,4 @@ public interface CourseRepository
      * @throws NullPointerException if the name is null
      */
     boolean existsByName(@NonNull String name);
-
 }

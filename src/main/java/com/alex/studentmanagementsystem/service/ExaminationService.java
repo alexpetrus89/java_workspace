@@ -71,6 +71,7 @@ public interface ExaminationService {
      * Add a new examination for a student.
      * @param register the student's registration details
      * @param courseName the name of the course
+     * @param degreeCourseName the name of the degree course
      * @param grade the grade obtained in the examination
      * @param withHonors whether the examination was passed with honors
      * @param date the date of the examination
@@ -85,6 +86,7 @@ public interface ExaminationService {
     Examination addNewExamination(
         Register register,
         String courseName,
+        String degreeCourseName,
         int grade,
         boolean withHonors,
         LocalDate date
@@ -95,8 +97,10 @@ public interface ExaminationService {
      * Update an existing examination
      * @param oldRegister the old student's registration number
      * @param oldCourseName the old course name
+     * @param oldDegreeCourseName the old degree course name
      * @param newRegister the new student's registration number
      * @param newCourseName the new course name
+     * @param newDegreeCourseName the new degree course name
      * @param grade the new grade obtained in the examination
      * @param withHonors whether the examination was passed with honors
      * @param date the new date of the examination
@@ -110,8 +114,10 @@ public interface ExaminationService {
     Examination updateExamination(
         Register oldRegister,
         String oldCourseName,
+        String oldDegreeCourseName,
         Register newRegister,
         String newCourseName,
+        String newDegreeCourseName,
         int grade,
         boolean withHonors,
         LocalDate date

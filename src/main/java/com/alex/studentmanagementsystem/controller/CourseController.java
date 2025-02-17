@@ -53,6 +53,27 @@ public class CourseController {
 
 
     /**
+     * retrieves a course by its name and degree course name
+     * @param courseName
+     * @param degreeCourseName
+     * @return ModelAndView
+     * @throws ObjectNotFoundException if no course with the given name and degree course name exists
+     * @throws NullPointerException if the course name or degree course name is null
+     * @throws IllegalArgumentException if the course name or degree course name is empty
+     * @throws UnsupportedOperationException if the course name or degree course name is not unique
+     */
+    @GetMapping("/read/name")
+    public ModelAndView getCourse(@RequestParam String courseName, @RequestParam String degreeCourseName) {
+
+        return new CreateView(
+            "course",
+            courseServiceImpl.getCourseByNameAndDegreeCourseName(courseName, degreeCourseName),
+            "course/read/read-result"
+        ).getModelAndView();
+    }
+
+
+    /**
      * creates a new course
      * @return ModelAndView
      */
@@ -125,12 +146,13 @@ public class CourseController {
 
     /**
      * update a course
-     * @param oldName old name of the course
-     * @param newName new name of the course
+     * @param oldCourseName old name of the course
+     * @param oldDegreeCourseName old degree course name
+     * @param newCourseName new name of the course
+     * @param newDegreeCourseName new degree course name
      * @param newType new type of the course
      * @param newCfu new cfu of the course
      * @param newUniqueCode new unique code of the course
-     * @param newDegreeCourseName new degree course name
      * @return ModelAndView
      * @throws ObjectNotFoundException if no course with the given name exists.
      * @throws ObjectAlreadyExistsException if a course with the new name already exists
@@ -141,23 +163,25 @@ public class CourseController {
     @PutMapping(path = "/update")
     @Transactional
     public ModelAndView updateCourse(
-        @RequestParam("old_name") String oldName,
-        @RequestParam("new_name") String newName,
+        @RequestParam("old_name") String oldCourseName,
+        @RequestParam("old_degree_course_name") String oldDegreeCourseName,
+        @RequestParam("new_name") String newCourseName,
+        @RequestParam("new_degree_course_name") String newDegreeCourseName,
         @RequestParam("new_type") CourseType newType,
         @RequestParam("new_cfu") Integer newCfu,
-        @RequestParam("new_unique_code") String newUniqueCode,
-        @RequestParam("new_degree_course_name") String newDegreeCourseName
+        @RequestParam("new_unique_code") String newUniqueCode
     ) {
 
         try {
             return new CreateView(
                 courseServiceImpl.updateCourse(
-                    newName.toLowerCase(),
-                    oldName.toLowerCase(),
+                    oldCourseName.toLowerCase(),
+                    oldDegreeCourseName.toUpperCase(),
+                    newCourseName.toLowerCase(),
+                    newDegreeCourseName.toUpperCase(),
                     newType,
                     newCfu,
-                    newUniqueCode.toLowerCase(),
-                    newDegreeCourseName.toUpperCase()
+                    newUniqueCode.toLowerCase()
                 ),
                 "course/update/update-result"
             ).getModelAndView();
@@ -173,7 +197,8 @@ public class CourseController {
 
     /**
      * deletes a course by name
-     * @param name name of the course
+     * @param courseName name of the course
+     * @param degreeCourseName degree course name
      * @return ModelAndView
      * @throws ObjectNotFoundException if no course with the given name exists
      * @throws IllegalArgumentException if the name is null or empty
@@ -182,10 +207,14 @@ public class CourseController {
      */
     @DeleteMapping(path = "/delete/name")
     @Transactional // con l'annotazione transactional effettua una gestione propria degli errori
-    public ModelAndView deleteStudentByName(@RequestParam String name) {
+    public ModelAndView deleteCourseByName(@RequestParam String courseName, @RequestParam String degreeCourseName) {
 
         try{
-            CourseDto courseDto = courseServiceImpl.getCourseByName(name.toLowerCase());
+            // retrieve course
+            CourseDto courseDto =
+                courseServiceImpl.getCourseByNameAndDegreeCourseName(courseName, degreeCourseName);
+
+            // delete
             courseServiceImpl.deleteCourse(courseDto.getCourseId());
 
             return new CreateView("student/delete/delete-result")

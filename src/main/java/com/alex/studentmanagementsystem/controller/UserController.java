@@ -1,10 +1,5 @@
 package com.alex.studentmanagementsystem.controller;
 
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,7 +10,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.alex.studentmanagementsystem.domain.User;
@@ -80,6 +74,10 @@ public class UserController {
      * @return String
      * @throws RuntimeException if the updated user details are invalid
      * @throws IllegalArgumentException if the updated user details are invalid
+     * @throws ObjectNotFoundException if the authenticated user is not found
+     * @throws UserNotFoundException if the user is not found
+     * @throws NullPointerException if the updated user details are null
+     * @throws UnsupportedOperationException if the updated user details are not unique
      */
     @PostMapping("/update/form")
     public String updateUserForm(@ModelAttribute Builder formBuilder) {

@@ -3,6 +3,7 @@ package com.alex.studentmanagementsystem.domain;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.UUID;
 
 import org.hibernate.annotations.OnDelete;
@@ -16,6 +17,7 @@ import jakarta.persistence.AccessType;
 import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.ForeignKey;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
@@ -88,7 +90,7 @@ public class DegreeCourse implements Serializable {
     }
 
     // DegreeCourse is the owner of the relationship
-    @OneToMany(mappedBy = "degreeCourse")
+    @OneToMany(mappedBy = "degreeCourse", fetch = FetchType.EAGER)
     public Collection<Course> getCourses() {
         return courses;
     }
@@ -137,6 +139,27 @@ public class DegreeCourse implements Serializable {
 
     public void addStudent(Student student) {
         this.students.add(student);
+    }
+
+    @Override
+    public String toString() {
+        return "DegreeCourse [id=" + id + ", name=" + name + ", graduationClass="
+            + graduationClass + ", duration=" + duration + "]";
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, graduationClass, duration);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        DegreeCourse other = (DegreeCourse) obj;
+        return Objects.equals(name, other.getName()) &&
+            Objects.equals(graduationClass, other.getGraduationClass()) &&
+            Objects.equals(duration, other.getDuration());
     }
 
 }

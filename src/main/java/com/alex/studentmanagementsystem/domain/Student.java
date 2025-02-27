@@ -139,13 +139,16 @@ public class Student implements Serializable {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
+        // self check
+        if (this == obj) return true;
 
-        if (obj == null || getClass() != obj.getClass())
-            return false;
+        // null check
+        if (obj == null || getClass() != obj.getClass()) return false;
 
+        // cast
         Student other = (Student) obj;
+
+        // check the fields
         return Objects.equals(register, other.getRegister()) &&
             Objects.equals(name, other.getName()) &&
             Objects.equals(email, other.getEmail()) &&

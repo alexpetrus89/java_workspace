@@ -2,6 +2,7 @@ package com.alex.studentmanagementsystem.domain;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Objects;
 import java.util.UUID;
 
 import org.springframework.security.core.GrantedAuthority;
@@ -137,6 +138,28 @@ public class User implements UserDetails {
     }
 
     @Override
+    public int hashCode() {
+        return Objects.hash(id, username, password, fullname, street, city, state, zip, phone);
+    }
+
+    // equals and hashCode
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null) return false;
+        if (getClass() != obj.getClass()) return false;
+        User other = (User) obj;
+        return Objects.equals(username, other.username) &&
+            Objects.equals(password, other.password) &&
+            Objects.equals(fullname, other.fullname) &&
+            Objects.equals(street, other.street) &&
+            Objects.equals(city, other.city) &&
+            Objects.equals(state, other.state) &&
+            Objects.equals(zip, other.zip) &&
+            Objects.equals(phone, other.phone);
+    }
+
+    @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Arrays.asList(new SimpleGrantedAuthority("ROLE_USER"));
     }
@@ -160,5 +183,6 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
 
 }

@@ -1,6 +1,7 @@
 package com.alex.studentmanagementsystem.domain;
 
 import java.io.Serializable;
+import java.util.Objects;
 import java.util.UUID;
 
 import org.hibernate.annotations.OnDelete;
@@ -131,6 +132,23 @@ public class Course implements Serializable {
             ", professor=" + professor +
             ", degreeCourse=" + degreeCourse +
             '}';
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, type, cfu, professor, degreeCourse);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Course course = (Course) o;
+        return Objects.equals(name, course.name) &&
+            Objects.equals(type, course.type) &&
+            Objects.equals(cfu, course.cfu) &&
+            Objects.equals(professor, course.professor) &&
+            Objects.equals(degreeCourse, course.degreeCourse);
     }
 
 

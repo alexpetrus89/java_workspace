@@ -2,6 +2,7 @@ package com.alex.studentmanagementsystem.domain;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.Objects;
 import java.util.UUID;
 
 import org.hibernate.annotations.OnDelete;
@@ -129,6 +130,31 @@ public class Examination implements Serializable {
 
     public void setDate(LocalDate date) {
         this.date = date;
+    }
+
+    @Override
+    public String toString() {
+        return "Examination [id=" + id + ", course=" + course + ", student="
+            + student + ", grade=" + grade + ", withHonors=" + withHonors
+            + ", date=" + date + "]";
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, course, student, grade, withHonors, date);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null) return false;
+        if (getClass() != obj.getClass()) return false;
+        Examination other = (Examination) obj;
+        return Objects.equals(course, other.course) &&
+            Objects.equals(student, other.student) &&
+            grade == other.grade &&
+            withHonors == other.withHonors &&
+            Objects.equals(date, other.date);
     }
 
 

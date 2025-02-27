@@ -12,6 +12,7 @@ package com.alex.studentmanagementsystem.domain;
  */
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -134,12 +135,8 @@ public class Professor implements Serializable {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-
-        if (obj == null || getClass() != obj.getClass())
-            return false;
-
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
         Professor other = (Professor) obj;
         return Objects.equals(uniqueCode, other.getUniqueCode()) &&
             Objects.equals(fiscalCode, other.getFiscalCode()) &&
@@ -147,5 +144,11 @@ public class Professor implements Serializable {
             Objects.equals(email, other.getEmail());
     }
 
-
+    // business methods
+    public void publishExaminationAppeal(Course course, DegreeCourse degreeCourse, String description, LocalDate date) {
+        ExaminationAppeal examinationAppeal = new ExaminationAppeal(course, degreeCourse, this, description, date);
+        // Pubblica l'appello
+    }
 }
+
+

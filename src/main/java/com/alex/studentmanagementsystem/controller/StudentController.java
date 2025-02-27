@@ -104,10 +104,6 @@ public class StudentController {
                 .map(StudentMapper::mapToStudent)
                 .toList();
 
-            System.out.println("\n---- INIZIO TEST ----");
-            students.forEach(System.out::println);
-            System.out.println("\n---- FINE TEST ----");
-
             return new CreateView(
                 "students",
                 students,

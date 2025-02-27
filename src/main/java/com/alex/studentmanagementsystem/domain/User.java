@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import com.alex.studentmanagementsystem.domain.immutable.UserId;
 import com.alex.studentmanagementsystem.utils.Builder;
+import com.alex.studentmanagementsystem.utils.Role;
 
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
@@ -31,6 +32,7 @@ public class User implements UserDetails {
     private String state;
     private String zip;
     private String phone;
+    private Role role;
 
     // default constructor
     public User() {}
@@ -46,6 +48,7 @@ public class User implements UserDetails {
         this.state = userBuilder.getState();
         this.zip = userBuilder.getZip();
         this.phone = userBuilder.getPhone();
+        this.role = userBuilder.getRole();
     }
 
 
@@ -88,6 +91,10 @@ public class User implements UserDetails {
         return phone;
     }
 
+    public Role getRole() {
+        return role;
+    }
+
 
     // setters
     public void setUsername(String username) {
@@ -122,6 +129,10 @@ public class User implements UserDetails {
         this.phone = phone;
     }
 
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
     // toString
     @Override
     public String toString() {
@@ -139,7 +150,7 @@ public class User implements UserDetails {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, username, password, fullname, street, city, state, zip, phone);
+        return Objects.hash(id, username, password, fullname, street, city, state, zip, phone, role);
     }
 
     // equals and hashCode
@@ -156,12 +167,17 @@ public class User implements UserDetails {
             Objects.equals(city, other.city) &&
             Objects.equals(state, other.state) &&
             Objects.equals(zip, other.zip) &&
-            Objects.equals(phone, other.phone);
+            Objects.equals(phone, other.phone) &&
+            Objects.equals(role, other.role );
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Arrays.asList(new SimpleGrantedAuthority("ROLE_USER"));
+        return switch (role) {
+            case STUDENT -> Arrays.asList(new SimpleGrantedAuthority("ROLE_STUDENT"));
+            case PROFESSOR -> Arrays.asList(new SimpleGrantedAuthority("ROLE_PROFESSOR"));
+            default -> Arrays.asList(new SimpleGrantedAuthority("ROLE_ADMIN"));
+        };
     }
 
     @Override

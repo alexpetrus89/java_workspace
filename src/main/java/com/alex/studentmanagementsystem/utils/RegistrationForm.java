@@ -14,6 +14,7 @@ public class RegistrationForm {
     private String state;
     private String zip;
     private String phone;
+    private Role role;
 
     // constructor
     public RegistrationForm(Builder formBuilder) {
@@ -25,6 +26,7 @@ public class RegistrationForm {
         this.state = formBuilder.getState();
         this.zip = formBuilder.getZip();
         this.phone = formBuilder.getPhone();
+        this.role = formBuilder.getRole();
     }
 
     // getters
@@ -58,6 +60,10 @@ public class RegistrationForm {
 
     public String getPhone() {
         return phone;
+    }
+
+    public Role getRole() {
+        return role;
     }
 
 
@@ -94,6 +100,10 @@ public class RegistrationForm {
         this.phone = phone;
     }
 
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
 
     // methods
     public User toUser(PasswordEncoder passwordEncoder) {
@@ -108,6 +118,7 @@ public class RegistrationForm {
         userBuilder.withState(state);
         userBuilder.withZip(zip);
         userBuilder.withPhone(phone);
+        userBuilder.withRole(role);
         // create the user
         return new User(userBuilder);
     }

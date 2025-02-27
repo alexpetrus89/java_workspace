@@ -12,6 +12,7 @@ public class Builder {
     private String state;
     private String zip;
     private String phone;
+    private Role role;
 
     // getters
     public String getUsername() {
@@ -48,6 +49,10 @@ public class Builder {
 
     public String getPhone() {
         return phone;
+    }
+
+    public Role getRole() {
+        return role;
     }
 
     // setters
@@ -117,6 +122,14 @@ public class Builder {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public void withRole(Role role) {
+        this.role = role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
     }
 
 }

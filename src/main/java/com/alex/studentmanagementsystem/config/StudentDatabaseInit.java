@@ -36,6 +36,7 @@ import com.alex.studentmanagementsystem.utils.Builder;
 import com.alex.studentmanagementsystem.utils.CourseType;
 import com.alex.studentmanagementsystem.utils.DegreeType;
 import com.alex.studentmanagementsystem.utils.RegistrationForm;
+import com.alex.studentmanagementsystem.utils.Role;
 
 
 @Configuration
@@ -2184,6 +2185,7 @@ public class StudentDatabaseInit implements Serializable {
         formBuilderOne.withState("italia");
         formBuilderOne.withZip("72015");
         formBuilderOne.withPhone("3815674128");
+        formBuilderOne.withRole(Role.ADMIN);
 
         Builder formBuilderTwo = new Builder();
         formBuilderTwo.withUsername("fido");
@@ -2194,11 +2196,36 @@ public class StudentDatabaseInit implements Serializable {
         formBuilderTwo.withState("italia");
         formBuilderTwo.withZip("72015");
         formBuilderTwo.withPhone("3815674128");
+        formBuilderTwo.withRole(Role.ADMIN);
+
+        Builder formBuilderThree = new Builder();
+        formBuilderThree.withUsername("nino");
+        formBuilderThree.withPassword("nino");
+        formBuilderThree.withFullname("bob dylamie");
+        formBuilderThree.withStreet("via delle lamie di olimpia");
+        formBuilderThree.withCity("laureto");
+        formBuilderThree.withState("italia");
+        formBuilderThree.withZip("72015");
+        formBuilderThree.withPhone("3619647852");
+        formBuilderThree.withRole(Role.STUDENT);
+
+        Builder formBuilderFour = new Builder();
+        formBuilderFour.withUsername("dino");
+        formBuilderFour.withPassword("dino");
+        formBuilderFour.withFullname("gilles villeneuve");
+        formBuilderFour.withStreet("via di vancouver");
+        formBuilderFour.withCity("vancouver");
+        formBuilderFour.withState("canada");
+        formBuilderFour.withZip("48759");
+        formBuilderFour.withPhone("8749652314");
+        formBuilderFour.withRole(Role.PROFESSOR);
 
         // create users
         List<RegistrationForm> users = List.of(
             new RegistrationForm(formBuilderOne),
-            new RegistrationForm(formBuilderTwo)
+            new RegistrationForm(formBuilderTwo),
+            new RegistrationForm(formBuilderThree),
+            new RegistrationForm(formBuilderFour)
         );
 
         // save user

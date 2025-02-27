@@ -121,6 +121,7 @@ public class UserController {
             user.setState(form.getState());
             user.setZip(form.getZip());
             user.setPhoneNumber(form.getPhone());
+            user.setRole(form.getRole());
 
             userRepository.save(user);
             return "redirect:/login";

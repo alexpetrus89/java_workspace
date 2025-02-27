@@ -29,6 +29,7 @@ public class WebSecurityConfig implements Serializable {
         return new BCryptPasswordEncoder();
     }
 
+
     /**
      * Provides a UserDetailsService bean for retrieving user details by username.
      * @param userRepository the UserRepository to access user data
@@ -48,6 +49,7 @@ public class WebSecurityConfig implements Serializable {
         };
     }
 
+
 	/**
 	 * Configures the security filter chain for the application.
 	 * @param http the HttpSecurity object
@@ -59,6 +61,15 @@ public class WebSecurityConfig implements Serializable {
 
 		http.authorizeHttpRequests(requests ->
 			requests.requestMatchers(
+				// URL accessibili a tutti gli utenti
+				"/",
+				"/login",
+				"/logout",
+				"/home",
+				"/register"
+			)
+			.permitAll()
+			.requestMatchers(
 				// user
 				"user/user-menu",
 				"api/v1/user",
@@ -67,20 +78,6 @@ public class WebSecurityConfig implements Serializable {
 				"api/v1/user/create/create",
 				"api/v1/user/update/update",
 				"api/v1/user/delete/delete",
-				// student
-				"student/student-menu",
-				"api/v1/student/view",
-				"api/v1/student/read/read",
-				"api/v1/student/create/create",
-				"api/v1/student/update/update",
-				"api/v1/student/delete/delete",
-				// professor
-				"professor/professor-menu",
-				"api/v1/professor/view",
-				"api/v1/professor/read/read",
-				"api/v1/professor/create/create",
-				"api/v1/professor/update/update",
-				"api/v1/professor/delete/delete",
 				// course
 				"course/course-menu",
 				"api/v1/course/view",
@@ -107,11 +104,35 @@ public class WebSecurityConfig implements Serializable {
 				"api/v1/examination/read/student-register",
 				"api/v1/examination/read/professor-unique-code"
 			)
-            .hasRole("USER")
-            .anyRequest()
-            .permitAll()
+            .hasRole("ADMIN")
+			.requestMatchers(
+            	// URL accessibili solo agli utenti con ruolo STUDENT
+				"/student/student-menu",
+				"/api/v1/student/view",
+				"/api/v1/student/read/read",
+				"/api/v1/student/create/create",
+				"/api/v1/student/update/update",
+				"/api/v1/student/delete/delete"
+			)
+			.hasAnyRole("STUDENT", "ADMIN")
+			.requestMatchers(
+				// URL accessibili solo agli utenti con ruolo PROFESSOR
+				"/professor-menu",
+				"/api/v1/professor/view",
+				"/api/v1/professor/read/read",
+				"/api/v1/professor/create/create",
+				"/api/v1/professor/update/update",
+				"/api/v1/professor/delete/delete"
+			)
+			.hasAnyRole("PROFESSOR", "ADMIN")
+			.anyRequest()
+			.authenticated()
 		)
-		.formLogin(form -> form.loginPage("/login").permitAll())
+		.formLogin(form ->
+			form.loginPage("/login")
+				.permitAll()
+				.successHandler(new CustomAuthenticationSuccessHandler()) // aggiungi questa riga
+		)
 		.logout(LogoutConfigurer::permitAll);
 
 		return http.build();

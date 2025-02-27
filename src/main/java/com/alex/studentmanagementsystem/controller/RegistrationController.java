@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.alex.studentmanagementsystem.repository.UserRepository;
 import com.alex.studentmanagementsystem.utils.Builder;
 import com.alex.studentmanagementsystem.utils.RegistrationForm;
+import com.alex.studentmanagementsystem.utils.Role;
 
 
 
@@ -53,6 +54,7 @@ public class RegistrationController {
      * @param state
      * @param zip
      * @param phone
+     * @param role
      * @return String - redirect
      * @throws IllegalArgumentException if the username is already taken
      */
@@ -65,7 +67,8 @@ public class RegistrationController {
         @RequestParam("city") String city,
         @RequestParam("state") String state,
         @RequestParam("zip") String zip,
-        @RequestParam("phone") String phone
+        @RequestParam("phone") String phone,
+        @RequestParam("role") Role role
     ) {
         // create a new form builder
         Builder form = new Builder();
@@ -78,6 +81,7 @@ public class RegistrationController {
         form.withState(state);
         form.withZip(zip);
         form.withPhone(phone);
+        form.withRole(role);
         // create the form
         RegistrationForm registrationForm = new RegistrationForm(form);
         userRepository.saveAndFlush(registrationForm.toUser(passwordEncoder));

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import com.alex.studentmanagementsystem.domain.User;
 import com.alex.studentmanagementsystem.domain.immutable.UserId;
+import com.alex.studentmanagementsystem.utils.Role;
 
 import jakarta.transaction.Transactional;
 
@@ -35,6 +36,7 @@ public interface UserRepository
      * @param state
      * @param zip
      * @param phone
+     * @param role
      * @return int number of rows updated
      * @throws UsernameNotFoundException if the user is not found
      */
@@ -45,7 +47,8 @@ public interface UserRepository
             u.city = :city,
             u.state = :state,
             u.zip = :zip,
-            u.phone = :phone
+            u.phone = :phone,
+            u.role = :role
             WHERE u.username = :username
     """)
     public int updateUser(
@@ -55,7 +58,8 @@ public interface UserRepository
         @Param("city") String city,
         @Param("state") String state,
         @Param("zip") String zip,
-        @Param("phone") String phone
+        @Param("phone") String phone,
+        @Param("role") Role role
     );
 
 }

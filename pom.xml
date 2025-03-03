@@ -11,10 +11,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.alex</groupId>
-	<artifactId>student-management-system</artifactId>
+	<artifactId>university-management-system</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>student-management-system</name>
-	<description>student-management-system example</description>
+	<name>university-management-system</name>
+	<description>university-management-system example</description>
 	<properties>
 		<java.version>22</java.version>
 		<graalvm.version>22.0.0</graalvm.version>

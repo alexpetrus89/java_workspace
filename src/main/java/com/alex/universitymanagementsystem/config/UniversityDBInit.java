@@ -114,9 +114,6 @@ public class UniversityDBInit implements Serializable {
             // degree course initializer
             initializeDegreeCourse(degreeCourseRepository);
 
-            // study plan initializer
-            initializeStudyPlan(studyPlanRepository, degreeCourseRepository, studentRepository);
-
             // student initializer
             initializeStudents(studentRepository, degreeCourseRepository);
 
@@ -126,6 +123,9 @@ public class UniversityDBInit implements Serializable {
             // course initializer
             initializeCourses(courseRepository, professorRepository, degreeCourseRepository);
 
+            // study plan initializer
+            initializeStudyPlan(studyPlanRepository, degreeCourseRepository, studentRepository);
+
             // examination initializer
             initializeExaminations(studentRepository, courseRepository, degreeCourseRepository, examinationRepository);
 
@@ -134,6 +134,14 @@ public class UniversityDBInit implements Serializable {
 
         };
     }
+
+
+
+
+
+
+
+
 
 
     // INITIALIZE DEGREE COURSE
@@ -223,6 +231,13 @@ public class UniversityDBInit implements Serializable {
         degreeCourses.forEach(degreeCourseRepository::save);
 
     }
+
+
+
+
+
+
+
 
 
 
@@ -543,6 +558,13 @@ public class UniversityDBInit implements Serializable {
 
 
 
+
+
+
+
+
+
+
     // INITIALIZE PROFESSORS
     void initializeProfessors(ProfessorRepository professorRepository) {
 
@@ -640,6 +662,13 @@ public class UniversityDBInit implements Serializable {
             .forEach(professorRepository::saveAndFlush);
 
     }
+
+
+
+
+
+
+
 
 
 
@@ -1291,142 +1320,6 @@ public class UniversityDBInit implements Serializable {
 
 
 
-    // INITIALIZE STUDY PLANS
-    public void initializeStudyPlan(
-        StudyPlanRepository studyPlanRepository,
-        DegreeCourseRepository degreeCourseRepository,
-        StudentRepository studentRepository
-    ) {
-
-        DegreeCourse ingGest = degreeCourseRepository
-            .findByName(INGEGNERIA_GESTIONALE)
-            .orElseThrow(() -> new ObjectNotFoundException(DEGREE_COURSE_NOT_FOUND, INGEGNERIA_GESTIONALE));
-
-        DegreeCourse ingGestMag = degreeCourseRepository
-            .findByName(INGEGNERIA_GESTIONALE_MAGISTRALE)
-            .orElseThrow(() -> new ObjectNotFoundException(DEGREE_COURSE_NOT_FOUND, INGEGNERIA_GESTIONALE_MAGISTRALE));
-
-        DegreeCourse ingInf = degreeCourseRepository
-            .findByName(INGEGNERIA_INFORMATICA)
-            .orElseThrow(() -> new ObjectNotFoundException(DEGREE_COURSE_NOT_FOUND, INGEGNERIA_INFORMATICA));
-
-        DegreeCourse ingInfMag = degreeCourseRepository
-            .findByName(INGEGNERIA_INFORMATICA_MAGISTRALE)
-            .orElseThrow(() -> new ObjectNotFoundException(DEGREE_COURSE_NOT_FOUND, INGEGNERIA_INFORMATICA_MAGISTRALE));
-
-        DegreeCourse ingMecc = degreeCourseRepository
-            .findByName(INGEGNERIA_MECCANICA)
-            .orElseThrow(() -> new ObjectNotFoundException(DEGREE_COURSE_NOT_FOUND, INGEGNERIA_MECCANICA));
-
-        DegreeCourse ingMeccMag = degreeCourseRepository
-            .findByName(INGEGNERIA_MECCANICA_MAGISTRALE)
-            .orElseThrow(() -> new ObjectNotFoundException(DEGREE_COURSE_NOT_FOUND, INGEGNERIA_MECCANICA_MAGISTRALE));
-
-        DegreeCourse ingEle = degreeCourseRepository
-            .findByName(INGEGNERIA_ELETTRICA)
-            .orElseThrow(() -> new ObjectNotFoundException(DEGREE_COURSE_NOT_FOUND, INGEGNERIA_ELETTRICA));
-
-        DegreeCourse ingEleMag = degreeCourseRepository
-            .findByName(INGEGNERIA_ELETTRICA_MAGISTRALE)
-            .orElseThrow(() -> new ObjectNotFoundException(DEGREE_COURSE_NOT_FOUND, INGEGNERIA_ELETTRICA_MAGISTRALE));
-
-        List<StudyPlanDto> studyPlans = new ArrayList<>();
-
-        Student anacleto = studentRepository
-            .findByRegister(new Register("123456"))
-            .orElseThrow(() -> new NoSuchElementException(STUDENT_NOT_FOUND));
-
-        System.out.println("anacleto: " + anacleto);
-
-        studyPlans.add(
-            new StudyPlanDto(
-                anacleto,
-                "ORD509",
-                new HashSet<>(ingGest.getCourses())
-            )
-        );
-
-        studyPlans.add(
-            new StudyPlanDto(
-                studentRepository
-                    .findByRegister(new Register("123462"))
-                    .orElseThrow(() -> new NoSuchElementException(STUDENT_NOT_FOUND)),
-                "ORD270",
-                new HashSet<>(ingGestMag.getCourses())
-            )
-        );
-
-        studyPlans.add(
-            new StudyPlanDto(
-                studentRepository
-                    .findByRegister(new Register("123470"))
-                    .orElseThrow(() -> new NoSuchElementException(STUDENT_NOT_FOUND)),
-                "ORD270",
-                new HashSet<>(ingInf.getCourses())
-            )
-        );
-
-        studyPlans.add(
-            new StudyPlanDto(
-                studentRepository
-                    .findByRegister(new Register("123469"))
-                    .orElseThrow(() -> new NoSuchElementException(STUDENT_NOT_FOUND)),
-                "ORD270",
-                new HashSet<>(ingInfMag.getCourses())
-            )
-        );
-
-        studyPlans.add(
-            new StudyPlanDto(
-                studentRepository
-                    .findByRegister(new Register("123468"))
-                    .orElseThrow(() -> new NoSuchElementException(STUDENT_NOT_FOUND)),
-                "ORD270",
-                new HashSet<>(ingMecc.getCourses())
-            )
-        );
-
-        studyPlans.add(
-            new StudyPlanDto(
-                studentRepository
-                    .findByRegister(new Register("123467"))
-                    .orElseThrow(() -> new NoSuchElementException(STUDENT_NOT_FOUND)),
-                "ORD270",
-                new HashSet<>(ingMeccMag.getCourses())
-            )
-        );
-
-        studyPlans.add(
-            new StudyPlanDto(
-                studentRepository
-                    .findByRegister(new Register("123465"))
-                    .orElseThrow(() -> new NoSuchElementException(STUDENT_NOT_FOUND)),
-                "ORD270",
-                new HashSet<>(ingEle.getCourses())
-            )
-        );
-
-        studyPlans.add(
-            new StudyPlanDto(
-                studentRepository
-                    .findByRegister(new Register("123467"))
-                    .orElseThrow(() -> new NoSuchElementException(STUDENT_NOT_FOUND)),
-                "ORD270",
-                new HashSet<>(ingEleMag.getCourses())
-            )
-        );
-
-        // sanity check
-        if(studyPlans.isEmpty())
-            throw new IllegalArgumentException("study plan list is empty");
-
-        // save students
-        studyPlans
-            .stream()
-            .map(StudyPlanMapper::mapToStudyPlan)
-            .forEach(studyPlanRepository::saveAndFlush);
-
-    }
 
 
 
@@ -2314,6 +2207,155 @@ public class UniversityDBInit implements Serializable {
             });
 
     }
+
+
+
+
+
+
+
+
+
+
+    // INITIALIZE STUDY PLANS
+    public void initializeStudyPlan(
+        StudyPlanRepository studyPlanRepository,
+        DegreeCourseRepository degreeCourseRepository,
+        StudentRepository studentRepository
+    ) {
+
+        DegreeCourse ingGest = degreeCourseRepository
+            .findByName(INGEGNERIA_GESTIONALE)
+            .orElseThrow(() -> new ObjectNotFoundException(DEGREE_COURSE_NOT_FOUND, INGEGNERIA_GESTIONALE));
+
+        DegreeCourse ingGestMag = degreeCourseRepository
+            .findByName(INGEGNERIA_GESTIONALE_MAGISTRALE)
+            .orElseThrow(() -> new ObjectNotFoundException(DEGREE_COURSE_NOT_FOUND, INGEGNERIA_GESTIONALE_MAGISTRALE));
+
+        DegreeCourse ingInf = degreeCourseRepository
+            .findByName(INGEGNERIA_INFORMATICA)
+            .orElseThrow(() -> new ObjectNotFoundException(DEGREE_COURSE_NOT_FOUND, INGEGNERIA_INFORMATICA));
+
+        DegreeCourse ingInfMag = degreeCourseRepository
+            .findByName(INGEGNERIA_INFORMATICA_MAGISTRALE)
+            .orElseThrow(() -> new ObjectNotFoundException(DEGREE_COURSE_NOT_FOUND, INGEGNERIA_INFORMATICA_MAGISTRALE));
+
+        DegreeCourse ingMecc = degreeCourseRepository
+            .findByName(INGEGNERIA_MECCANICA)
+            .orElseThrow(() -> new ObjectNotFoundException(DEGREE_COURSE_NOT_FOUND, INGEGNERIA_MECCANICA));
+
+        DegreeCourse ingMeccMag = degreeCourseRepository
+            .findByName(INGEGNERIA_MECCANICA_MAGISTRALE)
+            .orElseThrow(() -> new ObjectNotFoundException(DEGREE_COURSE_NOT_FOUND, INGEGNERIA_MECCANICA_MAGISTRALE));
+
+        DegreeCourse ingEle = degreeCourseRepository
+            .findByName(INGEGNERIA_ELETTRICA)
+            .orElseThrow(() -> new ObjectNotFoundException(DEGREE_COURSE_NOT_FOUND, INGEGNERIA_ELETTRICA));
+
+        DegreeCourse ingEleMag = degreeCourseRepository
+            .findByName(INGEGNERIA_ELETTRICA_MAGISTRALE)
+            .orElseThrow(() -> new ObjectNotFoundException(DEGREE_COURSE_NOT_FOUND, INGEGNERIA_ELETTRICA_MAGISTRALE));
+
+        List<StudyPlanDto> studyPlans = new ArrayList<>();
+
+        studyPlans.add(
+            new StudyPlanDto(
+                studentRepository
+                    .findByRegister(new Register("123456"))
+                    .orElseThrow(() -> new NoSuchElementException(STUDENT_NOT_FOUND)),
+                "ORD509",
+                new HashSet<>(ingGest.getCourses())
+            )
+        );
+
+        studyPlans.add(
+            new StudyPlanDto(
+                studentRepository
+                    .findByRegister(new Register("123462"))
+                    .orElseThrow(() -> new NoSuchElementException(STUDENT_NOT_FOUND)),
+                "ORD270",
+                new HashSet<>(ingGestMag.getCourses())
+            )
+        );
+
+        studyPlans.add(
+            new StudyPlanDto(
+                studentRepository
+                    .findByRegister(new Register("123470"))
+                    .orElseThrow(() -> new NoSuchElementException(STUDENT_NOT_FOUND)),
+                "ORD270",
+                new HashSet<>(ingInf.getCourses())
+            )
+        );
+
+        studyPlans.add(
+            new StudyPlanDto(
+                studentRepository
+                    .findByRegister(new Register("123469"))
+                    .orElseThrow(() -> new NoSuchElementException(STUDENT_NOT_FOUND)),
+                "ORD270",
+                new HashSet<>(ingInfMag.getCourses())
+            )
+        );
+
+        studyPlans.add(
+            new StudyPlanDto(
+                studentRepository
+                    .findByRegister(new Register("123468"))
+                    .orElseThrow(() -> new NoSuchElementException(STUDENT_NOT_FOUND)),
+                    "ORD270",
+                new HashSet<>(ingMecc.getCourses())
+            )
+        );
+
+        studyPlans.add(
+            new StudyPlanDto(
+                studentRepository
+                    .findByRegister(new Register("123466"))
+                    .orElseThrow(() -> new NoSuchElementException(STUDENT_NOT_FOUND)),
+                "ORD270",
+                new HashSet<>(ingMeccMag.getCourses())
+            )
+        );
+
+        studyPlans.add(
+            new StudyPlanDto(
+                studentRepository
+                    .findByRegister(new Register("123465"))
+                    .orElseThrow(() -> new NoSuchElementException(STUDENT_NOT_FOUND)),
+                "ORD270",
+                new HashSet<>(ingEle.getCourses())
+            )
+        );
+
+        studyPlans.add(
+            new StudyPlanDto(
+                studentRepository
+                    .findByRegister(new Register("123467"))
+                    .orElseThrow(() -> new NoSuchElementException(STUDENT_NOT_FOUND)),
+                "ORD270",
+                new HashSet<>(ingEleMag.getCourses())
+            )
+        );
+
+        // sanity check
+        if(studyPlans.isEmpty())
+            throw new IllegalArgumentException("study plan list is empty");
+
+        // save students
+        studyPlans
+            .stream()
+            .map(StudyPlanMapper::mapToStudyPlan)
+            .forEach(studyPlanRepository::saveAndFlush);
+
+    }
+
+
+
+
+
+
+
 
 
 

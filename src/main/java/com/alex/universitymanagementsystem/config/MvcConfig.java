@@ -59,6 +59,9 @@ public class MvcConfig implements WebMvcConfigurer, Serializable {
                   .setViewName("student/update/update");
             registry.addViewController("/student/delete/delete")
                   .setViewName("student/delete/delete");
+            // user student
+            registry.addViewController("/student/user_student/student-home")
+                  .setViewName("/student/user_student/student-home");
             registry.addViewController("/student/booklet")
                   .setViewName("/student/booklet");
             // professor page

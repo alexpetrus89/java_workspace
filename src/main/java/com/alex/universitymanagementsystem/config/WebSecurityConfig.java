@@ -107,6 +107,7 @@ public class WebSecurityConfig implements Serializable {
             .hasRole("ADMIN")
 			.requestMatchers(
             	// URL accessibili solo agli utenti con ruolo STUDENT
+				"/student/user_student/student-home",
 				"/student/student-menu",
 				"/api/v1/student/view",
 				"/api/v1/student/read/read",

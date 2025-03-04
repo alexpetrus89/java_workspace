@@ -1,0 +1,68 @@
+/* Global styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Body and general layout */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    padding: 20px;
+}
+
+/* Student Info Section */
+.student-info {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.student-info h1 {
+    font-size: 2.5em;
+    color: #333;
+}
+
+.student-info p {
+    font-size: 1.2em;
+    color: #777;
+}
+
+/* Sections container */
+.sections {
+    display: flex;
+    justify-content: space-around;
+    gap: 20px;
+}
+
+/* Section styles */
+section {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 30%;
+    text-align: center;
+}
+
+h2 {
+    font-size: 1.8em;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+/* Button styles */
+.action-button {
+    padding: 10px 20px;
+    font-size: 1.2em;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.action-button:hover {
+    background-color: #45a049;
+}

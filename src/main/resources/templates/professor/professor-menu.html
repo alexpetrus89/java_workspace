@@ -4,24 +4,38 @@
         xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
 <head>
-    <title>Professor Menu</title>
+    <title>Professor Menu - John Doe | Department of Computer Science</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/professor-menu.css">
 </head>
 <body>
-    <h1>View a list of Professor</h1>
-    <p>Click <a th:href="@{/api/v1/professor/view}">here</a> for took all professors</p>
+    <header>
+        <h1>Michael Scarn | Department of Computer Science</h1>
+    </header>
 
-    <h1>Read Professor information</h1>
-    <p>Click <a th:href="@{read/read}">here</a> for read professor information</p>
+    <nav class="navbar">
+        <ul>
+            <li><a href="#" class="dropdown">Student Management</a>
+                <ul class="dropdown-content">
+                    <li><a th:href="@{/student/student-list}">View Student List</a></li>
+                    <li><a th:href="@{/student/student-create}">Create New Student</a></li>
+                    <li><a th:href="@{/student/student-update}">Update Student</a></li>
+                </ul>
+            </li>
+        </ul>
+    </nav>
+    <main>
+        <section>
+            <h2>Professor's Options</h2>
+            <div class="button-container">
+                <a href="#" th:href="@{/student/student-list}" class="btn">View Student List</a>
+                <a href="#" th:href="@{/exam/exam-create}" class="btn">Create Exam</a>
+                <a href="#" th:href="@{/exam/exam-verify}" class="btn">Record Exam Results</a>
+            </div>
+        </section>
+    </main>
 
-    <h1>Create new Professor</h1>
-    <p>Click <a th:href="@{/api/v1/professor/create}">here</a> for create new Professor</p>
-
-    <h1>Update Professor</h1>
-    <p>Click <a th:href="@{/api/v1/professor/update}">here</a> for update professor</p>
-
-    <h1>Delete Professor</h1>
-    <p>Click <a th:href="@{delete/delete}">here</a> for delete professor</p>
-    <br>
-    <a href="#" th:href="@{/home}">Back to Home</a>
+    <footer>
+        <a href="#" th:href="@{/home}">Back to Home</a>
+    </footer>
 </body>
 </html>

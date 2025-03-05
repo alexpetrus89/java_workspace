@@ -1,5 +1,7 @@
 package com.alex.universitymanagementsystem.controller;
 
+import java.time.LocalDate;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -51,6 +53,7 @@ public class RegistrationController {
      * @param username
      * @param password
      * @param fullname
+     * @param dob
      * @param street
      * @param city
      * @param state
@@ -65,6 +68,7 @@ public class RegistrationController {
         @RequestParam("username") String username,
         @RequestParam("password") String password,
         @RequestParam("fullname") String fullname,
+        @RequestParam("dob") LocalDate dob,
         @RequestParam("street") String street,
         @RequestParam("city") String city,
         @RequestParam("state") String state,
@@ -78,6 +82,7 @@ public class RegistrationController {
         form.withUsername(username);
         form.withPassword(password);
         form.withFullname(fullname.toLowerCase());
+        form.withDob(dob);
         form.withStreet(street);
         form.withCity(city);
         form.withState(state);
@@ -87,7 +92,15 @@ public class RegistrationController {
         // create the form
         RegistrationForm registrationForm = new RegistrationForm(form);
         userRepository.saveAndFlush(registrationForm.toUser(passwordEncoder));
-        return "redirect:/login";
+
+        return switch (role) {
+            // Reindirizza all'utente al metodo createNewStudent
+            case STUDENT -> "redirect:api/v1/student/create-student";
+            // Reindirizza all'utente al metodo createProfessor (non mostrato nel codice)
+            case PROFESSOR -> "redirect:api/v1/professor/create-professor";
+            // Reindirizza all'utente alla pagina di login
+            default -> "redirect:/login";
+        };
     }
 
 }

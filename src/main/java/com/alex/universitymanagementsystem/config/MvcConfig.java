@@ -43,12 +43,15 @@ public class MvcConfig implements WebMvcConfigurer, Serializable {
                   .setViewName("logout");
 		registry.addViewController("/login")
                   .setViewName("login");
-            // user page
+            //admin
+            registry.addViewController("/admin/admin-home")
+                  .setViewName("/admin/admin-home");
+            // user utilities
             registry.addViewController("/user/user-menu")
                   .setViewName("user/user-menu");
             registry.addViewController("/user/update/update")
                   .setViewName("user/update/update");
-            // student page
+            // student utilities
             registry.addViewController("/student/student-menu")
                   .setViewName("student/student-menu");
             registry.addViewController("/student/read/read")
@@ -61,7 +64,7 @@ public class MvcConfig implements WebMvcConfigurer, Serializable {
                   .setViewName("student/delete/delete");
             registry.addViewController("/student/booklet")
                   .setViewName("/student/booklet");
-            // professor page
+            // professor utilities
             registry.addViewController("/professor/professor-menu")
                   .setViewName("professor/professor-menu");
             registry.addViewController("/professor/read/read")
@@ -72,7 +75,7 @@ public class MvcConfig implements WebMvcConfigurer, Serializable {
                   .setViewName("professor/update/update");
             registry.addViewController("/professor/delete/delete")
                   .setViewName("professor/delete/delete");
-            // examination page
+            // examination utilities
             registry.addViewController("/examination/examination-menu")
                   .setViewName("examination/examination-menu");
             registry.addViewController("/examination/read/examination-course")
@@ -87,7 +90,7 @@ public class MvcConfig implements WebMvcConfigurer, Serializable {
                   .setViewName("examination/update/update");
             registry.addViewController("/examination/delete/delete")
                   .setViewName("examination/delete/delete");
-            // course page
+            // course utilities
             registry.addViewController("/course/course-menu")
                   .setViewName("course/course-menu");
             registry.addViewController("/course/read/read")
@@ -98,7 +101,7 @@ public class MvcConfig implements WebMvcConfigurer, Serializable {
                   .setViewName("course/update/update");
             registry.addViewController("/course/delete/delete")
                   .setViewName("course/delete/delete");
-            // degree course page
+            // degree course utilities
             registry.addViewController("/degree_course/degree-course-menu")
                   .setViewName("degree_course/degree-course-menu");
             registry.addViewController("/degree_course/read/read-courses")
@@ -107,6 +110,14 @@ public class MvcConfig implements WebMvcConfigurer, Serializable {
                   .setViewName("degree_course/read/read-professors");
             registry.addViewController("/degree_course/read/read-students")
                   .setViewName("degree_course/read/read-students");
+            // user student
+            registry.addViewController("/user_student/student-home")
+                  .setViewName("user_student/student-home");
+            registry.addViewController("/student/create/create-student-from-user")
+                  .setViewName("student/create/create-student-from-user");
+            // user professor
+            registry.addViewController("/user_professor/professor-home")
+                  .setViewName("user_professor/professor-home");
 	}
 
       @Override

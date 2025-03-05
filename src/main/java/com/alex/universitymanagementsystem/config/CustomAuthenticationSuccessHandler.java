@@ -29,9 +29,9 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
 
         String redirectUrl;
         switch (role) {
-            case "ROLE_STUDENT" -> redirectUrl = "/student/student-menu";
-            case "ROLE_PROFESSOR" -> redirectUrl = "/professor/professor-menu";
-            case "ROLE_ADMIN" -> redirectUrl = "/home";
+            case "ROLE_STUDENT" -> redirectUrl = "/student/student-home";
+            case "ROLE_PROFESSOR" -> redirectUrl = "/professor/professor-home";
+            case "ROLE_ADMIN" -> redirectUrl = "/admin/admin-home";
             default -> redirectUrl = "/login";
         }
 

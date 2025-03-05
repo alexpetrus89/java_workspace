@@ -1,4 +1,6 @@
 package com.alex.universitymanagementsystem.utils;
+import java.time.LocalDate;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.alex.universitymanagementsystem.domain.User;
@@ -9,6 +11,7 @@ public class RegistrationForm {
     private String username;
     private String password;
     private String fullname;
+    private LocalDate dob;
     private String street;
     private String city;
     private String state;
@@ -21,6 +24,7 @@ public class RegistrationForm {
         this.username = formBuilder.getUsername();
         this.password = formBuilder.getPassword();
         this.fullname = formBuilder.getFullname();
+        this.dob = formBuilder.getDob();
         this.street = formBuilder.getStreet();
         this.city = formBuilder.getCity();
         this.state = formBuilder.getState();
@@ -40,6 +44,10 @@ public class RegistrationForm {
 
     public String getFullname() {
         return fullname;
+    }
+
+    public LocalDate getDob() {
+        return dob;
     }
 
     public String getStreet() {
@@ -80,6 +88,10 @@ public class RegistrationForm {
         this.fullname = fullname;
     }
 
+    public void setDob(LocalDate dob) {
+        this.dob = dob;
+    }
+
     public void setStreet(String street) {
         this.street = street;
     }
@@ -113,6 +125,7 @@ public class RegistrationForm {
         userBuilder.withUsername(username);
         userBuilder.withPassword(passwordEncoder.encode(password));
         userBuilder.withFullname(fullname);
+        userBuilder.withDob(dob);
         userBuilder.withStreet(street);
         userBuilder.withCity(city);
         userBuilder.withState(state);

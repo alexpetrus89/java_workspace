@@ -12,7 +12,6 @@ package com.alex.universitymanagementsystem.domain;
  */
 
 import java.io.Serializable;
-import java.time.LocalDate;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -144,11 +143,6 @@ public class Professor implements Serializable {
             Objects.equals(email, other.getEmail());
     }
 
-    // business methods
-    public void publishExaminationAppeal(Course course, DegreeCourse degreeCourse, String description, LocalDate date) {
-        ExaminationAppeal examinationAppeal = new ExaminationAppeal(course, degreeCourse, this, description, date);
-        // Pubblica l'appello
-    }
 }
 
 

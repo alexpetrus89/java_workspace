@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:th="https://www.thymeleaf.org"
+        xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+        <meta charset="utf-8" name="viewport"
+        content="width=device-width, initial-scale=1">
+<head>
+    <title>University Management Application</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/admin-home.css">
+</head>
+<body>
+    <h1 th:inline="text">Welcome
+        <span th:remove="tag" sec:authentication="name">thymeleaf</span>!
+    </h1>
+    <h1>Logout</h1>
+    <p>Click <a th:href="@{/logout}">&nbsp;here&nbsp;</a> for log out</p>
+    <h1>User menu</h1>
+    <p>Click <a th:href="@{/user/user-menu}">&nbsp;here&nbsp;</a> and select option</p>
+    <h1>Student menu</h1>
+    <p>Click <a th:href="@{/student/student-menu}">&nbsp;here&nbsp;</a> and select an option</p>
+    <h1>Professor menu</h1>
+    <p>Click <a th:href="@{/professor/professor-menu}">&nbsp;here&nbsp;</a> and select an option</p>
+    <h1>Course menu</h1>
+    <p>Click <a th:href="@{/course/course-menu}">&nbsp;here&nbsp;</a> and select an option</p>
+    <h1>Degree Course menu</h1>
+    <p>Click <a th:href="@{/degree_course/degree-course-menu}">&nbsp;here&nbsp;</a> and select an option</p>
+    <h1>Examination menu</h1>
+    <p>Click <a th:href="@{/examination/examination-menu}">&nbsp;here&nbsp;</a> and select an option</p>
+</body>
+</html>

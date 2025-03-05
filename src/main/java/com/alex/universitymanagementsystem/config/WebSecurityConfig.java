@@ -20,6 +20,9 @@ import com.alex.universitymanagementsystem.repository.UserRepository;
 @EnableWebSecurity
 public class WebSecurityConfig implements Serializable {
 
+	// constant
+	private static final String ADMIN = "ADMIN";
+
     /**
      * Password encoder for web security. Uses bcrypt algorithm.
      * @return PasswordEncoder
@@ -71,6 +74,7 @@ public class WebSecurityConfig implements Serializable {
 			.permitAll()
 			.requestMatchers(
 				// user
+				"admin/admin-menu",
 				"user/user-menu",
 				"api/v1/user",
 				"api/v1/user/view",
@@ -78,6 +82,18 @@ public class WebSecurityConfig implements Serializable {
 				"api/v1/user/create/create",
 				"api/v1/user/update/update",
 				"api/v1/user/delete/delete",
+				// student
+				"/api/v1/student/view",
+				"/api/v1/student/read/read",
+				"/api/v1/student/create/create",
+				"/api/v1/student/update/update",
+				"/api/v1/student/delete/delete",
+				// professor
+				"/api/v1/professor/view",
+				"/api/v1/professor/read/read",
+				"/api/v1/professor/create/create",
+				"/api/v1/professor/update/update",
+				"/api/v1/professor/delete/delete",
 				// course
 				"course/course-menu",
 				"api/v1/course/view",
@@ -104,27 +120,18 @@ public class WebSecurityConfig implements Serializable {
 				"api/v1/examination/read/student-register",
 				"api/v1/examination/read/professor-unique-code"
 			)
-            .hasRole("ADMIN")
+            .hasRole(ADMIN)
 			.requestMatchers(
             	// URL accessibili solo agli utenti con ruolo STUDENT
-				"/student/student-menu",
-				"/api/v1/student/view",
-				"/api/v1/student/read/read",
-				"/api/v1/student/create/create",
-				"/api/v1/student/update/update",
-				"/api/v1/student/delete/delete"
+				"/user_student/student-home",
+				"ap1/v1/student/create/create-student"
 			)
-			.hasAnyRole("STUDENT", "ADMIN")
+			.hasAnyRole("STUDENT", ADMIN)
 			.requestMatchers(
 				// URL accessibili solo agli utenti con ruolo PROFESSOR
-				"/professor-menu",
-				"/api/v1/professor/view",
-				"/api/v1/professor/read/read",
-				"/api/v1/professor/create/create",
-				"/api/v1/professor/update/update",
-				"/api/v1/professor/delete/delete"
+				"/user_professor/professor-home"
 			)
-			.hasAnyRole("PROFESSOR", "ADMIN")
+			.hasAnyRole("PROFESSOR", ADMIN)
 			.anyRequest()
 			.authenticated()
 		)

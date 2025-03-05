@@ -116,6 +116,7 @@ public class UserController {
             user.setUsername(form.getUsername());
             user.setPassword(passwordEncoder.encode(form.getPassword()));
             user.setFullname(form.getFullname());
+            user.setDob(form.getDob());
             user.setStreet(form.getStreet());
             user.setCity(form.getCity());
             user.setState(form.getState());

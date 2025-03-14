@@ -74,8 +74,10 @@ public class UmsWebSecurityConfig implements Serializable {
 				"/logout",
 				"/home",
 				"/register",
+				"role/create-student-from-user",
 				"/error",
-				"static/css/**"
+				"static/css/**",
+				"static/favicon.ico"
 			)
 			.permitAll()
 			.requestMatchers(

@@ -161,7 +161,7 @@ public class StudentController {
     public ModelAndView createNewStudent(@ModelAttribute StudentDto studentDto) {
 
         try{
-            studentServiceImpl.addNewStudent(studentDto);
+            studentServiceImpl.addNewStudent(StudentMapper.mapToStudent(studentDto));
 
             return new CreateView(
                 StudentMapper.mapToStudent(studentDto),

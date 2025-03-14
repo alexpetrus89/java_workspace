@@ -112,6 +112,8 @@ public class UmsMvcConfig implements WebMvcConfigurer, Serializable {
             // user student
             registry.addViewController("/user_student/student-home")
                   .setViewName("/user_student/student-home");
+            registry.addViewController("/role/create-student-from-user")
+                  .setViewName("/role/create-student-from-user");
             // user professor
             registry.addViewController("/user_professor/professor-home")
                   .setViewName("/user_professor/professor-home");

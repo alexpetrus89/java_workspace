@@ -3,6 +3,7 @@ package com.alex.universitymanagementsystem.domain;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -30,9 +31,16 @@ public class Student extends User {
     private Integer age;
     private DegreeCourse degreeCourse;
     private StudyPlan studyPlan;
+    private static AtomicInteger registerCounter = new AtomicInteger(100000);
 
     // constructors
     public Student() {}
+
+    public Student(Builder builder, PasswordEncoder passwordEncoder) {
+        super(builder, passwordEncoder);
+        this.register = new Register(String.format("%06d", registerCounter.getAndIncrement()));
+        this.age = calculateAge();
+    }
 
     public Student(
         Builder builder,

@@ -103,31 +103,23 @@ public class StudentServiceImpl implements StudentService {
 	 * 										already exists in the repository.
 	 * @throws ObjectNotFoundException if the degree course does not exist.
 	 * @throws IllegalArgumentException if the given register is null or empty
-	 * 							 		or if the degree course is null or empty.
 	 */
 	@Override
 	@Transactional
-    public void addNewStudent(@NonNull StudentDto studentDto)
+    public void addNewStudent(@NonNull Student student)
 		throws ObjectAlreadyExistsException
 	{
-		Register register = studentDto.getRegister();
-		String degreeCourse = studentDto.getDegreeCourse().getName();
+		Register register = student.getRegister();
 
 		// sanity check
 		if(register == null || register.toString().isEmpty())
 			throw new IllegalArgumentException("Register cannot be null or empty.");
 
-		if(degreeCourse == null || degreeCourse.isEmpty())
-			throw new IllegalArgumentException("Degree course cannot be null or empty.");
-
 		if(studentRepository.existsByRegister(register))
 			throw new ObjectAlreadyExistsException(register);
 
-		if(!degreeCourseRepository.existsByName(degreeCourse))
-			throw new ObjectNotFoundException(degreeCourse, EXCEPTION_DEGREE_COURSE_IDENTIFIER);
-
 		// save
-		studentRepository.saveAndFlush(StudentMapper.mapToStudent(studentDto));
+		studentRepository.saveAndFlush(student);
     }
 
 

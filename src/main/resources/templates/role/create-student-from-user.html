@@ -10,14 +10,10 @@
 
 <body>
     <h1>Complete student registration</h1>
-    <form action="#" th:action="@{/api/v1/role}" method="post">
-
-        <label for="registration">Registration:</label>
-        <input type="text" th:field="*{register}" title="Enter registration number"
-            placeholder="enter six numbers"></p>
+    <form action="#" th:action="@{/api/v1/user/create/student}" method="post">
 
         <label for="degreeCourse">Degree Course:</label>
-        <input type="text" th:field="*{degreeCourse}" title="Enter degree course"
+        <input type="text" name="degreeCourse" title="Enter degree course"
             placeholder="Your degree course"></p>
 
         <p><input type="submit" value="Submit" /> <input type="reset" value="Reset" /></p>

@@ -12,6 +12,7 @@ package com.alex.universitymanagementsystem.domain;
  */
 
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -40,9 +41,20 @@ public class Professor extends User {
     private UniqueCode uniqueCode;
     private String fiscalCode;
     private String email;
+    private static AtomicInteger professorCounter = new AtomicInteger(100000);
 
     //default constructor
     public Professor() {}
+
+    // constructor
+    public Professor(
+        Builder builder,
+        PasswordEncoder passwordEncoder
+    ) {
+        super(builder, passwordEncoder);
+        this.uniqueCode = new UniqueCode(generateUniqueCode());
+    }
+
 
     // constructor
     public Professor(
@@ -132,6 +144,12 @@ public class Professor extends User {
             Objects.equals(fiscalCode, other.getFiscalCode()) &&
             Objects.equals(fullname, other.getFullname()) &&
             Objects.equals(email, other.getEmail());
+    }
+
+    // private methods
+    private String generateUniqueCode() {
+        int code = professorCounter.getAndIncrement();
+        return String.format("%08x", code);
     }
 
 }

@@ -1,5 +1,7 @@
 package com.alex.universitymanagementsystem.controller;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -8,11 +10,19 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.support.SessionStatus;
 
-import com.alex.universitymanagementsystem.repository.UserRepository;
+import com.alex.universitymanagementsystem.dto.UserDto;
+import com.alex.universitymanagementsystem.service.impl.UserFactoryService;
 import com.alex.universitymanagementsystem.utils.Builder;
-import com.alex.universitymanagementsystem.utils.RegistrationForm;
 import com.alex.universitymanagementsystem.utils.Role;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 
 
@@ -22,18 +32,19 @@ import com.alex.universitymanagementsystem.utils.Role;
 
 @Controller
 @RequestMapping("/register")
+@SessionAttributes("user")
 public class RegistrationController {
 
     // instance variables
-    private final UserRepository userRepository;
+    private final UserFactoryService userFactoryService;
     private final PasswordEncoder passwordEncoder;
 
     /** Autowired - dependency injection - constructor */
     public RegistrationController(
-        UserRepository userRepository,
+        UserFactoryService userFactoryService,
         PasswordEncoder passwordEncoder
     ) {
-        this.userRepository = userRepository;
+        this.userFactoryService = userFactoryService;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -64,7 +75,9 @@ public class RegistrationController {
      * @throws IllegalArgumentException if the username is already taken
      */
     @PostMapping
-    public String processRegistration(
+    public String processRegistration (
+        HttpServletRequest request,
+        SessionStatus sessionStatus,
         @RequestParam("username") String username,
         @RequestParam("password") String password,
         @RequestParam("fullname") String fullname,
@@ -75,7 +88,7 @@ public class RegistrationController {
         @RequestParam("zip") String zip,
         @RequestParam("phone") String phone,
         @RequestParam("role") Role role
-    ) {
+    ) throws JsonProcessingException {
         // create a new form builder
         Builder form = new Builder();
         // set the values
@@ -89,15 +102,26 @@ public class RegistrationController {
         form.withZip(zip);
         form.withPhone(phone);
         form.withRole(role);
-        // create the form
-        RegistrationForm registrationForm = new RegistrationForm(form);
-        userRepository.saveAndFlush(registrationForm.toUser(passwordEncoder));
+
+        // create and save user
+        UserDto userDto = new UserDto(userFactoryService.createUser(form, passwordEncoder));
+
+        // get the session
+        HttpSession session = request.getSession();
+        session.setAttribute("user", userDto.getUser());
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+        String userDtoJson = mapper.writeValueAsString(userDto);
+        String encodedUserDto = URLEncoder.encode(userDtoJson, StandardCharsets.UTF_8);
 
         return switch (role) {
-            // Reindirizza all'utente al metodo createNewStudent
-            case STUDENT -> "redirect:api/v1/student/create-student";
-            // Reindirizza all'utente al metodo createProfessor (non mostrato nel codice)
-            case PROFESSOR -> "redirect:api/v1/professor/create-professor";
+            // Reindirizza l'utente al metodo createNewStudent
+            case Role.STUDENT -> "redirect:role/create-student-from-user?userDto=" + encodedUserDto;
+            // Reindirizza l'utente al metodo createProfessor (non mostrato nel codice)
+            case Role.PROFESSOR -> "redirect:role/create-professor-from-user?userDto=" + userDto.getUser();
+            // Reindirizza l'utente admin al login
+            case Role.ADMIN -> "redirect:/login";
             // Reindirizza all'utente alla pagina di login
             default -> "redirect:/login";
         };

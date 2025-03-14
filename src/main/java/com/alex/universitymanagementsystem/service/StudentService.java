@@ -32,13 +32,13 @@ public interface StudentService {
 
     /**
      * Retrieves a student by their name.
-     * @param name the name of the student.
+     * @param fullname the name of the student.
      * @return List<StudentDto> List of StudentDto objects containing
      *         the student's data.
      * @throws ObjectNotFoundException if no student with the given name exists.
      * @throws IllegalArgumentException if the name is null.
      */
-    List<StudentDto> getStudentsByName(@NonNull String name)
+    List<StudentDto> getStudentsByFullname(@NonNull String fullname)
         throws ObjectNotFoundException;
 
     /**

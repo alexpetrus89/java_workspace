@@ -11,7 +11,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @Component
-public class CustomAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
+public class UmsCustomAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
     @Override
     public void onAuthenticationSuccess(
         HttpServletRequest request,
@@ -29,9 +29,9 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
 
         String redirectUrl;
         switch (role) {
-            case "ROLE_STUDENT" -> redirectUrl = "/student/student-home";
-            case "ROLE_PROFESSOR" -> redirectUrl = "/professor/professor-home";
-            case "ROLE_ADMIN" -> redirectUrl = "/admin/admin-home";
+            case "ROLE_STUDENT" -> redirectUrl = "/user_student/student-home";
+            case "ROLE_PROFESSOR" -> redirectUrl = "/user_professor/professor-home";
+            case "ROLE_ADMIN" -> redirectUrl = "/user_admin/admin-home";
             default -> redirectUrl = "/login";
         }
 

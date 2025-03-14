@@ -11,19 +11,18 @@ package com.alex.universitymanagementsystem.domain;
  * Course può essere associato uno ed un solo Professor.
  */
 
-import java.io.Serializable;
 import java.util.Objects;
-import java.util.UUID;
 
-import com.alex.universitymanagementsystem.domain.immutable.ProfessorId;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 import com.alex.universitymanagementsystem.domain.immutable.UniqueCode;
+import com.alex.universitymanagementsystem.utils.Builder;
 
 import jakarta.persistence.Access;
 import jakarta.persistence.AccessType;
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
-import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Pattern;
@@ -31,13 +30,15 @@ import jakarta.validation.constraints.Pattern;
 @Entity
 @Table(name = "professor")
 @Access(AccessType.PROPERTY)
-public class Professor implements Serializable {
+public class Professor extends User {
+
+    // constants
+    private static final String FISCAL_CODE_REGEX = "\\w{16}";
+    private static final String FISCAL_CODE_EXCEPTION = "Fiscal Code must be a string of exactly 16 characters and digits";
 
     //instance variables
-    private ProfessorId id;
     private UniqueCode uniqueCode;
     private String fiscalCode;
-    private String name;
     private String email;
 
     //default constructor
@@ -45,29 +46,32 @@ public class Professor implements Serializable {
 
     // constructor
     public Professor(
+        Builder builder,
+        PasswordEncoder passwordEncoder,
         UniqueCode uniqueCode,
-        String fiscalCode,
-        String name,
-        String email
-
+        String fiscalCode
     ) {
-        this.id = new ProfessorId(UUID.randomUUID());
-        if(fiscalCode.length() != 16 && !fiscalCode.matches("\\w{16}"))
-            throw new IllegalArgumentException("Fiscal Code must be a string of exactly 16 characters and digits");
+        super(builder, passwordEncoder);
+        if(fiscalCode.length() != 16 && !fiscalCode.matches(FISCAL_CODE_REGEX))
+            throw new IllegalArgumentException(FISCAL_CODE_EXCEPTION);
         this.fiscalCode = fiscalCode.toUpperCase();
         this.uniqueCode = uniqueCode;
-        this.name = name;
-        this.email = email;
+    }
+
+    public Professor(
+        UniqueCode uniqueCode,
+        String fiscalCode,
+        String fullname
+    ) {
+        if(fiscalCode.length() != 16 && !fiscalCode.matches(FISCAL_CODE_REGEX))
+            throw new IllegalArgumentException(FISCAL_CODE_EXCEPTION);
+        this.fiscalCode = fiscalCode.toUpperCase();
+        this.uniqueCode = uniqueCode;
+        this.fullname = fullname;
     }
 
 
     // getters
-    @EmbeddedId
-    @Column(name = "professor_id")
-    public ProfessorId getId() {
-        return id;
-    }
-
     @Embedded
     @AttributeOverride(
         name = "unique_code",
@@ -87,11 +91,6 @@ public class Professor implements Serializable {
         return fiscalCode;
     }
 
-    @Column(name = "name")
-    public String getName() {
-        return name;
-    }
-
     @Column(name = "email")
     public String getEmail() {
         return email;
@@ -99,13 +98,9 @@ public class Professor implements Serializable {
 
 
     // setters
-    public void setId(ProfessorId id) {
-        this.id = id;
-    }
-
     public void setFiscalCode(String fiscalCode) {
-        if(fiscalCode.length() != 16 && !fiscalCode.matches("\\w{16}")) {
-            throw new IllegalArgumentException("Fiscal Code must be a string of exactly 16 characters and digits");
+        if(fiscalCode.length() != 16 && !fiscalCode.matches(FISCAL_CODE_REGEX)) {
+            throw new IllegalArgumentException(FISCAL_CODE_EXCEPTION);
         }
         this.fiscalCode = fiscalCode.toUpperCase();
     }
@@ -114,22 +109,18 @@ public class Professor implements Serializable {
         this.uniqueCode = uniqueCode;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public void setEmail(String email) {
         this.email = email;
     }
 
     @Override
     public String toString() {
-        return "Professor [id=" + id + ", uniqueCode=" + uniqueCode + ", fiscalCode=" + fiscalCode + ", name=" + name + ", email=" + email + "]";
+        return "Professor [id=" + id + ", uniqueCode=" + uniqueCode + ", fiscalCode=" + fiscalCode + ", name=" + fullname + ", email=" + email + "]";
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(uniqueCode, fiscalCode, name, email);
+        return Objects.hash(uniqueCode, fiscalCode, fullname, email);
     }
 
     @Override
@@ -139,7 +130,7 @@ public class Professor implements Serializable {
         Professor other = (Professor) obj;
         return Objects.equals(uniqueCode, other.getUniqueCode()) &&
             Objects.equals(fiscalCode, other.getFiscalCode()) &&
-            Objects.equals(name, other.getName()) &&
+            Objects.equals(fullname, other.getFullname()) &&
             Objects.equals(email, other.getEmail());
     }
 

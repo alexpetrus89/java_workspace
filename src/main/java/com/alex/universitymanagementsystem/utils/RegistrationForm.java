@@ -123,7 +123,7 @@ public class RegistrationForm {
         Builder userBuilder = new Builder();
         // set the values
         userBuilder.withUsername(username);
-        userBuilder.withPassword(passwordEncoder.encode(password));
+        userBuilder.withPassword(password);
         userBuilder.withFullname(fullname);
         userBuilder.withDob(dob);
         userBuilder.withStreet(street);
@@ -133,7 +133,7 @@ public class RegistrationForm {
         userBuilder.withPhone(phone);
         userBuilder.withRole(role);
         // create the user
-        return new User(userBuilder);
+        return new User(userBuilder, passwordEncoder);
     }
 
 

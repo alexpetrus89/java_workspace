@@ -75,7 +75,7 @@ public class StudentServiceImpl implements StudentService {
 
 	/**
 	 * Retrieves a student by name.
-	 * @param name the name of the student.
+	 * @param fullname the name of the student.
 	 * @return List<StudentDto> List of StudentDto object containing the
 	 * 		   student's data.
 	 * @throws ObjectNotFoundException if no student with the given name exists.
@@ -83,12 +83,12 @@ public class StudentServiceImpl implements StudentService {
 	 * @throws UnsupportedOperationException if the name is not unique
 	 */
 	@Override
-	public List<StudentDto> getStudentsByName(@NonNull String name)
+	public List<StudentDto> getStudentsByFullname(@NonNull String fullname)
 		throws ObjectNotFoundException
 	{
 		return studentRepository
-			.findByName(name)
-			.orElseThrow(() -> new ObjectNotFoundException(name, EXCEPTION_STUDENT_IDENTIFIER))
+			.findByFullname(fullname)
+			.orElseThrow(() -> new ObjectNotFoundException(fullname, EXCEPTION_STUDENT_IDENTIFIER))
 			.stream()
 			.map(StudentMapper::mapToStudentDto)
 			.toList();
@@ -152,18 +152,18 @@ public class StudentServiceImpl implements StudentService {
 			.orElseThrow(() -> new ObjectNotFoundException(studentDto.getRegister()));
 
 		// new name, email and dob
-		String newName = studentDto.getName();
-		String newEmail = studentDto.getEmail();
+		String newFullname = studentDto.getFullname();
+		String newUsername = studentDto.getUsername();
 		LocalDate newDob = studentDto.getDob();
 		DegreeCourse newDegreeCourse = degreeCourseRepository
 			.findByName(studentDto.getDegreeCourse().getName())
 			.orElseThrow(() -> new ObjectNotFoundException(studentDto.getDegreeCourse().getName(), EXCEPTION_DEGREE_COURSE_IDENTIFIER));
 
 		// update
-		if(newName != null && !newName.isEmpty())
-			updatableStudent.setName(newName);
-		if(newEmail != null && !newEmail.isEmpty())
-			updatableStudent.setEmail(newEmail);
+		if(newFullname != null && !newFullname.isEmpty())
+			updatableStudent.setFullname(newFullname);
+		if(newUsername != null && !newUsername.isEmpty())
+			updatableStudent.setFullname(newUsername);
 		if(newDob != null && newDob != java.time.LocalDate.now())
 			updatableStudent.setDob(newDob);
 		updatableStudent.setDegreeCourse(newDegreeCourse);

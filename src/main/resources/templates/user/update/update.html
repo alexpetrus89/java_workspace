@@ -29,7 +29,7 @@
             title="Please enter your full name"/><br/>
 
         <label for="dob">Date of Birth:</label>
-        <input type="date" th:field="*{dob}" title="Enter date of birth"
+        <input type="date" name="dob" title="Enter date of birth"
             placeholder="Your date of birth"></p>
 
         <label for="street">Street: </label>
@@ -51,6 +51,13 @@
         <label for="phone">Phone: </label>
         <input type="text" name="phone"
             title="Please enter your phone number"/><br/>
+
+        <label for="role">Ruolo: </label>
+        <select name="role" id="role">
+            <option value="STUDENT">Student</option>
+            <option value="PROFESSOR">Professor</option>
+            <option value="ADMIN">Admin</option>
+        </select><br/>
 
         <input type="submit" value="Register"/>
     </form>

@@ -18,10 +18,12 @@ import com.alex.universitymanagementsystem.repository.UserRepository;
 
 @Configuration
 @EnableWebSecurity
-public class WebSecurityConfig implements Serializable {
+public class UmsWebSecurityConfig implements Serializable {
 
 	// constant
 	private static final String ADMIN = "ADMIN";
+	private static final String STUDENT = "STUDENT";
+	private static final String PROFESSOR = "PROFESSOR";
 
     /**
      * Password encoder for web security. Uses bcrypt algorithm.
@@ -43,7 +45,9 @@ public class WebSecurityConfig implements Serializable {
     UserDetailsService userDetailsService(UserRepository userRepository) {
 
         return username -> {
-			UserDetails userDetails = userRepository.findByUsername(username);
+			UserDetails userDetails = userRepository
+				.findByUsername(username)
+				.orElseThrow(() -> new UsernameNotFoundException("User '" + username + "' not found"));
 
 			if (userDetails != null)
 				return userDetails;
@@ -69,12 +73,14 @@ public class WebSecurityConfig implements Serializable {
 				"/login",
 				"/logout",
 				"/home",
-				"/register"
+				"/register",
+				"/error",
+				"static/css/**"
 			)
 			.permitAll()
 			.requestMatchers(
 				// user
-				"admin/admin-menu",
+				"user_admin/admin-home",
 				"user/user-menu",
 				"api/v1/user",
 				"api/v1/user/view",
@@ -123,22 +129,21 @@ public class WebSecurityConfig implements Serializable {
             .hasRole(ADMIN)
 			.requestMatchers(
             	// URL accessibili solo agli utenti con ruolo STUDENT
-				"/user_student/student-home",
-				"ap1/v1/student/create/create-student"
+				"/user_student/student-home"
 			)
-			.hasAnyRole("STUDENT", ADMIN)
+			.hasAnyRole(STUDENT, ADMIN)
 			.requestMatchers(
 				// URL accessibili solo agli utenti con ruolo PROFESSOR
 				"/user_professor/professor-home"
 			)
-			.hasAnyRole("PROFESSOR", ADMIN)
+			.hasAnyRole(PROFESSOR, ADMIN)
 			.anyRequest()
 			.authenticated()
 		)
 		.formLogin(form ->
 			form.loginPage("/login")
 				.permitAll()
-				.successHandler(new CustomAuthenticationSuccessHandler()) // aggiungi questa riga
+				.successHandler(new UmsCustomAuthenticationSuccessHandler()) // aggiungi questa riga
 		)
 		.logout(LogoutConfigurer::permitAll);
 

@@ -18,7 +18,6 @@ import com.alex.universitymanagementsystem.dto.StudentDto;
 import com.alex.universitymanagementsystem.exception.ObjectAlreadyExistsException;
 import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
 import com.alex.universitymanagementsystem.mapper.StudentMapper;
-import com.alex.universitymanagementsystem.service.UserDetailsService;
 import com.alex.universitymanagementsystem.service.impl.StudentServiceImpl;
 import com.alex.universitymanagementsystem.utils.CreateView;
 
@@ -100,7 +99,7 @@ public class StudentController {
 
         try{
             List<Student> students = studentServiceImpl
-                .getStudentsByName(name.toLowerCase())
+                .getStudentsByFullname(name.toLowerCase())
                 .stream()
                 .map(StudentMapper::mapToStudent)
                 .toList();

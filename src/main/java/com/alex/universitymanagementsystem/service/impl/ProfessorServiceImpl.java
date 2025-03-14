@@ -102,7 +102,7 @@ public class ProfessorServiceImpl implements ProfessorService {
         throws ObjectNotFoundException
     {
         return professorRepository
-            .findByName(name)
+            .findByFullname(name)
             .map(ProfessorMapper::mapToProfessorDto)
             .orElseThrow(() -> new ObjectNotFoundException(name, EXCEPTION_NAME_IDENTIFIER));
     }
@@ -169,7 +169,7 @@ public class ProfessorServiceImpl implements ProfessorService {
 
         // new fiscal code, name and email
         String newFiscalCode = newProfessor.getFiscalCode();
-        String newName = newProfessor.getName();
+        String newName = newProfessor.getFullname();
         String newEmail = newProfessor.getEmail();
 
         // update
@@ -178,7 +178,7 @@ public class ProfessorServiceImpl implements ProfessorService {
                 newFiscalCode.matches("\\w{16}"))
             updatableProfessor.setFiscalCode(newFiscalCode);
         if(newName != null && !newName.isEmpty())
-            updatableProfessor.setName(newName);
+            updatableProfessor.setFullname(newName);
 		if(newEmail != null && !newEmail.isEmpty())
             updatableProfessor.setEmail(newEmail);
 

@@ -8,14 +8,14 @@ import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
 
 import com.alex.universitymanagementsystem.domain.Professor;
-import com.alex.universitymanagementsystem.domain.immutable.ProfessorId;
 import com.alex.universitymanagementsystem.domain.immutable.UniqueCode;
+import com.alex.universitymanagementsystem.domain.immutable.UserId;
 
 
 
 @Repository
 public interface ProfessorRepository
-    extends JpaRepository<Professor, ProfessorId>
+    extends JpaRepository<Professor, UserId>
 {
     /**
      * Retrieves a professor by unique code
@@ -46,8 +46,8 @@ public interface ProfessorRepository
      * @throws IllegalArgumentException if the name is empty or null
      * @throws UnsupportedOperationException if the name is not unique
      */
-    @Query(value = "SELECT s FROM Professor s WHERE s.name = ?1")
-    Optional<Professor> findByName(@NonNull String name);
+    @Query(value = "SELECT s FROM Professor s WHERE s.fullname = ?1")
+    Optional<Professor> findByFullname(@NonNull String name);
 
 
     /**

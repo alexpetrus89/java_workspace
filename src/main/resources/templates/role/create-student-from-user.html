@@ -9,9 +9,8 @@
 </head>
 
 <body>
-    <h1>Create new Student</h1>
-    <form action="#" th:action="@{/api/v1/student/create}"
-        th:object="${student}" method="post">
+    <h1>Complete student registration</h1>
+    <form action="#" th:action="@{/api/v1/role}" method="post">
 
         <label for="registration">Registration:</label>
         <input type="text" th:field="*{register}" title="Enter registration number"
@@ -23,5 +22,5 @@
 
         <p><input type="submit" value="Submit" /> <input type="reset" value="Reset" /></p>
     </form>
-    <a href="#" th:href="@{/student/student-menu}">Back to Menu</a>
+    <a href="#" th:href="@{/home}">Back to Menu</a>
 </body>

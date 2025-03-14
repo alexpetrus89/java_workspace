@@ -1,6 +1,7 @@
 package com.alex.universitymanagementsystem.repository;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -26,7 +27,7 @@ public interface UserRepository
      * @return User
      * @throws UsernameNotFoundException if the user is not found
      */
-    public User findByUsername(@NonNull String username);
+    Optional<User> findByUsername(@NonNull String username);
 
     @Transactional
     @Modifying

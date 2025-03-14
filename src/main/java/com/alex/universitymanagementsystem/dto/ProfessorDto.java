@@ -11,7 +11,7 @@ public class ProfessorDto {
     // instance variables
     private UniqueCode uniqueCode;
     private String fiscalCode;
-    private String name;
+    private String fullname;
     private String email;
 
     // default constructor
@@ -21,13 +21,11 @@ public class ProfessorDto {
     public ProfessorDto(
         UniqueCode uniqueCode,
         String fiscalCode,
-        String name,
-        String email
+        String fullname
     ) {
         this.uniqueCode = uniqueCode;
         this.fiscalCode = fiscalCode;
-        this.name = name;
-        this.email = email;
+        this.fullname = fullname;
     }
 
 
@@ -40,12 +38,8 @@ public class ProfessorDto {
         return uniqueCode;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public String getEmail() {
-        return email;
+    public String getFullname() {
+        return fullname;
     }
 
 
@@ -58,17 +52,13 @@ public class ProfessorDto {
         this.uniqueCode = uniqueCode;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
+    public void setFullname(String name) {
+        this.fullname = name;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(uniqueCode, fiscalCode, name, email);
+        return Objects.hash(uniqueCode, fiscalCode, fullname, email);
     }
 
     @Override
@@ -82,8 +72,7 @@ public class ProfessorDto {
         ProfessorDto other = (ProfessorDto) obj;
         return Objects.equals(uniqueCode, other.getUniqueCode()) &&
             Objects.equals(fiscalCode, other.getFiscalCode()) &&
-            Objects.equals(name, other.getName()) &&
-            Objects.equals(email, other.getEmail());
+            Objects.equals(fullname, other.getFullname());
     }
 
 

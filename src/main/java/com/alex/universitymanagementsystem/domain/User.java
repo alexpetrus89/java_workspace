@@ -9,6 +9,7 @@ import java.util.UUID;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.alex.universitymanagementsystem.domain.immutable.UserId;
 import com.alex.universitymanagementsystem.utils.Builder;
@@ -16,34 +17,36 @@ import com.alex.universitymanagementsystem.utils.Role;
 
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Inheritance;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "\"user\"")
+@Inheritance(strategy = jakarta.persistence.InheritanceType.TABLE_PER_CLASS)
 public class User implements UserDetails {
 
     // instance variables
     @EmbeddedId
-    private UserId id;
-    private String username;
-    private String password;
-    private String fullname;
-    private LocalDate dob;
-    private String street;
-    private String city;
-    private String state;
-    private String zip;
-    private String phone;
-    private Role role;
+    protected UserId id;
+    protected String username;
+    protected String password;
+    protected String fullname;
+    protected LocalDate dob;
+    protected String street;
+    protected String city;
+    protected String state;
+    protected String zip;
+    protected String phone;
+    protected Role role;
 
     // default constructor
     public User() {}
 
     // constructor
-    public User(Builder userBuilder) {
+    public User(Builder userBuilder, PasswordEncoder passwordEncoder) {
         this.id = new UserId(UUID.randomUUID());
         this.username = userBuilder.getUsername();
-        this.password = userBuilder.getPassword();
+        this.password = passwordEncoder.encode(userBuilder.getPassword());
         this.fullname = userBuilder.getFullname();
         this.dob = userBuilder.getDob();
         this.street = userBuilder.getStreet();
@@ -160,29 +163,6 @@ public class User implements UserDetails {
             ", phoneNumber='" + phone + '\'' + '}';
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, username, password, fullname, dob, street, city, state, zip, phone, role);
-    }
-
-    // equals and hashCode
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null) return false;
-        if (getClass() != obj.getClass()) return false;
-        User other = (User) obj;
-        return Objects.equals(username, other.username) &&
-            Objects.equals(password, other.password) &&
-            Objects.equals(fullname, other.fullname) &&
-            Objects.equals(dob, other.dob) &&
-            Objects.equals(street, other.street) &&
-            Objects.equals(city, other.city) &&
-            Objects.equals(state, other.state) &&
-            Objects.equals(zip, other.zip) &&
-            Objects.equals(phone, other.phone) &&
-            Objects.equals(role, other.role );
-    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -211,6 +191,31 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+
+    // equals and hashCode
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, username, password, fullname, dob, street, city, state, zip, phone, role);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null) return false;
+        if (getClass() != obj.getClass()) return false;
+        User other = (User) obj;
+        return Objects.equals(username, other.username) &&
+            Objects.equals(password, other.password) &&
+            Objects.equals(fullname, other.fullname) &&
+            Objects.equals(dob, other.dob) &&
+            Objects.equals(street, other.street) &&
+            Objects.equals(city, other.city) &&
+            Objects.equals(state, other.state) &&
+            Objects.equals(zip, other.zip) &&
+            Objects.equals(phone, other.phone) &&
+            Objects.equals(role, other.role );
     }
 
 

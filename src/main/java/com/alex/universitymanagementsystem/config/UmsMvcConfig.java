@@ -17,7 +17,7 @@ import com.alex.universitymanagementsystem.utils.StringToDegreeCourseConverter;
 
 
 @Configuration
-public class MvcConfig implements WebMvcConfigurer, Serializable {
+public class UmsMvcConfig implements WebMvcConfigurer, Serializable {
 
       // constants
       @Value("${spring.web.resources.static-locations}")
@@ -27,7 +27,7 @@ public class MvcConfig implements WebMvcConfigurer, Serializable {
       private final transient DegreeCourseRepository degreeCourseRepository;
 
       // constructor
-      public MvcConfig(DegreeCourseRepository degreeCourseRepository) {
+      public UmsMvcConfig(DegreeCourseRepository degreeCourseRepository) {
             this.degreeCourseRepository = degreeCourseRepository;
       }
 
@@ -43,12 +43,18 @@ public class MvcConfig implements WebMvcConfigurer, Serializable {
                   .setViewName("logout");
 		registry.addViewController("/login")
                   .setViewName("login");
-            // user page
+            registry.addViewController("/error")
+                  .setViewName("error/error");
+            //admin utilities
+            registry.addViewController("/user_admin/admin-home")
+                  .setViewName("/user_admin/admin-home");
             registry.addViewController("/user/user-menu")
-                  .setViewName("user/user-menu");
+                  .setViewName("/user/user-menu");
             registry.addViewController("/user/update/update")
-                  .setViewName("user/update/update");
-            // student page
+                  .setViewName("/user/update/update");
+            registry.addViewController("/user/delete/delete")
+                  .setViewName("/user/delete/delete");
+            // student utilities
             registry.addViewController("/student/student-menu")
                   .setViewName("student/student-menu");
             registry.addViewController("/student/read/read")
@@ -59,12 +65,7 @@ public class MvcConfig implements WebMvcConfigurer, Serializable {
                   .setViewName("student/update/update");
             registry.addViewController("/student/delete/delete")
                   .setViewName("student/delete/delete");
-            // user student
-            registry.addViewController("/student/user_student/student-home")
-                  .setViewName("/student/user_student/student-home");
-            registry.addViewController("/student/booklet")
-                  .setViewName("/student/booklet");
-            // professor page
+            // professor utilities
             registry.addViewController("/professor/professor-menu")
                   .setViewName("professor/professor-menu");
             registry.addViewController("/professor/read/read")
@@ -75,7 +76,7 @@ public class MvcConfig implements WebMvcConfigurer, Serializable {
                   .setViewName("professor/update/update");
             registry.addViewController("/professor/delete/delete")
                   .setViewName("professor/delete/delete");
-            // examination page
+            // examination utilities
             registry.addViewController("/examination/examination-menu")
                   .setViewName("examination/examination-menu");
             registry.addViewController("/examination/read/examination-course")
@@ -90,7 +91,7 @@ public class MvcConfig implements WebMvcConfigurer, Serializable {
                   .setViewName("examination/update/update");
             registry.addViewController("/examination/delete/delete")
                   .setViewName("examination/delete/delete");
-            // course page
+            // course utilities
             registry.addViewController("/course/course-menu")
                   .setViewName("course/course-menu");
             registry.addViewController("/course/read/read")
@@ -101,7 +102,7 @@ public class MvcConfig implements WebMvcConfigurer, Serializable {
                   .setViewName("course/update/update");
             registry.addViewController("/course/delete/delete")
                   .setViewName("course/delete/delete");
-            // degree course page
+            // degree course utilities
             registry.addViewController("/degree_course/degree-course-menu")
                   .setViewName("degree_course/degree-course-menu");
             registry.addViewController("/degree_course/read/read-courses")
@@ -110,6 +111,23 @@ public class MvcConfig implements WebMvcConfigurer, Serializable {
                   .setViewName("degree_course/read/read-professors");
             registry.addViewController("/degree_course/read/read-students")
                   .setViewName("degree_course/read/read-students");
+            // study plan utilities
+            registry.addViewController("study_plan/study_plan_modify")
+                  .setViewName("study_plan/study_plan_modify");
+            // user student
+            registry.addViewController("/user_student/student-home")
+                  .setViewName("/user_student/student-home");
+            registry.addViewController("/role/create-student-from-user")
+                  .setViewName("/role/create-student-from-user");
+            registry.addViewController("/examination/student-examination-menu")
+                  .setViewName("/examination/student-examination-menu");
+            // user professor
+            registry.addViewController("/user_professor/professor-home")
+                  .setViewName("/user_professor/professor-home");
+            registry.addViewController("/role/create-professor-from-user")
+                  .setViewName("/role/create-professor-from-user");
+            registry.addViewController("/examination_appeal/create-examination-appeal")
+                  .setViewName("/examination_appeal/create-examination-appeal");
 	}
 
       @Override
@@ -127,6 +145,12 @@ public class MvcConfig implements WebMvcConfigurer, Serializable {
             registry.addResourceHandler("/api/v1/examination/css/**")
                   .addResourceLocations(staticCssResourcesPath);
             registry.addResourceHandler("/api/v1/user/css/**")
+                  .addResourceLocations(staticCssResourcesPath);
+            registry.addResourceHandler("/css/admin-home.css")
+                  .addResourceLocations(staticCssResourcesPath);
+            registry.addResourceHandler("/css/student-home.css")
+                  .addResourceLocations(staticCssResourcesPath);
+            registry.addResourceHandler("/css/professor-home.css")
                   .addResourceLocations(staticCssResourcesPath);
       }
 

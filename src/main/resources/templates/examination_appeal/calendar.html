@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:th="https://www.thymeleaf.org"
+        xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
+<head>
+    <title>Appeals</title>
+</head>
+<body>
+    <h1>Appeals</h1>
+    <table>
+        <tr>
+            <th>Degree Course</th>
+            <th>Course</th>
+            <th>Description</th>
+            <th>Date</th>
+            <th>Booked</th>
+        </tr>
+        <tr th:each="examinationAppeal : ${examinationAppeals}">
+            <td th:text="${examinationAppeal.degreeCourse}">Degree course</td>
+            <td th:text="${examinationAppeal.course.name}">Course</td>
+            <td th:text="${examinationAppeal.description}">Description</td>
+            <td th:text="${examinationAppeal.date}">Date</td>
+        </tr>
+        <td>
+            <form th:action="@{/user_student/book-examination-appeal/{id}(id=${examinationAppeal.id})}" method="post">
+                <button type="submit">Booked</button>
+            </form>
+        </td>
+    </table>
+    <br>
+    <a href="#" th:href="@{/user_student/student-home}">Back to home</a>
+</body>
+</html>

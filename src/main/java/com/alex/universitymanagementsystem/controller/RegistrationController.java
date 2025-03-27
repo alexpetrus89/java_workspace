@@ -1,16 +1,18 @@
 package com.alex.universitymanagementsystem.controller;
 
-import org.springframework.security.crypto.password.PasswordEncoder;
+import java.time.LocalDate;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.support.SessionStatus;
 
-import com.alex.universitymanagementsystem.repository.UserRepository;
 import com.alex.universitymanagementsystem.utils.Builder;
-import com.alex.universitymanagementsystem.utils.RegistrationForm;
 import com.alex.universitymanagementsystem.utils.Role;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 
 
@@ -21,19 +23,6 @@ import com.alex.universitymanagementsystem.utils.Role;
 @Controller
 @RequestMapping("/register")
 public class RegistrationController {
-
-    // instance variables
-    private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
-
-    /** Autowired - dependency injection - constructor */
-    public RegistrationController(
-        UserRepository userRepository,
-        PasswordEncoder passwordEncoder
-    ) {
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-    }
 
     // methods
     /** GET request */
@@ -51,6 +40,7 @@ public class RegistrationController {
      * @param username
      * @param password
      * @param fullname
+     * @param dob
      * @param street
      * @param city
      * @param state
@@ -61,10 +51,13 @@ public class RegistrationController {
      * @throws IllegalArgumentException if the username is already taken
      */
     @PostMapping
-    public String processRegistration(
+    public String processRegistration (
+        HttpServletRequest request,
+        SessionStatus sessionStatus,
         @RequestParam("username") String username,
         @RequestParam("password") String password,
         @RequestParam("fullname") String fullname,
+        @RequestParam("dob") LocalDate dob,
         @RequestParam("street") String street,
         @RequestParam("city") String city,
         @RequestParam("state") String state,
@@ -73,21 +66,32 @@ public class RegistrationController {
         @RequestParam("role") Role role
     ) {
         // create a new form builder
-        Builder form = new Builder();
+        Builder builder = new Builder();
         // set the values
-        form.withUsername(username);
-        form.withPassword(password);
-        form.withFullname(fullname.toLowerCase());
-        form.withStreet(street);
-        form.withCity(city);
-        form.withState(state);
-        form.withZip(zip);
-        form.withPhone(phone);
-        form.withRole(role);
-        // create the form
-        RegistrationForm registrationForm = new RegistrationForm(form);
-        userRepository.saveAndFlush(registrationForm.toUser(passwordEncoder));
-        return "redirect:/login";
+        builder.withUsername(username);
+        builder.withPassword(password);
+        builder.withFullname(fullname.toLowerCase());
+        builder.withDob(dob);
+        builder.withStreet(street);
+        builder.withCity(city);
+        builder.withState(state);
+        builder.withZip(zip);
+        builder.withPhone(phone);
+        builder.withRole(role);
+
+        // memorizza l'oggetto builder nella sessione
+        request.getSession().setAttribute("builder", builder);
+
+        return switch (role) {
+            // Reindirizza l'utente al metodo createNewStudent
+            case Role.STUDENT -> "redirect:role/create-student-from-user";
+            // Reindirizza l'utente al metodo createProfessor (non mostrato nel codice)
+            case Role.PROFESSOR -> "redirect:role/create-professor-from-user";
+            // Reindirizza l'utente admin al login
+            case Role.ADMIN -> "forward:api/v1/user/create-admin";
+            // Reindirizza all'utente alla pagina di login
+            default -> "redirect:/login";
+        };
     }
 
 }

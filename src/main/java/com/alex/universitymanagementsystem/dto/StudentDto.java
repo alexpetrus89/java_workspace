@@ -14,8 +14,8 @@ public class StudentDto {
 
     // instance variables
     private Register register;
-    private String name;
-    private String email;
+    private String username;
+    private String fullname;
     private LocalDate dob;
     private DegreeCourse degreeCourse;
     private StudyPlan studyPlan;
@@ -26,29 +26,29 @@ public class StudentDto {
     // constructors
     public StudentDto(
         Register register,
-        String name,
-        String email,
+        String username,
+        String fullname,
         LocalDate dob,
         DegreeCourse degreeCourse
     ) {
         this.register = register;
-        this.name = name;
-        this.email = email;
+        this.username = username;
+        this.fullname = fullname;
         this.dob = dob;
         this.degreeCourse = degreeCourse;
     }
 
     public StudentDto(
         Register register,
-        String name,
-        String email,
+        String username,
+        String fullname,
         LocalDate dob,
         DegreeCourse degreeCourse,
         StudyPlan studyPlan
     ) {
         this.register = register;
-        this.name = name;
-        this.email = email;
+        this.username = username;
+        this.fullname = fullname;
         this.dob = dob;
         this.degreeCourse = degreeCourse;
         this.studyPlan = studyPlan;
@@ -59,12 +59,12 @@ public class StudentDto {
         return register;
     }
 
-    public String getName() {
-        return name;
+    public String getUsername() {
+        return username;
     }
 
-    public String getEmail() {
-        return email;
+    public String getFullname() {
+        return fullname;
     }
 
     public LocalDate getDob() {
@@ -80,16 +80,16 @@ public class StudentDto {
     }
 
     // setters
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public void setRegister(Register register) {
         this.register = register;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setFullname(String fullname) {
+        this.fullname = fullname;
     }
 
     public void setDob(LocalDate dob) {
@@ -106,7 +106,7 @@ public class StudentDto {
 
     @Override
     public int hashCode() {
-        return Objects.hash(register, name, email, dob);
+        return Objects.hash(register, username, fullname, dob);
     }
 
     @Override
@@ -119,8 +119,8 @@ public class StudentDto {
 
         Student other = (Student) obj;
         return Objects.equals(register, other.getRegister()) &&
-            Objects.equals(name, other.getName()) &&
-            Objects.equals(email, other.getEmail()) &&
+            Objects.equals(username, other.getUsername()) &&
+            Objects.equals(fullname, other.getFullname()) &&
             Objects.equals(dob, other.getDob());
     }
 

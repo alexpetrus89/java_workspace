@@ -4,10 +4,10 @@
     <meta charset="utf-8" name="viewport"
     content="width=device-width, initial-scale=1">
 <head>
-    <title>Student Management Application</title>
+    <title>University Management Application</title>
 </head>
 <body>
-    <h1>Registration to Student Management Website</h1>
+    <h1>Registration to University Management Website</h1>
     <form method="POST" th:action="@{/register}" id="registerForm">
         <label for="username">Username: </label>
         <input type="text" name="username"
@@ -24,6 +24,10 @@
         <label for="fullname">Full name: </label>
         <input type="text" name="fullname"
             title="Please enter your full name"/><br/>
+
+        <label for="dob">Date of Birth:</label>
+        <input type="date" name="dob" title="Enter date of birth"
+            placeholder="Your date of birth"></p>
 
         <label for="street">Street: </label>
         <input type="text" name="street"
@@ -47,12 +51,12 @@
 
         <label for="role">Ruolo: </label>
         <select name="role" id="role">
-            <option value="STUDENT">Studente</option>
-            <option value="PROFESSOR">Professore</option>
-            <option value="ADMIN">Amministratore</option>
+            <option value="STUDENT">Student</option>
+            <option value="PROFESSOR">Professor</option>
+            <option value="ADMIN">Admin</option>
         </select><br/>
 
-        <input type="submit" value="Register"/>
+        <input type="submit" value="Submit"/>
     </form>
     <br>
     <a href="#" th:href="@{/home}">Torna alla home</a>

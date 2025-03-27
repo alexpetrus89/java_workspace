@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:th="https://www.thymeleaf.org"
+        xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
+<head>
+    <title>Change Courses</title>
+</head>
+<body>
+    <h1 th:text="${title}">Select courses to change</h1>
+    <form action="#" th:action="@{/api/v1/study_plan/change}"
+        th:object="${student}" method="post">
+        <input type="hidden" name="_method" value="PUT" />
+
+        <label for="name">Degree Course of new course:</label>
+        <input type="text" name="degreeCourseOfNewCourse" title="Enter name"
+            placeholder="degree course name"></p>
+
+        <label for="name">New course:</label>
+        <input type="text" name="courseToAdd" title="Enter course name"
+            placeholder="course name"></p>
+
+        <label for="name">Degree Course of old course:</label>
+        <input type="text" name="degreeCourseOfOldCourse" title="Enter name"
+            placeholder="degree course name"></p>
+
+        <label for="name">Old course:</label>
+        <input type="text" name="courseToRemove" title="Enter course name"
+            placeholder="course name"></p>
+
+        <p><input type="submit" value="Submit" /> <input type="reset" value="Reset" /></p>
+    </form>
+    <br>
+    <a href="#" th:href="@{/user_student/student-home}">Back to Menu</a>
+</body>
+</html>

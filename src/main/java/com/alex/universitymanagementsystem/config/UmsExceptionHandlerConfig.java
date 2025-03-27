@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import com.alex.universitymanagementsystem.exception.GlobalExceptionHandler;
 
 @Configuration
-public class ExceptionHandlerConfig {
+public class UmsExceptionHandlerConfig {
 
     @Bean
     GlobalExceptionHandler globalExceptionHandler() {

@@ -6,6 +6,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
 import com.alex.universitymanagementsystem.domain.Course;
+import com.alex.universitymanagementsystem.domain.DegreeCourse;
 import com.alex.universitymanagementsystem.dto.CourseDto;
 import com.alex.universitymanagementsystem.dto.DegreeCourseDto;
 import com.alex.universitymanagementsystem.dto.ProfessorDto;
@@ -22,16 +23,11 @@ import com.alex.universitymanagementsystem.service.DegreeCourseService;
 @Service
 public class DegreeCourseServiceImpl implements DegreeCourseService {
 
-    // constants
-    private static final String EXCEPTION_DEGREE_COURSE_IDENTIFIER = "degree_course";
-
     // instance variables
     private final DegreeCourseRepository degreeCourseRepository;
 
     // autowired - dependency injection - constructor
-    public DegreeCourseServiceImpl(
-        DegreeCourseRepository degreeCourseRepository
-    ) {
+    public DegreeCourseServiceImpl(DegreeCourseRepository degreeCourseRepository) {
         this.degreeCourseRepository = degreeCourseRepository;
     }
 
@@ -63,13 +59,10 @@ public class DegreeCourseServiceImpl implements DegreeCourseService {
      * @throws UnsupportedOperationException if the name is not unique
      */
     @Override
-    public DegreeCourseDto getDegreeCourseByName(@NonNull String name)
+    public DegreeCourse getDegreeCourseByName(@NonNull String name)
         throws ObjectNotFoundException
     {
-        return degreeCourseRepository
-            .findByName(name)
-            .map(DegreeCourseMapper::mapToDegreeCourseDto)
-            .orElseThrow(() -> new ObjectNotFoundException(name, EXCEPTION_DEGREE_COURSE_IDENTIFIER));
+        return degreeCourseRepository.findByName(name.toUpperCase());
     }
 
 
@@ -91,7 +84,6 @@ public class DegreeCourseServiceImpl implements DegreeCourseService {
     {
         return degreeCourseRepository
             .findByName(name)
-            .orElseThrow(() -> new ObjectNotFoundException(name, EXCEPTION_DEGREE_COURSE_IDENTIFIER))
             .getCourses()
             .stream()
             .map(CourseMapper::mapToCourseDto)
@@ -117,7 +109,6 @@ public class DegreeCourseServiceImpl implements DegreeCourseService {
     {
         return degreeCourseRepository
             .findByName(name)
-            .orElseThrow(() -> new ObjectNotFoundException(name, EXCEPTION_DEGREE_COURSE_IDENTIFIER))
             .getCourses()
             .stream()
             .map(Course::getProfessor)
@@ -145,7 +136,6 @@ public class DegreeCourseServiceImpl implements DegreeCourseService {
     {
         return degreeCourseRepository
             .findByName(name)
-            .orElseThrow(() -> new ObjectNotFoundException(name, EXCEPTION_DEGREE_COURSE_IDENTIFIER))
             .getStudents()
             .stream()
             .map(StudentMapper::mapToStudentDto)

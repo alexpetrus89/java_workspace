@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.lang.NonNull;
 
+import com.alex.universitymanagementsystem.domain.Student;
 import com.alex.universitymanagementsystem.domain.immutable.Register;
 import com.alex.universitymanagementsystem.dto.StudentDto;
 import com.alex.universitymanagementsystem.exception.ObjectAlreadyExistsException;
@@ -32,25 +33,24 @@ public interface StudentService {
 
     /**
      * Retrieves a student by their name.
-     * @param name the name of the student.
+     * @param fullname the name of the student.
      * @return List<StudentDto> List of StudentDto objects containing
      *         the student's data.
      * @throws ObjectNotFoundException if no student with the given name exists.
      * @throws IllegalArgumentException if the name is null.
      */
-    List<StudentDto> getStudentsByName(@NonNull String name)
+    List<StudentDto> getStudentsByFullname(@NonNull String fullname)
         throws ObjectNotFoundException;
 
     /**
      * Adds a new student to the repository
-     * @param studentDto the student data transfer object containing
-     *                   the details of the student to be added
+     * @param student the student to be added
      * @throws ObjectAlreadyExistsException if a student with the same register
      *                                      already exists in the repository
      * @throws IllegalArgumentException if the StudentDto object is null
      */
     @Transactional
-    void addNewStudent(@NonNull StudentDto studentDto)
+    void addNewStudent(@NonNull Student student)
         throws ObjectAlreadyExistsException;
 
     /**

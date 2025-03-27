@@ -1,12 +1,16 @@
 package com.alex.universitymanagementsystem.utils;
 
-public class Builder {
+import java.io.Serializable;
+import java.time.LocalDate;
+
+public class Builder implements Serializable {
 
     // instance variables
     private String username;
     private String password;
     private String confirm;
     private String fullname;
+    private LocalDate dob;
     private String street;
     private String city;
     private String state;
@@ -29,6 +33,10 @@ public class Builder {
 
     public String getFullname() {
         return fullname;
+    }
+
+    public LocalDate getDob() {
+        return dob;
     }
 
     public String getStreet() {
@@ -82,6 +90,14 @@ public class Builder {
 
     public void setFullname(String fullname) {
         this.fullname = fullname;
+    }
+
+    public void withDob(LocalDate dob) {
+        this.dob = dob;
+    }
+
+    public void setDob(LocalDate dob) {
+        this.dob = dob;
     }
 
     public void withStreet(String street) {

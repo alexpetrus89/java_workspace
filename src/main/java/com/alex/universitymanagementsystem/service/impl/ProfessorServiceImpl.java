@@ -22,8 +22,9 @@ import jakarta.transaction.Transactional;
 public class ProfessorServiceImpl implements ProfessorService {
 
     // constants
+    private static final String EXCEPTION_PROFESSOR_IDENTIFIER = "professor";
     private static final String EXCEPTION_FISCAL_CODE_IDENTIFIER = "professor_fiscal_code";
-    private static final String EXCEPTION_NAME_IDENTIFIER = "professor_name";
+
     // instance variables
     private final ProfessorRepository professorRepository;
 
@@ -60,11 +61,7 @@ public class ProfessorServiceImpl implements ProfessorService {
     public ProfessorDto getProfessorByFiscalCode(@NonNull String fiscalCode)
         throws ObjectNotFoundException
     {
-        return ProfessorMapper.mapToProfessorDto(
-            professorRepository
-                .findByFiscalCode(fiscalCode)
-                .orElseThrow(() -> new ObjectNotFoundException(fiscalCode, EXCEPTION_FISCAL_CODE_IDENTIFIER))
-        );
+        return ProfessorMapper.mapToProfessorDto(professorRepository.findByFiscalCode(fiscalCode));
     }
 
 
@@ -81,11 +78,7 @@ public class ProfessorServiceImpl implements ProfessorService {
     public ProfessorDto getProfessorByUniqueCode(@NonNull UniqueCode uniqueCode)
         throws ObjectNotFoundException
     {
-        return ProfessorMapper.mapToProfessorDto(
-            professorRepository
-                .findByUniqueCode(uniqueCode)
-                .orElseThrow(() -> new ObjectNotFoundException(uniqueCode))
-        );
+        return ProfessorMapper.mapToProfessorDto(professorRepository.findByUniqueCode(uniqueCode));
     }
 
 
@@ -101,18 +94,14 @@ public class ProfessorServiceImpl implements ProfessorService {
     public ProfessorDto getProfessorByName(@NonNull String name)
         throws ObjectNotFoundException
     {
-        return professorRepository
-            .findByName(name)
-            .map(ProfessorMapper::mapToProfessorDto)
-            .orElseThrow(() -> new ObjectNotFoundException(name, EXCEPTION_NAME_IDENTIFIER));
+        return ProfessorMapper.mapToProfessorDto(professorRepository.findByFullname(name));
     }
 
 
     /**
      * Adds a new professor to the repository.
      *
-     * @param professorDto the professor data transfer object containing
-     *                     the details of the professor to be added.
+     * @param professor the professor to add
      * @throws ObjectAlreadyExistsException if a professor with the same
      *                                      unique code already exists in the
      *                                      repository.
@@ -123,11 +112,11 @@ public class ProfessorServiceImpl implements ProfessorService {
      */
     @Override
     @Transactional
-    public void addNewProfessor(@NonNull ProfessorDto professorDto)
+    public void addNewProfessor(@NonNull Professor professor)
         throws ObjectAlreadyExistsException
     {
-        UniqueCode uniqueCode = professorDto.getUniqueCode();
-        String fiscalCode = professorDto.getFiscalCode();
+        UniqueCode uniqueCode = professor.getUniqueCode();
+        String fiscalCode = professor.getFiscalCode();
 
         if(uniqueCode == null || uniqueCode.toString().isEmpty())
             throw new IllegalArgumentException("Unique Code cannot be null or empty");
@@ -141,7 +130,7 @@ public class ProfessorServiceImpl implements ProfessorService {
         if(professorRepository.existsByFiscalCode(fiscalCode))
             throw new ObjectAlreadyExistsException(fiscalCode, EXCEPTION_FISCAL_CODE_IDENTIFIER);
 
-        professorRepository.saveAndFlush(ProfessorMapper.mapToProfessor(professorDto));
+        professorRepository.saveAndFlush(professor);
     }
 
 
@@ -161,16 +150,14 @@ public class ProfessorServiceImpl implements ProfessorService {
         throws ObjectNotFoundException
     {
 
-        Professor updatableProfessor = professorRepository
-            .findByUniqueCode(newProfessorDto.getUniqueCode())
-            .orElseThrow(() -> new ObjectNotFoundException(newProfessorDto.getUniqueCode()));
+        Professor updatableProfessor = professorRepository.findByUniqueCode(newProfessorDto.getUniqueCode());
 
         Professor newProfessor = ProfessorMapper.mapToProfessor(newProfessorDto);
 
         // new fiscal code, name and email
         String newFiscalCode = newProfessor.getFiscalCode();
-        String newName = newProfessor.getName();
-        String newEmail = newProfessor.getEmail();
+        String newName = newProfessor.getFullname();
+        String newUsername = newProfessor.getUsername();
 
         // update
         if(newFiscalCode != null &&
@@ -178,9 +165,9 @@ public class ProfessorServiceImpl implements ProfessorService {
                 newFiscalCode.matches("\\w{16}"))
             updatableProfessor.setFiscalCode(newFiscalCode);
         if(newName != null && !newName.isEmpty())
-            updatableProfessor.setName(newName);
-		if(newEmail != null && !newEmail.isEmpty())
-            updatableProfessor.setEmail(newEmail);
+            updatableProfessor.setFullname(newName);
+		if(newUsername != null && !newUsername.isEmpty())
+            updatableProfessor.setUsername(newUsername);
 
         // save
         professorRepository.saveAndFlush(updatableProfessor);
@@ -202,12 +189,11 @@ public class ProfessorServiceImpl implements ProfessorService {
     @Override
     @Transactional
     public void deleteProfessor(@NonNull UniqueCode uniqueCode) {
-        professorRepository
-            .findByUniqueCode(uniqueCode)
-            .ifPresent(professor ->
-                professorRepository
-                    .deleteByUniqueCode(professor.getUniqueCode())
-            );
+
+        if(!professorRepository.existsByUniqueCode(uniqueCode))
+            throw new ObjectNotFoundException("Professor not found", EXCEPTION_PROFESSOR_IDENTIFIER);
+
+        professorRepository.deleteByUniqueCode(uniqueCode);
     }
 
 

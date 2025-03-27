@@ -1,59 +1,91 @@
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f7f7f7; /* Modifica il colore di sfondo */
-    background-image: linear-gradient(to bottom, #f7f7f7, #e7e7e7); /* Aggiunge un gradiente di colore */
+/* Colori */
+:root {
+    --primary-color: #3498db;
+    --secondary-color: #f1c40f;
+    --background-color: #f9f9f9;
+    --text-color: #333;
 }
 
-h1 {
-    color: #3498db; /* Modifica il colore del titolo */
-    font-size: 36px; /* Aumenta la dimensione del titolo */
-    text-align: center; /* Centra il titolo */
-    line-height: 1.2; /* Aggiunge lo stesso spazio tra le linee */
-    margin-bottom: 20px; /* Aggiunge dello spazio tra le intestazioni */
-    height: 60px; /* Imposta la stessa altezza per tutte le intestazioni */
-    display: flex; /* Allinea i paragrafi con le intestazioni */
-    align-items: center; /* Allinea i paragrafi con le intestazioni */
-    justify-content: center; /* Allinea tutti gli elementi al centro */
-}
+  /* Generale */
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: var(--background-color);
+        color: var(--text-color);
+    }
 
-a {
-    text-decoration: none;
-    color: #2ecc71; /* Modifica il colore dei link */
-}
+  /* Header */
+    header {
+        background-color: var(--primary-color);
+        color: #fff;
+        padding: 20px;
+        text-align: center;
+    }
 
-a:hover {
-    color: #1abc9c; /* Modifica il colore dei link al passaggio del mouse */
-}
+    header h1 {
+        font-size: 36px;
+        margin: 0;
+    }
 
-.container {
-    max-width: 800px;
-    margin: 40px auto;
-    padding: 20px;
-    background-color: #fff;
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    background-image: linear-gradient(to bottom, #fff, #f7f7f7); /* Aggiunge un gradiente di colore */
-}
+  /* Hero */
+    .hero {
+        background-image: linear-gradient(to bottom, var(--primary-color), var(--secondary-color));
+        background-size: 100% 300px;
+        background-position: 0% 100%;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: #fff;
+    }
 
-/* Aggiunge un'ombra ai bordi del contenitore */
-.container::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    z-index: -1;
-}
+    .hero h2 {
+        font-size: 48px;
+        margin: 0;
+    }
 
-p {
-    line-height: 1.2;
-    height: 60px;
-    display: flex;
-    align-items: center;
-    justify-content: center; /* Allinea tutti gli elementi al centro */
-}
+  /* Sezioni */
+    section {
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    section h2 {
+        font-size: 24px;
+        margin-top: 0;
+    }
+
+    /* Footer */
+    footer {
+        background-color: var(--primary-color);
+        color: #fff;
+        padding: 10px;
+        text-align: center;
+        clear: both;
+    }
+
+    footer p {
+        margin: 0;
+    }
+
+    /* Utility */
+    .container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    .button {
+        background-color: var(--primary-color);
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+    .button:hover {
+        background-color: var(--secondary-color);
+    }

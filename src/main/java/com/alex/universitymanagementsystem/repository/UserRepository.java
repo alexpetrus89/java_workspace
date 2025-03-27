@@ -1,5 +1,8 @@
 package com.alex.universitymanagementsystem.repository;
 
+import java.time.LocalDate;
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -24,7 +27,7 @@ public interface UserRepository
      * @return User
      * @throws UsernameNotFoundException if the user is not found
      */
-    public User findByUsername(@NonNull String username);
+    Optional<User> findByUsername(@NonNull String username);
 
     @Transactional
     @Modifying
@@ -33,6 +36,7 @@ public interface UserRepository
      * @param username
      * @param fullname
      * @param password
+     * @param dob
      * @param city
      * @param state
      * @param zip
@@ -45,6 +49,7 @@ public interface UserRepository
             UPDATE User u SET
             u.fullname = :fullname,
             u.password = :password,
+            u.dob = :dob,
             u.city = :city,
             u.state = :state,
             u.zip = :zip,
@@ -56,6 +61,7 @@ public interface UserRepository
         @Param("username") String username,
         @Param("fullname") String fullname,
         @Param("password") String password,
+        @Param("dob") LocalDate dob,
         @Param("city") String city,
         @Param("state") String state,
         @Param("zip") String zip,

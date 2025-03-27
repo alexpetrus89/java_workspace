@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en"
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:th="http://www.thymeleaf.org"
+        xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
+<head>
+    <title>Create new Examination Appeal</title>
+</head>
+
+<body>
+    <h1>Create new appeal</h1>
+    <form action="#" th:action="@{/api/v1/examination-appeal/create}" method="post">
+
+        <label for="name">Course:</label>
+        <input type="text" name="course" title="Enter course name"
+            placeholder="course name"></p>
+
+        <label for="degreeCourse">Degree Course:</label>
+        <input type="text" name="degreeCourse" title="Enter degree course name"
+            placeholder="degree course name"></p>
+
+        <label for="description">Description</label>
+        <input type="text" name="description" title="Enter description"
+            placeholder="description"></p>
+
+        <label for="date">Date:</label>
+        <input type="date" name="date" title="Enter appeals date"
+                placeholder="appeals date"></p>
+
+        <p><input type="submit" value="Submit" /> <input type="reset" value="Reset" /></p>
+    </form>
+    <a href="#" th:href="@{/user_professor/professor-home}">Back to home</a>
+</body>

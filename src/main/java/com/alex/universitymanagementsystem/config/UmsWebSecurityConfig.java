@@ -18,7 +18,12 @@ import com.alex.universitymanagementsystem.repository.UserRepository;
 
 @Configuration
 @EnableWebSecurity
-public class WebSecurityConfig implements Serializable {
+public class UmsWebSecurityConfig implements Serializable {
+
+	// constant
+	private static final String ADMIN = "ADMIN";
+	private static final String STUDENT = "STUDENT";
+	private static final String PROFESSOR = "PROFESSOR";
 
     /**
      * Password encoder for web security. Uses bcrypt algorithm.
@@ -40,7 +45,9 @@ public class WebSecurityConfig implements Serializable {
     UserDetailsService userDetailsService(UserRepository userRepository) {
 
         return username -> {
-			UserDetails userDetails = userRepository.findByUsername(username);
+			UserDetails userDetails = userRepository
+				.findByUsername(username)
+				.orElseThrow(() -> new UsernameNotFoundException("User '" + username + "' not found"));
 
 			if (userDetails != null)
 				return userDetails;
@@ -66,18 +73,35 @@ public class WebSecurityConfig implements Serializable {
 				"/login",
 				"/logout",
 				"/home",
-				"/register"
+				"/register",
+				"/static/css/**",
+				"/favicon.ico",
+				"/error",
+				"/role/create-student-from-user",
+				"/role/create-professor-from-user",
+				"/api/v1/user/create-admin",
+				"/api/v1/user/create-student",
+				"/api/v1/user/create-professor"
 			)
 			.permitAll()
 			.requestMatchers(
 				// user
+				"user_admin/admin-home",
 				"user/user-menu",
 				"api/v1/user",
-				"api/v1/user/view",
-				"api/v1/user/read/read",
-				"api/v1/user/create/create",
-				"api/v1/user/update/update",
-				"api/v1/user/delete/delete",
+				"api/v1/user/delete",
+				// student
+				"/api/v1/student/view",
+				"/api/v1/student/read/read",
+				"/api/v1/student/create/create",
+				"/api/v1/student/update/update",
+				"/api/v1/student/delete/delete",
+				// professor
+				"/api/v1/professor/view",
+				"/api/v1/professor/read/read",
+				"/api/v1/professor/create/create",
+				"/api/v1/professor/update/update",
+				"/api/v1/professor/delete/delete",
 				// course
 				"course/course-menu",
 				"api/v1/course/view",
@@ -104,35 +128,30 @@ public class WebSecurityConfig implements Serializable {
 				"api/v1/examination/read/student-register",
 				"api/v1/examination/read/professor-unique-code"
 			)
-            .hasRole("ADMIN")
+            .hasRole(ADMIN)
 			.requestMatchers(
-            	// URL accessibili solo agli utenti con ruolo STUDENT
-				"/student/user_student/student-home",
-				"/student/student-menu",
-				"/api/v1/student/view",
-				"/api/v1/student/read/read",
-				"/api/v1/student/create/create",
-				"/api/v1/student/update/update",
-				"/api/v1/student/delete/delete"
+            	// URL accessibili solo agli utenti con ruolo STUDENT o ADMIN
+				"/user_student/student-home",
+				"/api/v1/user/create/student",
+				"/study_plan/study_plan_modify",
+				"/examination/student-examination-menu",
+				"/api/v1/examination-appeal/view"
 			)
-			.hasAnyRole("STUDENT", "ADMIN")
+			.hasAnyRole(STUDENT, ADMIN)
 			.requestMatchers(
-				// URL accessibili solo agli utenti con ruolo PROFESSOR
-				"/professor-menu",
-				"/api/v1/professor/view",
-				"/api/v1/professor/read/read",
-				"/api/v1/professor/create/create",
-				"/api/v1/professor/update/update",
-				"/api/v1/professor/delete/delete"
+				// URL accessibili solo agli utenti con ruolo PROFESSOR o ADMIN
+				"/user_professor/professor-home",
+				"/api/v1/user/create/professor",
+				"/examination_appeal/create-examination-appeal"
 			)
-			.hasAnyRole("PROFESSOR", "ADMIN")
+			.hasAnyRole(PROFESSOR, ADMIN)
 			.anyRequest()
 			.authenticated()
 		)
 		.formLogin(form ->
 			form.loginPage("/login")
 				.permitAll()
-				.successHandler(new CustomAuthenticationSuccessHandler()) // aggiungi questa riga
+				.successHandler(new UmsCustomAuthenticationSuccessHandler()) // aggiungi questa riga
 		)
 		.logout(LogoutConfigurer::permitAll);
 

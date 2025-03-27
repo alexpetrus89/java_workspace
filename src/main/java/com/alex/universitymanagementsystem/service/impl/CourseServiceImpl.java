@@ -27,8 +27,6 @@ public class CourseServiceImpl implements CourseService {
 
     // constant
     private static final String EXCEPTION_COURSE_IDENTIFIER = "course";
-    private static final String EXCEPTION_PROFESSOR_IDENTIFIER = "professor";
-    private static final String EXCEPTION_DEGREE_COURSE_IDENTIFIER = "degree course";
 
     // instance variables
     private final CourseRepository courseRepository;
@@ -92,15 +90,9 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public CourseDto getCourseByNameAndDegreeCourseName(@NonNull String courseName, @NonNull String degreeCourseName) {
         // retrieve degree course
-        DegreeCourse degreeCourse = degreeCourseRepository
-            .findByName(degreeCourseName)
-            .orElseThrow(() -> new ObjectNotFoundException(degreeCourseName, EXCEPTION_DEGREE_COURSE_IDENTIFIER));
-
+        DegreeCourse degreeCourse = degreeCourseRepository.findByName(degreeCourseName);
         // find course
-        return courseRepository.
-                findByNameAndDegreeCourse(courseName, degreeCourse.getId())
-                .map(CourseMapper::mapToCourseDto)
-                .orElseThrow(() -> new ObjectNotFoundException(courseName, EXCEPTION_COURSE_IDENTIFIER));
+        return CourseMapper.mapToCourseDto(courseRepository.findByNameAndDegreeCourse(courseName, degreeCourse.getId()));
     }
 
 
@@ -128,13 +120,9 @@ public class CourseServiceImpl implements CourseService {
         String degreeCourseName
     ) {
 
-        Professor professor = professorRepository
-            .findByUniqueCode(new UniqueCode(uniqueCode))
-            .orElseThrow(() -> new ObjectNotFoundException(uniqueCode, EXCEPTION_PROFESSOR_IDENTIFIER));
+        Professor professor = professorRepository.findByUniqueCode(new UniqueCode(uniqueCode));
 
-        DegreeCourse degreeCourse = degreeCourseRepository
-            .findByName(degreeCourseName)
-            .orElseThrow(() -> new ObjectNotFoundException(degreeCourseName, EXCEPTION_DEGREE_COURSE_IDENTIFIER));
+        DegreeCourse degreeCourse = degreeCourseRepository.findByName(degreeCourseName);
 
         // sanity check
         if(cfu == null || cfu < 0)
@@ -177,21 +165,13 @@ public class CourseServiceImpl implements CourseService {
     ) {
 
         // check if exist
-        DegreeCourse oldDegreeCourse = degreeCourseRepository
-            .findByName(oldDegreeCourseName)
-            .orElseThrow(() -> new ObjectNotFoundException(oldDegreeCourseName, EXCEPTION_DEGREE_COURSE_IDENTIFIER));
+        DegreeCourse oldDegreeCourse = degreeCourseRepository.findByName(oldDegreeCourseName);
 
-        Course updatableCourse = courseRepository
-            .findByNameAndDegreeCourse(oldCourseName, oldDegreeCourse.getId())
-            .orElseThrow(() -> new ObjectNotFoundException(oldCourseName, EXCEPTION_COURSE_IDENTIFIER));
+        Course updatableCourse = courseRepository.findByNameAndDegreeCourse(oldCourseName, oldDegreeCourse.getId());
 
-        Professor professor = professorRepository
-            .findByUniqueCode(new UniqueCode(newUniqueCode))
-            .orElseThrow(() -> new ObjectNotFoundException(newUniqueCode, EXCEPTION_PROFESSOR_IDENTIFIER));
+        Professor professor = professorRepository.findByUniqueCode(new UniqueCode(newUniqueCode));
 
-        DegreeCourse newDegreeCourse = degreeCourseRepository
-            .findByName(newDegreeCourseName)
-            .orElseThrow(() -> new ObjectNotFoundException(newDegreeCourseName, "EXCEPTION_DEGREE_COURSE_IDENTIFIER"));
+        DegreeCourse newDegreeCourse = degreeCourseRepository.findByName(newDegreeCourseName);
 
         // sanity check
         if(newCourseName == null || newCourseName.isEmpty())

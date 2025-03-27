@@ -11,8 +11,9 @@ public class ProfessorDto {
     // instance variables
     private UniqueCode uniqueCode;
     private String fiscalCode;
-    private String name;
-    private String email;
+    private String fullname;
+    private String username;
+
 
     // default constructor
     public ProfessorDto() {}
@@ -21,13 +22,13 @@ public class ProfessorDto {
     public ProfessorDto(
         UniqueCode uniqueCode,
         String fiscalCode,
-        String name,
-        String email
+        String fullname,
+        String username
     ) {
         this.uniqueCode = uniqueCode;
         this.fiscalCode = fiscalCode;
-        this.name = name;
-        this.email = email;
+        this.fullname = fullname;
+        this.username = username;
     }
 
 
@@ -40,12 +41,12 @@ public class ProfessorDto {
         return uniqueCode;
     }
 
-    public String getName() {
-        return name;
+    public String getFullname() {
+        return fullname;
     }
 
-    public String getEmail() {
-        return email;
+    public String getUsername() {
+        return username;
     }
 
 
@@ -58,17 +59,17 @@ public class ProfessorDto {
         this.uniqueCode = uniqueCode;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setFullname(String name) {
+        this.fullname = name;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(uniqueCode, fiscalCode, name, email);
+        return Objects.hash(uniqueCode, fiscalCode, fullname, username);
     }
 
     @Override
@@ -82,8 +83,8 @@ public class ProfessorDto {
         ProfessorDto other = (ProfessorDto) obj;
         return Objects.equals(uniqueCode, other.getUniqueCode()) &&
             Objects.equals(fiscalCode, other.getFiscalCode()) &&
-            Objects.equals(name, other.getName()) &&
-            Objects.equals(email, other.getEmail());
+            Objects.equals(fullname, other.getFullname()) &&
+            Objects.equals(username, other.getUsername());
     }
 
 

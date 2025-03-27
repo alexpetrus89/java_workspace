@@ -1,20 +1,20 @@
 package com.alex.universitymanagementsystem.domain;
 
-import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.Objects;
-import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.alex.universitymanagementsystem.domain.immutable.Register;
-import com.alex.universitymanagementsystem.domain.immutable.StudentId;
+import com.alex.universitymanagementsystem.utils.Builder;
 
 import jakarta.persistence.Access;
 import jakarta.persistence.AccessType;
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
-import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
@@ -24,63 +24,69 @@ import jakarta.persistence.Transient;
 @Entity
 @Table(name = "student")
 @Access(AccessType.PROPERTY)
-public class Student implements Serializable {
+public class Student extends User {
 
     // instance variables
-    private StudentId id;
     private Register register;
-    private String name;
-    private String email;
-    private LocalDate dob;
     private Integer age;
     private DegreeCourse degreeCourse;
     private StudyPlan studyPlan;
+    private static AtomicInteger registerCounter = new AtomicInteger(100000);
 
     // constructors
     public Student() {}
 
-    public Student(
-        Register register,
-        String name,
-        String email,
-        LocalDate dob,
-        DegreeCourse degreeCourse
-    ) {
-        this.id = new StudentId(UUID.randomUUID());
-        this.register = register;
-        this.name = name;
-        this.email = email;
-        this.dob = dob;
+    public Student(Builder builder, PasswordEncoder passwordEncoder) {
+        super(builder, passwordEncoder);
+        this.register = new Register(String.format("%06d", registerCounter.getAndIncrement()));
         this.age = calculateAge();
-        this.degreeCourse = degreeCourse;
     }
 
+    public Student(
+        Builder builder,
+        PasswordEncoder passwordEncoder,
+        Register register,
+        DegreeCourse degreeCourse
+    ) {
+        super(builder, passwordEncoder);
+        this.register = register;
+        this.degreeCourse = degreeCourse;
+        this.age = calculateAge();
+    }
+
+    public Student(
+        Builder builder,
+        PasswordEncoder passwordEncoder,
+        Register register,
+        DegreeCourse degreeCourse,
+        StudyPlan studyPlan
+    ) {
+        super(builder, passwordEncoder);
+        this.register = register;
+        this.degreeCourse = degreeCourse;
+        this.studyPlan = studyPlan;
+        this.age = calculateAge();
+    }
 
     public Student(
         Register register,
-        String name,
-        String email,
+        String username,
+        String fullname,
         LocalDate dob,
         DegreeCourse degreeCourse,
         StudyPlan studyPlan
     ) {
-        this.id = new StudentId(UUID.randomUUID());
         this.register = register;
-        this.name = name;
-        this.email = email;
+        this.username = username;
+        this.fullname = fullname;
         this.dob = dob;
         this.age = calculateAge();
         this.degreeCourse = degreeCourse;
         this.studyPlan = studyPlan;
+        this.age = calculateAge();
     }
 
     // getters
-    @EmbeddedId // it's an id
-    @Column(name = "student_id")
-    public StudentId getId() {
-        return id;
-    }
-
     @Embedded
     @AttributeOverride(
         name = "register",
@@ -88,21 +94,6 @@ public class Student implements Serializable {
     )
     public Register getRegister() {
         return register;
-    }
-
-    @Column(name = "name")
-    public String getName() {
-        return name;
-    }
-
-    @Column(name = "email")
-    public String getEmail() {
-        return email;
-    }
-
-    @Column(name = "dob")
-    public LocalDate getDob() {
-        return dob;
     }
 
     @Transient
@@ -122,24 +113,8 @@ public class Student implements Serializable {
 
 
     // setters
-    public void setId(StudentId id) {
-        this.id = id;
-    }
-
     public void setRegister(Register register) {
         this.register = register;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public void setDob(LocalDate dob) {
-        this.dob = dob;
     }
 
     public void setDegreeCourse(DegreeCourse degreeCourse) {
@@ -157,13 +132,13 @@ public class Student implements Serializable {
     // other methods
     @Override
     public String toString() {
-        return "Student [id=" + id + ", name=" + name +
-            ",email=" + email + ", dob=" + dob + ", age=" + age + "]";
+        return "Student [id= " + id + ", name= " + fullname +
+            "email= " + username + ", dob= " + dob + ", age= " + age + "]";
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(register, name, email, dob);
+        return Objects.hash(register, username, fullname, dob);
     }
 
     @Override
@@ -179,8 +154,8 @@ public class Student implements Serializable {
 
         // check the fields
         return Objects.equals(register, other.getRegister()) &&
-            Objects.equals(name, other.getName()) &&
-            Objects.equals(email, other.getEmail()) &&
+            Objects.equals(username, other.getUsername()) &&
+            Objects.equals(fullname, other.getFullname()) &&
             Objects.equals(dob, other.getDob());
     }
 

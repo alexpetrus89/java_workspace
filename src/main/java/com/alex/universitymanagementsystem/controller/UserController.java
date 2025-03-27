@@ -1,56 +1,77 @@
 package com.alex.universitymanagementsystem.controller;
 
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.alex.universitymanagementsystem.domain.Professor;
+import com.alex.universitymanagementsystem.domain.Student;
 import com.alex.universitymanagementsystem.domain.User;
+import com.alex.universitymanagementsystem.exception.ObjectAlreadyExistsException;
 import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
-import com.alex.universitymanagementsystem.repository.UserRepository;
+import com.alex.universitymanagementsystem.service.impl.DegreeCourseServiceImpl;
+import com.alex.universitymanagementsystem.service.impl.ProfessorServiceImpl;
+import com.alex.universitymanagementsystem.service.impl.StudentServiceImpl;
+import com.alex.universitymanagementsystem.service.impl.UserServiceImpl;
 import com.alex.universitymanagementsystem.utils.Builder;
-import com.alex.universitymanagementsystem.utils.CreateView;
 import com.alex.universitymanagementsystem.utils.RegistrationForm;
 
-import jakarta.transaction.Transactional;
+import jakarta.servlet.http.HttpServletRequest;
 
-@Controller
+@RestController
 @RequestMapping(path = "api/v1/user")
 public class UserController {
 
+    // constants
+    private static final String BUILDER = "builder";
+    private static final String TITLE = "title";
+    private static final String ERROR = "Errore";
+    private static final String ERROR_PATH = "/error";
+    private static final String ERROR_MESSAGE = "errorMessage";
+    private static final String STACK_TRACE = "stackTrace";
+
     // instance variables
-    private final UserRepository userRepository;
+    private final UserServiceImpl userServiceImpl;
+    private final StudentServiceImpl studentServiceImpl;
+    private final ProfessorServiceImpl professorServiceImpl;
+    private final DegreeCourseServiceImpl degreeCourseServiceImpl;
     private final PasswordEncoder passwordEncoder;
 
     /** Autowired - dependency injection - constructor */
     public UserController(
-        UserRepository userRepository,
-        PasswordEncoder passwordEncoder
+        UserServiceImpl userServiceImpl,
+        StudentServiceImpl studentServiceImpl,
+        DegreeCourseServiceImpl degreeCourseServiceImpl,
+        PasswordEncoder passwordEncoder,
+        ProfessorServiceImpl professorServiceImpl
     ) {
-        this.userRepository = userRepository;
+        this.userServiceImpl = userServiceImpl;
+        this.studentServiceImpl = studentServiceImpl;
+        this.degreeCourseServiceImpl = degreeCourseServiceImpl;
         this.passwordEncoder = passwordEncoder;
+        this.professorServiceImpl = professorServiceImpl;
     }
 
-    // methods
     /**
      * Retrieves all users
      * @return ModelAndView
      */
-    @GetMapping("/view")
+    @GetMapping(path = "/view")
     public ModelAndView getAllUsers() {
 
-        return new CreateView(
-            "users",
-            userRepository.findAll(),
-            "user/read/user-list"
-        ).getModelAndView();
+        List<User> users = userServiceImpl.getUsers();
+        return new ModelAndView("user/read/user-list", "users", users);
     }
 
 
@@ -58,19 +79,15 @@ public class UserController {
      * Updates the user
      * @return ModelAndView
      */
-    @GetMapping("/update")
+    @GetMapping(path = "/update")
     public ModelAndView updateUserAndReturnView() {
-
-        return new CreateView(
-            new Builder(),
-            "user/update/update"
-        ).getModelAndView();
+        return new ModelAndView("user/update/update", BUILDER, new Builder());
     }
 
 
     /**
      * Updates the user
-     * @param formBuilder
+     * @param request HTTP request
      * @return String
      * @throws RuntimeException if the updated user details are invalid
      * @throws IllegalArgumentException if the updated user details are invalid
@@ -79,55 +96,121 @@ public class UserController {
      * @throws NullPointerException if the updated user details are null
      * @throws UnsupportedOperationException if the updated user details are not unique
      */
-    @PostMapping("/update/form")
-    public String updateUserForm(@ModelAttribute Builder formBuilder) {
+    @PostMapping(path = "/create-admin")
+    public String createUser(HttpServletRequest request) {
         try {
-            return updateUser(new RegistrationForm(formBuilder));
+            Builder builder = (Builder) request.getSession().getAttribute(BUILDER);
+            return userServiceImpl.addNewUser(new RegistrationForm(builder).toUser(passwordEncoder));
         } catch (RuntimeException e) {
         // gestisci l'eccezione e restituisci un messaggio di errore significativo all'utente
-            return "redirect:/error-page";
+            return "forward:" + ERROR_PATH;
         }
     }
 
 
     /**
-     * Updates the current authenticated user's information and saves it to the
-     * repository.
-     * This method is transactional and mapped to the HTTP PUT request for "/update".
-     * @param form RegistrationForm containing updated user details.
-     * @return String representing the redirect URL after the update process.
-     * @throws ObjectNotFoundException if the authenticated user is not found.
-	 * @throws UserNotFoundException if the user is not found.
-     * @throws IllegalArgumentException if the updated user details are invalid.
-	 */
-	@Transactional
-    @PutMapping("/update")
-    public String updateUser(RegistrationForm form) throws ObjectNotFoundException
-	{
-        Authentication authentication =
-            SecurityContextHolder.getContext().getAuthentication();
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        User user = (User) userDetails;
+     * Creates a new user with role student
+     * @param request HTTP request
+     * @param degreeCourse degree course name
+     * @return ModelAndView
+     * @throws ObjectAlreadyExistsException if a user with the given username already exists
+     * @throws ObjectNotFoundException if the degree course does not exist
+     * @throws IllegalArgumentException if any of the parameters is invalid
+     * @throws UnsupportedOperationException if any of the parameters is not unique
+     * @throws NullPointerException if any of the parameters is null
+     */
+    @PostMapping(path = "/create-student")
+    public ModelAndView createNewUserWithRoleStudent(HttpServletRequest request, @RequestParam String degreeCourse) {
 
-        if(user == null)
-            throw new ObjectNotFoundException("User not found", "user");
+        // recupera l'oggetto UserDto dalla sessione
+        Builder builder = (Builder) request.getSession().getAttribute(BUILDER);
+        // create Student
+        Student student = new Student(builder, passwordEncoder);
+        // set the degree course
+        student.setDegreeCourse(degreeCourseServiceImpl.getDegreeCourseByName(degreeCourse));
+        // save
+        studentServiceImpl.addNewStudent(student);
+
+        try{
+            return new ModelAndView("role/student-result", "student", student);
+        } catch (RuntimeException e) {
+            Map<String, Object> model = new HashMap<>();
+            model.put(TITLE, ERROR);
+            model.put(ERROR_MESSAGE, e.getMessage());
+            model.put(STACK_TRACE, e.getStackTrace());
+            return new ModelAndView(ERROR_PATH, model);
+        }
+    }
+
+
+    /**
+     * Creates a new user with role professor
+     * @param request HTTP request
+     * @param fiscalCode fiscal code
+     * @return ModelAndView
+     * @throws ObjectAlreadyExistsException if a user with the given username already exists
+     */
+    @PostMapping(path = "/create-professor")
+    public ModelAndView createNewUserWithRoleProfessor(HttpServletRequest request, @RequestParam String fiscalCode) {
+
+        // recupera l'oggetto UserDto dalla sessione
+        Builder builder = (Builder) request.getSession().getAttribute(BUILDER);
+        // create Student
+        Professor professor = new Professor(builder, passwordEncoder);
+        // set the degree course
+        professor.setFiscalCode(fiscalCode);
+        // saves
+        professorServiceImpl.addNewProfessor(professor);
 
         try {
-            user.setUsername(form.getUsername());
-            user.setPassword(passwordEncoder.encode(form.getPassword()));
-            user.setFullname(form.getFullname());
-            user.setStreet(form.getStreet());
-            user.setCity(form.getCity());
-            user.setState(form.getState());
-            user.setZip(form.getZip());
-            user.setPhoneNumber(form.getPhone());
-            user.setRole(form.getRole());
+            return new ModelAndView("role/professor-result", "professor", professor);
+        } catch (RuntimeException e) {
+            Map<String, Object> model = new HashMap<>();
+            model.put(TITLE, ERROR);
+            model.put(ERROR_MESSAGE, e.getMessage());
+            model.put(STACK_TRACE, e.getStackTrace());
+            return new ModelAndView(ERROR_PATH, model);
+        }
+    }
 
-            userRepository.save(user);
-            return "redirect:/login";
 
-        } catch (ObjectNotFoundException e) {
-            return "redirect:/user/update";
+    /**
+     * Updates the user
+     * @param form
+     * @return String
+     */
+    @PutMapping(path = "/update/form")
+    public String updateUser(RegistrationForm form) {
+        try {
+            return userServiceImpl.updateUser(form);
+        } catch (RuntimeException e) {
+            // gestisci l'eccezione e restituisci un messaggio di errore significativo all'utente
+            return "redirect:" + ERROR_PATH;
+        }
+    }
+
+
+    /**
+     * Deletes the user
+     * @param username
+     * @return ModelAndView
+     * @throws IllegalArgumentException if the authenticated user is not an admin
+     * @throws UsernameNotFoundException if the user to be deleted is not found
+     * @throws ObjectNotFoundException if the authenticated user is not found or
+     * if the user to be deleted is not found
+     */
+    @DeleteMapping(path = "/delete")
+    public ModelAndView deleteUser(String username) {
+
+        try {
+            userServiceImpl.deleteUser(username);
+            return new ModelAndView("user/delete/delete-result");
+        } catch (RuntimeException e) {
+            Map<String, Object> model = new HashMap<>();
+            model.put(TITLE, ERROR);
+            model.put(ERROR_MESSAGE, e.getMessage());
+            model.put(STACK_TRACE, e.getStackTrace());
+            return new ModelAndView(ERROR_PATH, model);
         }
     }
 

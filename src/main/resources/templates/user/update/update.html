@@ -10,7 +10,7 @@
 
 <body>
     <h1>Update user information</h1>
-    <form method="post" th:action="@{/api/v1/user/update/form}" id="updateForm">
+    <form method="put" th:action="@{/api/v1/user/update/form}" id="updateForm">
 
         <label for="username">Username: </label>
         <input type="text" name="username"
@@ -27,6 +27,10 @@
         <label for="fullname">Full name: </label>
         <input type="text" name="fullname"
             title="Please enter your full name"/><br/>
+
+        <label for="dob">Date of Birth:</label>
+        <input type="date" name="dob" title="Enter date of birth"
+            placeholder="Your date of birth"></p>
 
         <label for="street">Street: </label>
         <input type="text" name="street"
@@ -47,6 +51,13 @@
         <label for="phone">Phone: </label>
         <input type="text" name="phone"
             title="Please enter your phone number"/><br/>
+
+        <label for="role">Ruolo: </label>
+        <select name="role" id="role">
+            <option value="STUDENT">Student</option>
+            <option value="PROFESSOR">Professor</option>
+            <option value="ADMIN">Admin</option>
+        </select><br/>
 
         <input type="submit" value="Register"/>
     </form>

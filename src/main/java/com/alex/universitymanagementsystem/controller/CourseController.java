@@ -1,5 +1,9 @@
 package com.alex.universitymanagementsystem.controller;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,7 +19,6 @@ import com.alex.universitymanagementsystem.exception.ObjectAlreadyExistsExceptio
 import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
 import com.alex.universitymanagementsystem.service.impl.CourseServiceImpl;
 import com.alex.universitymanagementsystem.utils.CourseType;
-import com.alex.universitymanagementsystem.utils.CreateView;
 
 import jakarta.transaction.Transactional;
 
@@ -24,12 +27,13 @@ import jakarta.transaction.Transactional;
 public class CourseController {
 
     // constants
-    private static final String ATTRIBUTE_NAME = "courses";
-    private static final String VIEW_NAME = "course/course-list";
-    private static final String ERROR = "error";
-    private static final String NOT_FOUND_PATH = "exception/object-not-found";
-    private static final String ALREADY_EXISTS_PATH = "exception/object-already-exists";
+    private static final String TITLE = "title";
+    private static final String ERROR = "Errore";
+    private static final String ERROR_PATH = "/error/error";
+    private static final String ERROR_MESSAGE = "errorMessage";
+    private static final String STACK_TRACE = "stackTrace";
 
+    private static final String COURSE = "course";
     private final CourseServiceImpl courseServiceImpl;
 
     public CourseController(CourseServiceImpl courseServiceImpl) {
@@ -44,11 +48,8 @@ public class CourseController {
     @GetMapping(path = "/view")
     public ModelAndView getCourses() {
 
-        return new CreateView(
-            ATTRIBUTE_NAME,
-            courseServiceImpl.getCourses(),
-            VIEW_NAME
-        ).getModelAndView();
+        List<CourseDto> courses = courseServiceImpl.getCourses();
+        return new ModelAndView("course/course-list", "courses", courses);
     }
 
 
@@ -64,12 +65,9 @@ public class CourseController {
      */
     @GetMapping("/read/name")
     public ModelAndView getCourse(@RequestParam String courseName, @RequestParam String degreeCourseName) {
-
-        return new CreateView(
-            "course",
-            courseServiceImpl.getCourseByNameAndDegreeCourseName(courseName, degreeCourseName),
-            "course/read/read-result"
-        ).getModelAndView();
+        CourseDto course = courseServiceImpl
+            .getCourseByNameAndDegreeCourseName(courseName, degreeCourseName);
+        return new ModelAndView("course/read/read", COURSE, course);
     }
 
 
@@ -79,12 +77,8 @@ public class CourseController {
      */
     @GetMapping("/create")
     public ModelAndView createNewCourseAndReturnView() {
-        return new CreateView(
-            new Course(),
-            "course/create/create"
-        ).getModelAndView();
+        return new ModelAndView("course/create/create", COURSE, new Course());
     }
-
 
     /**
      * Update Course
@@ -92,10 +86,7 @@ public class CourseController {
      */
     @GetMapping("/update")
     public ModelAndView updateCourseAndReturnView() {
-        return new CreateView(
-            new Course(),
-            "course/update/update"
-        ).getModelAndView();
+        return new ModelAndView("course/update/update", COURSE, new Course());
     }
 
 
@@ -123,24 +114,16 @@ public class CourseController {
     ) {
 
         try{
-            return new CreateView(
-                courseServiceImpl.addNewCourse(
-                    name.toLowerCase(),
-                    type,
-                    cfu,
-                    uniqueCode.toLowerCase(),
-                    degreeCourseName.toUpperCase()
-                ),
-                "course/create/create-result"
-            ).getModelAndView();
-
+            Course course = courseServiceImpl.addNewCourse(name, type, cfu, uniqueCode, degreeCourseName);
+            return new ModelAndView("course/create/create-result", COURSE, course);
         } catch (RuntimeException e) {
-            return new CreateView(
-                ERROR,
-                e.getMessage(),
-                ALREADY_EXISTS_PATH
-            ).getModelAndView();
+            Map<String, Object> model = new HashMap<>();
+            model.put(TITLE, ERROR);
+            model.put(ERROR_MESSAGE, e.getMessage());
+            model.put(STACK_TRACE, e.getStackTrace());
+            return new ModelAndView(ERROR_PATH, model);
         }
+
     }
 
 
@@ -161,7 +144,6 @@ public class CourseController {
      * @throws NullPointerException - if any of the parameters is null.
      */
     @PutMapping(path = "/update")
-    @Transactional
     public ModelAndView updateCourse(
         @RequestParam("old_name") String oldCourseName,
         @RequestParam("old_degree_course_name") String oldDegreeCourseName,
@@ -173,8 +155,8 @@ public class CourseController {
     ) {
 
         try {
-            return new CreateView(
-                courseServiceImpl.updateCourse(
+
+            Course course = courseServiceImpl.updateCourse(
                     oldCourseName.toLowerCase(),
                     oldDegreeCourseName.toUpperCase(),
                     newCourseName.toLowerCase(),
@@ -182,15 +164,14 @@ public class CourseController {
                     newType,
                     newCfu,
                     newUniqueCode.toLowerCase()
-                ),
-                "course/update/update-result"
-            ).getModelAndView();
+            );
+            return new ModelAndView("course/update/update-result", COURSE,course);
         } catch (RuntimeException e) {
-            return new CreateView(
-                ERROR,
-                e.getMessage(),
-                NOT_FOUND_PATH
-            ).getModelAndView();
+            Map<String, Object> model = new HashMap<>();
+            model.put(TITLE, ERROR);
+            model.put(ERROR_MESSAGE, e.getMessage());
+            model.put(STACK_TRACE, e.getStackTrace());
+            return new ModelAndView(ERROR_PATH, model);
         }
     }
 
@@ -206,26 +187,21 @@ public class CourseController {
      * @throws NullPointerException if the name is null
      */
     @DeleteMapping(path = "/delete/name")
-    @Transactional // con l'annotazione transactional effettua una gestione propria degli errori
     public ModelAndView deleteCourseByName(@RequestParam String courseName, @RequestParam String degreeCourseName) {
 
         try{
             // retrieve course
-            CourseDto courseDto =
-                courseServiceImpl.getCourseByNameAndDegreeCourseName(courseName, degreeCourseName);
-
+            CourseDto courseDto = courseServiceImpl
+                .getCourseByNameAndDegreeCourseName(courseName, degreeCourseName);
             // delete
             courseServiceImpl.deleteCourse(courseDto.getCourseId());
-
-            return new CreateView("student/delete/delete-result")
-                .getModelAndView();
-
+            return new ModelAndView("course/delete/delete-result", COURSE, courseDto);
         } catch (RuntimeException e) {
-            return new CreateView(
-                ERROR,
-                e.getMessage(),
-                NOT_FOUND_PATH
-            ).getModelAndView();
+            Map<String, Object> model = new HashMap<>();
+            model.put(TITLE, ERROR);
+            model.put(ERROR_MESSAGE, e.getMessage());
+            model.put(STACK_TRACE, e.getStackTrace());
+            return new ModelAndView(ERROR_PATH, model);
         }
     }
 

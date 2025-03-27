@@ -4,11 +4,11 @@
         xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
 <head>
-    <title>Examinations List</title>
+    <title>Examinations</title>
     <link rel="stylesheet" type="text/css" href="/static/css/examination-list.css">
 </head>
 <body>
-    <h1>Examinations List</h1>
+    <h1>Examinations</h1>
     <table>
         <th>Course</th>
         <th>Registration</th>
@@ -19,7 +19,7 @@
         <tr th:each="examination : ${examinations}">
             <td th:text="${examination.course.name}">Course name</td>
             <td th:text="${examination.student.register.register}">Student Register</td>
-            <td th:text="${examination.student.name}">Student Name</td>
+            <td th:text="${examination.student.fullname}">Student Name</td>
             <td>
                 <span th:text="${examination.grade}">Grade</span>
                 <span th:if="${examination.withHonors}"> with honors</span>
@@ -29,6 +29,6 @@
         </tr>
     </table>
     <br>
-    <a href="#" th:href="@{/examination/examination-menu}">Back to Menu</a>
+    <a href="#" th:href="@{/examination/student-examination-menu}">Back to Menu</a>
 </body>
 </html>

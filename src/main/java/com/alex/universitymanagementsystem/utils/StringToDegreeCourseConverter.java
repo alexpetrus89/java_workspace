@@ -38,9 +38,7 @@ public class StringToDegreeCourseConverter
     @Override
     @Nullable
     public DegreeCourse convert(@NonNull String source) {
-        return degreeCourseRepository
-            .findByName(source.trim().toUpperCase())
-            .orElseThrow(() -> new ObjectNotFoundException(source, "degree_course"));
+        return degreeCourseRepository.findByName(source.trim().toUpperCase());
     }
 
 }

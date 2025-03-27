@@ -1,7 +1,11 @@
 package com.alex.universitymanagementsystem.controller;
 
 import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,12 +16,13 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.alex.universitymanagementsystem.domain.Examination;
+import com.alex.universitymanagementsystem.domain.Student;
 import com.alex.universitymanagementsystem.domain.immutable.Register;
 import com.alex.universitymanagementsystem.domain.immutable.UniqueCode;
+import com.alex.universitymanagementsystem.dto.ExaminationDto;
 import com.alex.universitymanagementsystem.exception.ObjectAlreadyExistsException;
 import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
 import com.alex.universitymanagementsystem.service.impl.ExaminationServiceImpl;
-import com.alex.universitymanagementsystem.utils.CreateView;
 
 import jakarta.transaction.Transactional;
 
@@ -26,10 +31,14 @@ import jakarta.transaction.Transactional;
 public class ExaminationController {
 
     // constants
-    private static final String ERROR = "error";
-    private static final String NOT_FOUND_PATH = "exception/object-not-found";
-    private static final String ATTRIBUTE_NAME = "examinations";
+    private static final String ATTRIBUTE_EXAMINATION = "examination";
+    private static final String ATTRIBUTE_EXAMINATIONS = "examinations";
     private static final String VIEW_PATH = "examination/examination-list";
+    private static final String TITLE = "title";
+    private static final String ERROR = "Errore";
+    private static final String ERROR_PATH = "/error";
+    private static final String ERROR_MESSAGE = "errorMessage";
+    private static final String STACK_TRACE = "stackTrace";
 
     // instance variable
     private final ExaminationServiceImpl examinationServiceImpl;
@@ -39,6 +48,7 @@ public class ExaminationController {
         this.examinationServiceImpl = examinationServiceImpl;
     }
 
+
     // methods
     /**
      * Returns a list of examinations
@@ -47,11 +57,8 @@ public class ExaminationController {
     @GetMapping(path = "/view")
     public ModelAndView getExaminations() {
 
-        return new CreateView(
-            ATTRIBUTE_NAME,
-            examinationServiceImpl.getExaminations(),
-            VIEW_PATH
-        ).getModelAndView();
+        List<ExaminationDto> examinations = examinationServiceImpl.getExaminations();
+        return new ModelAndView(VIEW_PATH, ATTRIBUTE_EXAMINATIONS, examinations);
     }
 
 
@@ -67,23 +74,19 @@ public class ExaminationController {
      */
     @GetMapping(path = "/course-name")
     public ModelAndView getExaminationsByCourseName(@RequestParam String name) {
+
         try {
-
-            return new CreateView(
-                ATTRIBUTE_NAME,
-                examinationServiceImpl.getExaminationsByCourseName(name.toLowerCase()),
-                VIEW_PATH
-            ).getModelAndView();
-
+            List<ExaminationDto> examinations = examinationServiceImpl.getExaminationsByCourseName(name);
+            return new ModelAndView(VIEW_PATH, ATTRIBUTE_EXAMINATIONS, examinations);
         } catch (ObjectNotFoundException e) {
-
-            return new CreateView(
-                ERROR,
-                e.getMessage(),
-                NOT_FOUND_PATH
-            ).getModelAndView();
+            Map<String, Object> model = new HashMap<>();
+            model.put(TITLE, ERROR);
+            model.put(ERROR_MESSAGE, e.getMessage());
+            model.put(STACK_TRACE, e.getStackTrace());
+            return new ModelAndView(ERROR_PATH, model);
         }
     }
+
 
     /**
      * Returns a list of examinations by student register
@@ -96,22 +99,17 @@ public class ExaminationController {
      * @throws NullPointerException if the register is null or empty
      */
     @GetMapping(path = "/student-register")
-    public ModelAndView getExaminationsByStudentRegister(@RequestParam String register) {
+    public ModelAndView getExaminationsByStudentRegister(@AuthenticationPrincipal Student student) {
+
         try {
-
-            return new CreateView(
-                ATTRIBUTE_NAME,
-                examinationServiceImpl.getExaminationsByStudentRegister(new Register(register.toLowerCase())),
-                VIEW_PATH
-            ).getModelAndView();
-
+            List<ExaminationDto> examinations = examinationServiceImpl.getExaminationsByStudentRegister(student.getRegister());
+            return new ModelAndView(VIEW_PATH, ATTRIBUTE_EXAMINATIONS, examinations);
         } catch (ObjectNotFoundException e) {
-
-            return new CreateView(
-                ERROR,
-                e.getMessage(),
-                NOT_FOUND_PATH
-            ).getModelAndView();
+            Map<String, Object> model = new HashMap<>();
+            model.put(TITLE, ERROR);
+            model.put(ERROR_MESSAGE, e.getMessage());
+            model.put(STACK_TRACE, e.getStackTrace());
+            return new ModelAndView(ERROR_PATH, model);
         }
     }
 
@@ -128,21 +126,16 @@ public class ExaminationController {
      */
     @GetMapping(path = "/professor-unique-code")
     public ModelAndView getExaminationsByProfessorUniqueCode(@RequestParam String uniqueCode) {
+
         try {
-
-            return new CreateView(
-                ATTRIBUTE_NAME,
-                examinationServiceImpl.getExaminationsByProfessorUniqueCode(new UniqueCode(uniqueCode.toLowerCase())),
-                VIEW_PATH
-            ).getModelAndView();
-
+            List<ExaminationDto> examinations = examinationServiceImpl.getExaminationsByProfessorUniqueCode(new UniqueCode(uniqueCode));
+            return new ModelAndView(VIEW_PATH, ATTRIBUTE_EXAMINATIONS, examinations);
         } catch (ObjectNotFoundException e) {
-
-            return new CreateView(
-                ERROR,
-                e.getMessage(),
-                NOT_FOUND_PATH
-            ).getModelAndView();
+            Map<String, Object> model = new HashMap<>();
+            model.put(TITLE, ERROR);
+            model.put(ERROR_MESSAGE, e.getMessage());
+            model.put(STACK_TRACE, e.getStackTrace());
+            return new ModelAndView(ERROR_PATH, model);
         }
     }
 
@@ -153,10 +146,7 @@ public class ExaminationController {
      */
     @GetMapping("/create")
     public ModelAndView createNewExaminationAndReturnView() {
-        return new CreateView(
-            new Examination(),
-            "examination/create/create"
-        ).getModelAndView();
+        return new ModelAndView("examination/create/create", ATTRIBUTE_EXAMINATION, new Examination());
     }
 
 
@@ -166,10 +156,7 @@ public class ExaminationController {
      */
     @GetMapping("/update")
     public ModelAndView updateExaminationAndReturnView() {
-        return new CreateView(
-            new Examination(),
-            "examination/update/update"
-        ).getModelAndView();
+        return new ModelAndView("examination/update/update", ATTRIBUTE_EXAMINATION, new Examination());
     }
 
 
@@ -189,7 +176,6 @@ public class ExaminationController {
      *                                  does not match
      */
     @PostMapping(path = "/create")
-    @Transactional
     public ModelAndView createNewExamination(
         @RequestParam String register,
         @RequestParam String courseName,
@@ -200,24 +186,21 @@ public class ExaminationController {
     ) {
 
         try {
-            return new CreateView(
-                examinationServiceImpl.addNewExamination(
-                    new Register(register),
-                    courseName,
-                    degreeCourseName.toUpperCase(),
-                    Integer.parseInt(grade),
-                    withHonors,
-                    date
-                ),
-                "examination/create/create-result"
-            ).getModelAndView();
-
+            Examination examination = examinationServiceImpl.addNewExamination(
+                new Register(register),
+                courseName,
+                degreeCourseName.toUpperCase(),
+                Integer.parseInt(grade),
+                withHonors,
+                date
+            );
+            return new ModelAndView( "examination/create/create-result", ATTRIBUTE_EXAMINATION, examination);
         } catch (ObjectNotFoundException e) {
-            return new CreateView(
-                ERROR,
-                e.getMessage(),
-                NOT_FOUND_PATH
-            ).getModelAndView();
+            Map<String, Object> model = new HashMap<>();
+            model.put(TITLE, ERROR);
+            model.put(ERROR_MESSAGE, e.getMessage());
+            model.put(STACK_TRACE, e.getStackTrace());
+            return new ModelAndView(ERROR_PATH, model);
         }
     }
 
@@ -253,28 +236,26 @@ public class ExaminationController {
         @RequestParam("date") LocalDate date
     ) {
 
-        try {
-            return new CreateView(
-                examinationServiceImpl.updateExamination(
-                    new Register(oldRegister.toLowerCase()),
-                    oldCourseName.toLowerCase(),
-                    oldDegreeCourseName.toUpperCase(),
-                    new Register(newRegister.toLowerCase()),
-                    newCourseName.toLowerCase(),
-                    newDegreeCourseName.toUpperCase(),
-                    Integer.parseInt(grade),
-                    withHonors,
-                    date
-                ),
-                "examination/create/create-result"
-            ).getModelAndView();
 
-        } catch (ObjectNotFoundException e) {
-            return new CreateView(
-                ERROR,
-                e.getMessage(),
-                NOT_FOUND_PATH
-            ).getModelAndView();
+        try {
+            Examination examination = examinationServiceImpl.updateExamination(
+                new Register(oldRegister.toLowerCase()),
+                oldCourseName.toLowerCase(),
+                oldDegreeCourseName.toUpperCase(),
+                new Register(newRegister.toLowerCase()),
+                newCourseName.toLowerCase(),
+                newDegreeCourseName.toUpperCase(),
+                Integer.parseInt(grade),
+                withHonors,
+                date
+            );
+            return new ModelAndView("examination/create/create-result", ATTRIBUTE_EXAMINATION, examination);
+        } catch (ObjectAlreadyExistsException e) {
+            Map<String, Object> model = new HashMap<>();
+            model.put(TITLE, ERROR);
+            model.put(ERROR_MESSAGE, e.getMessage());
+            model.put(STACK_TRACE, e.getStackTrace());
+            return new ModelAndView(ERROR_PATH, model);
         }
     }
 
@@ -293,7 +274,6 @@ public class ExaminationController {
      *                              is null
      */
     @DeleteMapping(path = "/delete")
-    @Transactional
     public ModelAndView deleteExamination(
         @RequestParam String register,
         @RequestParam String courseName
@@ -304,16 +284,13 @@ public class ExaminationController {
                 new Register(register.toLowerCase()),
                 courseName.toLowerCase()
             );
-
-            return new CreateView("examination/delete/delete-result")
-                .getModelAndView();
-
+            return new ModelAndView("examination/delete/delete-result");
         } catch (RuntimeException e) {
-            return new CreateView(
-                ERROR,
-                e.getMessage(),
-                NOT_FOUND_PATH
-            ).getModelAndView();
+            Map<String, Object> model = new HashMap<>();
+            model.put(TITLE, ERROR);
+            model.put(ERROR_MESSAGE, e.getMessage());
+            model.put(STACK_TRACE, e.getStackTrace());
+            return new ModelAndView(ERROR_PATH, model);
         }
     }
 

@@ -1,53 +1,51 @@
 package com.alex.universitymanagementsystem.repository;
 
-import java.util.Optional;
-
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
 
 import com.alex.universitymanagementsystem.domain.Professor;
-import com.alex.universitymanagementsystem.domain.immutable.ProfessorId;
 import com.alex.universitymanagementsystem.domain.immutable.UniqueCode;
+import com.alex.universitymanagementsystem.domain.immutable.UserId;
 
 
 
 @Repository
 public interface ProfessorRepository
-    extends JpaRepository<Professor, ProfessorId>
+    extends JpaRepository<Professor, UserId>
 {
     /**
      * Retrieves a professor by unique code
      * @param uniqueCode the unique code of the professor to retrieve
-     * @return Optional containing the professor if found, empty otherwise
+     * @return the professor if found, null otherwise
      * @throws IllegalArgumentException if the unique code is empty or null
      * @throws UnsupportedOperationException if the unique code is not unique
      */
     @Query(value = "SELECT s FROM Professor s WHERE s.uniqueCode = ?1")
-    Optional<Professor> findByUniqueCode(@NonNull UniqueCode uniqueCode);
+    Professor findByUniqueCode(@NonNull UniqueCode uniqueCode);
 
 
     /**
      * Retrieves a professor by fiscal code
      * @param fiscalCode the fiscal code of the professor to retrieve
-     * @return Optional containing the professor if found, empty otherwise
+     * @return the professor if found, null otherwise
      * @throws IllegalArgumentException if the fiscal code is empty or null
      * @throws UnsupportedOperationException if the fiscal code is not unique
      */
     @Query(value = "SELECT s FROM Professor s WHERE s.fiscalCode = ?1")
-    Optional<Professor> findByFiscalCode(@NonNull String fiscalCode);
+    Professor findByFiscalCode(@NonNull String fiscalCode);
 
 
     /**
      * Retrieves a professor by name
      * @param name the name of the professor to retrieve
-     * @return Optional containing the professor if found, empty otherwise
+     * @return the professor if found, null otherwise
      * @throws IllegalArgumentException if the name is empty or null
      * @throws UnsupportedOperationException if the name is not unique
      */
-    @Query(value = "SELECT s FROM Professor s WHERE s.name = ?1")
-    Optional<Professor> findByName(@NonNull String name);
+    @Query(value = "SELECT s FROM Professor s WHERE s.fullname = ?1")
+    Professor findByFullname(@NonNull String name);
 
 
     /**

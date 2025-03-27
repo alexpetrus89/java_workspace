@@ -1,25 +1,23 @@
 package com.alex.universitymanagementsystem.controller;
 
+import java.util.Set;
+
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.alex.universitymanagementsystem.domain.immutable.Register;
-import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
+import com.alex.universitymanagementsystem.domain.Student;
+import com.alex.universitymanagementsystem.dto.CourseDto;
 import com.alex.universitymanagementsystem.service.impl.StudyPlanServiceImpl;
-import com.alex.universitymanagementsystem.utils.CreateView;
 
 
 @RestController
-@RequestMapping(path = "api/v1/studyPlan")
+@RequestMapping(path ="api/v1/study_plan")
 public class StudyPlanController {
-
-    // constants
-    private static final String ERROR = "error";
-    private static final String NOT_FOUND_PATH = "exception/object-not-found";
-    private static final String ALREADY_EXISTS_PATH = "exception/object-already-exists";
 
     // instance variables
     private final StudyPlanServiceImpl studyPlanServiceImpl;
@@ -28,28 +26,23 @@ public class StudyPlanController {
         this.studyPlanServiceImpl = studyPlanServiceImpl;
     }
 
-    /** GET request */
+    @GetMapping("/view")
+    public ModelAndView getStudyPlan(@AuthenticationPrincipal Student student) {
+        Set<CourseDto> courses = studyPlanServiceImpl.getCoursesByRegister(student.getRegister());
+        return new ModelAndView("study_plan/study_plan_courses", "courses", courses);
+    }
 
-    /**
-     * Retrieves all students
-     * @return ModelAndView
-     */
-    @GetMapping(path = "/view")
-	public ModelAndView getCoursesAndReturnView(@RequestParam String register) {
-
-        try {
-            return new CreateView(
-                studyPlanServiceImpl.getCoursesByRegister(new Register(register.toLowerCase())),
-                "student/user_student/read-result"
-            ).getModelAndView();
-
-        } catch (ObjectNotFoundException e) {
-            return new CreateView(
-                ERROR,
-                e.getMessage(),
-                NOT_FOUND_PATH
-            ).getModelAndView();
-        }
+    @PutMapping("/change")
+    public ModelAndView changeCourse(
+        @AuthenticationPrincipal Student student,
+        @RequestParam String degreeCourseOfNewCourse,
+        @RequestParam String courseToAdd,
+        @RequestParam String degreeCourseOfOldCourse,
+        @RequestParam String courseToRemove
+    ) {
+        studyPlanServiceImpl.changeCourse(student.getRegister(), degreeCourseOfNewCourse, degreeCourseOfOldCourse, courseToAdd, courseToRemove);
+        Set<CourseDto> courses = studyPlanServiceImpl.getCoursesByRegister(student.getRegister());
+        return new ModelAndView("study_plan/study_plan_courses", "courses", courses);
     }
 
 }

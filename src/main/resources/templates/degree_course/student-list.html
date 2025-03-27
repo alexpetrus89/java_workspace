@@ -16,9 +16,9 @@
             <th>Email</th>
         </tr>
         <tr th:each="student : ${students}">
-            <td th:text="${student.name}">Nome</td>
+            <td th:text="${student.fullname}">Nome</td>
             <td th:text="${student.register.register}">Register</td>
-            <td th:text="${student.email}">Email</td>
+            <td th:text="${student.username}">Email</td>
         </tr>
     </table>
     <br>

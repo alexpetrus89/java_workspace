@@ -44,14 +44,16 @@ public class UmsMvcConfig implements WebMvcConfigurer, Serializable {
 		registry.addViewController("/login")
                   .setViewName("login");
             registry.addViewController("/error")
-                  .setViewName("error");
+                  .setViewName("error/error");
             //admin utilities
             registry.addViewController("/user_admin/admin-home")
                   .setViewName("/user_admin/admin-home");
             registry.addViewController("/user/user-menu")
-                  .setViewName("user/user-menu");
+                  .setViewName("/user/user-menu");
             registry.addViewController("/user/update/update")
-                  .setViewName("user/update/update");
+                  .setViewName("/user/update/update");
+            registry.addViewController("/user/delete/delete")
+                  .setViewName("/user/delete/delete");
             // student utilities
             registry.addViewController("/student/student-menu")
                   .setViewName("student/student-menu");
@@ -109,14 +111,23 @@ public class UmsMvcConfig implements WebMvcConfigurer, Serializable {
                   .setViewName("degree_course/read/read-professors");
             registry.addViewController("/degree_course/read/read-students")
                   .setViewName("degree_course/read/read-students");
+            // study plan utilities
+            registry.addViewController("study_plan/study_plan_modify")
+                  .setViewName("study_plan/study_plan_modify");
             // user student
             registry.addViewController("/user_student/student-home")
                   .setViewName("/user_student/student-home");
             registry.addViewController("/role/create-student-from-user")
                   .setViewName("/role/create-student-from-user");
+            registry.addViewController("/examination/student-examination-menu")
+                  .setViewName("/examination/student-examination-menu");
             // user professor
             registry.addViewController("/user_professor/professor-home")
                   .setViewName("/user_professor/professor-home");
+            registry.addViewController("/role/create-professor-from-user")
+                  .setViewName("/role/create-professor-from-user");
+            registry.addViewController("/examination_appeal/create-examination-appeal")
+                  .setViewName("/examination_appeal/create-examination-appeal");
 	}
 
       @Override

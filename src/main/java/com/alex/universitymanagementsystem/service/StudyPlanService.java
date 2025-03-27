@@ -29,20 +29,14 @@ public interface StudyPlanService {
      */
     Set<CourseDto> getCoursesByRegister(@NonNull Register register) throws ObjectNotFoundException;
 
-    /**
-     * add a new course to the study plan
-     * @param register student register
-     * @param string name of the course to add
-     * @throws ObjectAlreadyExistsException
-     */
-    void addCourse(@NonNull Register register, @NonNull String name) throws ObjectAlreadyExistsException;
 
-    /**
-     * remove course from study plan
-     * @param register student register
-     * @param name name of the course to remove
-     * @throws ObjectNotFoundException
-     */
-    void removeCourse(@NonNull Register register, @NonNull String name) throws ObjectNotFoundException;
+    void changeCourse(
+        @NonNull Register register,
+        @NonNull String degreeCourseOfNewCourse,
+        @NonNull String degreeCourseOfOldCourse,
+        @NonNull String courseToAddName,
+        @NonNull String courseToRemoveName
+    ) throws ObjectAlreadyExistsException, ObjectNotFoundException;
+
 
 }

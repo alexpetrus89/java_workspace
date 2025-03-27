@@ -23,10 +23,6 @@ import jakarta.transaction.Transactional;
 @Service
 public class StudentServiceImpl implements StudentService {
 
-	// constants
-	private static final String EXCEPTION_STUDENT_IDENTIFIER = "student";
-	private static final String EXCEPTION_DEGREE_COURSE_IDENTIFIER = "degree course";
-
 	// inject repository - instance variable
 	private final StudentRepository studentRepository;
 	private final DegreeCourseRepository degreeCourseRepository;
@@ -66,10 +62,7 @@ public class StudentServiceImpl implements StudentService {
 	public StudentDto getStudentByRegister(@NonNull Register register)
 		throws ObjectNotFoundException
 	{
-		return studentRepository
-			.findByRegister(register)
-			.map(StudentMapper::mapToStudentDto)
-			.orElseThrow(() -> new ObjectNotFoundException(register));
+		return StudentMapper.mapToStudentDto(studentRepository.findByRegister(register));
 	}
 
 
@@ -88,7 +81,6 @@ public class StudentServiceImpl implements StudentService {
 	{
 		return studentRepository
 			.findByFullname(fullname)
-			.orElseThrow(() -> new ObjectNotFoundException(fullname, EXCEPTION_STUDENT_IDENTIFIER))
 			.stream()
 			.map(StudentMapper::mapToStudentDto)
 			.toList();
@@ -97,8 +89,7 @@ public class StudentServiceImpl implements StudentService {
 
 	/**
 	 * Adds a new student to the repository.
-	 * @param studentDto the student data transfer object containing
-	 * 					 the details of the student to be added.
+	 * @param student the student to be added
 	 * @throws ObjectAlreadyExistsException if a student with the same register
 	 * 										already exists in the repository.
 	 * @throws ObjectNotFoundException if the degree course does not exist.
@@ -139,23 +130,19 @@ public class StudentServiceImpl implements StudentService {
     public void updateStudent(@NonNull StudentDto studentDto)
 		throws ObjectNotFoundException
 	{
-		Student updatableStudent = studentRepository
-			.findByRegister(studentDto.getRegister())
-			.orElseThrow(() -> new ObjectNotFoundException(studentDto.getRegister()));
+		Student updatableStudent = studentRepository.findByRegister(studentDto.getRegister());
 
-		// new name, email and dob
-		String newFullname = studentDto.getFullname();
+		// new username, fullname and dob
 		String newUsername = studentDto.getUsername();
+		String newFullname = studentDto.getFullname();
 		LocalDate newDob = studentDto.getDob();
-		DegreeCourse newDegreeCourse = degreeCourseRepository
-			.findByName(studentDto.getDegreeCourse().getName())
-			.orElseThrow(() -> new ObjectNotFoundException(studentDto.getDegreeCourse().getName(), EXCEPTION_DEGREE_COURSE_IDENTIFIER));
+		DegreeCourse newDegreeCourse = degreeCourseRepository.findByName(studentDto.getDegreeCourse().getName());
 
 		// update
+		if(newUsername != null && !newUsername.isEmpty())
+			updatableStudent.setUsername(newUsername);
 		if(newFullname != null && !newFullname.isEmpty())
 			updatableStudent.setFullname(newFullname);
-		if(newUsername != null && !newUsername.isEmpty())
-			updatableStudent.setFullname(newUsername);
 		if(newDob != null && newDob != java.time.LocalDate.now())
 			updatableStudent.setDob(newDob);
 		updatableStudent.setDegreeCourse(newDegreeCourse);

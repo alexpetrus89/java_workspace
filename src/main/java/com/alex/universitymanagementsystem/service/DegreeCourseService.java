@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.lang.NonNull;
 
+import com.alex.universitymanagementsystem.domain.DegreeCourse;
 import com.alex.universitymanagementsystem.dto.CourseDto;
 import com.alex.universitymanagementsystem.dto.DegreeCourseDto;
 import com.alex.universitymanagementsystem.dto.ProfessorDto;
@@ -28,7 +29,7 @@ public interface DegreeCourseService {
      * @throws IllegalArgumentException if the name is empty
      * @throws UnsupportedOperationException if the name is not unique
      */
-    DegreeCourseDto getDegreeCourseByName(@NonNull String name)
+    DegreeCourse getDegreeCourseByName(@NonNull String name)
         throws ObjectNotFoundException;
 
 

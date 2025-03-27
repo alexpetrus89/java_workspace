@@ -2,8 +2,8 @@
     <p th:text="'professor found:'"></p>
     <p th:text="'unique code: ' + ${professor.uniqueCode.code}"></p>
     <p th:text="'fiscal code: ' + ${professor.fiscalCode}"></p>
-    <p th:text="'name: ' + ${professor.name}"></p>
-    <p th:text="'email: ' + ${professor.email}"></p>
+    <p th:text="'name: ' + ${professor.fullname}"></p>
+    <p th:text="'email: ' + ${professor.username}"></p>
 </div>
 <div th:if="${errorMessage}">
     <p th:text="${errorMessage}"></p>

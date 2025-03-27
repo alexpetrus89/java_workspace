@@ -1,7 +1,6 @@
 package com.alex.universitymanagementsystem.repository;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -23,35 +22,34 @@ public interface StudentRepository
     /**
      * Retrieves a student by register
      * @param register the register of the student
-     * @return Optional<Student> with the student if found, or an empty
-     *         Optional if no student is found
+     * @return the student if found, null otherwise
      * @throws IllegalArgumentException if the register is null
      * @throws UnsupportedOperationException if the register is not unique
      */
     @Query(value = "SELECT s FROM Student s WHERE s.register = ?1")
-    Optional<Student> findByRegister(@NonNull Register register);
+    Student findByRegister(@NonNull Register register);
 
     /**
      * Retrieves a student by name
      * @param name the name of the student
-     * @return Optional<List<Student>> with the student if found, or an empty
-     *         Optional if no student is found
+     * @return List<Student> with the student if found, or an empty
+     *         List if no student is found
      * @throws IllegalArgumentException if the name is null
      * @throws UnsupportedOperationException if the name is not unique
      */
     @Query("SELECT s FROM Student s WHERE s.fullname = ?1")
-    Optional<List<Student>> findByFullname(@NonNull String name);
+    List<Student> findByFullname(@NonNull String name);
 
     /**
      * Retrieves a student by email
      * @param email the email of the student
-     * @return Optional<List<Student>> with the student if found, or an empty
-     *         Optional if no student is found
+     * @return List<Student> with the student if found, or an empty
+     *         List if no student is found
      * @throws IllegalArgumentException if the email is null
      * @throws UnsupportedOperationException if the email is not unique
      */
     @Query("SELECT s FROM Student s WHERE s.username = ?1")
-    Optional<List<Student>> findByUsername(@NonNull String email);
+    List<Student> findByUsername(@NonNull String email);
 
     /**
      * Checks if a student exists by register

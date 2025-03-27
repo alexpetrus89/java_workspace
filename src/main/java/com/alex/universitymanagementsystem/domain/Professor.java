@@ -40,7 +40,6 @@ public class Professor extends User {
     //instance variables
     private UniqueCode uniqueCode;
     private String fiscalCode;
-    private String email;
     private static AtomicInteger professorCounter = new AtomicInteger(100000);
 
     //default constructor
@@ -73,13 +72,16 @@ public class Professor extends User {
     public Professor(
         UniqueCode uniqueCode,
         String fiscalCode,
-        String fullname
+        String fullname,
+        String username
     ) {
+        fiscalCode = fiscalCode.toUpperCase();
         if(fiscalCode.length() != 16 && !fiscalCode.matches(FISCAL_CODE_REGEX))
             throw new IllegalArgumentException(FISCAL_CODE_EXCEPTION);
-        this.fiscalCode = fiscalCode.toUpperCase();
+        this.fiscalCode = fiscalCode;
         this.uniqueCode = uniqueCode;
         this.fullname = fullname;
+        this.username = username;
     }
 
 
@@ -103,36 +105,27 @@ public class Professor extends User {
         return fiscalCode;
     }
 
-    @Column(name = "email")
-    public String getEmail() {
-        return email;
-    }
-
-
     // setters
     public void setFiscalCode(String fiscalCode) {
+        fiscalCode = fiscalCode.toUpperCase();
         if(fiscalCode.length() != 16 && !fiscalCode.matches(FISCAL_CODE_REGEX)) {
             throw new IllegalArgumentException(FISCAL_CODE_EXCEPTION);
         }
-        this.fiscalCode = fiscalCode.toUpperCase();
+        this.fiscalCode = fiscalCode;
     }
 
     public void setUniqueCode(UniqueCode uniqueCode) {
         this.uniqueCode = uniqueCode;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
     @Override
     public String toString() {
-        return "Professor [id=" + id + ", uniqueCode=" + uniqueCode + ", fiscalCode=" + fiscalCode + ", name=" + fullname + ", email=" + email + "]";
+        return "Professor [id=" + id + ", uniqueCode=" + uniqueCode + ", fiscalCode=" + fiscalCode + ", name=" + fullname + ", email=" + username + "]";
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(uniqueCode, fiscalCode, fullname, email);
+        return Objects.hash(uniqueCode, fiscalCode, fullname, username);
     }
 
     @Override
@@ -143,7 +136,7 @@ public class Professor extends User {
         return Objects.equals(uniqueCode, other.getUniqueCode()) &&
             Objects.equals(fiscalCode, other.getFiscalCode()) &&
             Objects.equals(fullname, other.getFullname()) &&
-            Objects.equals(email, other.getEmail());
+            Objects.equals(username, other.getUsername());
     }
 
     // private methods

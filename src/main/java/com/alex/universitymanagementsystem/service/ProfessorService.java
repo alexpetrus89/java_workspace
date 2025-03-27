@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.lang.NonNull;
 
+import com.alex.universitymanagementsystem.domain.Professor;
 import com.alex.universitymanagementsystem.domain.immutable.UniqueCode;
 import com.alex.universitymanagementsystem.dto.ProfessorDto;
 import com.alex.universitymanagementsystem.exception.ObjectAlreadyExistsException;
@@ -57,14 +58,13 @@ public interface ProfessorService {
 
     /**
      * add new professor
-     * @param professorDto the data transfer object containing the details
-     *                     of the professor to be added
+     * @param professor professor to add
      * @throws ObjectAlreadyExistsException if a professor with the same unique
      *                                      code already exists
      * @throws IllegalArgumentException if the unique code is empty or null
      */
     @Transactional
-    void addNewProfessor(@NonNull ProfessorDto professorDto)
+    void addNewProfessor(@NonNull Professor professor)
         throws ObjectAlreadyExistsException;
 
 

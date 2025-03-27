@@ -1,6 +1,8 @@
 package com.alex.universitymanagementsystem.controller;
 
 
+import java.util.List;
+
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -18,15 +20,14 @@ import com.alex.universitymanagementsystem.exception.ObjectAlreadyExistsExceptio
 import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
 import com.alex.universitymanagementsystem.mapper.ProfessorMapper;
 import com.alex.universitymanagementsystem.service.impl.ProfessorServiceImpl;
-import com.alex.universitymanagementsystem.utils.CreateView;
-
-import jakarta.transaction.Transactional;
 
 @RestController
 @RequestMapping(path = "api/v1/professor")
 public class ProfessorController {
 
     // constants
+    private static final String PROFESSOR = "professor";
+    private static final String PROFESSORS = "professors";
     private static final String ERROR = "error";
     private static final String NOT_FOUND_PATH = "exception/object-not-found";
     private static final String ALREADY_EXISTS_PATH = "exception/object-already-exists";
@@ -48,12 +49,8 @@ public class ProfessorController {
      */
     @GetMapping(path = "/view")
     public ModelAndView getProfessors() {
-
-        return new CreateView(
-            "professors",
-            professorServiceImpl.getProfessors(),
-            "professor/professor-list"
-        ).getModelAndView();
+        List<ProfessorDto> professors = professorServiceImpl.getProfessors();
+        return new ModelAndView("professor/professor-list", PROFESSORS, professors);
     }
 
 
@@ -70,20 +67,10 @@ public class ProfessorController {
     public ModelAndView getProfessorsByUniqueCode(@RequestParam UniqueCode uniqueCode) {
 
         try {
-            ProfessorDto professorDto = professorServiceImpl.getProfessorByUniqueCode(uniqueCode);
-
-            return new CreateView(
-                ProfessorMapper.mapToProfessor(professorDto),
-                "professor/read/read-result"
-            ).getModelAndView();
-
+            Professor professor = ProfessorMapper.mapToProfessor(professorServiceImpl.getProfessorByUniqueCode(uniqueCode));
+            return new ModelAndView("professor/read/read-result", PROFESSOR, professor);
         } catch (ObjectNotFoundException e) {
-
-            return new CreateView(
-                ERROR,
-                e.getMessage(),
-                NOT_FOUND_PATH
-            ).getModelAndView();
+            return new ModelAndView(ERROR, e.getMessage(), NOT_FOUND_PATH);
         }
     }
 
@@ -101,20 +88,10 @@ public class ProfessorController {
     public ModelAndView getProfessorsByName(@RequestParam String name) {
 
         try {
-            ProfessorDto professorDto = professorServiceImpl.getProfessorByName(name);
-
-            return new CreateView(
-                ProfessorMapper.mapToProfessor(professorDto),
-                "professor/read/read-result"
-            ).getModelAndView();
-
+            Professor professor = ProfessorMapper.mapToProfessor(professorServiceImpl.getProfessorByName(name));
+            return new ModelAndView("professor/read/read-result", PROFESSOR, professor);
         } catch (ObjectNotFoundException e) {
-
-            return new CreateView(
-                ERROR,
-                e.getMessage(),
-                NOT_FOUND_PATH
-            ).getModelAndView();
+            return new ModelAndView(ERROR, e.getMessage(), NOT_FOUND_PATH);
         }
     }
 
@@ -125,11 +102,7 @@ public class ProfessorController {
      */
     @GetMapping("/create")
     public ModelAndView createNewProfessorAndReturnView() {
-
-        return new CreateView(
-            new Professor(),
-            "professor/create/create"
-        ).getModelAndView();
+        return new ModelAndView("professor/create/create", PROFESSOR, new Professor());
     }
 
 
@@ -139,11 +112,7 @@ public class ProfessorController {
      */
     @GetMapping("/update")
     public ModelAndView updateProfessorAndReturnView() {
-
-        return new CreateView(
-            new Professor(),
-            "professor/update/update"
-        ).getModelAndView();
+        return new ModelAndView("professor/update/update", PROFESSOR, new Professor());
     }
 
 
@@ -160,24 +129,13 @@ public class ProfessorController {
      * @throws NullPointerException if the unique code is null
      */
     @PostMapping("/create")
-    @Transactional // con l'annotazione transactional effettua una gestione propria degli errori
     public ModelAndView createNewProfessor(@ModelAttribute ProfessorDto professorDto) {
 
         try {
-            professorServiceImpl.addNewProfessor(professorDto);
-
-            return new CreateView(
-                ProfessorMapper.mapToProfessor(professorDto),
-                "professor/create/create-result"
-            ).getModelAndView();
-
+            professorServiceImpl.addNewProfessor(ProfessorMapper.mapToProfessor(professorDto));
+            return new ModelAndView("professor/create/create-result", PROFESSOR, ProfessorMapper.mapToProfessor(professorDto));
         } catch (RuntimeException e) {
-
-            return new CreateView(
-                ERROR,
-                e.getMessage(),
-                ALREADY_EXISTS_PATH
-            ).getModelAndView();
+            return new ModelAndView(ERROR, e.getMessage(), ALREADY_EXISTS_PATH);
         }
     }
 
@@ -194,24 +152,14 @@ public class ProfessorController {
      * @throws NullPointerException if the unique code is null
      */
     @PutMapping("/update")
-    @Transactional // con l'annotazione transactional effettua una gestione propria degli errori
     public ModelAndView updateProfessor(@ModelAttribute ProfessorDto professorDto) {
 
         try {
             professorServiceImpl.updateProfessor(professorDto);
-
-            return new CreateView(
-                ProfessorMapper.mapToProfessor(professorDto),
-                "professor/update/update-result"
-            ).getModelAndView();
-
+            Professor professor = ProfessorMapper.mapToProfessor(professorDto);
+            return new ModelAndView("professor/update/update-result", PROFESSOR, professor);
         } catch (RuntimeException e) {
-
-            return new CreateView(
-                ERROR,
-                e.getMessage(),
-                NOT_FOUND_PATH
-            ).getModelAndView();
+            return new ModelAndView(ERROR, e.getMessage(), NOT_FOUND_PATH);
         }
     }
 
@@ -227,22 +175,13 @@ public class ProfessorController {
      * @throws NullPointerException if the unique code is null
      */
     @DeleteMapping(path = "/delete/uniquecode")
-    @Transactional // con l'annotazione transactional effettua una gestione propria degli errori
     public ModelAndView deleteProfessorByUniqueCode(@RequestParam UniqueCode uniqueCode) {
 
         try {
             professorServiceImpl.deleteProfessor(uniqueCode);
-
-            return new CreateView(
-                "professor/delete/delete-result"
-            ).getModelAndView();
-
+            return new ModelAndView("professor/delete/delete-result");
         } catch (RuntimeException e) {
-            return new CreateView(
-                ERROR,
-                e.getMessage(),
-                NOT_FOUND_PATH
-            ).getModelAndView();
+            return new ModelAndView(ERROR, e.getMessage(), NOT_FOUND_PATH);
         }
     }
 

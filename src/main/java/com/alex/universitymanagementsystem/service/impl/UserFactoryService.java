@@ -6,32 +6,35 @@ import org.springframework.stereotype.Service;
 import com.alex.universitymanagementsystem.domain.Professor;
 import com.alex.universitymanagementsystem.domain.Student;
 import com.alex.universitymanagementsystem.domain.User;
-import com.alex.universitymanagementsystem.repository.ProfessorRepository;
-import com.alex.universitymanagementsystem.repository.UserRepository;
 import com.alex.universitymanagementsystem.utils.Builder;
+import com.alex.universitymanagementsystem.utils.RegistrationForm;
 
 import jakarta.transaction.Transactional;
 
 @Service
 public class UserFactoryService {
 
+
     // instance variables
-    private final UserRepository userRepository;
+    private final UserServiceImpl userServiceImpl;
     private final StudentServiceImpl studentServiceImpl;
-    private final ProfessorRepository professorRepository;
+    private final ProfessorServiceImpl professorServiceImpl;
+    private final PasswordEncoder passwordEncoder;
 
     public UserFactoryService(
-        UserRepository userRepository,
+        UserServiceImpl userServiceImpl,
         StudentServiceImpl studentServiceImpl,
-        ProfessorRepository professorRepository
+        ProfessorServiceImpl professorServiceImpl,
+        PasswordEncoder passwordEncoder
     ) {
-        this.userRepository = userRepository;
+        this.userServiceImpl = userServiceImpl;
         this.studentServiceImpl = studentServiceImpl;
-        this.professorRepository = professorRepository;
+        this.professorServiceImpl = professorServiceImpl;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Transactional // con l'annotazione transactional effettua una gestione propria degli errori
-    public User createUser(Builder builder, PasswordEncoder passwordEncoder) {
+    public User createUser(Builder builder) {
         return switch (builder.getRole()) {
             case STUDENT -> {
                 Student student = new Student(builder, passwordEncoder);
@@ -40,12 +43,12 @@ public class UserFactoryService {
             }
             case PROFESSOR -> {
                 Professor professor = new Professor(builder, passwordEncoder);
-                professorRepository.saveAndFlush(professor);
+                professorServiceImpl.addNewProfessor(professor);
                 yield professor;
             }
             case ADMIN -> {
-                User user = new User(builder, passwordEncoder);
-                userRepository.saveAndFlush(user);
+                User user = new RegistrationForm(builder).toUser(passwordEncoder);
+                userServiceImpl.addNewUser(user);
                 yield user;
             }
             default -> throw new UnsupportedOperationException("Role not supported");

@@ -1,8 +1,9 @@
 package com.alex.universitymanagementsystem.utils;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
-public class Builder {
+public class Builder implements Serializable {
 
     // instance variables
     private String username;

@@ -1,6 +1,8 @@
 package com.alex.universitymanagementsystem.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,16 +21,15 @@ import com.alex.universitymanagementsystem.exception.ObjectAlreadyExistsExceptio
 import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
 import com.alex.universitymanagementsystem.mapper.StudentMapper;
 import com.alex.universitymanagementsystem.service.impl.StudentServiceImpl;
-import com.alex.universitymanagementsystem.utils.CreateView;
-
-import jakarta.transaction.Transactional;
 
 @RestController
 @RequestMapping(path = "api/v1/student")
 public class StudentController {
 
     // constants
-    private static final String ERROR = "error";
+    private static final String ATTRIBUTE_STUDENT = "student";
+    private static final String ATTRIBUTE_STUDENTS = "students";
+    private static final String ERROR = "error/error";
     private static final String NOT_FOUND_PATH = "exception/object-not-found";
     private static final String ALREADY_EXISTS_PATH = "exception/object-already-exists";
 
@@ -50,12 +51,8 @@ public class StudentController {
      */
     @GetMapping(path = "/view")
 	public ModelAndView getStudentsAndReturnView() {
-
-        return new CreateView(
-            "students",
-            studentServiceImpl.getStudents(),
-            "student/student-list"
-        ).getModelAndView();
+        List<StudentDto> students = studentServiceImpl.getStudents();
+        return new ModelAndView("student/student-list", ATTRIBUTE_STUDENTS, students);
     }
 
     /**
@@ -70,19 +67,11 @@ public class StudentController {
 	public ModelAndView getStudentByRegister(@RequestParam String register) {
 
         try {
-            return new CreateView(
-                StudentMapper.mapToStudent(
-                    studentServiceImpl.getStudentByRegister(new Register(register.toLowerCase()))
-                ),
-                "student/read/read-result"
-            ).getModelAndView();
+            Student student = StudentMapper.mapToStudent(studentServiceImpl.getStudentByRegister(new Register(register)));
+            return new ModelAndView("student/read/read-result", ATTRIBUTE_STUDENT, student);
 
         } catch (ObjectNotFoundException e) {
-            return new CreateView(
-                ERROR,
-                e.getMessage(),
-                NOT_FOUND_PATH
-            ).getModelAndView();
+            return new ModelAndView(ERROR, e.getMessage(),NOT_FOUND_PATH);
         }
     }
 
@@ -103,19 +92,9 @@ public class StudentController {
                 .stream()
                 .map(StudentMapper::mapToStudent)
                 .toList();
-
-            return new CreateView(
-                "students",
-                students,
-                "student/read/read-results"
-            ).getModelAndView();
-
+            return new ModelAndView("student/read/read-results", ATTRIBUTE_STUDENTS, students);
         } catch (ObjectNotFoundException e) {
-            return new CreateView(
-                ERROR,
-                e.getMessage(),
-                NOT_FOUND_PATH
-            ).getModelAndView();
+            return new ModelAndView(ERROR, e.getMessage(),NOT_FOUND_PATH);
         }
     }
 
@@ -124,12 +103,9 @@ public class StudentController {
      * Creates a new student
      * @return ModelAndView
      */
-    @GetMapping("/create")
+    @GetMapping(path = "/create")
     public ModelAndView createNewStudentAndReturnView() {
-        return new CreateView(
-            new Student(),
-            "student/create/create"
-        ).getModelAndView();
+        return new ModelAndView("student/create/create", ATTRIBUTE_STUDENT, new Student());
     }
 
 
@@ -137,17 +113,13 @@ public class StudentController {
      * Updates a student
      * @return ModelAndView
      */
-    @GetMapping("/update")
+    @GetMapping(path = "/update")
     public ModelAndView updateStudentAndReturnView() {
-        return new CreateView(
-            new Student(),
-            "student/update/update"
-        ).getModelAndView();
+        return new ModelAndView("student/update/update", ATTRIBUTE_STUDENT, new Student());
     }
 
 
     /**POST request*/
-
     /**
      * Creates a new student
      * @param studentDto the student data transfer object
@@ -156,24 +128,15 @@ public class StudentController {
      * @throws ObjectNotFoundException if the degree course does not exist.
      * @throws IllegalArgumentException if the register is null or empty
      */
-    @PostMapping("/create")
-    @Transactional // con l'annotazione transactional effettua una gestione propria degli errori
+    @PostMapping(path = "/create")
     public ModelAndView createNewStudent(@ModelAttribute StudentDto studentDto) {
 
         try{
             studentServiceImpl.addNewStudent(StudentMapper.mapToStudent(studentDto));
-
-            return new CreateView(
-                StudentMapper.mapToStudent(studentDto),
-                "student/create/create-result"
-            ).getModelAndView();
-
-        } catch (RuntimeException e) {
-            return new CreateView(
-                ERROR,
-                e.getMessage(),
-                ALREADY_EXISTS_PATH
-            ).getModelAndView();
+            Student student = StudentMapper.mapToStudent(studentDto);
+            return new ModelAndView("student/create/create-result", ATTRIBUTE_STUDENT, student);
+        } catch (ObjectAlreadyExistsException e) {
+            return new ModelAndView(ERROR, e.getMessage(),ALREADY_EXISTS_PATH);
         }
     }
 
@@ -188,24 +151,15 @@ public class StudentController {
      * @throws IllegalArgumentException if the register is null or empty
      * @throws UnsupportedOperationException if the register is not unique
      */
-    @PutMapping("/update")
-    @Transactional // con l'annotazione transactional effettua una gestione propria degli errori
+    @PutMapping(path = "/update")
     public ModelAndView updateStudent(@ModelAttribute StudentDto studentDto) {
 
         try {
             studentServiceImpl.updateStudent(studentDto);
-
-            return new CreateView(
-                StudentMapper.mapToStudent(studentDto),
-                "student/update/update-result"
-            ).getModelAndView();
-
+            Student student = StudentMapper.mapToStudent(studentDto);
+            return new ModelAndView("student/update/update-result", ATTRIBUTE_STUDENT, student);
         } catch (RuntimeException e) {
-            return new CreateView(
-                ERROR,
-                e.getMessage(),
-                NOT_FOUND_PATH
-            ).getModelAndView();
+            return new ModelAndView(ERROR, e.getMessage(),NOT_FOUND_PATH);
         }
     }
 
@@ -219,21 +173,17 @@ public class StudentController {
      * @throws IllegalArgumentException if the register is null or empty
      */
     @DeleteMapping(path = "/delete/register")
-    @Transactional // con l'annotazione transactional effettua una gestione propria degli errori
     public ModelAndView deleteStudentByRegister(@RequestParam String register)
     {
         try {
             studentServiceImpl.deleteStudent(new Register(register));
-
-            return new CreateView("student/delete/delete-result")
-                .getModelAndView();
-
+            return new ModelAndView("student/delete/delete-result");
         } catch (RuntimeException e) {
-            return new CreateView(
-                ERROR,
-                e.getMessage(),
-                NOT_FOUND_PATH
-            ).getModelAndView();
+            Map<String, Object> model = new HashMap<>();
+            model.put("title", "Errore");
+            model.put("errorMessage", e.getMessage());
+            model.put("stackTrace", e.getStackTrace());
+            return new ModelAndView(ERROR, model);
         }
     }
 

@@ -74,10 +74,14 @@ public class UmsWebSecurityConfig implements Serializable {
 				"/logout",
 				"/home",
 				"/register",
-				"role/create-student-from-user",
+				"/static/css/**",
+				"/favicon.ico",
 				"/error",
-				"static/css/**",
-				"static/favicon.ico"
+				"/role/create-student-from-user",
+				"/role/create-professor-from-user",
+				"/api/v1/user/create-admin",
+				"/api/v1/user/create-student",
+				"/api/v1/user/create-professor"
 			)
 			.permitAll()
 			.requestMatchers(
@@ -85,11 +89,7 @@ public class UmsWebSecurityConfig implements Serializable {
 				"user_admin/admin-home",
 				"user/user-menu",
 				"api/v1/user",
-				"api/v1/user/view",
-				"api/v1/user/read/read",
-				"api/v1/user/create/create",
-				"api/v1/user/update/update",
-				"api/v1/user/delete/delete",
+				"api/v1/user/delete",
 				// student
 				"/api/v1/student/view",
 				"/api/v1/student/read/read",
@@ -130,13 +130,19 @@ public class UmsWebSecurityConfig implements Serializable {
 			)
             .hasRole(ADMIN)
 			.requestMatchers(
-            	// URL accessibili solo agli utenti con ruolo STUDENT
-				"/user_student/student-home"
+            	// URL accessibili solo agli utenti con ruolo STUDENT o ADMIN
+				"/user_student/student-home",
+				"/api/v1/user/create/student",
+				"/study_plan/study_plan_modify",
+				"/examination/student-examination-menu",
+				"/api/v1/examination-appeal/view"
 			)
 			.hasAnyRole(STUDENT, ADMIN)
 			.requestMatchers(
-				// URL accessibili solo agli utenti con ruolo PROFESSOR
-				"/user_professor/professor-home"
+				// URL accessibili solo agli utenti con ruolo PROFESSOR o ADMIN
+				"/user_professor/professor-home",
+				"/api/v1/user/create/professor",
+				"/examination_appeal/create-examination-appeal"
 			)
 			.hasAnyRole(PROFESSOR, ADMIN)
 			.anyRequest()

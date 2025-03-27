@@ -1,14 +1,19 @@
 package com.alex.universitymanagementsystem.controller;
 
+import java.util.List;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.alex.universitymanagementsystem.dto.CourseDto;
+import com.alex.universitymanagementsystem.dto.DegreeCourseDto;
+import com.alex.universitymanagementsystem.dto.ProfessorDto;
+import com.alex.universitymanagementsystem.dto.StudentDto;
 import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
 import com.alex.universitymanagementsystem.service.impl.DegreeCourseServiceImpl;
-import com.alex.universitymanagementsystem.utils.CreateView;
 
 
 
@@ -37,12 +42,8 @@ public class DegreeCourseController {
      */
     @GetMapping("/view")
     public ModelAndView getDegreeCourses() {
-
-        return new ModelAndView(
-            "degree_course/degree-course-list",
-            "degreeCourses",
-            degreeCourseServiceImpl.getDegreeCourses()
-        );
+        List<DegreeCourseDto> degreeCourses = degreeCourseServiceImpl.getDegreeCourses();
+        return new ModelAndView("degree_course/degree-course-list", "degreeCourses", degreeCourses);
     }
 
 
@@ -60,11 +61,8 @@ public class DegreeCourseController {
     @GetMapping("/courses/view")
     public ModelAndView getCourses(@RequestParam String name) {
 
-        return new ModelAndView(
-            "degree_course/course-list",
-            "courses",
-            degreeCourseServiceImpl.getCourses(name.toUpperCase())
-        );
+        List<CourseDto> courses = degreeCourseServiceImpl.getCourses(name.toUpperCase());
+        return new ModelAndView("degree_course/course-list", "courses",courses);
     }
 
 
@@ -81,19 +79,11 @@ public class DegreeCourseController {
     public ModelAndView getProfessors(@RequestParam String name) {
 
         try {
-            return new ModelAndView(
-                "degree_course/professor-with-course-list",
-                "professors",
-                degreeCourseServiceImpl.getProfessors(name.toUpperCase())
-            );
+            List<ProfessorDto> professors = degreeCourseServiceImpl.getProfessors(name.toUpperCase());
+            return new ModelAndView("degree_course/professor-with-course-list","professors", professors);
 
         } catch (ObjectNotFoundException e) {
-
-            return new CreateView(
-                ERROR,
-                e.getMessage(),
-                NOT_FOUND_PATH
-            ).getModelAndView();
+            return new ModelAndView(ERROR, e.getMessage(), NOT_FOUND_PATH);
         }
 
     }
@@ -111,10 +101,12 @@ public class DegreeCourseController {
     @GetMapping("/students/view")
     public ModelAndView getStudents(@RequestParam String name) {
 
+        List<StudentDto> students = degreeCourseServiceImpl.getStudents(name.toUpperCase());
+
         return new ModelAndView(
             "degree_course/student-list",
             "students",
-            degreeCourseServiceImpl.getStudents(name.toUpperCase())
+            students
         );
     }
 

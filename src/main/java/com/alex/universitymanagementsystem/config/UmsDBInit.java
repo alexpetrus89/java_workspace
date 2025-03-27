@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.alex.universitymanagementsystem.domain.Course;
 import com.alex.universitymanagementsystem.domain.DegreeCourse;
+import com.alex.universitymanagementsystem.domain.ExaminationAppeal;
 import com.alex.universitymanagementsystem.domain.Professor;
 import com.alex.universitymanagementsystem.domain.Student;
 import com.alex.universitymanagementsystem.domain.User;
@@ -24,11 +24,11 @@ import com.alex.universitymanagementsystem.domain.immutable.Register;
 import com.alex.universitymanagementsystem.domain.immutable.UniqueCode;
 import com.alex.universitymanagementsystem.dto.ExaminationDto;
 import com.alex.universitymanagementsystem.dto.StudyPlanDto;
-import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
 import com.alex.universitymanagementsystem.mapper.ExaminationMapper;
 import com.alex.universitymanagementsystem.mapper.StudyPlanMapper;
 import com.alex.universitymanagementsystem.repository.CourseRepository;
 import com.alex.universitymanagementsystem.repository.DegreeCourseRepository;
+import com.alex.universitymanagementsystem.repository.ExaminationAppealRepository;
 import com.alex.universitymanagementsystem.repository.ExaminationRepository;
 import com.alex.universitymanagementsystem.repository.ProfessorRepository;
 import com.alex.universitymanagementsystem.repository.StudentRepository;
@@ -55,11 +55,9 @@ public class UmsDBInit implements Serializable {
     private static final String INGEGNERIA_ELETTRICA_MAGISTRALE = "INGEGNERIA ELETTRICA MAGISTRALE";
 
     private static final String UC_GIACINTO = "wer456er";
-
-    private static final String STUDENT_NOT_FOUND = "Student not found";
-    private static final String COURSE_NOT_FOUND = "Course not found";
-    private static final String DEGREE_COURSE_NOT_FOUND = "Degree course not found";
-    private static final String NO_STUDENTS_FOR_THIS_DEGREE = "No students found for this degree course";
+    private static final String UC_GENESIO = "wer123er";
+    private static final String UC_GIACOMO = "wer321er";
+    private static final String UC_GIOELE = "wer111er";
 
     private final transient Logger logger =
         org.slf4j.LoggerFactory.getLogger(UmsDBInit.class);
@@ -83,7 +81,9 @@ public class UmsDBInit implements Serializable {
         @Autowired
         ProfessorRepository professorRepository,
         @Autowired
-        ExaminationRepository examinationRepository
+        ExaminationRepository examinationRepository,
+        @Autowired
+        ExaminationAppealRepository examinationAppealRepository
     ) {
         return args -> {
 
@@ -107,6 +107,9 @@ public class UmsDBInit implements Serializable {
 
             // examination initializer
             initializeExaminations(studentRepository, courseRepository, degreeCourseRepository, examinationRepository);
+
+            // examination appeal initializer
+            initializeExaminationAppeals(examinationAppealRepository, courseRepository, degreeCourseRepository);
 
         };
     }
@@ -278,6 +281,7 @@ public class UmsDBInit implements Serializable {
         PasswordEncoder passwordEncoder
     ) {
 
+        // 1
         Builder formBuilderFour = new Builder();
         formBuilderFour.withUsername("nino@gmail.com");
         formBuilderFour.withPassword("nino");
@@ -290,6 +294,7 @@ public class UmsDBInit implements Serializable {
         formBuilderFour.withPhone("3619647852");
         formBuilderFour.withRole(Role.STUDENT);
 
+        // 2
         Builder formBuilderFive = new Builder();
         formBuilderFive.withUsername("luca@gmail.com");
         formBuilderFive.withPassword("luca");
@@ -302,6 +307,71 @@ public class UmsDBInit implements Serializable {
         formBuilderFive.withPhone("38412369547");
         formBuilderFive.withRole(Role.STUDENT);
 
+        // 3
+        Builder formBuilderSix = new Builder();
+        formBuilderSix.withUsername("ennio@gmail.com");
+        formBuilderSix.withPassword("ennio");
+        formBuilderSix.withFullname("ennio");
+        formBuilderSix.withDob(LocalDate.of(1991, 11, 12));
+        formBuilderSix.withStreet("via delle lamie di olimpia");
+        formBuilderSix.withCity("laureto");
+        formBuilderSix.withState("italia");
+        formBuilderSix.withZip("72015");
+        formBuilderSix.withPhone("38412369547");
+        formBuilderSix.withRole(Role.STUDENT);
+
+        // 4
+        Builder formBuilderSeven = new Builder();
+        formBuilderSeven.withUsername("gino@gmail.com");
+        formBuilderSeven.withPassword("gino");
+        formBuilderSeven.withFullname("gino");
+        formBuilderSeven.withDob(LocalDate.of(1991, 11, 12));
+        formBuilderSeven.withStreet("via delle lamie di olimpia");
+        formBuilderSeven.withCity("laureto");
+        formBuilderSeven.withState("italia");
+        formBuilderSeven.withZip("72015");
+        formBuilderSix.withPhone("38412369547");
+        formBuilderSix.withRole(Role.STUDENT);
+
+        // 5
+        Builder formBuilderEight = new Builder();
+        formBuilderEight.withUsername("pino@gmail.com");
+        formBuilderEight.withPassword("pino");
+        formBuilderEight.withFullname("pino");
+        formBuilderEight.withDob(LocalDate.of(1991, 11, 12));
+        formBuilderEight.withStreet("via delle lamie di olimpia");
+        formBuilderEight.withCity("laureto");
+        formBuilderEight.withState("italia");
+        formBuilderEight.withZip("72015");
+        formBuilderEight.withPhone("38412369547");
+        formBuilderEight.withRole(Role.STUDENT);
+
+        // 6
+        Builder formBuilderNine = new Builder();
+        formBuilderNine.withUsername("tino@gmail.com");
+        formBuilderNine.withPassword("tino");
+        formBuilderNine.withFullname("tino");
+        formBuilderNine.withDob(LocalDate.of(1991, 11, 12));
+        formBuilderNine.withStreet("via delle lamie di olimpia");
+        formBuilderNine.withCity("laureto");
+        formBuilderNine.withState("italia");
+        formBuilderNine.withZip("72015");
+        formBuilderNine.withPhone("38412369547");
+        formBuilderNine.withRole(Role.STUDENT);
+
+        // 7
+        Builder formBuilderTen = new Builder();
+        formBuilderTen.withUsername("solo@gmail.com");
+        formBuilderTen.withPassword("tino");
+        formBuilderTen.withFullname("tino");
+        formBuilderTen.withDob(LocalDate.of(1991, 11, 12));
+        formBuilderTen.withStreet("via delle lamie di olimpia");
+        formBuilderTen.withCity("laureto");
+        formBuilderTen.withState("italia");
+        formBuilderTen.withZip("72015");
+        formBuilderTen.withPhone("38412369547");
+        formBuilderTen.withRole(Role.STUDENT);
+
         List<Student> students = new ArrayList<>();
 
         // 1
@@ -310,9 +380,7 @@ public class UmsDBInit implements Serializable {
                 formBuilderFour,
                 passwordEncoder,
                 new Register("123456"),
-                degreeCourseRepository
-                    .findByName(INGEGNERIA_GESTIONALE)
-                    .orElseThrow(() -> new ObjectNotFoundException(DEGREE_COURSE_NOT_FOUND, INGEGNERIA_GESTIONALE))
+                degreeCourseRepository.findByName(INGEGNERIA_GESTIONALE)
             )
         );
 
@@ -322,9 +390,57 @@ public class UmsDBInit implements Serializable {
                 formBuilderFive,
                 passwordEncoder,
                 new Register("123457"),
-                degreeCourseRepository
-                    .findByName(INGEGNERIA_GESTIONALE_MAGISTRALE)
-                    .orElseThrow(() -> new ObjectNotFoundException(DEGREE_COURSE_NOT_FOUND, INGEGNERIA_GESTIONALE))
+                degreeCourseRepository.findByName(INGEGNERIA_GESTIONALE_MAGISTRALE)
+            )
+        );
+
+        // 3
+        students.add(
+            new Student(
+                formBuilderSix,
+                passwordEncoder,
+                new Register("123458"),
+                degreeCourseRepository.findByName(INGEGNERIA_INFORMATICA)
+            )
+        );
+
+        // 4
+        students.add(
+            new Student(
+                formBuilderSeven,
+                passwordEncoder,
+                new Register("123459"),
+                degreeCourseRepository.findByName(INGEGNERIA_INFORMATICA_MAGISTRALE)
+            )
+        );
+
+        // 5
+        students.add(
+            new Student(
+                formBuilderEight,
+                passwordEncoder,
+                new Register("123460"),
+                degreeCourseRepository.findByName(INGEGNERIA_MECCANICA)
+            )
+        );
+
+        // 6
+        students.add(
+            new Student(
+                formBuilderNine,
+                passwordEncoder,
+                new Register("123461"),
+                degreeCourseRepository.findByName(INGEGNERIA_MECCANICA_MAGISTRALE)
+            )
+        );
+
+        // 7
+        students.add(
+            new Student(
+                formBuilderTen,
+                passwordEncoder,
+                new Register("123462"),
+                degreeCourseRepository.findByName(INGEGNERIA_ELETTRICA)
             )
         );
 
@@ -337,9 +453,7 @@ public class UmsDBInit implements Serializable {
         students.stream().forEach(studentRepository::saveAndFlush);
 
         // save students for GESTIONALE degree course
-        DegreeCourse ingGest = degreeCourseRepository
-            .findByName(INGEGNERIA_GESTIONALE)
-            .orElseThrow(() -> new RuntimeException(NO_STUDENTS_FOR_THIS_DEGREE));
+        DegreeCourse ingGest = degreeCourseRepository.findByName(INGEGNERIA_GESTIONALE);
 
         // set students of ING. GESTIONALE in degreeCourse object
         ingGest.setStudents(
@@ -355,9 +469,7 @@ public class UmsDBInit implements Serializable {
 
 
         // save students for GESTIONALE MAGISTRALE degree course
-        DegreeCourse ingGestMag = degreeCourseRepository
-            .findByName(INGEGNERIA_GESTIONALE_MAGISTRALE)
-            .orElseThrow(() -> new RuntimeException(NO_STUDENTS_FOR_THIS_DEGREE));
+        DegreeCourse ingGestMag = degreeCourseRepository.findByName(INGEGNERIA_GESTIONALE_MAGISTRALE);
 
         // set students of ING. GESTIONALE MAGISTRALE in degreeCourse object
         ingGestMag.setStudents(
@@ -370,6 +482,70 @@ public class UmsDBInit implements Serializable {
 
         // save degree course ING. GESTIONALE MAGISTRALE
         degreeCourseRepository.saveAndFlush(ingGestMag);
+
+
+        // save students for INFORMATICA degree course
+        DegreeCourse ingInf = degreeCourseRepository.findByName(INGEGNERIA_INFORMATICA);
+
+        ingInf.setStudents(
+            studentRepository
+                .findAll()
+                .stream()
+                .filter(student -> student.getDegreeCourse().getName().equals(INGEGNERIA_INFORMATICA))
+                .toList()
+        );
+
+        degreeCourseRepository.saveAndFlush(ingInf);
+
+
+        DegreeCourse ingInfMag = degreeCourseRepository.findByName(INGEGNERIA_INFORMATICA_MAGISTRALE);
+
+        ingInf.setStudents(
+            studentRepository
+                .findAll()
+                .stream()
+                .filter(student -> student.getDegreeCourse().getName().equals(INGEGNERIA_INFORMATICA_MAGISTRALE))
+                .toList()
+        );
+
+        degreeCourseRepository.saveAndFlush(ingInfMag);
+
+
+        DegreeCourse ingMecc = degreeCourseRepository.findByName(INGEGNERIA_MECCANICA);
+
+        ingMecc.setStudents(
+            studentRepository
+                .findAll()
+                .stream()
+                .filter(student -> student.getDegreeCourse().getName().equals(INGEGNERIA_MECCANICA))
+                .toList()
+        );
+
+        degreeCourseRepository.saveAndFlush(ingMecc);
+
+        DegreeCourse ingMeccMag = degreeCourseRepository.findByName(INGEGNERIA_MECCANICA_MAGISTRALE);
+
+        ingMeccMag.setStudents(
+            studentRepository
+                .findAll()
+                .stream()
+                .filter(student -> student.getDegreeCourse().getName().equals(INGEGNERIA_MECCANICA_MAGISTRALE))
+                .toList()
+        );
+
+        degreeCourseRepository.saveAndFlush(ingMeccMag);
+
+        DegreeCourse ingEle = degreeCourseRepository.findByName(INGEGNERIA_ELETTRICA);
+
+        ingEle.setStudents(
+            studentRepository
+                .findAll()
+                .stream()
+                .filter(student -> student.getDegreeCourse().getName().equals(INGEGNERIA_ELETTRICA))
+                .toList()
+        );
+
+        degreeCourseRepository.saveAndFlush(ingEle);
 
     }
 
@@ -385,28 +561,101 @@ public class UmsDBInit implements Serializable {
     // INITIALIZE PROFESSORS
     void initializeProfessors(ProfessorRepository professorRepository, PasswordEncoder passwordEncoder) {
 
-        Builder formBuilderThree = new Builder();
-        formBuilderThree.withUsername("professore.giacinto@dominio.it");
-        formBuilderThree.withPassword("dino");
-        formBuilderThree.withFullname("gilles villeneuve");
-        formBuilderThree.withDob(LocalDate.of(1993, 4, 6));
-        formBuilderThree.withStreet("via di vancouver");
-        formBuilderThree.withCity("vancouver");
-        formBuilderThree.withState("canada");
-        formBuilderThree.withZip("48759");
-        formBuilderThree.withPhone("8749652314");
-        formBuilderThree.withRole(Role.PROFESSOR);
+        Builder fbProfOne = new Builder();
+        fbProfOne.withUsername("professore.giacinto@dominio.it");
+        fbProfOne.withPassword("dino");
+        fbProfOne.withFullname("gilles villeneuve");
+        fbProfOne.withDob(LocalDate.of(1993, 4, 6));
+        fbProfOne.withStreet("via di vancouver");
+        fbProfOne.withCity("vancouver");
+        fbProfOne.withState("canada");
+        fbProfOne.withZip("48759");
+        fbProfOne.withPhone("8749652314");
+        fbProfOne.withRole(Role.PROFESSOR);
         List<Professor> professors = new ArrayList<>();
 
         // 1
         professors.add(
             new Professor(
-                formBuilderThree,
+                fbProfOne,
                 passwordEncoder,
                 new UniqueCode(UC_GIACINTO),
                 "abc678rde217we56"
             )
         );
+
+
+        // 2
+        Builder fbProfTwo = new Builder();
+        fbProfTwo.withUsername("professore.genesio@dominio.it");
+        fbProfTwo.withPassword("gene");
+        fbProfTwo.withFullname("gilles villeneuve");
+        fbProfTwo.withDob(LocalDate.of(1993, 4, 6));
+        fbProfTwo.withStreet("via di vancouver");
+        fbProfTwo.withCity("vancouver");
+        fbProfTwo.withState("canada");
+        fbProfTwo.withZip("48759");
+        fbProfTwo.withPhone("8749652314");
+        fbProfTwo.withRole(Role.PROFESSOR);
+
+        // 2
+        professors.add(
+            new Professor(
+                fbProfTwo,
+                passwordEncoder,
+                new UniqueCode(UC_GENESIO),
+                "abc784rde217we56"
+            )
+        );
+
+
+        // 3
+        Builder fbProfThree = new Builder();
+        fbProfThree.withUsername("professore.giacomo@dominio.it");
+        fbProfThree.withPassword("giaco");
+        fbProfThree.withFullname("gilles villeneuve");
+        fbProfThree.withDob(LocalDate.of(1993, 4, 6));
+        fbProfThree.withStreet("via di vancouver");
+        fbProfThree.withCity("vancouver");
+        fbProfThree.withState("canada");
+        fbProfThree.withZip("48759");
+        fbProfThree.withPhone("8749652314");
+        fbProfThree.withRole(Role.PROFESSOR);
+
+        // 3
+        professors.add(
+            new Professor(
+                fbProfThree,
+                passwordEncoder,
+                new UniqueCode(UC_GIACOMO),
+                "xxx965rde217we56"
+            )
+        );
+
+
+        // 3
+        Builder fbProfFour = new Builder();
+        fbProfFour.withUsername("professore.gioele@dominio.it");
+        fbProfFour.withPassword("gioele");
+        fbProfFour.withFullname("gilles villeneuve");
+        fbProfFour.withDob(LocalDate.of(1993, 4, 6));
+        fbProfFour.withStreet("via di vancouver");
+        fbProfFour.withCity("vancouver");
+        fbProfFour.withState("canada");
+        fbProfFour.withZip("48759");
+        fbProfFour.withPhone("8749652314");
+        fbProfFour.withRole(Role.PROFESSOR);
+
+        // 3
+        professors.add(
+            new Professor(
+                fbProfFour,
+                passwordEncoder,
+                new UniqueCode(UC_GIOELE),
+                "zzz665rde217we56"
+            )
+        );
+
 
         // sanity check
         if(professors.isEmpty())
@@ -434,13 +683,19 @@ public class UmsDBInit implements Serializable {
     ) {
 
         // retrieve degreeCourses
-        DegreeCourse ingGest = degreeCourseRepository
-            .findByName(INGEGNERIA_GESTIONALE)
-            .orElseThrow();
+        DegreeCourse ingGest = degreeCourseRepository.findByName(INGEGNERIA_GESTIONALE);
 
-        DegreeCourse ingGestMag = degreeCourseRepository
-            .findByName(INGEGNERIA_GESTIONALE_MAGISTRALE)
-            .orElseThrow();
+        DegreeCourse ingGestMag = degreeCourseRepository.findByName(INGEGNERIA_GESTIONALE_MAGISTRALE);
+
+        DegreeCourse ingInf = degreeCourseRepository.findByName(INGEGNERIA_INFORMATICA);
+
+        DegreeCourse ingInfMag = degreeCourseRepository.findByName(INGEGNERIA_INFORMATICA_MAGISTRALE);
+
+        DegreeCourse ingMecc = degreeCourseRepository.findByName(INGEGNERIA_MECCANICA);
+
+        DegreeCourse ingMeccMag = degreeCourseRepository.findByName(INGEGNERIA_MECCANICA_MAGISTRALE);
+
+        DegreeCourse ingEle = degreeCourseRepository.findByName(INGEGNERIA_ELETTRICA);
 
         List<Course> courses = new ArrayList<>();
 
@@ -450,9 +705,47 @@ public class UmsDBInit implements Serializable {
                 "analisi matematica",
                 CourseType.MATEMATICA,
                 12,
-                professorRepository
-                    .findByUniqueCode(new UniqueCode(UC_GIACINTO))
-                    .orElseThrow(() -> new ObjectNotFoundException(new UniqueCode(UC_GIACINTO))),
+                professorRepository.findByUniqueCode(new UniqueCode(UC_GIACINTO)),
+                ingGest
+            )
+        );
+
+        courses.add(
+            new Course(
+                "analisi matematica",
+                CourseType.MATEMATICA,
+                12,
+                professorRepository.findByUniqueCode(new UniqueCode(UC_GENESIO)),
+                ingInf
+            )
+        );
+
+        courses.add(
+            new Course(
+                "analisi matematica",
+                CourseType.MATEMATICA,
+                12,
+                professorRepository.findByUniqueCode(new UniqueCode(UC_GENESIO)),
+                ingMecc
+            )
+        );
+
+        courses.add(
+            new Course(
+                "analisi matematica",
+                CourseType.MATEMATICA,
+                12,
+                professorRepository.findByUniqueCode(new UniqueCode(UC_GENESIO)),
+                ingEle
+            )
+        );
+
+        courses.add(
+            new Course(
+                "elementi di economia",
+                CourseType.ECONOMIA,
+                6,
+                professorRepository.findByUniqueCode(new UniqueCode(UC_GIACINTO)),
                 ingGest
             )
         );
@@ -462,9 +755,27 @@ public class UmsDBInit implements Serializable {
                 "elementi di economia",
                 CourseType.ECONOMIA,
                 6,
-                professorRepository
-                    .findByUniqueCode(new UniqueCode(UC_GIACINTO))
-                    .orElseThrow(() -> new ObjectNotFoundException(new UniqueCode(UC_GIACINTO))),
+                professorRepository.findByUniqueCode(new UniqueCode(UC_GENESIO)),
+                ingInf
+            )
+        );
+
+        courses.add(
+            new Course(
+                "elementi di economia",
+                CourseType.ECONOMIA,
+                6,
+                professorRepository.findByUniqueCode(new UniqueCode(UC_GENESIO)),
+                ingMecc
+            )
+        );
+
+        courses.add(
+            new Course(
+                "geometria e algebra",
+                CourseType.MATEMATICA,
+                6,
+                professorRepository.findByUniqueCode(new UniqueCode(UC_GIACINTO)),
                 ingGest
             )
         );
@@ -474,10 +785,18 @@ public class UmsDBInit implements Serializable {
                 "geometria e algebra",
                 CourseType.MATEMATICA,
                 6,
-                professorRepository
-                    .findByUniqueCode(new UniqueCode(UC_GIACINTO))
-                    .orElseThrow(() -> new ObjectNotFoundException(new UniqueCode(UC_GIACINTO))),
-                ingGest
+                professorRepository.findByUniqueCode(new UniqueCode(UC_GIACINTO)),
+                ingInf
+            )
+        );
+
+        courses.add(
+            new Course(
+                "geometria e algebra",
+                CourseType.MATEMATICA,
+                6,
+                professorRepository.findByUniqueCode(new UniqueCode(UC_GIACINTO)),
+                ingMecc
             )
         );
 
@@ -486,10 +805,561 @@ public class UmsDBInit implements Serializable {
                 "analisi dei sistemi dinamici",
                 CourseType.MATEMATICA,
                 6,
-                professorRepository
-                    .findByUniqueCode(new UniqueCode(UC_GIACINTO))
-                    .orElseThrow(() -> new ObjectNotFoundException(new UniqueCode(UC_GIACINTO))),
+                professorRepository.findByUniqueCode(new UniqueCode(UC_GIACINTO)),
                 ingGestMag
+            )
+        );
+
+        courses.add(
+            new Course(
+                "analisi dei sistemi dinamici",
+                CourseType.MATEMATICA,
+                6,
+                professorRepository.findByUniqueCode(new UniqueCode(UC_GIOELE)),
+                ingInfMag
+            )
+        );
+
+        courses.add(
+            new Course(
+                "fisica generale",
+                CourseType.FISICA,
+                12,
+                professorRepository.findByUniqueCode(new UniqueCode(UC_GIACOMO)),
+                ingGest
+            )
+        );
+
+        courses.add(
+            new Course(
+                "fisica generale",
+                CourseType.FISICA,
+                12,
+                professorRepository.findByUniqueCode(new UniqueCode(UC_GIACOMO)),
+                ingInf
+            )
+        );
+
+        courses.add(
+            new Course(
+                "fisica generale",
+                CourseType.FISICA,
+                12,
+                professorRepository.findByUniqueCode(new UniqueCode(UC_GIACOMO)),
+                ingMecc
+            )
+        );
+
+        courses.add(
+            new Course(
+                "fisica generale",
+                CourseType.FISICA,
+                12,
+                professorRepository.findByUniqueCode(new UniqueCode(UC_GIACOMO)),
+                ingEle
+            )
+        );
+
+        courses.add(
+            new Course(
+                "fondamenti di informatica",
+                CourseType.INFORMATICA,
+                6,
+                professorRepository.findByUniqueCode(new UniqueCode(UC_GENESIO)),
+                ingGest
+            )
+        );
+
+        courses.add(
+            new Course(
+                "fondamenti di informatica",
+                CourseType.INFORMATICA,
+                6,
+                professorRepository.findByUniqueCode(new UniqueCode(UC_GENESIO)),
+                ingInf
+            )
+        );
+
+        courses.add(
+            new Course(
+                "fondamenti di informatica",
+                CourseType.INFORMATICA,
+                6,
+                professorRepository.findByUniqueCode(new UniqueCode(UC_GENESIO)),
+                ingMecc
+            )
+        );
+
+        courses.add(
+            new Course(
+                "fondamenti di informatica",
+                CourseType.INFORMATICA,
+                6,
+                professorRepository.findByUniqueCode(new UniqueCode(UC_GENESIO)),
+                ingEle
+            )
+        );
+
+        courses.add(
+            new Course(
+                "chimica generale",
+                CourseType.CHIMICA,
+                6,
+                professorRepository.findByUniqueCode(new UniqueCode(UC_GIOELE)),
+                ingGest
+            )
+        );
+
+        courses.add(
+            new Course(
+                "chimica generale",
+                CourseType.CHIMICA,
+                6,
+                professorRepository.findByUniqueCode(new UniqueCode(UC_GIOELE)),
+                ingInf
+            )
+        );
+
+        courses.add(
+            new Course(
+                "chimica generale",
+                CourseType.CHIMICA,
+                9,
+                professorRepository.findByUniqueCode(new UniqueCode(UC_GIOELE)),
+                ingMecc
+            )
+        );
+
+        courses.add(
+            new Course(
+                "chimica generale",
+                CourseType.CHIMICA,
+                9,
+                professorRepository.findByUniqueCode(new UniqueCode(UC_GIOELE)),
+                ingEle
+            )
+        );
+
+        courses.add(
+            new Course(
+                "scienza delle costruzioni",
+                CourseType.ING_MECCANICA,
+                6,
+                professorRepository.findByUniqueCode(new UniqueCode(UC_GIACOMO)),
+                ingGest
+            )
+        );
+
+        courses.add(
+            new Course(
+                "scienza delle costruzioni",
+                CourseType.ING_MECCANICA,
+                12,
+                professorRepository.findByUniqueCode(new UniqueCode(UC_GIACOMO)),
+                ingMecc
+            )
+        );
+
+        courses.add(
+            new Course(
+                "metodi di ottimizzazione",
+                CourseType.MATEMATICA,
+                6,
+                professorRepository.findByUniqueCode(new UniqueCode(UC_GIACINTO)),
+                ingGest
+            )
+        );
+
+        courses.add(
+            new Course(
+                "metodi di rappresentazione tecnica",
+                CourseType.DISEGNO,
+                6,
+                professorRepository.findByUniqueCode(new UniqueCode(UC_GIACOMO)),
+                ingGest
+            )
+        );
+
+        courses.add(
+            new Course(
+                "elementi di meccanica delle macchine e progettazione meccanica",
+                CourseType.ING_MECCANICA,
+                12,
+                professorRepository.findByUniqueCode(new UniqueCode(UC_GIACOMO)),
+                ingGest
+            )
+        );
+
+        courses.add(
+            new Course(
+                "fisica tecnica e sistemi energetici",
+                CourseType.FISICA,
+                12,
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_GIACOMO)),
+                ingGest
+            )
+        );
+
+        courses.add(
+            new Course(
+                "gestione aziendale",
+                CourseType.ECONOMIA,
+                6,
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_GIACOMO)),
+                ingGest
+            )
+        );
+
+        courses.add(
+            new Course(
+                "meccanica dei fluidi",
+                CourseType.IDRAULICA,
+                6,
+                professorRepository.findByUniqueCode(new UniqueCode(UC_GIOELE)),
+                ingGest
+            )
+        );
+
+        courses.add(
+            new Course(
+                "principi di ingegneria elettrica",
+                CourseType.ING_ELETTRICA,
+                6,
+                professorRepository.findByUniqueCode(new UniqueCode(UC_GIACOMO)),
+                ingGest
+            )
+        );
+
+        courses.add(
+            new Course(
+                "tecnologia meccaniche e dei materiali",
+                CourseType.ING_MECCANICA,
+                12,
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_GIACOMO)),
+                ingGest
+            )
+        );
+
+        courses.add(
+            new Course(
+                "calcolo numerico",
+                CourseType.MATEMATICA,
+                6,
+                professorRepository.findByUniqueCode(new UniqueCode(UC_GIACINTO)),
+                ingGest
+            )
+        );
+
+        courses.add(
+            new Course(
+                "gestione dei progetti",
+                CourseType.ING_GESTIONALE,
+                9,
+                professorRepository.findByUniqueCode(new UniqueCode(UC_GIOELE)),
+                ingGest
+            )
+        );
+
+        courses.add(
+            new Course(
+                "impianti industriali",
+                CourseType.ING_MECCANICA,
+                9,
+                professorRepository.findByUniqueCode(new UniqueCode(UC_GIACOMO)),
+                ingGest
+            )
+        );
+
+        courses.add(
+            new Course(
+                "inglese",
+                CourseType.LINGUA_STRANIERA,
+                3,
+                professorRepository.findByUniqueCode(new UniqueCode(UC_GIOELE)),
+                ingGest
+            )
+        );
+
+        courses.add(
+            new Course(
+                "progettazione dei processi produttivi e qualità dei processi produttivi",
+                CourseType.ING_GESTIONALE,
+                12,
+                professorRepository.findByUniqueCode(new UniqueCode(UC_GENESIO)),
+                ingGest
+            )
+        );
+
+        courses.add(
+            new Course(
+                "sicurezza degli impianti industriali",
+                CourseType.ING_GESTIONALE,
+                6,
+                professorRepository.findByUniqueCode(new UniqueCode(UC_GIACOMO)),
+                ingGest
+            )
+        );
+
+        courses.add(
+            new Course(
+                "materiali innovativi per l'ingegneria elettrica",
+                CourseType.ING_ELETTRICA,
+                6,
+                professorRepository.findByUniqueCode(new UniqueCode(UC_GIACINTO)),
+                ingGest
+            )
+        );
+
+        courses.add(
+            new Course(
+                "tirocinio",
+                CourseType.ING_GESTIONALE,
+                6,
+                professorRepository.findByUniqueCode(new UniqueCode(UC_GIOELE)),
+                ingGest
+            )
+        );
+
+        courses.add(
+            new Course(
+                "prova finale",
+                CourseType.ING_GESTIONALE,
+                3,
+                professorRepository.findByUniqueCode(new UniqueCode(UC_GIACINTO)),
+                ingGest
+            )
+        );
+
+        courses.add(
+            new Course(
+                "sistemi informativi",
+                CourseType.ING_INFORMATICA,
+                12,
+                professorRepository.findByUniqueCode(new UniqueCode(UC_GENESIO)),
+                ingGestMag
+            )
+        );
+
+        courses.add(
+            new Course(
+                "sistemi informativi",
+                CourseType.ING_INFORMATICA,
+                12,
+                professorRepository.findByUniqueCode(new UniqueCode(UC_GENESIO)),
+                ingInfMag
+            )
+        );
+
+        courses.add(
+            new Course(
+                "big data analytics",
+                CourseType.ING_INFORMATICA,
+                6,
+                professorRepository.findByUniqueCode(new UniqueCode(UC_GIACINTO)),
+                ingGestMag
+            )
+        );
+
+        courses.add(
+            new Course(
+                "internet of things",
+                CourseType.ING_INFORMATICA,
+                6,
+                professorRepository.findByUniqueCode(new UniqueCode(UC_GIOELE)),
+                ingGestMag
+            )
+        );
+
+        courses.add(
+            new Course(
+                "internet of things",
+                CourseType.ING_INFORMATICA,
+                6,
+                professorRepository.findByUniqueCode(new UniqueCode(UC_GIOELE)),
+                ingInfMag
+            )
+        );
+
+        courses.add(
+            new Course(
+                "fondamenti di cybersecurity",
+                CourseType.ING_INFORMATICA,
+                6,
+                professorRepository.findByUniqueCode(new UniqueCode(UC_GIOELE)),
+                ingGestMag
+            )
+        );
+
+        courses.add(
+            new Course(
+                "basi di dati",
+                CourseType.ING_INFORMATICA,
+                6,
+                professorRepository.findByUniqueCode(new UniqueCode(UC_GIACINTO)),
+                ingGestMag
+            )
+        );
+
+        courses.add(
+            new Course(
+                "basi di dati",
+                CourseType.ING_INFORMATICA,
+                6,
+                professorRepository.findByUniqueCode(new UniqueCode(UC_GIACINTO)),
+                ingInfMag
+            )
+        );
+
+        courses.add(
+            new Course(
+                "produzione avanzata nella fabbrica digitale",
+                CourseType.ING_MECCANICA,
+                6,
+                professorRepository.findByUniqueCode(new UniqueCode(UC_GENESIO)),
+                ingGestMag
+            )
+        );
+
+        courses.add(
+            new Course(
+                "analisi dei sistemi dinamici",
+                CourseType.MATEMATICA,
+                6,
+                professorRepository.findByUniqueCode(new UniqueCode(UC_GENESIO)),
+                ingMeccMag
+            )
+        );
+
+        courses.add(
+            new Course(
+                "algoritmi e strutture dati in java",
+                CourseType.ING_INFORMATICA,
+                6,
+                professorRepository.findByUniqueCode(new UniqueCode(UC_GENESIO)),
+                ingInf
+            )
+        );
+
+        courses.add(
+            new Course(
+                "fondamenti di telecomunicazioni",
+                CourseType.ING_INFORMATICA,
+                6,
+                professorRepository.findByUniqueCode(new UniqueCode(UC_GIACOMO)),
+                ingInf
+            )
+        );
+
+        courses.add(
+            new Course(
+                "fondamenti di elettronica",
+                CourseType.ING_INFORMATICA,
+                6,
+                professorRepository.findByUniqueCode(new UniqueCode(UC_GIACOMO)),
+                ingInf
+            )
+        );
+
+        courses.add(
+            new Course(
+                "compilatori",
+                CourseType.ING_INFORMATICA,
+                12,
+                professorRepository.findByUniqueCode(new UniqueCode(UC_GIACOMO)),
+                ingInfMag
+            )
+        );
+
+        courses.add(
+            new Course(
+                "big data",
+                CourseType.ING_INFORMATICA,
+                6,
+                professorRepository.findByUniqueCode(new UniqueCode(UC_GIOELE)),
+                ingInfMag
+            )
+        );
+
+        courses.add(
+            new Course(
+                "impianti meccanici",
+                CourseType.ING_MECCANICA,
+                3,
+                professorRepository.findByUniqueCode(new UniqueCode(UC_GENESIO)),
+                ingMecc
+            )
+        );
+
+        courses.add(
+            new Course(
+                "energetica e macchine a fluido",
+                CourseType.ING_MECCANICA,
+                6,
+                professorRepository.findByUniqueCode(new UniqueCode(UC_GIACINTO)),
+                ingMecc
+            )
+        );
+
+        courses.add(
+            new Course(
+                "misure meccaniche e termiche",
+                CourseType.ING_MECCANICA,
+                12,
+                professorRepository.findByUniqueCode(new UniqueCode(UC_GIACINTO)),
+                ingMecc
+            )
+        );
+
+        courses.add(
+            new Course(
+                "turbomacchine",
+                CourseType.ING_MECCANICA,
+                12,
+                professorRepository.findByUniqueCode(new UniqueCode(UC_GIACINTO)),
+                ingMeccMag
+            )
+        );
+
+        courses.add(
+            new Course(
+                "gasdinamica e fluidodinamica",
+                CourseType.ING_MECCANICA,
+                12,
+                professorRepository.findByUniqueCode(new UniqueCode(UC_GIACINTO)),
+                ingMeccMag
+            )
+        );
+
+        courses.add(
+            new Course(
+                "macchine elettriche",
+                CourseType.ING_ELETTRICA,
+                12,
+                professorRepository.findByUniqueCode(new UniqueCode(UC_GIACINTO)),
+                ingEle
+            )
+        );
+
+        courses.add(
+            new Course(
+                "elettrica di potenza",
+                CourseType.ING_ELETTRICA,
+                12,
+                professorRepository.findByUniqueCode(new UniqueCode(UC_GIOELE)),
+                ingEle
+            )
+        );
+
+        courses.add(
+            new Course(
+                "impianti elettrici civili e industriali",
+                CourseType.ING_MECCANICA,
+                12,
+                professorRepository.findByUniqueCode(new UniqueCode(UC_GIOELE)),
+                ingEle
             )
         );
 
@@ -501,7 +1371,7 @@ public class UmsDBInit implements Serializable {
         courseRepository
             .findAll()
             .stream()
-            .forEach(course -> Arrays.asList(ingGest,ingGestMag)
+            .forEach(course -> Arrays.asList(ingGest,ingGestMag, ingInf, ingInfMag, ingMecc, ingMeccMag, ingEle)
                 .stream()
                 .filter(degreeCourse -> degreeCourse.equals(course.getDegreeCourse()))
                 .forEach(degreeCourse -> degreeCourse.addCourse(course))
@@ -509,8 +1379,12 @@ public class UmsDBInit implements Serializable {
 
 
         // set courses in degreeCourse object
-        degreeCourseRepository.save(ingGest);
-        degreeCourseRepository.save(ingGestMag);
+        degreeCourseRepository.saveAndFlush(ingGest);
+        degreeCourseRepository.saveAndFlush(ingGestMag);
+        degreeCourseRepository.saveAndFlush(ingInf);
+        degreeCourseRepository.saveAndFlush(ingInfMag);
+        degreeCourseRepository.saveAndFlush(ingMecc);
+        degreeCourseRepository.saveAndFlush(ingMeccMag);
 
     }
 
@@ -533,40 +1407,21 @@ public class UmsDBInit implements Serializable {
 
         // retrieve student
         // Retrieve existing Student entity from the database
-        Student nino = studentRepository
-            .findByRegister(new Register("123456"))
-            .orElseThrow(() -> new NoSuchElementException(STUDENT_NOT_FOUND)
-        );
+        Student nino = studentRepository.findByRegister(new Register("123456"));
 
-        Student luca = studentRepository
-            .findByRegister(new Register("123457"))
-            .orElseThrow(() -> new NoSuchElementException(STUDENT_NOT_FOUND)
-        );
+        Student luca = studentRepository.findByRegister(new Register("123457"));
 
 
         // Retrieve existing Course entity from the database
         Course analisiMatematica = courseRepository
-            .findByNameAndDegreeCourse(
-                "analisi matematica",
-                degreeCourseRepository.findByName(INGEGNERIA_GESTIONALE)
-                    .orElseThrow(() -> new NoSuchElementException(DEGREE_COURSE_NOT_FOUND)).getId()
-            ).orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND));
+            .findByNameAndDegreeCourse("analisi matematica", degreeCourseRepository.findByName(INGEGNERIA_GESTIONALE).getId());
 
 
         Course geometria = courseRepository
-            .findByNameAndDegreeCourse(
-                "geometria e algebra",
-                degreeCourseRepository.findByName(INGEGNERIA_GESTIONALE)
-                    .orElseThrow(() -> new NoSuchElementException(DEGREE_COURSE_NOT_FOUND)).getId()
-            ).orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND));
+            .findByNameAndDegreeCourse("geometria e algebra", degreeCourseRepository.findByName(INGEGNERIA_GESTIONALE).getId());
 
         Course anSisDin = courseRepository
-            .findByNameAndDegreeCourse(
-                "analisi dei sistemi dinamici",
-                degreeCourseRepository.findByName(INGEGNERIA_GESTIONALE_MAGISTRALE)
-                    .orElseThrow(() -> new NoSuchElementException(DEGREE_COURSE_NOT_FOUND))
-                    .getId()
-            ).orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND));
+            .findByNameAndDegreeCourse("analisi dei sistemi dinamici", degreeCourseRepository.findByName(INGEGNERIA_GESTIONALE_MAGISTRALE).getId());
 
 
         List<ExaminationDto> examinations = new ArrayList<>();
@@ -603,6 +1458,8 @@ public class UmsDBInit implements Serializable {
         );
 
 
+
+
         // save examination
         examinations
             .stream()
@@ -619,27 +1476,21 @@ public class UmsDBInit implements Serializable {
 
 
     // INITIALIZE STUDY PLANS
-    public void initializeStudyPlan(
+    private void initializeStudyPlan(
         StudyPlanRepository studyPlanRepository,
         DegreeCourseRepository degreeCourseRepository,
         StudentRepository studentRepository
     ) {
 
-        DegreeCourse ingGest = degreeCourseRepository
-            .findByName(INGEGNERIA_GESTIONALE)
-            .orElseThrow(() -> new ObjectNotFoundException(DEGREE_COURSE_NOT_FOUND, INGEGNERIA_GESTIONALE));
+        DegreeCourse ingGest = degreeCourseRepository.findByName(INGEGNERIA_GESTIONALE);
 
-        DegreeCourse ingGestMag = degreeCourseRepository
-            .findByName(INGEGNERIA_GESTIONALE_MAGISTRALE)
-            .orElseThrow(() -> new ObjectNotFoundException(DEGREE_COURSE_NOT_FOUND, INGEGNERIA_GESTIONALE_MAGISTRALE));
+        DegreeCourse ingGestMag = degreeCourseRepository.findByName(INGEGNERIA_GESTIONALE_MAGISTRALE);
 
         List<StudyPlanDto> studyPlans = new ArrayList<>();
 
         studyPlans.add(
             new StudyPlanDto(
-                studentRepository
-                    .findByRegister(new Register("123456"))
-                    .orElseThrow(() -> new NoSuchElementException(STUDENT_NOT_FOUND)),
+                studentRepository.findByRegister(new Register("123456")),
                 "ORD509",
                 new HashSet<>(ingGest.getCourses())
             )
@@ -647,9 +1498,7 @@ public class UmsDBInit implements Serializable {
 
         studyPlans.add(
             new StudyPlanDto(
-                studentRepository
-                    .findByRegister(new Register("123457"))
-                    .orElseThrow(() -> new NoSuchElementException(STUDENT_NOT_FOUND)),
+                studentRepository.findByRegister(new Register("123457")),
                 "ORD270",
                 new HashSet<>(ingGestMag.getCourses())
             )
@@ -668,4 +1517,57 @@ public class UmsDBInit implements Serializable {
     }
 
 
+
+    // initialize examination appeal
+    private void initializeExaminationAppeals(
+        ExaminationAppealRepository examinationAppealRepository,
+        CourseRepository courseRepository,
+        DegreeCourseRepository degreeCourseRepository
+    ) {
+
+        Course analisiMat = courseRepository
+            .findByNameAndDegreeCourse("analisi matematica", degreeCourseRepository.findByName(INGEGNERIA_GESTIONALE).getId());
+
+        Course geometria = courseRepository
+            .findByNameAndDegreeCourse("geometria e algebra", degreeCourseRepository.findByName(INGEGNERIA_GESTIONALE).getId());
+
+        Course fisicaGen = courseRepository
+            .findByNameAndDegreeCourse("fisica generale", degreeCourseRepository.findByName(INGEGNERIA_GESTIONALE).getId());
+
+        List<ExaminationAppeal> examinationAppeals = new ArrayList<>();
+
+        examinationAppeals.add(
+            new ExaminationAppeal(
+                analisiMat,
+                "am mort",
+                LocalDate.of(2026, 6, 23)
+            )
+        );
+
+        examinationAppeals.add(
+            new ExaminationAppeal(
+                geometria,
+                "am mort",
+                LocalDate.of(2025, 6, 23)
+            )
+        );
+
+        examinationAppeals.add(
+            new ExaminationAppeal(
+                fisicaGen,
+                "am stramort",
+                LocalDate.of(2025, 4, 23)
+            )
+        );
+
+        if(examinationAppeals.isEmpty())
+            throw new IllegalArgumentException("examination appeal list is empty");
+
+        examinationAppeals
+            .stream()
+            .forEach(examinationAppealRepository::saveAndFlush);
+
+    }
+
 }
+

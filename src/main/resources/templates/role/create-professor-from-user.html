@@ -10,14 +10,10 @@
 
 <body>
     <h1>Complete professor registration</h1>
-    <form action="#" th:action="@{/api/v1/role}" method="post">
-
-        <label for="uniqueCode">Unique code:</label>
-        <input type="text" th:field="*{uniqueCode}" title="Enter unique code"
-            placeholder="Your unique code"></p>
+    <form action="#" th:action="@{/api/v1/user/create-professor}" method="post">
 
         <label for="fiscalCode">Fiscal code:</label>
-        <input type="text" th:field="*{fiscalCode}" title="Enter fiscal code"
+        <input type="text" name="fiscalCode" title="Enter fiscal code"
             placeholder="Your fiscal code"></p>
 
         <p><input type="submit" value="Submit" /> <input type="reset" value="Reset" /></p>

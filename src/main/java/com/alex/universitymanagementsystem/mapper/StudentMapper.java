@@ -21,7 +21,7 @@ public class StudentMapper {
     public static StudentDto mapToStudentDto(Student student) {
         return new StudentDto(
             student.getRegister(),
-            student.getFullname(),
+            student.getUsername(),
             student.getFullname(),
             student.getDob(),
             student.getDegreeCourse(),

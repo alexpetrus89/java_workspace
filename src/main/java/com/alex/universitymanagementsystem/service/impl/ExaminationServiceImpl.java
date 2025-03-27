@@ -33,7 +33,6 @@ public class ExaminationServiceImpl implements ExaminationService {
 
     // constants
     private static final String EXCEPTION_COURSE_IDENTIFIER = "course";
-    private static final String EXCEPTION_DEGREE_COURSE_IDENTIFIER = "degree course";
     private static final String EXCEPTION_EXAMINATION_IDENTIFIER = "examination";
 
     // instance variables
@@ -116,9 +115,7 @@ public class ExaminationServiceImpl implements ExaminationService {
         if (!professorRepository.existsByUniqueCode(uniqueCode))
             throw new ObjectNotFoundException(uniqueCode);
 
-        List<Course> courses = courseRepository
-            .findByProfessor(uniqueCode)
-            .orElseGet(ArrayList::new);
+        List<Course> courses = courseRepository.findByProfessor(uniqueCode);
 
         List<ExaminationDto> examinationsDto = new ArrayList<>();
 
@@ -214,20 +211,15 @@ public class ExaminationServiceImpl implements ExaminationService {
         LocalDate date
     ) throws ObjectAlreadyExistsException, ObjectNotFoundException {
 
-        DegreeCourse degreeCourse = degreeCourseRepository
-            .findByName(degreeCourseName.toUpperCase())
-            .orElseThrow(() -> new ObjectNotFoundException(degreeCourseName, EXCEPTION_DEGREE_COURSE_IDENTIFIER));
+        DegreeCourse degreeCourse = degreeCourseRepository.findByName(degreeCourseName.toUpperCase());
 
-        Course course = courseRepository
-            .findByNameAndDegreeCourse(courseName, degreeCourse.getId())
-            .orElseThrow(() -> new ObjectNotFoundException(courseName, EXCEPTION_COURSE_IDENTIFIER));
+        Course course = courseRepository.findByNameAndDegreeCourse(courseName, degreeCourse.getId());
 
-        Student student = studentRepository
-            .findByRegister(register)
-            .orElseThrow(() -> new ObjectNotFoundException(register));
+        Student student = studentRepository.findByRegister(register);
 
         // sanity check
         List<Examination> examinations = examinationRepository.findExaminationsByCourseName(courseName);
+
         examinations.forEach(examination -> {
             if (examination.getStudent().getRegister().equals(register))
                 throw new ObjectAlreadyExistsException(courseName + " for student with register " + register, EXCEPTION_EXAMINATION_IDENTIFIER);
@@ -292,17 +284,11 @@ public class ExaminationServiceImpl implements ExaminationService {
         LocalDate date
     ) throws ObjectNotFoundException {
 
-		Student newStudent = studentRepository
-			.findByRegister(newRegister)
-			.orElseThrow(() -> new ObjectNotFoundException(newRegister));
+		Student newStudent = studentRepository.findByRegister(newRegister);
 
-        DegreeCourse newDegreeCourse = degreeCourseRepository
-            .findByName(newDegreeCourseName.toUpperCase())
-            .orElseThrow(() -> new ObjectNotFoundException(newDegreeCourseName, EXCEPTION_DEGREE_COURSE_IDENTIFIER));
+        DegreeCourse newDegreeCourse = degreeCourseRepository.findByName(newDegreeCourseName.toUpperCase());
 
-		Course newCourse = courseRepository
-			.findByNameAndDegreeCourse(newCourseName, newDegreeCourse.getId())
-            .orElseThrow(() -> new ObjectNotFoundException(newCourseName, EXCEPTION_COURSE_IDENTIFIER));
+		Course newCourse = courseRepository.findByNameAndDegreeCourse(newCourseName, newDegreeCourse.getId());
 
         Examination updatableExamination = examinationRepository
             .findExaminationsByCourseName(oldCourseName)

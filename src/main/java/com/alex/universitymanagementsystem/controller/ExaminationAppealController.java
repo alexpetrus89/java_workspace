@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -38,11 +39,20 @@ public class ExaminationAppealController {
         this.examinationAppealServiceImpl = examinationAppealService;
     }
 
+    /**
+     * Retrieves all examination appeals for a student
+     * @return ModelAndView
+     * @throws ObjectNotFoundException
+     * @throws IllegalArgumentException
+     * @throws UnsupportedOperationException
+     * @throws NullPointerException
+     * @throws ClassCastException
+     */
     @GetMapping(path = "/view")
     public ModelAndView getExaminationAppealsByStudent(@AuthenticationPrincipal Student student) {
         try {
             List<ExaminationAppeal> examinationAppeals = examinationAppealServiceImpl.getExaminationAppealByStudent(student.getRegister());
-            return new ModelAndView("examination_appeal/calendar", "examinationAppeals", examinationAppeals);
+            return new ModelAndView("user_student/examinations/examination_appeal/calendar", "examinationAppeals", examinationAppeals);
         } catch (ObjectNotFoundException e) {
             Map<String, Object> model = new HashMap<>();
             model.put(TITLE, ERROR);
@@ -63,7 +73,22 @@ public class ExaminationAppealController {
 
         try {
             ExaminationAppeal examAppeal = examinationAppealServiceImpl.addNewExaminationAppeal(course, degreeCourse, professor, description, date);
-            return new ModelAndView("examination_appeal/create-result", "examinationAppeal", examAppeal);
+            return new ModelAndView("user_professor/examinations/examination_appeal/create-result", "examinationAppeal", examAppeal);
+        } catch (ObjectNotFoundException e) {
+            Map<String, Object> model = new HashMap<>();
+            model.put(TITLE, ERROR);
+            model.put(ERROR_MESSAGE, e.getMessage());
+            model.put(STACK_TRACE, e.getStackTrace());
+            return new ModelAndView(ERROR_PATH, model);
+        }
+    }
+
+
+    @PostMapping(path = "/booked/{id}")
+    public ModelAndView bookExaminationAppeal(@AuthenticationPrincipal Student student, @PathVariable Long id) {
+        try {
+            ExaminationAppeal examAppeal = examinationAppealServiceImpl.bookExaminationAppeal(id, student.getRegister());
+            return new ModelAndView("user_student/examinations/examination_appeal/booked-result", "examinationAppeal", examAppeal);
         } catch (ObjectNotFoundException e) {
             Map<String, Object> model = new HashMap<>();
             model.put(TITLE, ERROR);

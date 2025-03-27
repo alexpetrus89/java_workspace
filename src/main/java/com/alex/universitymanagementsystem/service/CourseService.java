@@ -6,6 +6,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.alex.universitymanagementsystem.domain.Course;
+import com.alex.universitymanagementsystem.domain.Professor;
 import com.alex.universitymanagementsystem.domain.immutable.CourseId;
 import com.alex.universitymanagementsystem.dto.CourseDto;
 import com.alex.universitymanagementsystem.exception.ObjectAlreadyExistsException;
@@ -50,6 +51,16 @@ public interface CourseService {
      */
     CourseDto getCourseByNameAndDegreeCourseName(@NonNull String courseName, @NonNull String degreeCourseName)
         throws ObjectNotFoundException;
+
+    /**
+     * retrieve all courses by professor
+     * @param professor
+     * @return List<CourseDto>
+     * @throws NullPointerException if the professor is null
+     * @throws IllegalArgumentException if the professor is not found
+     * @throws UnsupportedOperationException if the professor is not unique
+     */
+    public List<CourseDto> getCoursesByProfessor(@NonNull Professor professor);
 
     /**
      * add a new course

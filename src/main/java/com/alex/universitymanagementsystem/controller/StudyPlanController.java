@@ -29,7 +29,7 @@ public class StudyPlanController {
     @GetMapping("/view")
     public ModelAndView getStudyPlan(@AuthenticationPrincipal Student student) {
         Set<CourseDto> courses = studyPlanServiceImpl.getCoursesByRegister(student.getRegister());
-        return new ModelAndView("study_plan/study_plan_courses", "courses", courses);
+        return new ModelAndView("user_student/study_plan/study_plan_courses", "courses", courses);
     }
 
     @PutMapping("/change")
@@ -42,7 +42,7 @@ public class StudyPlanController {
     ) {
         studyPlanServiceImpl.changeCourse(student.getRegister(), degreeCourseOfNewCourse, degreeCourseOfOldCourse, courseToAdd, courseToRemove);
         Set<CourseDto> courses = studyPlanServiceImpl.getCoursesByRegister(student.getRegister());
-        return new ModelAndView("study_plan/study_plan_courses", "courses", courses);
+        return new ModelAndView("user_student/study_plan/study_plan_courses", "courses", courses);
     }
 
 }

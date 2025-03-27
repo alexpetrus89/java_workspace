@@ -95,6 +95,24 @@ public class CourseServiceImpl implements CourseService {
         return CourseMapper.mapToCourseDto(courseRepository.findByNameAndDegreeCourse(courseName, degreeCourse.getId()));
     }
 
+    /**
+     * Retrieves all courses from the repository by a given professor.
+     * @param professor
+     * @return List of CourseDto objects representing all courses by
+     *         the given professor
+     * @throws NullPointerException if the professor is null
+     * @throws IllegalArgumentException if the professor is not found
+     * @throws UnsupportedOperationException if the professor is not unique
+     */
+    @Override
+    public List<CourseDto> getCoursesByProfessor(@NonNull Professor professor) {
+        return courseRepository
+            .findByProfessor(professor.getUniqueCode())
+            .stream()
+            .map(CourseMapper::mapToCourseDto)
+            .toList();
+    }
+
 
     /**
      * Adds a new course to the repository.
@@ -112,13 +130,7 @@ public class CourseServiceImpl implements CourseService {
     @Override
     @NonNull
     @Transactional
-    public Course addNewCourse(
-        String name,
-        CourseType type,
-        Integer cfu,
-        String uniqueCode,
-        String degreeCourseName
-    ) {
+    public Course addNewCourse(String name, CourseType type, Integer cfu, String uniqueCode, String degreeCourseName) {
 
         Professor professor = professorRepository.findByUniqueCode(new UniqueCode(uniqueCode));
 

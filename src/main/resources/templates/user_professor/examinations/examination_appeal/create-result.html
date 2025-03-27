@@ -1,0 +1,20 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+<head>
+    <title>Examination Appeal</title>
+</head>
+<body>
+	<h1>Examination appeal created</h1>
+    <p th:text="'Degree course: ' + ${examinationAppeal.degreeCourse}"></p>
+    <p th:text="'Course: ' + ${examinationAppeal.course.name}"></p>
+    <p th:text="'Professor: ' + ${examinationAppeal.course.professor.fullname}"></p>
+    <p th:text="'Date: ' + ${examinationAppeal.date}"></p>
+    <p th:text="'Description: ' + ${examinationAppeal.description}"></p>
+    <br>
+    <a href="#" th:href="@{/user_professor/examinations/examination_appeal/create-examination-appeal}">Submit another</a>
+    <br>
+    <a href="#" th:href="@{/user_professor/professor-home}">Back to home</a>
+</body>
+</html>

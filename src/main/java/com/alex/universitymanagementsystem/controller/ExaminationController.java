@@ -103,7 +103,7 @@ public class ExaminationController {
 
         try {
             List<ExaminationDto> examinations = examinationServiceImpl.getExaminationsByStudentRegister(student.getRegister());
-            return new ModelAndView(VIEW_PATH, ATTRIBUTE_EXAMINATIONS, examinations);
+            return new ModelAndView("user_student/examinations/examination-list", ATTRIBUTE_EXAMINATIONS, examinations);
         } catch (ObjectNotFoundException e) {
             Map<String, Object> model = new HashMap<>();
             model.put(TITLE, ERROR);

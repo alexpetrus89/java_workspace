@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
 import com.alex.universitymanagementsystem.domain.Course;
@@ -17,9 +18,15 @@ import com.alex.universitymanagementsystem.repository.DegreeCourseRepository;
 import com.alex.universitymanagementsystem.repository.ExaminationAppealRepository;
 import com.alex.universitymanagementsystem.repository.ProfessorRepository;
 import com.alex.universitymanagementsystem.repository.StudentRepository;
+import com.alex.universitymanagementsystem.service.ExaminationAppealService;
+
+
 
 @Service
-public class ExaminationAppealServiceImpl {
+public class ExaminationAppealServiceImpl implements ExaminationAppealService {
+
+    // constants
+    private static final String STUDENT_NOT_EXIST = "Student does not exist";
 
     // instance variables
     private final ExaminationAppealRepository examinationAppealRepository;
@@ -47,6 +54,7 @@ public class ExaminationAppealServiceImpl {
      * Retrieves all examination appeals
      * @return a list of examination appeals
      */
+    @Override
     public List<ExaminationAppeal> getExaminationAppeals() {
         return examinationAppealRepository.findAll();
     }
@@ -56,8 +64,15 @@ public class ExaminationAppealServiceImpl {
      * Retrieves all examination appeals for a student
      * @param register
      * @return a list of examination appeals
+     * @throws IllegalArgumentException
+     * @throws UnsupportedOperationException
+     * @throws NullPointerExceptionS
      */
-    public List<ExaminationAppeal> getExaminationAppealByStudent(Register register) {
+    @Override
+    public List<ExaminationAppeal> getExaminationAppealByStudent(@NonNull Register register) {
+
+        if(!studentRepository.existsByRegister(register))
+            throw new IllegalArgumentException(STUDENT_NOT_EXIST);
 
         List<UUID> courseIds = studentRepository
             .findByRegister(register)
@@ -82,7 +97,11 @@ public class ExaminationAppealServiceImpl {
      * @param date
      * @return examinationAppeal
      * @throws IllegalArgumentException
+     * @throws UnsupportedOperationException
+     * @throws NullPointerException
+     * @throws IllegalStateException
      */
+    @Override
     public ExaminationAppeal addNewExaminationAppeal(String courseName, String degreeCourseName, Professor professor, String description, LocalDate date) {
 
         if(!professorRepository.existsByUniqueCode(professor.getUniqueCode()))
@@ -96,6 +115,53 @@ public class ExaminationAppealServiceImpl {
         ExaminationAppeal exam = new ExaminationAppeal(course, description, date);
 
         return examinationAppealRepository.saveAndFlush(exam);
+    }
+
+
+    /**
+     * Adds a student to an examination appeal
+     * @param id examination appeal ids
+     * @param register student register
+     * @return examinationAppeal
+     * @throws IllegalArgumentException
+     * @throws UnsupportedOperationException
+     * @throws NullPointerException
+     */
+    @Override
+    public ExaminationAppeal bookExaminationAppeal(@NonNull Long id, @NonNull Register register) {
+
+        if(!studentRepository.existsByRegister(register))
+            throw new IllegalArgumentException(STUDENT_NOT_EXIST);
+
+        ExaminationAppeal exam = examinationAppealRepository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("Examination Appeal does not exist"));
+
+        exam.addStudent(register);
+
+        return examinationAppealRepository.saveAndFlush(exam);
+    }
+
+    /**
+     * Removes a student from an examination appeal
+     * @param id examination appeal ids
+     * @param register student register
+     * @throws IllegalArgumentException
+     * @throws UnsupportedOperationException
+     * @throws NullPointerException
+     * @throws IllegalStateException
+     */
+    @Override
+    public void deleteBookedExaminationAppeal(@NonNull Long id, @NonNull Register register) {
+
+        if(!studentRepository.existsByRegister(register))
+            throw new IllegalArgumentException(STUDENT_NOT_EXIST);
+
+        ExaminationAppeal exam = examinationAppealRepository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("Examination Appeal does not exist"));
+
+        exam.removeStudent(register);
+
+        examinationAppealRepository.saveAndFlush(exam);
     }
 
 }

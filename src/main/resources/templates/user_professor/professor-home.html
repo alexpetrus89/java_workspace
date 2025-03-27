@@ -12,8 +12,10 @@
     <h1 th:inline="text">Welcome professor
         <span th:remove="tag" sec:authentication="name">thymeleaf</span>!
     </h1>
+    <h1>My courses</h1>
+    <p>Click <a th:href="@{/api/v1/course/view/professor}">&nbsp;here&nbsp;</a> for show my courses</p>
     <h1>Create appeal</h1>
-    <p>Click <a th:href="@{/examination_appeal/create-examination-appeal}">&nbsp;here&nbsp;</a> for show examinations</p>
+    <p>Click <a th:href="@{/user_professor/examinations/examination_appeal/create-examination-appeal}">&nbsp;here&nbsp;</a> for show examinations</p>
     <h1>Logout</h1>
     <p>Click <a th:href="@{/logout}">&nbsp;here&nbsp;</a> for log out</p>
 </body>

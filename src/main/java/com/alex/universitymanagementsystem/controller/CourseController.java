@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.alex.universitymanagementsystem.domain.Course;
+import com.alex.universitymanagementsystem.domain.Professor;
 import com.alex.universitymanagementsystem.dto.CourseDto;
 import com.alex.universitymanagementsystem.exception.ObjectAlreadyExistsException;
 import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
@@ -68,6 +70,20 @@ public class CourseController {
         CourseDto course = courseServiceImpl
             .getCourseByNameAndDegreeCourseName(courseName, degreeCourseName);
         return new ModelAndView("course/read/read", COURSE, course);
+    }
+
+    @GetMapping(path = "/view/professor")
+    public ModelAndView getCoursesByProfessor(@AuthenticationPrincipal Professor professor) {
+        try {
+            List<CourseDto> courses = courseServiceImpl.getCoursesByProfessor(professor);
+            return new ModelAndView("user_professor/courses/course-list", "courses", courses);
+        } catch (ObjectNotFoundException e) {
+            Map<String, Object> model = new HashMap<>();
+            model.put(TITLE, ERROR);
+            model.put(ERROR_MESSAGE, e.getMessage());
+            model.put(STACK_TRACE, e.getStackTrace());
+            return new ModelAndView(ERROR_PATH, model);
+        }
     }
 
 

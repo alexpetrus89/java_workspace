@@ -1,0 +1,14 @@
+<div th:if="${examinationAppeal}">
+    <p th:text="'examination booked:'"></p>
+    <p th:text="'degree course: ' + ${examinationAppeal.degreeCourse}"></p>
+    <p th:text="'course: ' + ${examinationAppeal.course.name}"></p>
+    <p th:text="'description: ' + ${examinationAppeal.description}"></p>
+    <p th:text="'date: ' + ${examinationAppeal.date}"></p>
+</div>
+<div th:if="${errorMessage}">
+    <p th:text="${errorMessage}"></p>
+</div>
+<br>
+<a href="#" th:href="@{/examinations/examination_appeal/calendar}">Search another</a>
+<br>
+<a href="#" th:href="@{/user_student/student-home}">Back to home</a>

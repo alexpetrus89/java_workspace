@@ -21,12 +21,12 @@
             <td th:text="${examinationAppeal.course.name}">Course</td>
             <td th:text="${examinationAppeal.description}">Description</td>
             <td th:text="${examinationAppeal.date}">Date</td>
+            <td>
+                <form th:action="@{/api/v1/examination-appeal/booked/{id}(id=${examinationAppeal?.getId()})}" method="post">
+                    <button type="submit">Booked</button>
+                </form>
+            </td>
         </tr>
-        <td>
-            <form th:action="@{/user_student/book-examination-appeal/{id}(id=${examinationAppeal.id})}" method="post">
-                <button type="submit">Booked</button>
-            </form>
-        </td>
     </table>
     <br>
     <a href="#" th:href="@{/user_student/student-home}">Back to home</a>

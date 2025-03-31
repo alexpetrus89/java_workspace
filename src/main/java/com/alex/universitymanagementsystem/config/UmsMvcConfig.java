@@ -130,8 +130,12 @@ public class UmsMvcConfig implements WebMvcConfigurer, Serializable {
                   .setViewName("/user_professor/professor-home");
             registry.addViewController("/role/create-professor-from-user")
                   .setViewName("/role/create-professor-from-user");
+            registry.addViewController("/user_professor/examinations/examination_appeal/examination-appeal-menu")
+                  .setViewName("/user_professor/examinations/examination_appeal/examination-appeal-menu");
             registry.addViewController("/user_professor/examinations/examination_appeal/create-examination-appeal")
                   .setViewName("/user_professor/examinations/examination_appeal/create-examination-appeal");
+            registry.addViewController("/user_professor/examinations/examination_appeal/delete-examination-appeal")
+                  .setViewName("/user_professor/examinations/examination_appeal/delete-examination-appeal");
 	}
 
       @Override

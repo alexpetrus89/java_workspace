@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:th="https://www.thymeleaf.org"
+        xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
+<head>
+    <title>University Management Application</title>
+</head>
+<body>
+    <h1>Appeals</h1>
+    <table>
+        <tr>
+            <th>Degree Course</th>
+            <th>Course</th>
+            <th>Description</th>
+            <th>Date</th>
+            <th>Actions</th>
+        </tr>
+        <tr th:each="examinationAppeal : ${examinationAppeals}">
+            <td th:text="${examinationAppeal.degreeCourse}">Degree course</td>
+            <td th:text="${examinationAppeal.course.name}">Course</td>
+            <td th:text="${examinationAppeal.description}">Description</td>
+            <td th:text="${examinationAppeal.date}">Date</td>
+            <td>
+                <a th:href="@{/api/v1/examination-appeal/view/students-booked/{id}(id=${examinationAppeal.id})}">Show students booked</a>
+            </td>
+        </tr>
+    </table>
+    <br>
+    <a href="#" th:href="@{/user_professor/examinations/examination_appeal/examination-appeal-menu}">Back to menu</a>
+</body>
+</html>

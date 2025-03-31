@@ -30,7 +30,7 @@ public interface ProfessorService {
      * @throws IllegalArgumentException if the unique code is blank
      * @throws UnsupportedOperationException if the unique code is not unique
      */
-    public ProfessorDto getProfessorByUniqueCode(@NonNull UniqueCode uniqueCode)
+    ProfessorDto getProfessorByUniqueCode(@NonNull UniqueCode uniqueCode)
         throws NullPointerException, IllegalArgumentException, UnsupportedOperationException;
 
 
@@ -42,7 +42,7 @@ public interface ProfessorService {
      * @throws IllegalArgumentException if the fiscal code is blank
      * @throws UnsupportedOperationException if the fiscal code is not unique
      */
-    public ProfessorDto getProfessorByFiscalCode(@NonNull String fiscalCode)
+    ProfessorDto getProfessorByFiscalCode(@NonNull String fiscalCode)
         throws NullPointerException, IllegalArgumentException, UnsupportedOperationException;
 
 
@@ -54,7 +54,7 @@ public interface ProfessorService {
      * @throws IllegalArgumentException if the name is blank
      * @throws UnsupportedOperationException if the name is not unique
      */
-    public ProfessorDto getProfessorByName(@NonNull String name)
+    ProfessorDto getProfessorByName(@NonNull String name)
         throws NullPointerException, IllegalArgumentException, UnsupportedOperationException;
 
 
@@ -71,7 +71,7 @@ public interface ProfessorService {
      *         fiscal code is not unique
      */
     @Transactional
-    public void addNewProfessor(@NonNull Professor professor)
+    void addNewProfessor(@NonNull Professor professor)
         throws NullPointerException, IllegalArgumentException, ObjectAlreadyExistsException, UnsupportedOperationException;
 
 
@@ -90,7 +90,7 @@ public interface ProfessorService {
      * @throws PatternSyntaxException if the regular expression's syntax is invalid
      */
     @Transactional
-    public void updateProfessor(@NonNull ProfessorDto newProfessorDto)
+    void updateProfessor(@NonNull ProfessorDto newProfessorDto)
         throws NullPointerException, ObjectNotFoundException, IllegalArgumentException, UnsupportedOperationException, PatternSyntaxException;
 
 
@@ -107,7 +107,7 @@ public interface ProfessorService {
      * @throws UnsupportedOperationException if the unique code is not unique
      */
     @Transactional
-    public void deleteProfessor(@NonNull UniqueCode uniqueCode)
+    void deleteProfessor(@NonNull UniqueCode uniqueCode)
         throws NullPointerException, IllegalArgumentException, ObjectNotFoundException;
 
 }

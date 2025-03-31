@@ -32,7 +32,7 @@ public interface StudentService {
 	 * @throws IllegalArgumentException if the register is null.
 	 * @throws UnsupportedOperationException if the register is not unique
 	 */
-	public StudentDto getStudentByRegister(@NonNull Register register)
+	StudentDto getStudentByRegister(@NonNull Register register)
 		throws NullPointerException, IllegalArgumentException, UnsupportedOperationException;
 
     /**
@@ -45,7 +45,7 @@ public interface StudentService {
 	 * @throws UnsupportedOperationException if the fullname is not unique
 	 */
 
-	public List<StudentDto> getStudentsByFullname(@NonNull String fullname)
+	List<StudentDto> getStudentsByFullname(@NonNull String fullname)
 		throws NullPointerException, IllegalArgumentException, UnsupportedOperationException;
 
     /**
@@ -58,7 +58,7 @@ public interface StudentService {
 	 * @throws ObjectNotFoundException if the degree course does not exists
 	 */
 	@Transactional
-    public void addNewStudent(@NonNull Student student)
+    void addNewStudent(@NonNull Student student)
 		throws NullPointerException, IllegalArgumentException, ObjectAlreadyExistsException, ObjectNotFoundException;
 
     /**
@@ -74,7 +74,7 @@ public interface StudentService {
 	 *         or if the degree course is not unique.
 	 */
 	@Transactional
-    public void updateStudent(@NonNull StudentDto studentDto)
+    void updateStudent(@NonNull StudentDto studentDto)
 		throws NullPointerException, IllegalArgumentException, ObjectNotFoundException;
 
     /**
@@ -88,7 +88,7 @@ public interface StudentService {
 	 */
 	@Transactional
 	@Retryable(retryFor = DataAccessException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
-	public void deleteStudent(@NonNull Register register)
+	void deleteStudent(@NonNull Register register)
 		throws NullPointerException, IllegalArgumentException, ObjectNotFoundException;
 
 }

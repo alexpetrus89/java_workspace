@@ -1,6 +1,7 @@
 package com.alex.universitymanagementsystem.dto;
 
 import java.time.LocalDate;
+import java.time.Period;
 import java.util.Objects;
 
 import com.alex.universitymanagementsystem.domain.DegreeCourse;
@@ -17,6 +18,7 @@ public class StudentDto {
     private String username;
     private String fullname;
     private LocalDate dob;
+    private Integer age;
     private DegreeCourse degreeCourse;
     private StudyPlan studyPlan;
 
@@ -35,6 +37,7 @@ public class StudentDto {
         this.username = username;
         this.fullname = fullname;
         this.dob = dob;
+        this.age = calculateAge();
         this.degreeCourse = degreeCourse;
     }
 
@@ -50,6 +53,7 @@ public class StudentDto {
         this.username = username;
         this.fullname = fullname;
         this.dob = dob;
+        this.age = calculateAge();
         this.degreeCourse = degreeCourse;
         this.studyPlan = studyPlan;
     }
@@ -69,6 +73,10 @@ public class StudentDto {
 
     public LocalDate getDob() {
         return dob;
+    }
+
+    public Integer getAge() {
+        return age;
     }
 
     public DegreeCourse getDegreeCourse() {
@@ -122,6 +130,11 @@ public class StudentDto {
             Objects.equals(username, other.getUsername()) &&
             Objects.equals(fullname, other.getFullname()) &&
             Objects.equals(dob, other.getDob());
+    }
+
+    // private method
+    private int calculateAge() {
+        return Period.between(dob, LocalDate.now()).getYears();
     }
 
 }

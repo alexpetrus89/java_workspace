@@ -8,6 +8,7 @@ import org.springframework.lang.NonNull;
 import com.alex.universitymanagementsystem.domain.ExaminationAppeal;
 import com.alex.universitymanagementsystem.domain.Professor;
 import com.alex.universitymanagementsystem.domain.immutable.Register;
+import com.alex.universitymanagementsystem.domain.immutable.UniqueCode;
 import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
 
 
@@ -19,16 +20,51 @@ public interface ExaminationAppealService {
      */
     List<ExaminationAppeal> getExaminationAppeals();
 
+
+    /**
+     * Retrieves an examination appeal
+     * @param id
+     * @return examination appeal
+     * @throws NullPointerException if id is null
+     */
+    public ExaminationAppeal getExaminationAppealById(@NonNull Long id);
+
+
     /**
      * Retrieves all examination appeals for a student
      * @param register
-     * @return a list of examination appeals
+     * @return a list of examination appeals available
      * @throws NullPointerException if any of the parameters is null
      * @throws IllegalArgumentException if the register is blank
      * @throws UnsupportedOperationException if the register is not unique
      */
-    public List<ExaminationAppeal> getExaminationAppealByStudent(@NonNull Register register)
+    public List<ExaminationAppeal> getExaminationAppealsAvailable(@NonNull Register register)
         throws NullPointerException, IllegalArgumentException, UnsupportedOperationException;
+
+
+    /**
+     * Retrieves all examination appeals booked by a student
+     * @param register
+     * @return a list of examination appeals available
+     * @throws NullPointerException if any of the parameters is null
+     * @throws IllegalArgumentException if the register is blank
+     * @throws UnsupportedOperationException if the register is not unique
+     */
+    public List<ExaminationAppeal> getExaminationAppealsBooked(@NonNull Register register)
+        throws NullPointerException, IllegalArgumentException, UnsupportedOperationException;
+
+
+    /**
+     * Retrieves all examination appeals for a professor
+     * @param uniqueCode
+     * @return a list of examination appeals
+     * @throws NullPointerException if any of the parameters is null
+     * @throws IllegalArgumentException if the unique code is blank
+     * @throws UnsupportedOperationException if the register is not unique
+     */
+    List<ExaminationAppeal> getExaminationAppealsByProfessor(@NonNull UniqueCode uniqueCode)
+        throws NullPointerException, IllegalArgumentException, UnsupportedOperationException;
+
 
     /**
      * Adds a new examination appeal
@@ -44,13 +80,32 @@ public interface ExaminationAppealService {
      *         does not exist
      * @throws UnsupportedOperationException if the register is not unique
      */
-    public ExaminationAppeal addNewExaminationAppeal(
+    ExaminationAppeal addNewExaminationAppeal(
         @NonNull String courseName,
         @NonNull String degreeCourseName,
         @NonNull Professor professor,
         @NonNull String description,
         @NonNull LocalDate date
     ) throws NullPointerException, IllegalArgumentException, ObjectNotFoundException;
+
+
+    /**
+     * deletes an examination appeal
+     * @param courseName
+     * @param degreeCourseName
+     * @param professor
+     * @param date
+     * @throws NullPointerException
+     * @throws IllegalArgumentException
+     * @throws ObjectNotFoundException
+     */
+    public void deleteExaminationAppeal(
+        @NonNull String courseName,
+        @NonNull String degreeCourseName,
+        @NonNull Professor professor,
+        @NonNull LocalDate date
+    ) throws NullPointerException, IllegalArgumentException, ObjectNotFoundException;
+
 
     /**
      * Adds a student to an examination appeal
@@ -61,8 +116,9 @@ public interface ExaminationAppealService {
      * @throws IllegalArgumentException if any of the parameters is invalid
      * @throws UnsupportedOperationException if the register is not unique
      */
-    public ExaminationAppeal bookExaminationAppeal(@NonNull Long id, @NonNull Register register)
+    ExaminationAppeal bookExaminationAppeal(@NonNull Long id, @NonNull Register register)
         throws NullPointerException, IllegalArgumentException, UnsupportedOperationException;
+
 
     /**
      * Removes a student from an examination appeal
@@ -73,7 +129,8 @@ public interface ExaminationAppealService {
      * @throws UnsupportedOperationException
      * @throws IllegalStateException
      */
-    public void deleteBookedExaminationAppeal(@NonNull Long id, @NonNull Register register)
+    void deleteBookedExaminationAppeal(@NonNull Long id, @NonNull Register register)
         throws NullPointerException, IllegalArgumentException, UnsupportedOperationException, IllegalStateException;
+
 
 }

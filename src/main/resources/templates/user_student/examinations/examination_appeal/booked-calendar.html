@@ -4,17 +4,17 @@
         xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
 <head>
-    <title>Appeals</title>
+    <title>University Management Application</title>
 </head>
 <body>
-    <h1>Appeals</h1>
+    <h1>Appeals booked</h1>
     <table>
         <tr>
             <th>Degree Course</th>
             <th>Course</th>
             <th>Description</th>
             <th>Date</th>
-            <th>Booked</th>
+            <th>Delete reservation</th>
         </tr>
         <tr th:each="examinationAppeal : ${examinationAppeals}">
             <td th:text="${examinationAppeal.degreeCourse}">Degree course</td>
@@ -22,13 +22,13 @@
             <td th:text="${examinationAppeal.description}">Description</td>
             <td th:text="${examinationAppeal.date}">Date</td>
             <td>
-                <form th:action="@{/api/v1/examination-appeal/booked/{id}(id=${examinationAppeal?.getId()})}" method="post">
-                    <button type="submit">Booked</button>
+                <form th:action="@{/api/v1/examination-appeal/delete-booked/{id}(id=${examinationAppeal?.getId()})}" method="post">
+                    <button type="submit">Delete</button>
                 </form>
             </td>
         </tr>
     </table>
     <br>
-    <a href="#" th:href="@{/user_student/student-home}">Back to home</a>
+    <a href="#" th:href="@{/user_student/examinations/examination-menu}">Back to home</a>
 </body>
 </html>

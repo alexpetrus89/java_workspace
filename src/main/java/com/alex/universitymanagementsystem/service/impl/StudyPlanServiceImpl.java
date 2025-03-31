@@ -17,8 +17,10 @@ import com.alex.universitymanagementsystem.enum_type.DomainType;
 import com.alex.universitymanagementsystem.exception.ObjectAlreadyExistsException;
 import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
 import com.alex.universitymanagementsystem.mapper.CourseMapper;
+import com.alex.universitymanagementsystem.mapper.ExaminationMapper;
 import com.alex.universitymanagementsystem.repository.CourseRepository;
 import com.alex.universitymanagementsystem.repository.DegreeCourseRepository;
+import com.alex.universitymanagementsystem.repository.ExaminationRepository;
 import com.alex.universitymanagementsystem.repository.StudentRepository;
 import com.alex.universitymanagementsystem.repository.StudyPlanRepository;
 import com.alex.universitymanagementsystem.service.StudyPlanService;
@@ -38,17 +40,23 @@ public class StudyPlanServiceImpl implements StudyPlanService {
     private final StudentRepository studentRepository;
     private final CourseRepository courseRepository;
     private final DegreeCourseRepository degreeCourseRepository;
+    private final ExaminationRepository examinationRepository;
+    private final ExaminationAppealServiceImpl examinationAppealServiceImpl;
 
     public StudyPlanServiceImpl(
         StudyPlanRepository studyPlanRepository,
         StudentRepository studentRepository,
         DegreeCourseRepository degreeCourseRepository,
-        CourseRepository courseRepository
+        CourseRepository courseRepository,
+        ExaminationRepository examinationRepository,
+        ExaminationAppealServiceImpl examinationAppealServiceImpl
     ) {
         this.studyPlanRepository = studyPlanRepository;
         this.studentRepository = studentRepository;
         this.degreeCourseRepository = degreeCourseRepository;
         this.courseRepository = courseRepository;
+        this.examinationRepository = examinationRepository;
+        this.examinationAppealServiceImpl = examinationAppealServiceImpl;
     }
 
     /**
@@ -95,6 +103,7 @@ public class StudyPlanServiceImpl implements StudyPlanService {
      * @throws ObjectAlreadyExistsException if a course with the same name already exists
      * @throws ObjectNotFoundException if a degree course with the given name does not exist
      * @throws IllegalArgumentException if the cfu of the new course is not equal to the cfu of the old course
+     * @throws IllegalStateException if the course has examinations
      */
     @Override
     @Transactional
@@ -123,6 +132,21 @@ public class StudyPlanServiceImpl implements StudyPlanService {
 
             if(!courseToAdd.getCfu().equals(courseToRemove.getCfu()))
                 throw new IllegalArgumentException("courses needs to have same cfu");
+
+            if(examinationRepository
+                .findExaminationsByStudent(register)
+                .stream()
+                .map(ExaminationMapper::mapToExaminationDto)
+                .anyMatch(exam -> exam.getCourse().getCourseId().equals(courseToRemove.getCourseId())))
+                throw new IllegalStateException("cannot remove course that has examinations");
+
+            // if the course to remove has examinations appeals, delete them
+            examinationAppealServiceImpl
+                .getExaminationAppealsBooked(register)
+                .stream()
+                .filter(exam -> exam.getCourse().getCourseId().equals(courseToRemove.getCourseId()))
+                .forEach(examAppeal -> examinationAppealServiceImpl
+                    .deleteBookedExaminationAppeal(examAppeal.getId(), register));
 
             // save
             studyPlanRepository.saveAndFlush(student.getStudyPlan());

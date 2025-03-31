@@ -30,7 +30,7 @@ public interface DegreeCourseService {
      * @throws IllegalArgumentException if the name is empty.
      * @throws UnsupportedOperationException if the name is not unique
      */
-    public DegreeCourse getDegreeCourseByName(@NonNull String name)
+    DegreeCourse getDegreeCourseByName(@NonNull String name)
         throws NullPointerException, IllegalArgumentException, UnsupportedOperationException;
 
 
@@ -44,7 +44,7 @@ public interface DegreeCourseService {
      * @throws IllegalArgumentException if the name is empty.
      * @throws UnsupportedOperationException if the name is not unique
      */
-    public List<CourseDto> getCourses(@NonNull String name)
+    List<CourseDto> getCourses(@NonNull String name)
         throws NullPointerException, IllegalArgumentException, UnsupportedOperationException;
 
 
@@ -58,7 +58,7 @@ public interface DegreeCourseService {
      * @throws IllegalArgumentException if the name is blank.
      * @throws UnsupportedOperationException if the name is not unique.
      */
-    public List<ProfessorDto> getProfessors(@NonNull String name)
+    List<ProfessorDto> getProfessors(@NonNull String name)
         throws NullPointerException, IllegalArgumentException, UnsupportedOperationException;
 
 
@@ -72,6 +72,6 @@ public interface DegreeCourseService {
      * @throws IllegalArgumentException if the name is blank.
      * @throws UnsupportedOperationException if the name is not unique
      */
-    public List<StudentDto> getStudents(@NonNull String name)
+    List<StudentDto> getStudents(@NonNull String name)
         throws NullPointerException, IllegalArgumentException, UnsupportedOperationException;
 }

@@ -82,5 +82,8 @@ public interface CourseRepository
      * @throws IllegalArgumentException if the course name or degree course name is null
      * @throws UnsupportedOperationException if the course name or degree course name is not unique
      */
-    boolean existsByNameAndDegreeCourse(@NonNull String courseName, @NonNull String degreeCourseName);
+    @Query("SELECT CASE WHEN COUNT(c) > 0 THEN TRUE ELSE FALSE END "
+    + "FROM Course c JOIN c.degreeCourse dc "
+    + "WHERE c.name = :courseName AND dc.name = :degreeCourseName")
+    boolean existsByNameAndDegreeCourse(@NonNull @Param("courseName") String courseName, @NonNull @Param("degreeCourseName") String degreeCourseName);
 }

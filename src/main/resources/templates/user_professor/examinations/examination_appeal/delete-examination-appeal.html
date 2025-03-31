@@ -9,8 +9,9 @@
 </head>
 
 <body>
-    <h1>Create new examination appeal</h1>
-    <form action="#" th:action="@{/api/v1/examination-appeal/create}" method="post">
+    <h1>Delete an existing exam session</h1>
+    <form action="#" th:action="@{/api/v1/examination-appeal/delete}" method="post">
+        <input type="hidden" name="_method" value="DELETE" />
 
         <label for="name">Course:</label>
         <input type="text" name="course" title="Enter course name"
@@ -20,16 +21,11 @@
         <input type="text" name="degreeCourse" title="Enter degree course name"
             placeholder="degree course name"></p>
 
-        <label for="description">Description</label>
-        <input type="text" name="description" title="Enter description"
-            placeholder="description"></p>
-
         <label for="date">Date:</label>
         <input type="date" name="date" title="Enter appeals date"
                 placeholder="appeals date"></p>
 
         <p><input type="submit" value="Submit" /> <input type="reset" value="Reset" /></p>
-    </form>
-    <br>
-    <a href="#" th:href="@{/user_professor/examinations/examination_appeal/examination-appeal-menu}">Back to menu</a>
+        <br>
+        <a href="#" th:href="@{/user_professor/examinations/examination_appeal/examination-appeal-menu}">Back to menu</a>
 </body>

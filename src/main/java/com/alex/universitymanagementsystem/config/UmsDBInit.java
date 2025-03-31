@@ -1534,6 +1534,14 @@ public class UmsDBInit implements Serializable {
         Course fisicaGen = courseRepository
             .findByNameAndDegreeCourse("fisica generale", degreeCourseRepository.findByName(INGEGNERIA_GESTIONALE).getId());
 
+        Course informatica = courseRepository
+            .findByNameAndDegreeCourse("fondamenti di informatica", degreeCourseRepository.findByName(INGEGNERIA_GESTIONALE).getId());
+
+        Course scienzaDelleCostr = courseRepository
+            .findByNameAndDegreeCourse("scienza delle costruzioni", degreeCourseRepository.findByName(INGEGNERIA_GESTIONALE).getId());
+
+        Course chimicaGen = courseRepository
+            .findByNameAndDegreeCourse("chimica generale", degreeCourseRepository.findByName(INGEGNERIA_GESTIONALE).getId());
         List<ExaminationAppeal> examinationAppeals = new ArrayList<>();
 
         examinationAppeals.add(
@@ -1557,6 +1565,30 @@ public class UmsDBInit implements Serializable {
                 fisicaGen,
                 "am stramort",
                 LocalDate.of(2025, 4, 23)
+            )
+        );
+
+        examinationAppeals.add(
+            new ExaminationAppeal(
+                informatica,
+                "am stramort",
+                LocalDate.of(2025, 9, 26)
+            )
+        );
+
+        examinationAppeals.add(
+            new ExaminationAppeal(
+                scienzaDelleCostr,
+                "am stramort",
+                LocalDate.of(2025, 7, 26)
+            )
+        );
+
+        examinationAppeals.add(
+            new ExaminationAppeal(
+                chimicaGen,
+                "am stramort",
+                LocalDate.of(2025, 5, 16)
             )
         );
 

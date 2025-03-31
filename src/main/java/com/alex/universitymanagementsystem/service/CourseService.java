@@ -125,7 +125,7 @@ public interface CourseService {
      * @throws UnsupportedOperationException if the id is not unique
      */
     @Transactional
-    public void deleteCourse(@NonNull CourseId id)
+    void deleteCourse(@NonNull CourseId id)
         throws NullPointerException, ObjectNotFoundException, IllegalArgumentException, UnsupportedOperationException;
 
 }

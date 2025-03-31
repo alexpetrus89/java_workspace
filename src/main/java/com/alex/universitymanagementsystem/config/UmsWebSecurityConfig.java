@@ -86,8 +86,10 @@ public class UmsWebSecurityConfig implements Serializable {
 				// user
 				"user_admin/admin-home",
 				"user/user-menu",
-				"api/v1/user",
+				"user/delete/delete",
 				"api/v1/user/delete",
+				"api/v1/user",
+
 				// student
 				"/api/v1/student/view",
 				"/api/v1/student/read/read",
@@ -134,9 +136,12 @@ public class UmsWebSecurityConfig implements Serializable {
 				"/user_student/study_plan/study_plan_modify",
 				"/user_student/examinations/examination_appeal/calendar",
 				"/user_student/examinations/examination_appeal/booked-result",
+				"/user_student/examinations/examination_appeal/delete-booked-result",
 				"/api/v1/study_plan/view",
-				"/api/v1/examination-appeal/view",
+				"/api/v1/examination-appeal/available/student",
+				"/api/v1/examination-appeal/booked/student",
 				"/api/v1/examination-appeal/booked/{id}",
+				"/api/v1/examination-appeal/delete-booked/{id}",
 				"/api/v1/user/create/student"
 			)
 			.hasAnyRole(STUDENT, ADMIN)
@@ -144,8 +149,11 @@ public class UmsWebSecurityConfig implements Serializable {
 				// URL accessibili solo agli utenti con ruolo PROFESSOR o ADMIN
 				"/user_professor/professor-home",
 				"/api/v1/user/create/professor",
+				"/user_professor/examinations/examination_appeal/examination-appeal-menu",
+				"/user_professor/examinations/examination_appeal/view/professor",
 				"/user_professor/examinations/examination_appeal/create-examination-appeal",
 				"/user_professor/examinations/examination_appeal/create-result",
+				"/user_professor/examinations/examination_appeal/students-booked",
 				"/api/v1/course/view/professor",
 				"/api/v1/examination-appeal/create",
 				"/api/v1/examination-appeal/delete"

@@ -39,7 +39,9 @@ public interface StudyPlanService {
      * @throws NullPointerException if any of the parameters are null
      * @throws ObjectAlreadyExistsException if a course with the same name already exists
      * @throws ObjectNotFoundException if a degree course with the given name does not exist
-     * @throws IllegalArgumentException if the cfu of the new course is not equal to the cfu of the old course
+     * @throws IllegalArgumentException if the cfu of the new course is not equal to the cfu
+     *                                  of the old course
+     * @throws IllegalStateException if the course has examinations
      */
     void changeCourse(
         @NonNull Register register,

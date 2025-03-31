@@ -7,11 +7,13 @@
     <title>Examination Menu</title>
 </head>
 <body>
-    <h1>Exams</h1>
+    <h1>Booklet</h1>
     <p>Click <a th:href="@{/api/v1/examination/student-register}">&nbsp;here&nbsp;</a> for show examinations</p>
     <h1>Appeals available</h1>
-    <p>Click <a th:href="@{/api/v1/examination-appeal/view}">&nbsp;here&nbsp;</a> for show examinations</p>
+    <p>Click <a th:href="@{/api/v1/examination-appeal/available/student}">&nbsp;here&nbsp;</a> for show examinations</p>
+    <h1>Appeals booked</h1>
+    <p>Click <a th:href="@{/api/v1/examination-appeal/booked/student}">&nbsp;here&nbsp;</a> for show examinations</p>
     <br>
-    <a href="#" th:href="@{/user_student/examinations/examination-menu}">Back to Home</a>
+    <a href="#" th:href="@{/user_student/student-home}">Back to Home</a>
 </body>
 </html>

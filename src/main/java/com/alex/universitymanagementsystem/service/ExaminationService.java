@@ -36,7 +36,7 @@ public interface ExaminationService {
      * @throws ObjectNotFoundException if the student does not exist
      * @throws UnsupportedOperationException if the register is not unique
      */
-    public List<ExaminationDto> getExaminationsByStudentRegister(@NonNull Register register)
+    List<ExaminationDto> getExaminationsByStudentRegister(@NonNull Register register)
         throws NullPointerException, IllegalArgumentException, ObjectNotFoundException, UnsupportedOperationException;
 
 
@@ -49,7 +49,7 @@ public interface ExaminationService {
      * @throws ObjectNotFoundException if the professor does not exist
      * @throws UnsupportedOperationException if the unique code is not unique
      */
-    public List<ExaminationDto> getExaminationsByProfessorUniqueCode(@NonNull UniqueCode uniqueCode)
+    List<ExaminationDto> getExaminationsByProfessorUniqueCode(@NonNull UniqueCode uniqueCode)
         throws NullPointerException, IllegalArgumentException, ObjectNotFoundException, UnsupportedOperationException;
 
 
@@ -62,7 +62,7 @@ public interface ExaminationService {
      * @throws IllegalArgumentException if the courseId is Blank
      * @throws UnsupportedOperationException if the courseId is not unique
      */
-    public List<ExaminationDto> getExaminationsByCourseId(@NonNull CourseId courseId)
+    List<ExaminationDto> getExaminationsByCourseId(@NonNull CourseId courseId)
         throws NullPointerException, ObjectNotFoundException, IllegalArgumentException, UnsupportedOperationException;
 
 
@@ -75,7 +75,7 @@ public interface ExaminationService {
      * @throws ObjectNotFoundException if the course does not exist
      * @throws UnsupportedOperationException if the unique code is not unique
      */
-    public List<ExaminationDto> getExaminationsByCourseName(@NonNull String name)
+    List<ExaminationDto> getExaminationsByCourseName(@NonNull String name)
         throws NullPointerException, IllegalArgumentException, ObjectNotFoundException, UnsupportedOperationException;
 
 
@@ -98,7 +98,7 @@ public interface ExaminationService {
      *         or if the course name is not unique
      */
 	@Transactional
-    public Examination addNewExamination(
+    Examination addNewExamination(
         @NonNull Register register,
         @NonNull String courseName,
         @NonNull String degreeCourseName,
@@ -129,7 +129,7 @@ public interface ExaminationService {
      * @throws UnsupportedOperationException if the unique code is not unique
      */
 	@Transactional
-    public Examination updateExamination(
+    Examination updateExamination(
         @NonNull Register oldRegister,
         @NonNull String oldCourseName,
         @NonNull String oldDegreeCourseName,
@@ -154,6 +154,6 @@ public interface ExaminationService {
      *         or if the course name is not unique
      */
 	@Transactional
-	public void deleteExamination(@NonNull Register register, @NonNull String name)
+	void deleteExamination(@NonNull Register register, @NonNull String name)
 		throws NullPointerException, IllegalArgumentException, ObjectNotFoundException, UnsupportedOperationException;
 }

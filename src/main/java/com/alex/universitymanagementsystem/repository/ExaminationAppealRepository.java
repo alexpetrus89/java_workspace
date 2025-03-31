@@ -15,6 +15,11 @@ import com.alex.universitymanagementsystem.domain.ExaminationAppeal;
 public interface ExaminationAppealRepository
     extends JpaRepository<ExaminationAppeal, Long>
 {
+    /**
+     * Find all examination appeals by course ids
+     * @param ids
+     * @return a list of examination appeals
+     */
     @Query(value = "SELECT * FROM examination_appeal ea WHERE ea.course_id IN (:ids)", nativeQuery = true)
     List<ExaminationAppeal> findByIdIn(@Param("ids") List<UUID> ids);
 }

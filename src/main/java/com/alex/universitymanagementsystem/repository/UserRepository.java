@@ -1,21 +1,17 @@
 package com.alex.universitymanagementsystem.repository;
 
 import java.time.LocalDate;
-import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.lang.NonNull;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Repository;
 
 import com.alex.universitymanagementsystem.domain.User;
 import com.alex.universitymanagementsystem.domain.immutable.UserId;
-import com.alex.universitymanagementsystem.utils.Role;
-
-import jakarta.transaction.Transactional;
+import com.alex.universitymanagementsystem.enum_type.RoleType;
 
 @Repository
 public interface UserRepository
@@ -25,12 +21,13 @@ public interface UserRepository
      * Find user by username
      * @param username
      * @return User
-     * @throws UsernameNotFoundException if the user is not found
+     * @throws NullPointerException if the username is null
+     * @throws IllegalArgumentException if the username is null
      */
-    Optional<User> findByUsername(@NonNull String username);
+    User findByUsername(@NonNull String username)
+        throws NullPointerException, IllegalArgumentException;
 
-    @Transactional
-    @Modifying
+
     /**
      * Update user
      * @param username
@@ -43,8 +40,11 @@ public interface UserRepository
      * @param phone
      * @param role
      * @return int number of rows updated
+     * @throws NullPointerException if the parameters are null
+     * @throws IllegalArgumentException if the parameters are blanks
      * @throws UsernameNotFoundException if the user is not found
      */
+    @Modifying
     @Query("""
             UPDATE User u SET
             u.fullname = :fullname,
@@ -58,15 +58,15 @@ public interface UserRepository
             WHERE u.username = :username
     """)
     public int updateUser(
-        @Param("username") String username,
-        @Param("fullname") String fullname,
-        @Param("password") String password,
+        @NonNull@Param("username") String username,
+        @NonNull @Param("fullname") String fullname,
+        @NonNull @Param("password") String password,
         @Param("dob") LocalDate dob,
         @Param("city") String city,
         @Param("state") String state,
         @Param("zip") String zip,
         @Param("phone") String phone,
-        @Param("role") Role role
+        @NonNull @Param("role") RoleType role
     );
 
 }

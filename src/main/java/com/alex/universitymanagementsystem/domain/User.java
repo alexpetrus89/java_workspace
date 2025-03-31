@@ -12,8 +12,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.alex.universitymanagementsystem.domain.immutable.UserId;
+import com.alex.universitymanagementsystem.enum_type.RoleType;
 import com.alex.universitymanagementsystem.utils.Builder;
-import com.alex.universitymanagementsystem.utils.Role;
 
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
@@ -37,7 +37,7 @@ public class User implements UserDetails {
     protected String state;
     protected String zip;
     protected String phone;
-    protected Role role;
+    protected RoleType role;
 
     // default constructor
     public User() {}
@@ -101,7 +101,7 @@ public class User implements UserDetails {
         return phone;
     }
 
-    public Role getRole() {
+    public RoleType getRole() {
         return role;
     }
 
@@ -143,7 +143,7 @@ public class User implements UserDetails {
         this.phone = phone;
     }
 
-    public void setRole(Role role) {
+    public void setRole(RoleType role) {
         this.role = role;
     }
 

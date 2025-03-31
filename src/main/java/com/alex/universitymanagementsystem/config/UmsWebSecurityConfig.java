@@ -45,14 +45,12 @@ public class UmsWebSecurityConfig implements Serializable {
     UserDetailsService userDetailsService(UserRepository userRepository) {
 
         return username -> {
-			UserDetails userDetails = userRepository
-				.findByUsername(username)
-				.orElseThrow(() -> new UsernameNotFoundException("User '" + username + "' not found"));
+			UserDetails userDetails = userRepository.findByUsername(username);
 
-			if (userDetails != null)
-				return userDetails;
+			if (userDetails == null)
+				throw new UsernameNotFoundException("User '" + username + "' not found");
 
-            throw new UsernameNotFoundException("User '" + username + "' not found");
+			return userDetails;
         };
     }
 

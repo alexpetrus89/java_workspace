@@ -10,11 +10,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.alex.universitymanagementsystem.domain.User;
+import com.alex.universitymanagementsystem.enum_type.DomainType;
+import com.alex.universitymanagementsystem.enum_type.RoleType;
+import com.alex.universitymanagementsystem.exception.ObjectAlreadyExistsException;
 import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
 import com.alex.universitymanagementsystem.repository.UserRepository;
 import com.alex.universitymanagementsystem.service.UserDetailsService;
 import com.alex.universitymanagementsystem.utils.RegistrationForm;
-import com.alex.universitymanagementsystem.utils.Role;
 
 import jakarta.transaction.Transactional;
 
@@ -37,7 +39,6 @@ public class UserServiceImpl implements UserDetailsService{
     /**
 	 * Retrieves all users from the repository.
 	 * @return List of Users.
-     * @throws ObjectNotFoundException if the authenticated user is not found
 	 */
     @Override
     public List<User> getUsers() {
@@ -45,20 +46,18 @@ public class UserServiceImpl implements UserDetailsService{
 	}
 
     /**
-     * Retrieves a user by username from the repository.
+     * Return user details
      * @param username username
      * @return UserDetails
+     * @throws NullPointerException if the user is null
+     * @throws IllegalArgumentException if the username is blank
      * @throws UsernameNotFoundException if the user is not found
      */
     @Override
     public UserDetails loadUserByUsername(@NonNull String username)
-        throws UsernameNotFoundException
+        throws NullPointerException, IllegalArgumentException, UsernameNotFoundException
     {
-
-        return userRepository
-            .findByUsername(username)
-            .map(UserDetails.class::cast)
-            .orElseThrow(() -> new UsernameNotFoundException("User '" + username + "' not found"));
+        return userRepository.findByUsername(username);
     }
 
 
@@ -68,22 +67,18 @@ public class UserServiceImpl implements UserDetailsService{
      * This method is transactional and mapped to the HTTP PUT request for "/update".
      * @param form RegistrationForm containing updated user details.
      * @return String representing the redirect URL after the update process.
+     * @throws NullPointerException if the user is null.
      * @throws ObjectNotFoundException if the authenticated user is not found.
-	 * @throws UserNotFoundException if the user is not found.
-     * @throws IllegalArgumentException if the updated user details are invalid.
 	 */
 	@Transactional
-    public String addNewUser(User user) throws ObjectNotFoundException {
-
-        // sanity check
-        if(user == null)
-            throw new IllegalArgumentException("User cannot be null");
-
+    public String addNewUser(@NonNull User user)
+        throws NullPointerException, ObjectNotFoundException
+    {
         try {
             // save the user
             userRepository.saveAndFlush(user);
             return REDIRECT_LOGIN;
-        } catch (ObjectNotFoundException e) {
+        } catch (ObjectAlreadyExistsException e) {
             return REDIRECT_LOGIN;
         }
     }
@@ -95,10 +90,13 @@ public class UserServiceImpl implements UserDetailsService{
      * This method is transactional and mapped to the HTTP PUT request for "/update".
      * @param form RegistrationForm containing updated user details.
      * @return String representing the redirect URL after the update process.
+     * @throws NullPointerException if the form is null.
+     * @throws IllegalArgumentException if the username is blank.
      * @throws ObjectNotFoundException if the authenticated user is not found.
      */
-    public String updateUser(RegistrationForm form)
-        throws ObjectNotFoundException {
+    public String updateUser(@NonNull RegistrationForm form)
+        throws NullPointerException, IllegalArgumentException, ObjectNotFoundException
+    {
         // get the authenticated user
         User user =  (User) SecurityContextHolder
             .getContext()
@@ -107,7 +105,7 @@ public class UserServiceImpl implements UserDetailsService{
 
         // check if the user exists
         if(user == null)
-            throw new ObjectNotFoundException("User not found", "user");
+            throw new ObjectNotFoundException(DomainType.USER);
 
         try {
             user.setUsername(form.getUsername());
@@ -134,11 +132,14 @@ public class UserServiceImpl implements UserDetailsService{
     /**
      * Deletes a user from the repository.
      * @param username the username of the user to be deleted
+     * @throws NullPointerException if the username is null
      * @throws IllegalArgumentException if the authenticated user is not an admin
      * @throws UsernameNotFoundException if the user to be deleted is not found
-     * @throws ObjectNotFoundException if the authenticated user is not found
      */
-    public void deleteUser(String username) {
+    @Transactional
+    public void deleteUser(@NonNull String username)
+        throws NullPointerException, IllegalArgumentException, UsernameNotFoundException
+    {
 
         // get the authenticated user
         User admin =  (User) SecurityContextHolder
@@ -146,13 +147,13 @@ public class UserServiceImpl implements UserDetailsService{
             .getAuthentication()
             .getPrincipal();
 
-        if(!admin.getRole().equals(Role.ADMIN))
+        if(!admin.getRole().equals(RoleType.ADMIN))
             throw new IllegalArgumentException("Only admin can delete users");
 
-        User userToDelete = (User) userRepository
-            .findByUsername(username)
-            .map(UserDetails.class::cast)
-            .orElseThrow(() -> new UsernameNotFoundException("User '" + username + "' not found"));
+        User userToDelete = userRepository.findByUsername(username);
+
+        if(userToDelete == null)
+            throw new UsernameNotFoundException("User not found");
 
         // delete the user
         userRepository.delete(userToDelete);

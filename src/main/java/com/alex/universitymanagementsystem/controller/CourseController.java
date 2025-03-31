@@ -17,10 +17,10 @@ import org.springframework.web.servlet.ModelAndView;
 import com.alex.universitymanagementsystem.domain.Course;
 import com.alex.universitymanagementsystem.domain.Professor;
 import com.alex.universitymanagementsystem.dto.CourseDto;
+import com.alex.universitymanagementsystem.enum_type.CourseType;
 import com.alex.universitymanagementsystem.exception.ObjectAlreadyExistsException;
 import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
 import com.alex.universitymanagementsystem.service.impl.CourseServiceImpl;
-import com.alex.universitymanagementsystem.utils.CourseType;
 
 import jakarta.transaction.Transactional;
 
@@ -60,7 +60,6 @@ public class CourseController {
      * @param courseName
      * @param degreeCourseName
      * @return ModelAndView
-     * @throws ObjectNotFoundException if no course with the given name and degree course name exists
      * @throws NullPointerException if the course name or degree course name is null
      * @throws IllegalArgumentException if the course name or degree course name is empty
      * @throws UnsupportedOperationException if the course name or degree course name is not unique
@@ -130,7 +129,7 @@ public class CourseController {
     ) {
 
         try{
-            Course course = courseServiceImpl.addNewCourse(name, type, cfu, uniqueCode, degreeCourseName);
+            CourseDto course = courseServiceImpl.addNewCourse(name, type, cfu, uniqueCode, degreeCourseName);
             return new ModelAndView("course/create/create-result", COURSE, course);
         } catch (RuntimeException e) {
             Map<String, Object> model = new HashMap<>();

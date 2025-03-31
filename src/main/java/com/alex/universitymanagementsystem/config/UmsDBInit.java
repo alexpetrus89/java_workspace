@@ -24,6 +24,9 @@ import com.alex.universitymanagementsystem.domain.immutable.Register;
 import com.alex.universitymanagementsystem.domain.immutable.UniqueCode;
 import com.alex.universitymanagementsystem.dto.ExaminationDto;
 import com.alex.universitymanagementsystem.dto.StudyPlanDto;
+import com.alex.universitymanagementsystem.enum_type.CourseType;
+import com.alex.universitymanagementsystem.enum_type.DegreeType;
+import com.alex.universitymanagementsystem.enum_type.RoleType;
 import com.alex.universitymanagementsystem.mapper.ExaminationMapper;
 import com.alex.universitymanagementsystem.mapper.StudyPlanMapper;
 import com.alex.universitymanagementsystem.repository.CourseRepository;
@@ -35,10 +38,7 @@ import com.alex.universitymanagementsystem.repository.StudentRepository;
 import com.alex.universitymanagementsystem.repository.StudyPlanRepository;
 import com.alex.universitymanagementsystem.repository.UserRepository;
 import com.alex.universitymanagementsystem.utils.Builder;
-import com.alex.universitymanagementsystem.utils.CourseType;
-import com.alex.universitymanagementsystem.utils.DegreeType;
 import com.alex.universitymanagementsystem.utils.RegistrationForm;
-import com.alex.universitymanagementsystem.utils.Role;
 
 @Configuration
 public class UmsDBInit implements Serializable {
@@ -137,7 +137,7 @@ public class UmsDBInit implements Serializable {
         formBuilderOne.withState("italia");
         formBuilderOne.withZip("72015");
         formBuilderOne.withPhone("3815674128");
-        formBuilderOne.withRole(Role.ADMIN);
+        formBuilderOne.withRole(RoleType.ADMIN);
 
         Builder formBuilderTwo = new Builder();
         formBuilderTwo.withUsername("fido@gmail.com");
@@ -149,7 +149,7 @@ public class UmsDBInit implements Serializable {
         formBuilderTwo.withState("italia");
         formBuilderTwo.withZip("72015");
         formBuilderTwo.withPhone("3815674128");
-        formBuilderTwo.withRole(Role.ADMIN);
+        formBuilderTwo.withRole(RoleType.ADMIN);
 
         // create users
         List<User> users = List.of(
@@ -292,7 +292,7 @@ public class UmsDBInit implements Serializable {
         formBuilderFour.withState("italia");
         formBuilderFour.withZip("72015");
         formBuilderFour.withPhone("3619647852");
-        formBuilderFour.withRole(Role.STUDENT);
+        formBuilderFour.withRole(RoleType.STUDENT);
 
         // 2
         Builder formBuilderFive = new Builder();
@@ -305,7 +305,7 @@ public class UmsDBInit implements Serializable {
         formBuilderFive.withState("italia");
         formBuilderFive.withZip("72015");
         formBuilderFive.withPhone("38412369547");
-        formBuilderFive.withRole(Role.STUDENT);
+        formBuilderFive.withRole(RoleType.STUDENT);
 
         // 3
         Builder formBuilderSix = new Builder();
@@ -318,7 +318,7 @@ public class UmsDBInit implements Serializable {
         formBuilderSix.withState("italia");
         formBuilderSix.withZip("72015");
         formBuilderSix.withPhone("38412369547");
-        formBuilderSix.withRole(Role.STUDENT);
+        formBuilderSix.withRole(RoleType.STUDENT);
 
         // 4
         Builder formBuilderSeven = new Builder();
@@ -331,7 +331,7 @@ public class UmsDBInit implements Serializable {
         formBuilderSeven.withState("italia");
         formBuilderSeven.withZip("72015");
         formBuilderSix.withPhone("38412369547");
-        formBuilderSix.withRole(Role.STUDENT);
+        formBuilderSix.withRole(RoleType.STUDENT);
 
         // 5
         Builder formBuilderEight = new Builder();
@@ -344,7 +344,7 @@ public class UmsDBInit implements Serializable {
         formBuilderEight.withState("italia");
         formBuilderEight.withZip("72015");
         formBuilderEight.withPhone("38412369547");
-        formBuilderEight.withRole(Role.STUDENT);
+        formBuilderEight.withRole(RoleType.STUDENT);
 
         // 6
         Builder formBuilderNine = new Builder();
@@ -357,7 +357,7 @@ public class UmsDBInit implements Serializable {
         formBuilderNine.withState("italia");
         formBuilderNine.withZip("72015");
         formBuilderNine.withPhone("38412369547");
-        formBuilderNine.withRole(Role.STUDENT);
+        formBuilderNine.withRole(RoleType.STUDENT);
 
         // 7
         Builder formBuilderTen = new Builder();
@@ -370,7 +370,7 @@ public class UmsDBInit implements Serializable {
         formBuilderTen.withState("italia");
         formBuilderTen.withZip("72015");
         formBuilderTen.withPhone("38412369547");
-        formBuilderTen.withRole(Role.STUDENT);
+        formBuilderTen.withRole(RoleType.STUDENT);
 
         List<Student> students = new ArrayList<>();
 
@@ -571,7 +571,7 @@ public class UmsDBInit implements Serializable {
         fbProfOne.withState("canada");
         fbProfOne.withZip("48759");
         fbProfOne.withPhone("8749652314");
-        fbProfOne.withRole(Role.PROFESSOR);
+        fbProfOne.withRole(RoleType.PROFESSOR);
         List<Professor> professors = new ArrayList<>();
 
         // 1
@@ -596,7 +596,7 @@ public class UmsDBInit implements Serializable {
         fbProfTwo.withState("canada");
         fbProfTwo.withZip("48759");
         fbProfTwo.withPhone("8749652314");
-        fbProfTwo.withRole(Role.PROFESSOR);
+        fbProfTwo.withRole(RoleType.PROFESSOR);
 
         // 2
         professors.add(
@@ -620,7 +620,7 @@ public class UmsDBInit implements Serializable {
         fbProfThree.withState("canada");
         fbProfThree.withZip("48759");
         fbProfThree.withPhone("8749652314");
-        fbProfThree.withRole(Role.PROFESSOR);
+        fbProfThree.withRole(RoleType.PROFESSOR);
 
         // 3
         professors.add(
@@ -644,7 +644,7 @@ public class UmsDBInit implements Serializable {
         fbProfFour.withState("canada");
         fbProfFour.withZip("48759");
         fbProfFour.withPhone("8749652314");
-        fbProfFour.withRole(Role.PROFESSOR);
+        fbProfFour.withRole(RoleType.PROFESSOR);
 
         // 3
         professors.add(

@@ -24,10 +24,11 @@ public interface UserDetailsService {
      * Return user details
      * @param username username
      * @return UserDetails
+     * @throws NullPointerException if the user is null
+     * @throws IllegalArgumentException if the username is blank
      * @throws UsernameNotFoundException if the user is not found
-     * @throws IllegalArgumentException if the username is null
      */
-    public UserDetails loadUserByUsername(@NonNull String username)
-        throws UsernameNotFoundException;
+    UserDetails loadUserByUsername(@NonNull String username)
+        throws NullPointerException, IllegalArgumentException, UsernameNotFoundException;
 
 }

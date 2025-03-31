@@ -18,9 +18,9 @@ public interface DegreeCourseRepository
      * Retrieves a degree course from the repository by its name.
      * @param name the name of the degree course to retrieve
      * @return the degree course if found, null otherwise
+     * @throws NullPointerException if the name is null
      * @throws IllegalArgumentException if the name is null
      * @throws UnsupportedOperationException if the name is not unique
-     * @throws NullPointerException if the name is null
      */
     @Query("SELECT s FROM DegreeCourse s WHERE s.name = ?1")
     DegreeCourse findByName(@NonNull String name);
@@ -30,9 +30,9 @@ public interface DegreeCourseRepository
      * Checks if a degree course exists by its name.
      * @param name the name of the degree course
      * @return boolean
+     * @throws NullPointerException if the name is null
      * @throws IllegalArgumentException if the name is null
      * @throws UnsupportedOperationException if the name is not unique
-     * @throws NullPointerException if the name is null
      */
     boolean existsByName(@NonNull String name);
 }

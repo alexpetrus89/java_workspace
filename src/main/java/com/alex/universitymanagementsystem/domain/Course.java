@@ -8,7 +8,7 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import com.alex.universitymanagementsystem.domain.immutable.CourseId;
-import com.alex.universitymanagementsystem.utils.CourseType;
+import com.alex.universitymanagementsystem.enum_type.CourseType;
 
 import jakarta.persistence.Access;
 import jakarta.persistence.AccessType;

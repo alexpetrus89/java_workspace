@@ -1,4 +1,4 @@
-package com.alex.universitymanagementsystem.utils;
+package com.alex.universitymanagementsystem.enum_type;
 
 public enum CourseType {
 

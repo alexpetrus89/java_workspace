@@ -1,6 +1,7 @@
 package com.alex.universitymanagementsystem.service;
 
 import java.util.List;
+import java.util.regex.PatternSyntaxException;
 
 import org.springframework.lang.NonNull;
 
@@ -22,74 +23,91 @@ public interface ProfessorService {
 
 
     /**
-     * get professor by unique code
+     * Retrieves a professor by unique code
      * @param uniqueCode the unique code of the professor to retrieve
-     * @return ProfessorDto
-     * @throws ObjectNotFoundException if no professor with the given unique
-     *                                 code exists
-     * @throws IllegalArgumentException if the unique code is empty or null
+     * @return ProfessorDto object containing the professor's data
+     * @throws NullPointerException if the unique code is null
+     * @throws IllegalArgumentException if the unique code is blank
+     * @throws UnsupportedOperationException if the unique code is not unique
      */
-    ProfessorDto getProfessorByUniqueCode(@NonNull UniqueCode uniqueCode)
-        throws ObjectNotFoundException;
+    public ProfessorDto getProfessorByUniqueCode(@NonNull UniqueCode uniqueCode)
+        throws NullPointerException, IllegalArgumentException, UnsupportedOperationException;
 
 
     /**
-     * get professor by fiscal code
-     * @param fiscalCode the fiscal code of the professor
-     * @return ProfessorDto
-     * @throws ObjectNotFoundException if no professor with the given fiscal
-     *                                 code exists
-     * @throws IllegalArgumentException if the fiscal code is empty or null
+     * Retrieves a professor by fiscal code.
+     * @param fiscalCode the fiscal code of the professor to retrieve.
+     * @return ProfessorDto object containing the professor's data.
+     * @throws NullPointerException if the fiscal code is null
+     * @throws IllegalArgumentException if the fiscal code is blank
+     * @throws UnsupportedOperationException if the fiscal code is not unique
      */
-    ProfessorDto getProfessorByFiscalCode(@NonNull String fiscalCode)
-        throws ObjectNotFoundException;
+    public ProfessorDto getProfessorByFiscalCode(@NonNull String fiscalCode)
+        throws NullPointerException, IllegalArgumentException, UnsupportedOperationException;
 
 
     /**
-     * get professor by name
-     * @param name the name of the professor
-     * @return ProfessorDto
-     * @throws ObjectNotFoundException if no professor with the given name exists
-     * @throws IllegalArgumentException if the name is empty or null
+     * Retrieves a professor by name.
+     * @param name the name of the professor.
+     * @return ProfessorDto object containing the professor's data.
+     * @throws NullPointerException if the name is null
+     * @throws IllegalArgumentException if the name is blank
+     * @throws UnsupportedOperationException if the name is not unique
      */
-    ProfessorDto getProfessorByName(@NonNull String name)
-        throws ObjectNotFoundException;
+    public ProfessorDto getProfessorByName(@NonNull String name)
+        throws NullPointerException, IllegalArgumentException, UnsupportedOperationException;
 
 
     /**
-     * add new professor
-     * @param professor professor to add
-     * @throws ObjectAlreadyExistsException if a professor with the same unique
-     *                                      code already exists
-     * @throws IllegalArgumentException if the unique code is empty or null
-     */
-    @Transactional
-    void addNewProfessor(@NonNull Professor professor)
-        throws ObjectAlreadyExistsException;
-
-
-    /**
-     * update professor
-     * @param professorDto the data transfer object containing the new
-     *                     details of the professor to be updated
-     * @throws ObjectNotFoundException if no professor with the given unique
-     *                                 code exists
-     * @throws IllegalArgumentException if the unique code is empty or null
+     * Adds a new professor to the repository.
+     *
+     * @param professor the professor to add
+     * @throws NullPointerException if the professor is null
+     * @throws IllegalArgumentException if the unique code or fiscal
+     *         code is empty
+     * @throws ObjectAlreadyExistsException if a professor with the
+     *         same unique code already exists in the repository.
+     * @throws UnsupportedOperationException if the unique code or
+     *         fiscal code is not unique
      */
     @Transactional
-    void updateProfessor(@NonNull ProfessorDto professorDto)
-        throws ObjectNotFoundException;
+    public void addNewProfessor(@NonNull Professor professor)
+        throws NullPointerException, IllegalArgumentException, ObjectAlreadyExistsException, UnsupportedOperationException;
 
 
     /**
-     * delete professor
+     * Updates an existing professor's information.
+     * @param newProfessorDto the data transfer object containing the new details
+     *        of the professor to be updated.
+     * @throws NullPointerException if the ProfessorDto is null
+     * @throws ObjectNotFoundException if no professor with the given unique code
+     *         exists in the repository.
+     * @throws IllegalArgumentException if the new username is blank
+     *         or if the new full name is null or if the fiscal code is blank or
+     *         not 16 alphanumeric characters or if the regular expression's syntax
+     *         is invalid
+     * @throws UnsupportedOperationException if the unique code is not unique
+     * @throws PatternSyntaxException if the regular expression's syntax is invalid
+     */
+    @Transactional
+    public void updateProfessor(@NonNull ProfessorDto newProfessorDto)
+        throws NullPointerException, ObjectNotFoundException, IllegalArgumentException, UnsupportedOperationException, PatternSyntaxException;
+
+
+    /**
+     * Deletes a professor by unique code.
+     * If the professor with the given unique code exists, it will be
+     * removed from the repository.
+     *
      * @param uniqueCode the unique code of the professor to delete
-     * @throws ObjectNotFoundException if no professor with the given unique
-     *                                 code exists
-     * @throws IllegalArgumentException if the unique code is empty or null
+     * @throws ObjectNotFoundException if no professor with the given
+     *         unique code is found
+     * @throws NullPointerException if the unique code is null
+     * @throws IllegalArgumentException if the unique code is blank
+     * @throws UnsupportedOperationException if the unique code is not unique
      */
-	@Transactional
-    void deleteProfessor(@NonNull UniqueCode uniqueCode)
-        throws ObjectNotFoundException;
+    @Transactional
+    public void deleteProfessor(@NonNull UniqueCode uniqueCode)
+        throws NullPointerException, IllegalArgumentException, ObjectNotFoundException;
 
 }

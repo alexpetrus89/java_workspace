@@ -1,8 +1,6 @@
 package com.alex.universitymanagementsystem.controller;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -59,18 +57,15 @@ public class StudentController {
      * Retrieves a student by register
      * @param register the register of the student
      * @return ModelAndView
-     * @throws ObjectNotFoundException if the student is not found
      * @throws IllegalArgumentException if the register is null or is empty
      * @throws UnsupportedOperationException if the register is not unique
      */
     @GetMapping(path = "/read/register")
 	public ModelAndView getStudentByRegister(@RequestParam String register) {
-
         try {
-            Student student = StudentMapper.mapToStudent(studentServiceImpl.getStudentByRegister(new Register(register)));
+            StudentDto student = studentServiceImpl.getStudentByRegister(new Register(register));
             return new ModelAndView("student/read/read-result", ATTRIBUTE_STUDENT, student);
-
-        } catch (ObjectNotFoundException e) {
+        } catch (IllegalArgumentException | UnsupportedOperationException e) {
             return new ModelAndView(ERROR, e.getMessage(),NOT_FOUND_PATH);
         }
     }
@@ -93,7 +88,7 @@ public class StudentController {
                 .map(StudentMapper::mapToStudent)
                 .toList();
             return new ModelAndView("student/read/read-results", ATTRIBUTE_STUDENTS, students);
-        } catch (ObjectNotFoundException e) {
+        } catch (ObjectNotFoundException | IllegalArgumentException | UnsupportedOperationException e) {
             return new ModelAndView(ERROR, e.getMessage(),NOT_FOUND_PATH);
         }
     }
@@ -135,7 +130,7 @@ public class StudentController {
             studentServiceImpl.addNewStudent(StudentMapper.mapToStudent(studentDto));
             Student student = StudentMapper.mapToStudent(studentDto);
             return new ModelAndView("student/create/create-result", ATTRIBUTE_STUDENT, student);
-        } catch (ObjectAlreadyExistsException e) {
+        } catch (ObjectAlreadyExistsException | ObjectNotFoundException | IllegalArgumentException e) {
             return new ModelAndView(ERROR, e.getMessage(),ALREADY_EXISTS_PATH);
         }
     }
@@ -158,7 +153,7 @@ public class StudentController {
             studentServiceImpl.updateStudent(studentDto);
             Student student = StudentMapper.mapToStudent(studentDto);
             return new ModelAndView("student/update/update-result", ATTRIBUTE_STUDENT, student);
-        } catch (RuntimeException e) {
+        } catch (ObjectAlreadyExistsException | ObjectNotFoundException | IllegalArgumentException e) {
             return new ModelAndView(ERROR, e.getMessage(),NOT_FOUND_PATH);
         }
     }
@@ -171,6 +166,8 @@ public class StudentController {
      * @return ModelAndView
      * @throws ObjectNotFoundException if the student does not exist
      * @throws IllegalArgumentException if the register is null or empty
+     * @throws NullPointerException - if the register is null.
+     * @throws UnsupportedOperationException if the register is not unique
      */
     @DeleteMapping(path = "/delete/register")
     public ModelAndView deleteStudentByRegister(@RequestParam String register)
@@ -178,12 +175,8 @@ public class StudentController {
         try {
             studentServiceImpl.deleteStudent(new Register(register));
             return new ModelAndView("student/delete/delete-result");
-        } catch (RuntimeException e) {
-            Map<String, Object> model = new HashMap<>();
-            model.put("title", "Errore");
-            model.put("errorMessage", e.getMessage());
-            model.put("stackTrace", e.getStackTrace());
-            return new ModelAndView(ERROR, model);
+        } catch (ObjectNotFoundException | IllegalArgumentException | NullPointerException | UnsupportedOperationException e) {
+            return new ModelAndView(ERROR, e.getMessage(),NOT_FOUND_PATH);
         }
     }
 

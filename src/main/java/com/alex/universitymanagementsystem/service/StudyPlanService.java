@@ -19,24 +19,35 @@ public interface StudyPlanService {
      * @return String
      * @throws ObjectNotFoundException if the study plan does not exist
      */
-    String getOrderingByRegister(Register register) throws ObjectNotFoundException;
+    String getOrderingByRegister(@NonNull Register register) throws ObjectNotFoundException;
 
     /**
      * return list of courses
      * @param register the student register
      * @return Set<CourseDto>
-     * @throws ObjectNotFoundException if the study plan does not exist
      */
-    Set<CourseDto> getCoursesByRegister(@NonNull Register register) throws ObjectNotFoundException;
+    Set<CourseDto> getCoursesByRegister(@NonNull Register register);
 
 
+    /**
+     * Change courses to the study plan
+     * @param register student register
+     * @param string name of degree course of new course
+     * @param string name of degree course of old course
+     * @param string name of the course to add
+     * @param string name of the course to remove
+     * @throws NullPointerException if any of the parameters are null
+     * @throws ObjectAlreadyExistsException if a course with the same name already exists
+     * @throws ObjectNotFoundException if a degree course with the given name does not exist
+     * @throws IllegalArgumentException if the cfu of the new course is not equal to the cfu of the old course
+     */
     void changeCourse(
         @NonNull Register register,
         @NonNull String degreeCourseOfNewCourse,
         @NonNull String degreeCourseOfOldCourse,
         @NonNull String courseToAddName,
         @NonNull String courseToRemoveName
-    ) throws ObjectAlreadyExistsException, ObjectNotFoundException;
+    ) throws NullPointerException, ObjectAlreadyExistsException, ObjectNotFoundException, IllegalArgumentException;
 
 
 }

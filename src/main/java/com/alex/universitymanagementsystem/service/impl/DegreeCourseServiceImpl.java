@@ -1,7 +1,11 @@
 package com.alex.universitymanagementsystem.service.impl;
 
+import java.util.Collections;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataAccessException;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
@@ -11,7 +15,6 @@ import com.alex.universitymanagementsystem.dto.CourseDto;
 import com.alex.universitymanagementsystem.dto.DegreeCourseDto;
 import com.alex.universitymanagementsystem.dto.ProfessorDto;
 import com.alex.universitymanagementsystem.dto.StudentDto;
-import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
 import com.alex.universitymanagementsystem.mapper.CourseMapper;
 import com.alex.universitymanagementsystem.mapper.DegreeCourseMapper;
 import com.alex.universitymanagementsystem.mapper.ProfessorMapper;
@@ -22,6 +25,13 @@ import com.alex.universitymanagementsystem.service.DegreeCourseService;
 
 @Service
 public class DegreeCourseServiceImpl implements DegreeCourseService {
+
+    // logger
+	private static final Logger logger = LoggerFactory.getLogger(DegreeCourseServiceImpl.class);
+
+	// constants
+	private static final String DATA_ACCESS_ERROR = "data access error";
+    private static final String DEGREE_COURSE_BLANK_ERROR = "Degree course name cannot be empty";
 
     // instance variables
     private final DegreeCourseRepository degreeCourseRepository;
@@ -52,17 +62,23 @@ public class DegreeCourseServiceImpl implements DegreeCourseService {
      * @param name the name of the degree course
      * @return DegreeCourseDto object representing the degree course
      *         with the given name.
-     * @throws ObjectNotFoundException if no degree course with the given
-     *                                 name exists.
-     * @throws NullPointerException if the name is null.
+     * @throws NullPointerException if the name is null
      * @throws IllegalArgumentException if the name is empty.
      * @throws UnsupportedOperationException if the name is not unique
      */
     @Override
     public DegreeCourse getDegreeCourseByName(@NonNull String name)
-        throws ObjectNotFoundException
+        throws NullPointerException, IllegalArgumentException, UnsupportedOperationException
     {
-        return degreeCourseRepository.findByName(name.toUpperCase());
+        if(name.isBlank())
+            throw new IllegalArgumentException(DEGREE_COURSE_BLANK_ERROR);
+
+        try {
+            return degreeCourseRepository.findByName(name.toUpperCase());
+        } catch (DataAccessException e) {
+            logger.error(DATA_ACCESS_ERROR, e);
+            return null;
+        }
     }
 
 
@@ -72,22 +88,28 @@ public class DegreeCourseServiceImpl implements DegreeCourseService {
      * @param name the name of the degree course
      * @return List<CourseDto> objects representing all courses of the given
      *         degree course.
-     * @throws ObjectNotFoundException if no degree course with the given name
-     *                                 exists.
      * @throws NullPointerException if the name is null.
      * @throws IllegalArgumentException if the name is empty.
      * @throws UnsupportedOperationException if the name is not unique
      */
     @Override
     public List<CourseDto> getCourses(@NonNull String name)
-        throws ObjectNotFoundException
+        throws NullPointerException, IllegalArgumentException, UnsupportedOperationException
     {
-        return degreeCourseRepository
-            .findByName(name)
-            .getCourses()
-            .stream()
-            .map(CourseMapper::mapToCourseDto)
-            .toList();
+        if(name.isBlank())
+            throw new IllegalArgumentException(DEGREE_COURSE_BLANK_ERROR);
+
+        try {
+            return degreeCourseRepository
+                .findByName(name)
+                .getCourses()
+                .stream()
+                .map(CourseMapper::mapToCourseDto)
+                .toList();
+        } catch (DataAccessException e) {
+            logger.error(DATA_ACCESS_ERROR, e);
+            return Collections.emptyList();
+        }
     }
 
 
@@ -97,24 +119,30 @@ public class DegreeCourseServiceImpl implements DegreeCourseService {
      * @param name the name of the degree course
      * @return List<ProfessorDto> representing all professors of the given
      *         degree course
-     * @throws ObjectNotFoundException if no degree course with the given name
-     *                                 exists.
      * @throws NullPointerException if the name is null.
-     * @throws IllegalArgumentException if the name is empty.
+     * @throws IllegalArgumentException if the name is blank.
      * @throws UnsupportedOperationException if the name is not unique.
      */
     @Override
     public List<ProfessorDto> getProfessors(@NonNull String name)
-        throws ObjectNotFoundException
+        throws NullPointerException, IllegalArgumentException, UnsupportedOperationException
     {
-        return degreeCourseRepository
-            .findByName(name)
-            .getCourses()
-            .stream()
-            .map(Course::getProfessor)
-            .distinct()
-            .map(ProfessorMapper::mapToProfessorDto)
-            .toList();
+        if(name.isBlank())
+            throw new IllegalArgumentException(DEGREE_COURSE_BLANK_ERROR);
+
+        try {
+            return degreeCourseRepository
+                .findByName(name)
+                .getCourses()
+                .stream()
+                .map(Course::getProfessor)
+                .distinct()
+                .map(ProfessorMapper::mapToProfessorDto)
+                .toList();
+        } catch (DataAccessException e) {
+            logger.error(DATA_ACCESS_ERROR, e);
+            return Collections.emptyList();
+        }
     }
 
 
@@ -124,22 +152,29 @@ public class DegreeCourseServiceImpl implements DegreeCourseService {
      * @param name the name of the degree course.
      * @return List of StudentDto objects representing all students of the
      *         given degree course.
-     * @throws ObjectNotFoundException if no degree course with the given
-     *                                 name exists.
      * @throws NullPointerException if the name is null.
-     * @throws IllegalArgumentException if the name is empty.
+     * @throws IllegalArgumentException if the name is blank.
      * @throws UnsupportedOperationException if the name is not unique
      */
     @Override
     public List<StudentDto> getStudents(@NonNull String name)
-        throws ObjectNotFoundException
+        throws NullPointerException, IllegalArgumentException, UnsupportedOperationException
     {
-        return degreeCourseRepository
+
+        if(name.isBlank())
+            throw new IllegalArgumentException(DEGREE_COURSE_BLANK_ERROR);
+
+        try {
+            return degreeCourseRepository
             .findByName(name)
             .getStudents()
             .stream()
             .map(StudentMapper::mapToStudentDto)
             .toList();
+        } catch (DataAccessException e) {
+            logger.error(DATA_ACCESS_ERROR, e);
+            return Collections.emptyList();
+        }
     }
 
 

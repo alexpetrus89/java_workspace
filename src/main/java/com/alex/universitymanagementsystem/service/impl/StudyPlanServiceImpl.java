@@ -3,18 +3,20 @@ package com.alex.universitymanagementsystem.service.impl;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.springframework.dao.DataAccessException;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.alex.universitymanagementsystem.domain.Course;
 import com.alex.universitymanagementsystem.domain.DegreeCourse;
+import com.alex.universitymanagementsystem.domain.Student;
 import com.alex.universitymanagementsystem.domain.immutable.Register;
 import com.alex.universitymanagementsystem.dto.CourseDto;
-import com.alex.universitymanagementsystem.dto.StudentDto;
+import com.alex.universitymanagementsystem.enum_type.DomainType;
 import com.alex.universitymanagementsystem.exception.ObjectAlreadyExistsException;
 import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
 import com.alex.universitymanagementsystem.mapper.CourseMapper;
-import com.alex.universitymanagementsystem.mapper.StudentMapper;
 import com.alex.universitymanagementsystem.repository.CourseRepository;
 import com.alex.universitymanagementsystem.repository.DegreeCourseRepository;
 import com.alex.universitymanagementsystem.repository.StudentRepository;
@@ -25,8 +27,11 @@ import com.alex.universitymanagementsystem.service.StudyPlanService;
 @Service
 public class StudyPlanServiceImpl implements StudyPlanService {
 
+    // logger
+    private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(StudyPlanServiceImpl.class);
+
     // constants
-    private static final String EXCEPTION_COURSE_IDENTIFIER = "course";
+    private static final String DATA_ACCESS_ERROR = "An error occurred while accessing the database.";
 
     // instance variables
     private final StudyPlanRepository studyPlanRepository;
@@ -50,10 +55,9 @@ public class StudyPlanServiceImpl implements StudyPlanService {
      * Retrieves the ordering of the study plan
      * @param register the register of the student
      * @return the ordering of the study plan
-     * @throws ObjectNotFoundException if the study plan does not exist
      */
     @Override
-    public String getOrderingByRegister(Register register) throws ObjectNotFoundException {
+    public String getOrderingByRegister(@NonNull Register register) {
 
         return studentRepository
             .findByRegister(register)
@@ -66,11 +70,10 @@ public class StudyPlanServiceImpl implements StudyPlanService {
      * Retrieves the courses of the study plan
      * @param register the register of the student
      * @return the courses of the study plan
-     * @throws ObjectNotFoundException if the study plan does not exist
      */
     @Override
-    public Set<CourseDto> getCoursesByRegister(@NonNull Register register)
-        throws ObjectNotFoundException {
+    public Set<CourseDto> getCoursesByRegister(@NonNull Register register) {
+
         return studentRepository
             .findByRegister(register)
             .getStudyPlan()
@@ -88,38 +91,44 @@ public class StudyPlanServiceImpl implements StudyPlanService {
      * @param string name of degree course of old course
      * @param string name of the course to add
      * @param string name of the course to remove
-     * @throws ObjectAlreadyExistsException
-     * @throws ObjectNotFoundException
+     * @throws NullPointerException if any of the parameters are null
+     * @throws ObjectAlreadyExistsException if a course with the same name already exists
+     * @throws ObjectNotFoundException if a degree course with the given name does not exist
+     * @throws IllegalArgumentException if the cfu of the new course is not equal to the cfu of the old course
      */
     @Override
+    @Transactional
     public void changeCourse(
         @NonNull Register register,
         @NonNull String degreeCourseOfNewCourse,
         @NonNull String degreeCourseOfOldCourse,
         @NonNull String courseToAddName,
         @NonNull String courseToRemoveName
-    ) throws ObjectAlreadyExistsException, ObjectNotFoundException {
+    ) throws NullPointerException, ObjectAlreadyExistsException, ObjectNotFoundException, IllegalArgumentException {
 
-        StudentDto student = StudentMapper.mapToStudentDto(studentRepository.findByRegister(register));
+        try {
+            // retrieve all data
+            Student student = studentRepository.findByRegister(register);
+            DegreeCourse degreeCourseNew = degreeCourseRepository.findByName(degreeCourseOfNewCourse.toUpperCase());
+            DegreeCourse degreeCourseOld = degreeCourseRepository.findByName(degreeCourseOfOldCourse.toUpperCase());
+            Course courseToAdd = courseRepository.findByNameAndDegreeCourse(courseToAddName, degreeCourseNew.getId());
+            Course courseToRemove = courseRepository.findByNameAndDegreeCourse(courseToRemoveName, degreeCourseOld.getId());
 
-        DegreeCourse degreeCourseNew = degreeCourseRepository.findByName(degreeCourseOfNewCourse.toUpperCase());
+            // sanity checks
+            if(!student.getStudyPlan().addCourse(courseToAdd))
+                throw new ObjectAlreadyExistsException(DomainType.COURSE);
 
-        DegreeCourse degreeCourseOld = degreeCourseRepository.findByName(degreeCourseOfOldCourse.toUpperCase());
+            if(!student.getStudyPlan().removeCourse(courseToRemove))
+                throw new ObjectNotFoundException(DomainType.COURSE);
 
-        Course courseToAdd = courseRepository.findByNameAndDegreeCourse(courseToAddName, degreeCourseNew.getId());
+            if(!courseToAdd.getCfu().equals(courseToRemove.getCfu()))
+                throw new IllegalArgumentException("courses needs to have same cfu");
 
-        Course courseToRemove = courseRepository.findByNameAndDegreeCourse(courseToRemoveName, degreeCourseOld.getId());
-
-        if(!courseToAdd.getCfu().equals(courseToRemove.getCfu()))
-            throw new IllegalArgumentException("courses needs to have same cfu");
-
-        if(!student.getStudyPlan().addCourse(courseToAdd))
-            throw new ObjectAlreadyExistsException(courseToAddName, EXCEPTION_COURSE_IDENTIFIER);
-
-        if(!student.getStudyPlan().removeCourse(courseToRemove))
-            throw new ObjectNotFoundException(courseToRemoveName, EXCEPTION_COURSE_IDENTIFIER);
-
-        studyPlanRepository.saveAndFlush(student.getStudyPlan());
+            // save
+            studyPlanRepository.saveAndFlush(student.getStudyPlan());
+        } catch (DataAccessException e) {
+            logger.error(DATA_ACCESS_ERROR, e);
+        }
     }
 
 

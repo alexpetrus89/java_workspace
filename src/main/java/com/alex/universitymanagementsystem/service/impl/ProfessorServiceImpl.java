@@ -3,6 +3,9 @@ package com.alex.universitymanagementsystem.service.impl;
 import java.util.List;
 import java.util.regex.PatternSyntaxException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataAccessException;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
@@ -21,9 +24,11 @@ import jakarta.transaction.Transactional;
 @Service
 public class ProfessorServiceImpl implements ProfessorService {
 
-    // constants
-    private static final String EXCEPTION_PROFESSOR_IDENTIFIER = "professor";
-    private static final String EXCEPTION_FISCAL_CODE_IDENTIFIER = "professor_fiscal_code";
+    // logger
+	private static final Logger logger = LoggerFactory.getLogger(ProfessorServiceImpl.class);
+
+	// constants
+	private static final String DATA_ACCESS_ERROR = "data access error";
 
     // instance variables
     private final ProfessorRepository professorRepository;
@@ -49,36 +54,38 @@ public class ProfessorServiceImpl implements ProfessorService {
 
 
     /**
-     * Retrieves a professor by fiscal code.
-     * @param fiscalCode the fiscal code of the professor to retrieve.
-     * @return ProfessorDto object containing the professor's data.
-     * @throws ObjectNotFoundException if no professor with the given fiscal
-     *                                 code exists.
-     * @throws IllegalArgumentException if the fiscal code is empty
-     * @throws UnsupportedOperationException if the fiscal code is not unique
-     */
-    @Override
-    public ProfessorDto getProfessorByFiscalCode(@NonNull String fiscalCode)
-        throws ObjectNotFoundException
-    {
-        return ProfessorMapper.mapToProfessorDto(professorRepository.findByFiscalCode(fiscalCode));
-    }
-
-
-    /**
      * Retrieves a professor by unique code
      * @param uniqueCode the unique code of the professor to retrieve
-     * @return ProfessorDto
-     * @throws ObjectNotFoundException if no professor with the given unique
-     *                                  code is found
-     * @throws IllegalArgumentException if the unique code is empty
+     * @return ProfessorDto object containing the professor's data
+     * @throws NullPointerException if the unique code is null
+     * @throws IllegalArgumentException if the unique code is blank
      * @throws UnsupportedOperationException if the unique code is not unique
      */
     @Override
     public ProfessorDto getProfessorByUniqueCode(@NonNull UniqueCode uniqueCode)
-        throws ObjectNotFoundException
+        throws NullPointerException, IllegalArgumentException, UnsupportedOperationException
     {
+        if(uniqueCode.toString().isBlank())
+            throw new IllegalArgumentException("Unique Code cannot be null or empty");
         return ProfessorMapper.mapToProfessorDto(professorRepository.findByUniqueCode(uniqueCode));
+    }
+
+
+    /**
+     * Retrieves a professor by fiscal code.
+     * @param fiscalCode the fiscal code of the professor to retrieve.
+     * @return ProfessorDto object containing the professor's data.
+     * @throws NullPointerException if the fiscal code is null
+     * @throws IllegalArgumentException if the fiscal code is blank
+     * @throws UnsupportedOperationException if the fiscal code is not unique
+     */
+    @Override
+    public ProfessorDto getProfessorByFiscalCode(@NonNull String fiscalCode)
+        throws NullPointerException, IllegalArgumentException, UnsupportedOperationException
+    {
+        if(fiscalCode.isBlank())
+            throw new IllegalArgumentException("Fiscal Code cannot be null or empty");
+        return ProfessorMapper.mapToProfessorDto(professorRepository.findByFiscalCode(fiscalCode));
     }
 
 
@@ -86,14 +93,16 @@ public class ProfessorServiceImpl implements ProfessorService {
      * Retrieves a professor by name.
      * @param name the name of the professor.
      * @return ProfessorDto object containing the professor's data.
-     * @throws ObjectNotFoundException if no professor with the given name exists.
-     * @throws IllegalArgumentException if the name is empty
+     * @throws NullPointerException if the name is null
+     * @throws IllegalArgumentException if the name is blank
      * @throws UnsupportedOperationException if the name is not unique
      */
     @Override
     public ProfessorDto getProfessorByName(@NonNull String name)
-        throws ObjectNotFoundException
+        throws NullPointerException, IllegalArgumentException, UnsupportedOperationException
     {
+        if(name.isBlank())
+            throw new IllegalArgumentException("Name cannot be null or empty");
         return ProfessorMapper.mapToProfessorDto(professorRepository.findByFullname(name));
     }
 
@@ -102,75 +111,92 @@ public class ProfessorServiceImpl implements ProfessorService {
      * Adds a new professor to the repository.
      *
      * @param professor the professor to add
-     * @throws ObjectAlreadyExistsException if a professor with the same
-     *                                      unique code already exists in the
-     *                                      repository.
-     * @throws IllegalArgumentException if the unique code or fiscal code
-     *                                  is empty
-     * @throws UnsupportedOperationException if the unique code or fiscal
-     *                                       code is not unique
+     * @throws NullPointerException if the professor is null
+     * @throws IllegalArgumentException if the unique code or fiscal
+     *         code is Blank
+     * @throws ObjectAlreadyExistsException if a professor with the
+     *         same unique code already exists in the repository.
+     * @throws UnsupportedOperationException if the unique code or
+     *         fiscal code is not unique
      */
     @Override
     @Transactional
     public void addNewProfessor(@NonNull Professor professor)
-        throws ObjectAlreadyExistsException
+        throws NullPointerException, IllegalArgumentException, ObjectAlreadyExistsException, UnsupportedOperationException
     {
-        UniqueCode uniqueCode = professor.getUniqueCode();
-        String fiscalCode = professor.getFiscalCode();
+        try {
+            UniqueCode uniqueCode = professor.getUniqueCode();
+            String fiscalCode = professor.getFiscalCode();
 
-        if(uniqueCode == null || uniqueCode.toString().isEmpty())
-            throw new IllegalArgumentException("Unique Code cannot be null or empty");
+            if(uniqueCode == null || uniqueCode.toString().isBlank())
+                throw new IllegalArgumentException("Unique Code cannot be null or empty");
 
-        if(fiscalCode == null || fiscalCode.isEmpty())
-            throw new IllegalArgumentException("Fiscal Code cannot be null or empty");
+            if(fiscalCode == null || fiscalCode.isBlank())
+                throw new IllegalArgumentException("Fiscal Code cannot be null or empty");
 
-        if(professorRepository.existsByUniqueCode(uniqueCode))
-            throw new ObjectAlreadyExistsException(uniqueCode);
+            if(professorRepository.existsByUniqueCode(uniqueCode))
+                throw new ObjectAlreadyExistsException(uniqueCode);
 
-        if(professorRepository.existsByFiscalCode(fiscalCode))
-            throw new ObjectAlreadyExistsException(fiscalCode, EXCEPTION_FISCAL_CODE_IDENTIFIER);
+            if(professorRepository.existsByFiscalCode(fiscalCode))
+                throw new ObjectAlreadyExistsException(fiscalCode);
 
-        professorRepository.saveAndFlush(professor);
+            professorRepository.saveAndFlush(professor);
+        } catch (DataAccessException e) {
+            logger.error(DATA_ACCESS_ERROR + " while adding new professor " + professor.getFullname(), e);
+        }
     }
 
 
     /**
      * Updates an existing professor's information.
      * @param newProfessorDto the data transfer object containing the new details
-     *                        of the professor to be updated.
+     *        of the professor to be updated.
+     * @throws NullPointerException if the ProfessorDto is null
      * @throws ObjectNotFoundException if no professor with the given unique code
-     *                                 exists in the repository.
-     * @throws IllegalArgumentException if the given register is null or empty.
-     * @throws UnsupportedOperationException if the unique code is not
+     *         exists in the repository.
+     * @throws IllegalArgumentException if the new username is blank
+     *         or if the new full name is null or if the fiscal code is blank or
+     *         not 16 alphanumeric characters or if the regular expression's syntax
+     *         is invalid
+     * @throws UnsupportedOperationException if the unique code is not unique
      * @throws PatternSyntaxException if the regular expression's syntax is invalid
      */
     @Override
     @Transactional
     public void updateProfessor(@NonNull ProfessorDto newProfessorDto)
-        throws ObjectNotFoundException
+        throws NullPointerException, ObjectNotFoundException, IllegalArgumentException, UnsupportedOperationException, PatternSyntaxException
     {
 
-        Professor updatableProfessor = professorRepository.findByUniqueCode(newProfessorDto.getUniqueCode());
+        try {
+            Professor updatableProfessor = professorRepository.findByUniqueCode(newProfessorDto.getUniqueCode());
+            Professor newProfessor = ProfessorMapper.mapToProfessor(newProfessorDto);
 
-        Professor newProfessor = ProfessorMapper.mapToProfessor(newProfessorDto);
+            if(updatableProfessor == null)
+                throw new ObjectNotFoundException(newProfessorDto.getUniqueCode());
 
-        // new fiscal code, name and email
-        String newFiscalCode = newProfessor.getFiscalCode();
-        String newName = newProfessor.getFullname();
-        String newUsername = newProfessor.getUsername();
+            // retrieve new data
+            String newFiscalCode = newProfessor.getFiscalCode();
+            String newName = newProfessor.getFullname();
+            String newUsername = newProfessor.getUsername();
 
-        // update
-        if(newFiscalCode != null &&
-            newFiscalCode.length() == 16 &&
-                newFiscalCode.matches("\\w{16}"))
+            // sanity check
+            if(newFiscalCode.isBlank() || newFiscalCode.length() != 16 || !newFiscalCode.matches("\\w{16}"))
+                throw new IllegalArgumentException("Fiscal Code must be 16 alphanumeric characters");
+            if(newName == null || newName.isBlank())
+                throw new IllegalArgumentException("Name cannot be null or empty");
+            if(newUsername == null || newUsername.isBlank())
+                throw new IllegalArgumentException("Username cannot be null or empty");
+
+            // update
             updatableProfessor.setFiscalCode(newFiscalCode);
-        if(newName != null && !newName.isEmpty())
             updatableProfessor.setFullname(newName);
-		if(newUsername != null && !newUsername.isEmpty())
             updatableProfessor.setUsername(newUsername);
 
-        // save
-        professorRepository.saveAndFlush(updatableProfessor);
+            // save
+            professorRepository.saveAndFlush(updatableProfessor);
+        } catch (DataAccessException e) {
+            logger.error(DATA_ACCESS_ERROR + " while updating professor with unique code " + newProfessorDto.getUniqueCode(), e);
+        }
     }
 
 
@@ -180,20 +206,28 @@ public class ProfessorServiceImpl implements ProfessorService {
      * removed from the repository.
      *
      * @param uniqueCode the unique code of the professor to delete
-     * @throws ObjectNotFoundException if no professor with the given unique
-     *                                 code is found
-     * @throws IllegalArgumentException if the unique code is empty or null
-     * @throws UnsupportedOperationException if the unique code is not unique
+     * @throws ObjectNotFoundException if no professor with the given
+     *         unique code is found
      * @throws NullPointerException if the unique code is null
+     * @throws IllegalArgumentException if the unique code is blank
+     * @throws UnsupportedOperationException if the unique code is not unique
      */
     @Override
     @Transactional
-    public void deleteProfessor(@NonNull UniqueCode uniqueCode) {
+    public void deleteProfessor(@NonNull UniqueCode uniqueCode)
+        throws NullPointerException, IllegalArgumentException, ObjectNotFoundException
+    {
+        if(uniqueCode.toString().isBlank())
+            throw new IllegalArgumentException("Unique Code cannot be null or empty");
 
-        if(!professorRepository.existsByUniqueCode(uniqueCode))
-            throw new ObjectNotFoundException("Professor not found", EXCEPTION_PROFESSOR_IDENTIFIER);
+        try {
+            if(!professorRepository.existsByUniqueCode(uniqueCode))
+                throw new ObjectNotFoundException(uniqueCode);
 
-        professorRepository.deleteByUniqueCode(uniqueCode);
+            professorRepository.deleteByUniqueCode(uniqueCode);
+        } catch (DataAccessException e) {
+            logger.error(DATA_ACCESS_ERROR + " while deleting professor with unique code " + uniqueCode, e);
+        }
     }
 
 

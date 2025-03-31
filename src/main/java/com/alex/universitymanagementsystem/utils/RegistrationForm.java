@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.alex.universitymanagementsystem.domain.User;
+import com.alex.universitymanagementsystem.enum_type.RoleType;
 
 public class RegistrationForm {
 
@@ -17,7 +18,7 @@ public class RegistrationForm {
     private String state;
     private String zip;
     private String phone;
-    private Role role;
+    private RoleType role;
 
     // constructor
     public RegistrationForm(Builder formBuilder) {
@@ -70,7 +71,7 @@ public class RegistrationForm {
         return phone;
     }
 
-    public Role getRole() {
+    public RoleType getRole() {
         return role;
     }
 
@@ -112,7 +113,7 @@ public class RegistrationForm {
         this.phone = phone;
     }
 
-    public void setRole(Role role) {
+    public void setRole(RoleType role) {
         this.role = role;
     }
 

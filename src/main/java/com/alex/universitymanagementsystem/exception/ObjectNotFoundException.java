@@ -5,67 +5,46 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import com.alex.universitymanagementsystem.domain.immutable.Register;
 import com.alex.universitymanagementsystem.domain.immutable.UniqueCode;
+import com.alex.universitymanagementsystem.enum_type.DomainType;
 
 
 @ResponseStatus(value = HttpStatus.NOT_FOUND)
 public class ObjectNotFoundException extends RuntimeException {
 
-    // constants
-    private static final String OBJECT_NOT_FOUND = "object not found";
-    // student
-    private static final String STUDENT_WITH_REGISTER = "student with registration number ";
-	private static final String STUDENT_WITH_NAME = "student with name ";
-    // professor
-    private static final String PROFESSOR_WITH_FISCAL_CODE = "professor with fiscal code ";
-    private static final String PROFESSOR_WITH_UNIQUE_CODE = "professor with unique code ";
-    private static final String PROFESSOR_WITH_NAME = "professor with name ";
-    // course
-    private static final String COURSE_WITH_NAME = "course with name ";
-    // degree course
-    private static final String DEGREE_COURSE_WITH_NAME = "course degree with name ";
-    // examination
-    private static final String EXAMINATION_OF_COURSE_NAMED = "examination of course named ";
-
-	private static final String NOT_PRESENT = " not present";
-    private static final String MIX = "%s%s%s";
-
-    //instance variables
     private final String message;
 
-    // constructors
-    public ObjectNotFoundException() {
-        super();
-        this.message = "UNKNOWN ERROR";
+    // Constructors
+    public ObjectNotFoundException(Object type) {
+        super(formatMessageStatic(type));
+        this.message = formatMessageStatic(type);
     }
 
-    // constructors
-    public ObjectNotFoundException(Register register) {
-        super(String.format(MIX, STUDENT_WITH_REGISTER, register, NOT_PRESENT));
-        this.message = String.format(MIX, STUDENT_WITH_REGISTER, register, NOT_PRESENT);
+    // Metodo di formattazione del messaggio
+    private static String formatMessageStatic(Object type) {
+        return switch (type) {
+            case Register register -> String.format("Student with registration number %s not found", register.toString());
+            case UniqueCode uniqueCode -> String.format("Professor with unique code %s not found", uniqueCode.toString());
+            case String name -> String.format("%s with name %s not found", getIdentifierName((DomainType)type), name);
+            default -> "Unknown error";
+        };
     }
 
-    public ObjectNotFoundException(UniqueCode uniqueCode) {
-        super(String.format(MIX, PROFESSOR_WITH_UNIQUE_CODE, uniqueCode, NOT_PRESENT));
-        this.message = String.format(MIX, PROFESSOR_WITH_UNIQUE_CODE, uniqueCode, NOT_PRESENT);
+    // Metodo di recupero del nome dell'identificatore
+    private static String getIdentifierName(DomainType type) {
+        return switch (type) {
+            case DomainType.USER -> "User";
+            case DomainType.STUDENT -> "Student";
+            case DomainType.PROFESSOR -> "Professor";
+            case DomainType.COURSE -> "Course";
+            case DomainType.DEGREE_COURSE -> "Degree course";
+            case DomainType.EXAMINATION -> "Examination";
+            case DomainType.EXAMINATION_APPEAL -> "Examination appeal";
+            default -> "Unknown";
+        };
     }
 
-    public ObjectNotFoundException(String message, String identifier) {
-        super(String.format(OBJECT_NOT_FOUND));
-        switch(identifier) {
-            case "student" -> this.message = String.format(MIX, STUDENT_WITH_NAME, message, NOT_PRESENT);
-            case "professor_name" -> this.message = String.format(MIX, PROFESSOR_WITH_NAME, message, NOT_PRESENT);
-            case "professor_fiscal_code" -> this.message = String.format(MIX, PROFESSOR_WITH_FISCAL_CODE, message, NOT_PRESENT);
-            case "course" -> this.message = String.format(MIX, COURSE_WITH_NAME, message, NOT_PRESENT);
-            case "degree_course" -> this.message = String.format(MIX, DEGREE_COURSE_WITH_NAME, message, NOT_PRESENT);
-            case "examination" -> this.message = String.format(MIX, EXAMINATION_OF_COURSE_NAMED, message, NOT_PRESENT);
-            case "user" -> this.message = String.format(message);
-            default -> this.message = "UNKNOWN ERROR";
-        }
-    }
-
-    // getters
-    @Override
-    public String getMessage() {
+    // getter
+    public String getBaseMessage() {
         return message;
     }
 }

@@ -3,6 +3,8 @@ package com.alex.universitymanagementsystem.utils;
 import java.io.Serializable;
 import java.time.LocalDate;
 
+import com.alex.universitymanagementsystem.enum_type.RoleType;
+
 public class Builder implements Serializable {
 
     // instance variables
@@ -16,7 +18,7 @@ public class Builder implements Serializable {
     private String state;
     private String zip;
     private String phone;
-    private Role role;
+    private RoleType role;
 
     // getters
     public String getUsername() {
@@ -59,7 +61,7 @@ public class Builder implements Serializable {
         return phone;
     }
 
-    public Role getRole() {
+    public RoleType getRole() {
         return role;
     }
 
@@ -140,11 +142,11 @@ public class Builder implements Serializable {
         this.phone = phone;
     }
 
-    public void withRole(Role role) {
+    public void withRole(RoleType role) {
         this.role = role;
     }
 
-    public void setRole(Role role) {
+    public void setRole(RoleType role) {
         this.role = role;
     }
 

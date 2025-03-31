@@ -9,7 +9,6 @@ import com.alex.universitymanagementsystem.dto.CourseDto;
 import com.alex.universitymanagementsystem.dto.DegreeCourseDto;
 import com.alex.universitymanagementsystem.dto.ProfessorDto;
 import com.alex.universitymanagementsystem.dto.StudentDto;
-import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
 
 
 
@@ -22,54 +21,57 @@ public interface DegreeCourseService {
 
 
     /**
+     * Retrieves a degree course from the repository by its name and
+     * maps it to a DTO.
      * @param name the name of the degree course
-     * @return DegreeCourseDto
-     * @throws ObjectNotFoundException if no degree course with the given name exists
+     * @return DegreeCourseDto object representing the degree course
+     *         with the given name.
      * @throws NullPointerException if the name is null
-     * @throws IllegalArgumentException if the name is empty
+     * @throws IllegalArgumentException if the name is empty.
      * @throws UnsupportedOperationException if the name is not unique
      */
-    DegreeCourse getDegreeCourseByName(@NonNull String name)
-        throws ObjectNotFoundException;
+    public DegreeCourse getDegreeCourseByName(@NonNull String name)
+        throws NullPointerException, IllegalArgumentException, UnsupportedOperationException;
 
 
     /**
+     * Retrieves all courses of a given degree course from the repository and
+     * maps them to DTOs.
      * @param name the name of the degree course
-     * @return List<StudentDto>
-     * @throws ObjectNotFoundException if no degree course with the given name exists
-     * @throws NullPointerException if the name is null
-     * @throws IllegalArgumentException if the name is empty
-     * @throws UnsupportedOperationException if the name is not unique
-     */
-    List<StudentDto> getStudents(@NonNull String name)
-        throws ObjectNotFoundException;
-
-
-    /**
-     * Retrieves all professors of a given degree course from the repository
-     * and maps them to DTOs.
-     * @param name the name of the degree course
-     * @return List<ProfessorDto>
-     * @throws ObjectNotFoundException if no degree course with the given name exists
-     * @throws NullPointerException if the name is null
-     * @throws IllegalArgumentException if the name is empty
-     * @throws UnsupportedOperationException if the name is not unique
-     */
-    public List<ProfessorDto> getProfessors(@NonNull String name)
-        throws ObjectNotFoundException;
-
-
-    /**
-     * Retrieves all courses of a given degree course from the repository
-     * and maps them to DTOs.
-     * @param name the name of the degree course
-     * @return List<CourseDto>
-     * @throws ObjectNotFoundException if no degree course with the given name exists
-     * @throws NullPointerException if the name is null
-     * @throws IllegalArgumentException if the name is empty
+     * @return List<CourseDto> objects representing all courses of the given
+     *         degree course.
+     * @throws NullPointerException if the name is null.
+     * @throws IllegalArgumentException if the name is empty.
      * @throws UnsupportedOperationException if the name is not unique
      */
     public List<CourseDto> getCourses(@NonNull String name)
-        throws ObjectNotFoundException;
+        throws NullPointerException, IllegalArgumentException, UnsupportedOperationException;
 
+
+    /**
+     * Retrieves all professors of a given degree course from the
+     * repository and maps them to DTOs.
+     * @param name the name of the degree course
+     * @return List<ProfessorDto> representing all professors of the given
+     *         degree course
+     * @throws NullPointerException if the name is null.
+     * @throws IllegalArgumentException if the name is blank.
+     * @throws UnsupportedOperationException if the name is not unique.
+     */
+    public List<ProfessorDto> getProfessors(@NonNull String name)
+        throws NullPointerException, IllegalArgumentException, UnsupportedOperationException;
+
+
+    /**
+     * Retrieves all students of a given degree course from the
+     * repository and maps them to DTOs.
+     * @param name the name of the degree course.
+     * @return List of StudentDto objects representing all students of the
+     *         given degree course.
+     * @throws NullPointerException if the name is null.
+     * @throws IllegalArgumentException if the name is blank.
+     * @throws UnsupportedOperationException if the name is not unique
+     */
+    public List<StudentDto> getStudents(@NonNull String name)
+        throws NullPointerException, IllegalArgumentException, UnsupportedOperationException;
 }

@@ -5,62 +5,46 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import com.alex.universitymanagementsystem.domain.immutable.Register;
 import com.alex.universitymanagementsystem.domain.immutable.UniqueCode;
+import com.alex.universitymanagementsystem.enum_type.DomainType;
 
 
 @ResponseStatus(value = HttpStatus.CONFLICT)
 public class ObjectAlreadyExistsException extends RuntimeException {
 
-    // constants
-    private static final String OBJECT_ALREADY_EXISTS = "object already exists";
-    // student
-    private static final String STUDENT_WITH_REGISTER = "student with registration number ";
-	private static final String STUDENT_WITH_NAME = "student with name ";
-    // professor
-    private static final String PROFESSOR_WITH_FISCAL_CODE = "professor with fiscal code ";
-    private static final String PROFESSOR_WITH_UNIQUE_CODE = "professor with unique code ";
-    private static final String PROFESSOR_WITH_NAME = "professor with name ";
-    // course
-    private static final String COURSE_WITH_NAME = "course with name ";
-    private static final String EXAMINATION_OF_COURSE_NAMED = "examination of course named ";
-
-    private static final String ALREADY_EXISTS = " already exists";
-    private static final String MIX = "%s%s%s";
-
-    //instance variables
     private final String message;
 
-    // constructors
-    public ObjectAlreadyExistsException() {
-        super();
-        this.message = "UNKNOWN ERROR";
+    // Constructors
+    public ObjectAlreadyExistsException(Object type) {
+        super(formatMessageStatic(type));
+        this.message = formatMessageStatic(type);
     }
 
-    public ObjectAlreadyExistsException(Register register) {
-        super(String.format(MIX,STUDENT_WITH_REGISTER, register,ALREADY_EXISTS));
-        this.message = String.format(MIX,STUDENT_WITH_REGISTER, register,ALREADY_EXISTS);
+    // Metodo di formattazione del messaggio
+    private static String formatMessageStatic(Object type) {
+        return switch (type) {
+            case Register register -> String.format("Student with registration number %s already exists", register.toString());
+            case UniqueCode uniqueCode -> String.format("Professor with unique code %s already exists", uniqueCode.toString());
+            case String name -> String.format("%s with name %s already exists", getIdentifierName((DomainType) type), name);
+            default -> "Unknown error";
+        };
     }
 
-    public ObjectAlreadyExistsException(UniqueCode uniqueCode) {
-        super(String.format(MIX, PROFESSOR_WITH_UNIQUE_CODE, uniqueCode, ALREADY_EXISTS));
-        this.message = String.format(MIX, PROFESSOR_WITH_UNIQUE_CODE, uniqueCode, ALREADY_EXISTS);
+    // Metodo di recupero del nome dell'identificatore
+    private static String getIdentifierName(DomainType type) {
+        return switch (type) {
+            case DomainType.USER -> "User";
+            case DomainType.STUDENT -> "Student";
+            case DomainType.PROFESSOR -> "Professor";
+            case DomainType.COURSE -> "Course";
+            case DomainType.DEGREE_COURSE -> "Degree course";
+            case DomainType.EXAMINATION -> "Examination";
+            case DomainType.EXAMINATION_APPEAL -> "Examination appeal";
+            default -> "Unknown";
+        };
     }
 
-    public ObjectAlreadyExistsException(String message, String identifier) {
-        super(String.format(OBJECT_ALREADY_EXISTS));
-        switch(identifier) {
-            case "student" -> this.message = String.format(MIX, STUDENT_WITH_NAME, message, ALREADY_EXISTS);
-            case "professor" -> this.message = String.format(MIX, PROFESSOR_WITH_NAME, message, ALREADY_EXISTS);
-            case "professor_fiscal_code" -> this.message = String.format(MIX, PROFESSOR_WITH_FISCAL_CODE, message, ALREADY_EXISTS);
-            case "course" -> this.message = String.format(MIX, COURSE_WITH_NAME, message, ALREADY_EXISTS);
-            case "examination" -> this.message = String.format(MIX, EXAMINATION_OF_COURSE_NAMED, message, ALREADY_EXISTS);
-            case "user" -> this.message = String.format(message);
-            default -> this.message = "UNKNOWN ERROR";
-        }
-    }
-
-    // getters
-    @Override
-    public String getMessage() {
+    // getter
+    public String getBaseMessage() {
         return message;
     }
 

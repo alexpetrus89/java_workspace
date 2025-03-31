@@ -8,6 +8,7 @@ import org.springframework.lang.NonNull;
 import com.alex.universitymanagementsystem.domain.ExaminationAppeal;
 import com.alex.universitymanagementsystem.domain.Professor;
 import com.alex.universitymanagementsystem.domain.immutable.Register;
+import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
 
 
 public interface ExaminationAppealService {
@@ -22,11 +23,12 @@ public interface ExaminationAppealService {
      * Retrieves all examination appeals for a student
      * @param register
      * @return a list of examination appeals
-     * @throws IllegalArgumentException
-     * @throws UnsupportedOperationException
-     * @throws NullPointerException
+     * @throws NullPointerException if any of the parameters is null
+     * @throws IllegalArgumentException if the register is blank
+     * @throws UnsupportedOperationException if the register is not unique
      */
-    List<ExaminationAppeal> getExaminationAppealByStudent(@NonNull Register register);
+    public List<ExaminationAppeal> getExaminationAppealByStudent(@NonNull Register register)
+        throws NullPointerException, IllegalArgumentException, UnsupportedOperationException;
 
     /**
      * Adds a new examination appeal
@@ -36,33 +38,42 @@ public interface ExaminationAppealService {
      * @param description
      * @param date
      * @return examinationAppeal
-     * @throws IllegalArgumentException
-     * @throws UnsupportedOperationException
-     * @throws NullPointerException
-     * @throws IllegalStateException
+     * @throws NullPointerException if any of the parameters is null
+     * @throws IllegalArgumentException if any of the parameters is invalid
+     * @throws ObjectNotFoundException if the degree course or professor
+     *         does not exist
+     * @throws UnsupportedOperationException if the register is not unique
      */
-    ExaminationAppeal addNewExaminationAppeal(String courseName, String degreeCourseName, Professor professor, String description, LocalDate date);
+    public ExaminationAppeal addNewExaminationAppeal(
+        @NonNull String courseName,
+        @NonNull String degreeCourseName,
+        @NonNull Professor professor,
+        @NonNull String description,
+        @NonNull LocalDate date
+    ) throws NullPointerException, IllegalArgumentException, ObjectNotFoundException;
 
     /**
      * Adds a student to an examination appeal
      * @param id examination appeal ids
      * @param register student register
      * @return examinationAppeal
-     * @throws IllegalArgumentException
-     * @throws UnsupportedOperationException
-     * @throws NullPointerException
+     * @throws NullPointerException if any of the parameters is null
+     * @throws IllegalArgumentException if any of the parameters is invalid
+     * @throws UnsupportedOperationException if the register is not unique
      */
-    ExaminationAppeal bookExaminationAppeal(@NonNull Long id, @NonNull Register register);
+    public ExaminationAppeal bookExaminationAppeal(@NonNull Long id, @NonNull Register register)
+        throws NullPointerException, IllegalArgumentException, UnsupportedOperationException;
 
     /**
      * Removes a student from an examination appeal
      * @param id examination appeal ids
      * @param register student register
+     * @throws NullPointerException if any of the parameters is null
      * @throws IllegalArgumentException
      * @throws UnsupportedOperationException
-     * @throws NullPointerException
      * @throws IllegalStateException
      */
-    void deleteBookedExaminationAppeal(@NonNull Long id, @NonNull Register register);
+    public void deleteBookedExaminationAppeal(@NonNull Long id, @NonNull Register register)
+        throws NullPointerException, IllegalArgumentException, UnsupportedOperationException, IllegalStateException;
 
 }

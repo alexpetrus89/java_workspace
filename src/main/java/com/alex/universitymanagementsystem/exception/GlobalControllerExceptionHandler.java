@@ -1,5 +1,37 @@
 package com.alex.universitymanagementsystem.exception;
 
+
+/**
+ * Global Exception Handling
+ *
+ * Un controller advice consente di utilizzare esattamente le stesse tecniche
+ * di gestione delle eccezioni, ma di applicarle all'intera applicazione, non
+ * solo a un singolo controller.
+ * È possibile considerarle come un intercettore guidato dall'annotazione.
+ *
+ * Qualsiasi classe annotata con @ControllerAdvice diventa un controller-advice
+ * e sono supportati tre tipi di metodo:
+ *
+ * 1) Metodi di gestione delle eccezioni annotati con @ExceptionHandler.
+ *
+ * 2) Metodi di miglioramento del modello (per aggiungere dati aggiuntivi
+ *    al modello) annotati con @ModelAttribute.
+ *
+ * Nota che questi attributi non sono disponibili per le viste di gestione
+ * delle eccezioni.
+ *
+ * 3) Metodi di inizializzazione del binder (utilizzati per configurare la
+ *    gestione dei form) annotati con @InitBinder.
+ *
+ * Ci occuperemo solo della gestione delle eccezioni: per maggiori informazioni
+ * sui metodi @ControllerAdvice, consultate il manuale online.
+ *
+ *
+ * Tutti i gestori di eccezioni che hai visto sopra possono essere definiti su
+ * una classe controller-advice, ma ora si applicano alle eccezioni generate da
+ * qualsiasi controller. Ecco un semplice esempio:
+ */
+
 import java.io.IOException;
 import java.text.ParseException;
 
@@ -16,10 +48,10 @@ import org.springframework.web.servlet.resource.NoResourceFoundException;
 import org.xml.sax.SAXException;
 
 @RestControllerAdvice
-public class GlobalExceptionHandler {
+public class GlobalControllerExceptionHandler {
 
     private static final Logger logger =
-        LoggerFactory.getLogger(GlobalExceptionHandler.class);
+        LoggerFactory.getLogger(GlobalControllerExceptionHandler.class);
 
     /**
      * Handles all uncaught exceptions and returns a ResponseEntity with a status of Internal Server Error (500)

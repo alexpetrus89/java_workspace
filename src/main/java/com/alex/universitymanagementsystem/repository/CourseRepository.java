@@ -12,7 +12,7 @@ import com.alex.universitymanagementsystem.domain.Course;
 import com.alex.universitymanagementsystem.domain.immutable.CourseId;
 import com.alex.universitymanagementsystem.domain.immutable.DegreeCourseId;
 import com.alex.universitymanagementsystem.domain.immutable.UniqueCode;
-import com.alex.universitymanagementsystem.utils.CourseType;
+import com.alex.universitymanagementsystem.enum_type.CourseType;
 
 
 @Repository
@@ -25,9 +25,9 @@ public interface CourseRepository
      * @param courseName the name of the course
      * @param degreeCourseId the id of the degree course
      * @return the course if found, null otherwise
+     * @throws NullPointerException if the course name or degree course id is null
      * @throws IllegalArgumentException if the course name or degree course id is null
      * @throws UnsupportedOperationException if the course name or degree course id is not unique
-     * @throws NullPointerException if the course name or degree course id is null
      */
     @Query("SELECT c FROM Course c WHERE c.name = :courseName AND c.degreeCourse.id = :degreeCourseId")
     Course findByNameAndDegreeCourse(
@@ -40,13 +40,13 @@ public interface CourseRepository
      * Retrieves a course from the repository by its type.
      * @param type the type of the course to retrieve
      * @return a list of courses if found, null otherwise
+     * @throws NullPointerException if the type is null
      * @throws IllegalArgumentException if the type is null
      * @throws UnsupportedOperationException if the type is not unique
-     * @throws NullPointerException if the type is null
      * @see CourseType
      */
     @Query("SELECT c FROM Course c WHERE c.type = :type")
-    List<Course> findByType(@Param("type") CourseType type);
+    List<Course> findByType(@NonNull @Param("type") CourseType type);
 
 
     /**
@@ -54,9 +54,9 @@ public interface CourseRepository
      * @param uniqueCode the unique code of the professor whose courses
      *                   are to be retrieved
      * @return a list of courses if found, null otherwise
+     * @throws NullPointerException if the unique code is null
      * @throws IllegalArgumentException if the unique code is null
      * @throws UnsupportedOperationException if the unique code is not unique
-     * @throws NullPointerException if the unique code is null
      * @see UniqueCode
      */
     @Query("SELECT c FROM Course c JOIN c.professor p WHERE p.uniqueCode = ?1")
@@ -67,9 +67,20 @@ public interface CourseRepository
      * Checks if a course exists by its name.
      * @param name the name of the course
      * @return boolean
+     * @throws NullPointerException if the name is null
      * @throws IllegalArgumentException if the name is null
      * @throws UnsupportedOperationException if the name is not unique
-     * @throws NullPointerException if the name is null
      */
     boolean existsByName(@NonNull String name);
+
+    /**
+     * Checks if a course exists by its name and degree course
+     * @param courseName
+     * @param degreeCourseName
+     * @return boolean
+     * @throws NullPointerException if the course name or degree course name is null
+     * @throws IllegalArgumentException if the course name or degree course name is null
+     * @throws UnsupportedOperationException if the course name or degree course name is not unique
+     */
+    boolean existsByNameAndDegreeCourse(@NonNull String courseName, @NonNull String degreeCourseName);
 }

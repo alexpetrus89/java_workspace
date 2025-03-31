@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.support.SessionStatus;
 
+import com.alex.universitymanagementsystem.enum_type.RoleType;
 import com.alex.universitymanagementsystem.utils.Builder;
-import com.alex.universitymanagementsystem.utils.Role;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -63,7 +63,7 @@ public class RegistrationController {
         @RequestParam("state") String state,
         @RequestParam("zip") String zip,
         @RequestParam("phone") String phone,
-        @RequestParam("role") Role role
+        @RequestParam("role") RoleType role
     ) {
         // create a new form builder
         Builder builder = new Builder();
@@ -84,11 +84,11 @@ public class RegistrationController {
 
         return switch (role) {
             // Reindirizza l'utente al metodo createNewStudent
-            case Role.STUDENT -> "redirect:role/create-student-from-user";
+            case RoleType.STUDENT -> "redirect:role/create-student-from-user";
             // Reindirizza l'utente al metodo createProfessor (non mostrato nel codice)
-            case Role.PROFESSOR -> "redirect:role/create-professor-from-user";
+            case RoleType.PROFESSOR -> "redirect:role/create-professor-from-user";
             // Reindirizza l'utente admin al login
-            case Role.ADMIN -> "forward:api/v1/user/create-admin";
+            case RoleType.ADMIN -> "forward:api/v1/user/create-admin";
             // Reindirizza all'utente alla pagina di login
             default -> "redirect:/login";
         };

@@ -23,8 +23,8 @@ import com.alex.universitymanagementsystem.service.impl.DegreeCourseServiceImpl;
 public class DegreeCourseController {
 
     // constants
-    private static final String ERROR = "error";
-    private static final String NOT_FOUND_PATH = "exception/object-not-found";
+    private static final String ERROR_URL = "/exception/error";
+    private static final String NOT_FOUND_URL = "exception/object-not-found";
 
     // instance variables
     private final DegreeCourseServiceImpl degreeCourseServiceImpl;
@@ -83,7 +83,7 @@ public class DegreeCourseController {
             return new ModelAndView("degree_course/professor-with-course-list","professors", professors);
 
         } catch (ObjectNotFoundException e) {
-            return new ModelAndView(ERROR, e.getMessage(), NOT_FOUND_PATH);
+            return new ModelAndView(ERROR_URL, e.getMessage(), NOT_FOUND_URL);
         }
 
     }

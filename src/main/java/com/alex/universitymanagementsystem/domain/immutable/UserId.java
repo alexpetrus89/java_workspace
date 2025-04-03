@@ -1,11 +1,9 @@
 package com.alex.universitymanagementsystem.domain.immutable;
 
-import java.util.UUID;
 import java.io.Serializable;
+import java.util.UUID;
 
 import org.springframework.util.Assert;
-
-
 
 import jakarta.persistence.Embeddable;
 

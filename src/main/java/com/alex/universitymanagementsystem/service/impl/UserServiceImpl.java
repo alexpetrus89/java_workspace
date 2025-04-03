@@ -1,7 +1,11 @@
 package com.alex.universitymanagementsystem.service.impl;
 
 import java.util.List;
+import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataAccessException;
 import org.springframework.lang.NonNull;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -10,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.alex.universitymanagementsystem.domain.User;
+import com.alex.universitymanagementsystem.domain.immutable.UserId;
 import com.alex.universitymanagementsystem.enum_type.DomainType;
 import com.alex.universitymanagementsystem.enum_type.RoleType;
 import com.alex.universitymanagementsystem.exception.ObjectAlreadyExistsException;
@@ -23,7 +28,11 @@ import jakarta.transaction.Transactional;
 @Service
 public class UserServiceImpl implements UserDetailsService{
 
-    // constants
+    // logger
+	private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
+
+	// constants
+	private static final String DATA_ACCESS_ERROR = "data access error";
     private static final String REDIRECT_LOGIN = "redirect:/login";
 
     // instance variable
@@ -72,14 +81,16 @@ public class UserServiceImpl implements UserDetailsService{
 	 */
 	@Transactional
     public String addNewUser(@NonNull User user)
-        throws NullPointerException, ObjectNotFoundException
-    {
+        throws NullPointerException, ObjectAlreadyExistsException {
         try {
+            if(userRepository.existsById(user.getId()))
+                throw new ObjectAlreadyExistsException(DomainType.USER);
             // save the user
             userRepository.saveAndFlush(user);
             return REDIRECT_LOGIN;
-        } catch (ObjectAlreadyExistsException e) {
-            return REDIRECT_LOGIN;
+        } catch (DataAccessException e) {
+            logger.error(DATA_ACCESS_ERROR, e);
+            return "redirect:error/error";
         }
     }
 
@@ -89,12 +100,12 @@ public class UserServiceImpl implements UserDetailsService{
      * repository.
      * This method is transactional and mapped to the HTTP PUT request for "/update".
      * @param form RegistrationForm containing updated user details.
-     * @return String representing the redirect URL after the update process.
      * @throws NullPointerException if the form is null.
      * @throws IllegalArgumentException if the username is blank.
      * @throws ObjectNotFoundException if the authenticated user is not found.
      */
-    public String updateUser(@NonNull RegistrationForm form)
+    @Transactional(rollbackOn = {NullPointerException.class, IllegalArgumentException.class, ObjectNotFoundException.class})
+    public User updateUser(@NonNull RegistrationForm form)
         throws NullPointerException, IllegalArgumentException, ObjectNotFoundException
     {
         // get the authenticated user
@@ -119,45 +130,50 @@ public class UserServiceImpl implements UserDetailsService{
             user.setPhoneNumber(form.getPhone());
             user.setRole(form.getRole());
 
-            // save the
-            userRepository.saveAndFlush(user);
-            return REDIRECT_LOGIN;
-
-        } catch (ObjectNotFoundException e) {
-            return "redirect:/user/update";
+            // save the user
+            return userRepository.saveAndFlush(user);
+        } catch (DataAccessException e) {
+            logger.error(DATA_ACCESS_ERROR, e);
+            return null;
         }
     }
 
 
     /**
      * Deletes a user from the repository.
-     * @param username the username of the user to be deleted
+     * @param userId user id of the user to be deleted
      * @throws NullPointerException if the username is null
      * @throws IllegalArgumentException if the authenticated user is not an admin
      * @throws UsernameNotFoundException if the user to be deleted is not found
      */
-    @Transactional
-    public void deleteUser(@NonNull String username)
+    @Transactional(rollbackOn = {NullPointerException.class, IllegalArgumentException.class, UsernameNotFoundException.class})
+    public boolean deleteUser(@NonNull String userId)
         throws NullPointerException, IllegalArgumentException, UsernameNotFoundException
     {
+        if(userId.isBlank())
+            throw new IllegalArgumentException("User id cannot be blank");
 
-        // get the authenticated user
-        User admin =  (User) SecurityContextHolder
-            .getContext()
-            .getAuthentication()
-            .getPrincipal();
+        try {
+            // get the authenticated user
+            User admin =  (User) SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getPrincipal();
 
-        if(!admin.getRole().equals(RoleType.ADMIN))
-            throw new IllegalArgumentException("Only admin can delete users");
+            if(!admin.getRole().equals(RoleType.ADMIN))
+                throw new IllegalArgumentException("Only admin can delete users");
 
-        User userToDelete = userRepository.findByUsername(username);
+            User userToDelete = userRepository
+                .findById(new UserId(UUID.fromString(userId)))
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
-        if(userToDelete == null)
-            throw new UsernameNotFoundException("User not found");
-
-        // delete the user
-        userRepository.delete(userToDelete);
+            // delete the user
+            userRepository.delete(userToDelete);
+            return true;
+        } catch (DataAccessException e) {
+            logger.error(DATA_ACCESS_ERROR, e);
+            return false;
+        }
     }
-
 
 }

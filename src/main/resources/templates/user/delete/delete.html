@@ -9,13 +9,15 @@
 </head>
 <body>
     <h1>Delete User</h1>
-    <form action="/api/v1/user/delete" method="post">
+    <form action="/api/v1/user/delete" method="post" sec:authorize="hasRole('ADMIN')">
         <input type="hidden" name="_method" value="DELETE" />
-        <input type="text" name="username" placeholder="Enter username" />
+        <input type="hidden" name="_csrf" th:value="${_csrf.token}">
+
+        <input type="text" name="id" placeholder="Enter user id" />
         <button type="submit">Delete</button>
         <input type="reset" value="Reset" />
     </form>
     <br>
-    <a href="#" th:href="@{/user_admin/admin-home}">Back to Menu</a>
+    <a href="#" th:href="@{/user/user-menu}">Back to Menu</a>
 </body>
 </html>

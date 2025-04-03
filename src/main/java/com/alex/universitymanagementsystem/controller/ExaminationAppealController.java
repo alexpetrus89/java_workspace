@@ -30,7 +30,7 @@ public class ExaminationAppealController {
     // constants
     private static final String TITLE = "title";
     private static final String ERROR = "Errore";
-    private static final String ERROR_PATH = "/error";
+    private static final String ERROR_URL = "/exception/error";
     private static final String ERROR_MESSAGE = "errorMessage";
     private static final String STACK_TRACE = "stackTrace";
     private static final String EXAMINATION_APPEALS = "examinationAppeals";
@@ -67,7 +67,7 @@ public class ExaminationAppealController {
             model.put(TITLE, ERROR);
             model.put(ERROR_MESSAGE, e.getMessage());
             model.put(STACK_TRACE, e.getStackTrace());
-            return new ModelAndView(ERROR_PATH, model);
+            return new ModelAndView(ERROR_URL, model);
         }
     }
 
@@ -82,7 +82,7 @@ public class ExaminationAppealController {
             model.put(TITLE, ERROR);
             model.put(ERROR_MESSAGE, e.getMessage());
             model.put(STACK_TRACE, e.getStackTrace());
-            return new ModelAndView(ERROR_PATH, model);
+            return new ModelAndView(ERROR_URL, model);
         }
     }
 
@@ -106,7 +106,7 @@ public class ExaminationAppealController {
             model.put(TITLE, ERROR);
             model.put(ERROR_MESSAGE, e.getMessage());
             model.put(STACK_TRACE, e.getStackTrace());
-            return new ModelAndView(ERROR_PATH, model);
+            return new ModelAndView(ERROR_URL, model);
         }
     }
 
@@ -135,7 +135,7 @@ public class ExaminationAppealController {
             model.put(TITLE, ERROR);
             model.put(ERROR_MESSAGE, e.getMessage());
             model.put(STACK_TRACE, e.getStackTrace());
-            return new ModelAndView(ERROR_PATH, model);
+            return new ModelAndView(ERROR_URL, model);
         }
     }
 
@@ -156,7 +156,7 @@ public class ExaminationAppealController {
             model.put(TITLE, ERROR);
             model.put(ERROR_MESSAGE, e.getMessage());
             model.put(STACK_TRACE, e.getStackTrace());
-            return new ModelAndView(ERROR_PATH, model);
+            return new ModelAndView(ERROR_URL, model);
         }
     }
 
@@ -177,7 +177,7 @@ public class ExaminationAppealController {
             model.put(TITLE, ERROR);
             model.put(ERROR_MESSAGE, e.getMessage());
             model.put(STACK_TRACE, e.getStackTrace());
-            return new ModelAndView(ERROR_PATH, model);
+            return new ModelAndView(ERROR_URL, model);
         }
     }
 
@@ -198,7 +198,7 @@ public class ExaminationAppealController {
             model.put(TITLE, ERROR);
             model.put(ERROR_MESSAGE, e.getMessage());
             model.put(STACK_TRACE, e.getStackTrace());
-            return new ModelAndView(ERROR_PATH, model);
+            return new ModelAndView(ERROR_URL, model);
         }
     }
 
@@ -212,7 +212,7 @@ public class ExaminationAppealController {
             model.put(TITLE, ERROR);
             model.put(ERROR_MESSAGE, e.getMessage());
             model.put(STACK_TRACE, e.getStackTrace());
-            return new ModelAndView(ERROR_PATH, model);
+            return new ModelAndView(ERROR_URL, model);
         }
     }
 

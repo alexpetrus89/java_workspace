@@ -30,6 +30,7 @@ import jakarta.validation.constraints.Pattern;
 
 @Entity
 @Table(name = "professor")
+//@SecondaryTable(name = "\"user\"", pkJoinColumns = @PrimaryKeyJoinColumn(name = "id"))
 @Access(AccessType.PROPERTY)
 public class Professor extends User {
 

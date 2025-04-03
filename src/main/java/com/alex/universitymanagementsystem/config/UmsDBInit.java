@@ -330,8 +330,8 @@ public class UmsDBInit implements Serializable {
         formBuilderSeven.withCity("laureto");
         formBuilderSeven.withState("italia");
         formBuilderSeven.withZip("72015");
-        formBuilderSix.withPhone("38412369547");
-        formBuilderSix.withRole(RoleType.STUDENT);
+        formBuilderSeven.withPhone("38412369547");
+        formBuilderSeven.withRole(RoleType.STUDENT);
 
         // 5
         Builder formBuilderEight = new Builder();

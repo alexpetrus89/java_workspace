@@ -1,6 +1,7 @@
 package com.alex.universitymanagementsystem.service.impl;
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -54,11 +55,16 @@ public class StudentServiceImpl implements StudentService {
 	 */
 	@Override
     public List<StudentDto> getStudents() {
-		return studentRepository
-			.findAll()
-            .stream()
-            .map(StudentMapper::mapToStudentDto)
-            .toList();
+		try {
+			return studentRepository
+				.findAll()
+				.stream()
+				.map(StudentMapper::mapToStudentDto)
+				.toList();
+		} catch (DataAccessException e) {
+			logger.error(DATA_ACCESS_ERROR, e);
+			return Collections.emptyList();
+		}
 	}
 
 	/**
@@ -73,9 +79,16 @@ public class StudentServiceImpl implements StudentService {
 	public StudentDto getStudentByRegister(@NonNull Register register)
 		throws NullPointerException, IllegalArgumentException, UnsupportedOperationException
 	{
+		// sanity check
 		if(register.toString().isBlank())
 			throw new IllegalArgumentException("Register cannot be null or empty.");
-		return StudentMapper.mapToStudentDto(studentRepository.findByRegister(register));
+
+		try {
+			return StudentMapper.mapToStudentDto(studentRepository.findByRegister(register));
+		} catch (DataAccessException e) {
+			logger.error(DATA_ACCESS_ERROR, e);
+			return null;
+		}
 	}
 
 
@@ -95,11 +108,16 @@ public class StudentServiceImpl implements StudentService {
 		if(fullname.isBlank())
 			throw new IllegalArgumentException("Name cannot be null or empty.");
 
-		return studentRepository
-			.findByFullname(fullname)
-			.stream()
-			.map(StudentMapper::mapToStudentDto)
-			.toList();
+		try {
+			return studentRepository
+				.findByFullname(fullname)
+				.stream()
+				.map(StudentMapper::mapToStudentDto)
+				.toList();
+		} catch (DataAccessException e) {
+			logger.error(DATA_ACCESS_ERROR, e);
+			return Collections.emptyList();
+		}
 	}
 
 
@@ -178,9 +196,9 @@ public class StudentServiceImpl implements StudentService {
 			// sanity checks
 			if(newUsername == null || newUsername.isBlank())
 				throw new IllegalArgumentException("Username cannot be null or empty.");
-			if(newFullname != null && !newFullname.isBlank())
+			if(newFullname == null || newFullname.isBlank())
 				throw new IllegalArgumentException("Fullname cannot be null or empty.");
-			if(newDob != null && newDob != java.time.LocalDate.now())
+			if(newDob == null || newDob == java.time.LocalDate.now())
 				throw new IllegalArgumentException("Dob cannot be null or empty.");
 
 			// update

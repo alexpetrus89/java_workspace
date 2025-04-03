@@ -20,7 +20,9 @@ public class RegistrationForm {
     private String phone;
     private RoleType role;
 
-    // constructor
+    // constructors
+    public RegistrationForm() {}
+
     public RegistrationForm(Builder formBuilder) {
         this.username = formBuilder.getUsername();
         this.password = formBuilder.getPassword();

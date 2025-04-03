@@ -20,6 +20,9 @@ public class Builder implements Serializable {
     private String phone;
     private RoleType role;
 
+    // constructor
+    public Builder() { /*no args constructor */}
+
     // getters
     public String getUsername() {
         return username;

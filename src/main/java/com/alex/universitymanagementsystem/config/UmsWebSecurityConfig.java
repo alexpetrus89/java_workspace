@@ -74,9 +74,10 @@ public class UmsWebSecurityConfig implements Serializable {
 				"/register",
 				"/static/css/**",
 				"/favicon.ico",
-				"/error",
-				"/role/create-student-from-user",
-				"/role/create-professor-from-user",
+				"/exception/**",
+				"/validation/**",
+				"/user_student/create/create-student-from-user",
+				"/user_professor/create/create-professor-from-user",
 				"/api/v1/user/create-admin",
 				"/api/v1/user/create-student",
 				"/api/v1/user/create-professor"
@@ -84,24 +85,25 @@ public class UmsWebSecurityConfig implements Serializable {
 			.permitAll()
 			.requestMatchers(
 				// user
-				"user_admin/admin-home",
-				"user/user-menu",
-				"user/delete/delete",
-				"api/v1/user/delete",
-				"api/v1/user",
+				"/user_admin/admin-home",
+				"/user/user-menu",
+				"/user/update/update",
+				"/user/delete/delete",
+				"/api/v1/user",
+				"/api/v1/user/update",
+				"/api/v1/user/update/build",
+				"/api/v1/user/delete",
 
 				// student
 				"/api/v1/student/view",
 				"/api/v1/student/read/read",
-				"/api/v1/student/create/create",
 				"/api/v1/student/update/update",
-				"/api/v1/student/delete/delete",
+
 				// professor
 				"/api/v1/professor/view",
 				"/api/v1/professor/read/read",
-				"/api/v1/professor/create/create",
 				"/api/v1/professor/update/update",
-				"/api/v1/professor/delete/delete",
+
 				// course
 				"course/course-menu",
 				"api/v1/course/view",
@@ -109,6 +111,7 @@ public class UmsWebSecurityConfig implements Serializable {
 				"api/v1/course/create/create",
 				"api/v1/course/update/update",
 				"api/v1/course/delete/delete",
+
 				// degree course
 				"degree_course/degree-course-menu",
 				"api/v1/degree_course/view",
@@ -118,6 +121,7 @@ public class UmsWebSecurityConfig implements Serializable {
 				"api/v1/degree-course/professors/view",
 				"api/v1/degree-course/courses/view",
 				"api/v1/degree-course/students/view",
+
 				// examination
 				"examination/examination-menu",
 				"api/v1/examination/view",

@@ -200,35 +200,4 @@ public class ProfessorServiceImpl implements ProfessorService {
     }
 
 
-    /**
-     * Deletes a professor by unique code.
-     * If the professor with the given unique code exists, it will be
-     * removed from the repository.
-     *
-     * @param uniqueCode the unique code of the professor to delete
-     * @throws ObjectNotFoundException if no professor with the given
-     *         unique code is found
-     * @throws NullPointerException if the unique code is null
-     * @throws IllegalArgumentException if the unique code is blank
-     * @throws UnsupportedOperationException if the unique code is not unique
-     */
-    @Override
-    @Transactional
-    public void deleteProfessor(@NonNull UniqueCode uniqueCode)
-        throws NullPointerException, IllegalArgumentException, ObjectNotFoundException
-    {
-        if(uniqueCode.toString().isBlank())
-            throw new IllegalArgumentException("Unique Code cannot be null or empty");
-
-        try {
-            if(!professorRepository.existsByUniqueCode(uniqueCode))
-                throw new ObjectNotFoundException(uniqueCode);
-
-            professorRepository.deleteByUniqueCode(uniqueCode);
-        } catch (DataAccessException e) {
-            logger.error(DATA_ACCESS_ERROR + " while deleting professor with unique code " + uniqueCode, e);
-        }
-    }
-
-
 }

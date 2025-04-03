@@ -58,7 +58,7 @@ public interface UserRepository
             WHERE u.username = :username
     """)
     public int updateUser(
-        @NonNull@Param("username") String username,
+        @NonNull @Param("username") String username,
         @NonNull @Param("fullname") String fullname,
         @NonNull @Param("password") String password,
         @Param("dob") LocalDate dob,

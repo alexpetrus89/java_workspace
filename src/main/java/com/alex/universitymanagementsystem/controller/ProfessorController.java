@@ -2,11 +2,10 @@ package com.alex.universitymanagementsystem.controller;
 
 
 import java.util.List;
+import java.util.regex.PatternSyntaxException;
 
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,7 +15,6 @@ import org.springframework.web.servlet.ModelAndView;
 import com.alex.universitymanagementsystem.domain.Professor;
 import com.alex.universitymanagementsystem.domain.immutable.UniqueCode;
 import com.alex.universitymanagementsystem.dto.ProfessorDto;
-import com.alex.universitymanagementsystem.exception.ObjectAlreadyExistsException;
 import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
 import com.alex.universitymanagementsystem.mapper.ProfessorMapper;
 import com.alex.universitymanagementsystem.service.impl.ProfessorServiceImpl;
@@ -28,9 +26,8 @@ public class ProfessorController {
     // constants
     private static final String PROFESSOR = "professor";
     private static final String PROFESSORS = "professors";
-    private static final String ERROR = "error";
-    private static final String NOT_FOUND_PATH = "exception/object-not-found";
-    private static final String ALREADY_EXISTS_PATH = "exception/object-already-exists";
+    private static final String ERROR_URL = "/exception/error";
+    private static final String NOT_FOUND_URL = "exception/object-not-found";
 
     // instance variable
     private final ProfessorServiceImpl professorServiceImpl;
@@ -69,7 +66,7 @@ public class ProfessorController {
             Professor professor = ProfessorMapper.mapToProfessor(professorServiceImpl.getProfessorByUniqueCode(uniqueCode));
             return new ModelAndView("professor/read/read-result", PROFESSOR, professor);
         } catch (UnsupportedOperationException | IllegalArgumentException | NullPointerException e) {
-            return new ModelAndView(ERROR, e.getMessage(), NOT_FOUND_PATH);
+            return new ModelAndView(ERROR_URL, e.getMessage(), NOT_FOUND_URL);
         }
     }
 
@@ -89,18 +86,8 @@ public class ProfessorController {
             Professor professor = ProfessorMapper.mapToProfessor(professorServiceImpl.getProfessorByName(name));
             return new ModelAndView("professor/read/read-result", PROFESSOR, professor);
         } catch (UnsupportedOperationException | IllegalArgumentException | NullPointerException e) {
-            return new ModelAndView(ERROR, e.getMessage(), NOT_FOUND_PATH);
+            return new ModelAndView(ERROR_URL, e.getMessage(), NOT_FOUND_URL);
         }
-    }
-
-
-    /**
-     * Creates a new professor
-     * @return ModelAndView
-     */
-    @GetMapping("/create")
-    public ModelAndView createNewProfessorAndReturnView() {
-        return new ModelAndView("professor/create/create", PROFESSOR, new Professor());
     }
 
 
@@ -113,29 +100,6 @@ public class ProfessorController {
         return new ModelAndView("professor/update/update", PROFESSOR, new Professor());
     }
 
-
-    /** POST request */
-    /**
-     * Creates a new professor
-     * @param professorDto the data transfer object containing the details
-     *                     of the professor to be added
-     * @return ModelAndView
-     * @throws ObjectAlreadyExistsException if a professor with the same unique
-     *         code already exists
-     * @throws IllegalArgumentException if the unique code is empty or null
-     * @throws UnsupportedOperationException if the unique code is not unique
-     * @throws NullPointerException if the unique code is null
-     */
-    @PostMapping("/create")
-    public ModelAndView createNewProfessor(@ModelAttribute ProfessorDto professorDto) {
-
-        try {
-            professorServiceImpl.addNewProfessor(ProfessorMapper.mapToProfessor(professorDto));
-            return new ModelAndView("professor/create/create-result", PROFESSOR, ProfessorMapper.mapToProfessor(professorDto));
-        } catch (ObjectAlreadyExistsException | IllegalArgumentException | NullPointerException | UnsupportedOperationException e) {
-            return new ModelAndView(ERROR, e.getMessage(), ALREADY_EXISTS_PATH);
-        }
-    }
 
 
     /** PUT request */
@@ -158,29 +122,7 @@ public class ProfessorController {
             Professor professor = ProfessorMapper.mapToProfessor(professorDto);
             return new ModelAndView("professor/update/update-result", PROFESSOR, professor);
         } catch (ObjectNotFoundException | IllegalArgumentException | NullPointerException | UnsupportedOperationException e) {
-            return new ModelAndView(ERROR, e.getMessage(), NOT_FOUND_PATH);
-        }
-    }
-
-
-    /** DELETE request */
-    /**
-     * Deletes a professor
-     * @param uniqueCode the unique code of the professor
-     * @return ModelAndView
-     * @throws ObjectNotFoundException if the professor does not exist
-     * @throws IllegalArgumentException if the unique code is empty
-     * @throws UnsupportedOperationException if the unique code is not unique
-     * @throws NullPointerException if the unique code is null
-     */
-    @DeleteMapping(path = "/delete/uniquecode")
-    public ModelAndView deleteProfessorByUniqueCode(@RequestParam UniqueCode uniqueCode) {
-
-        try {
-            professorServiceImpl.deleteProfessor(uniqueCode);
-            return new ModelAndView("professor/delete/delete-result");
-        } catch (ObjectNotFoundException | IllegalArgumentException | NullPointerException | UnsupportedOperationException e) {
-            return new ModelAndView(ERROR, e.getMessage(), NOT_FOUND_PATH);
+            return new ModelAndView(ERROR_URL, e.getMessage(), NOT_FOUND_URL);
         }
     }
 

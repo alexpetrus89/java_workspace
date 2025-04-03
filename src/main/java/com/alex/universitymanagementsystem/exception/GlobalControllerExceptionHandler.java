@@ -43,9 +43,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.client.HttpServerErrorException.InternalServerError;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 import org.xml.sax.SAXException;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 @RestControllerAdvice
 public class GlobalControllerExceptionHandler {
@@ -87,23 +90,6 @@ public class GlobalControllerExceptionHandler {
             .body(errorMessage);
     }
 
-    /**
-     * Handles InternalServerError exceptions and returns a ResponseEntity with a status of Internal Server Error (500).
-     * The exception is logged at the ERROR level, and the response body contains a custom error message.
-     *
-     * @param e the InternalServerError exception to be handled
-     * @return a ResponseEntity containing the error message
-     */
-    @ExceptionHandler(InternalServerError.class)
-    public ResponseEntity<String> handleInternalServerError(InternalServerError e) {
-        // Handle the specific exception and generate a custom error response
-        logger.error("Internal server error", e);
-        String errorMessage = "Internal server error: " + e.getMessage();
-
-        return ResponseEntity
-            .status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .body(errorMessage);
-    }
 
     /**
      * Handles exceptions that occur when a resource is not found, such as a 404 Not Found response.
@@ -122,6 +108,62 @@ public class GlobalControllerExceptionHandler {
             .status(HttpStatus.NOT_FOUND)
             .body(errorMessage);
     }
+
+
+    /**
+     * Handles exceptions that occur when parsing a .html file, such as ParseErrors, SAXExceptions, and IOExceptions.
+     * Returns a ResponseEntity with a status of Internal Server Error (500) and a body containing a custom error message.
+     * The exception is logged at the ERROR level.
+     * @param e the exception to be handled
+     * @return a ResponseEntity containing the error message
+     */
+    @ExceptionHandler({ParseException.class, SAXException.class, IOException.class})
+    public ResponseEntity<String> handleHtmlParseException(Exception e) {
+        // Handle the specific exception and generate a custom error response
+        logger.error("Error during HTML parsing", e);
+        String errorMessage = "Error during HTML parsing, HAI FATTO QUALCHE CAZZATA NEL FILE .HTML: " + e.getMessage();
+
+        return ResponseEntity
+            .status(HttpStatus.INTERNAL_SERVER_ERROR)
+            .body(errorMessage);
+    }
+
+
+    /**
+     * Handles exceptions that occur when a null pointer, illegal argument, or unsupported operation is encountered.
+     * Returns a ModelAndView with a view name of "error/error" and a model containing the error message.
+     * The exception is logged at the ERROR level.
+     * @param e
+     * @return
+     */
+    @ExceptionHandler({NullPointerException.class, IllegalArgumentException.class, UnsupportedOperationException.class})
+    public ModelAndView handleCommonException(Exception e) {
+        // Handle the specific exception and generate a custom error response
+        logger.error("Common exception, e.g. null pointer, illegal argument, unsupported operation", e);
+        return new ModelAndView("error/error", "error message", e.getMessage());
+    }
+
+    /**
+     * Handles exceptions that occur when a username is invalid or already taken.
+     * Returns a ModelAndView with a view name of "error/error" and a model containing the error message.
+     * The exception is logged at the ERROR level.
+     * @param e the exception to be handled
+     * @return a ModelAndView containing the error message
+     */
+    @ExceptionHandler(UsernameInvalidException.class)
+    public ModelAndView handleUsernameInvalidException(UsernameInvalidException e, HttpServletRequest request) {
+        // Handle the specific exception and generate a custom error response
+        logger.error("Username is invalid", e);
+        return new ModelAndView("error/error", "error message", e.getMessage());
+    }
+
+
+
+
+
+
+
+
 
 
     /**
@@ -145,17 +187,17 @@ public class GlobalControllerExceptionHandler {
 
 
     /**
-     * Handles exceptions that occur when parsing a .html file, such as ParseErrors, SAXExceptions, and IOExceptions.
-     * Returns a ResponseEntity with a status of Internal Server Error (500) and a body containing a custom error message.
-     * The exception is logged at the ERROR level.
-     * @param e the exception to be handled
+     * Handles InternalServerError exceptions and returns a ResponseEntity with a status of Internal Server Error (500).
+     * The exception is logged at the ERROR level, and the response body contains a custom error message.
+     *
+     * @param e the InternalServerError exception to be handled
      * @return a ResponseEntity containing the error message
      */
-    @ExceptionHandler({ParseException.class, SAXException.class, IOException.class})
-    public ResponseEntity<String> handleHtmlParseException(Exception e) {
+    @ExceptionHandler(InternalServerError.class)
+    public ResponseEntity<String> handleInternalServerError(InternalServerError e) {
         // Handle the specific exception and generate a custom error response
-        logger.error("Error during HTML parsing", e);
-        String errorMessage = "Error during HTML parsing, HAI FATTO QUALCHE CAZZATA NEL FILE .HTML: " + e.getMessage();
+        logger.error("Internal server error", e);
+        String errorMessage = "Internal server error: " + e.getMessage();
 
         return ResponseEntity
             .status(HttpStatus.INTERNAL_SERVER_ERROR)

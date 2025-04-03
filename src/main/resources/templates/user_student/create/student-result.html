@@ -1,0 +1,17 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+<head>
+    <title>Result</title>
+</head>
+<body>
+	<h1>Registration completed successfully</h1>
+    <p th:text="'register: ' + ${student.register.register}"></p>
+    <p th:text="'name: ' + ${student.fullname}"></p>
+    <p th:text="'email: ' + ${student.username}"></p>
+    <p th:text="'degree course: ' + ${student.degreeCourse.name}"></p>
+    <br>
+    <a href="#" th:href="@{/login}">Login</a>
+</body>
+</html>

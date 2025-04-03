@@ -5,63 +5,66 @@
         xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
 <head>
-    <title>Update user information</title>
+    <title>University Management Application</title>
 </head>
 
 <body>
-    <h1>Update user information</h1>
-    <form method="put" th:action="@{/api/v1/user/update/form}" id="updateForm">
+    <h1>Update information of selected user</h1>
+    <form action="#" th:action="@{/api/v1/user/update/build}"
+        th:object="${builder}" method="post">
 
-        <label for="username">Username: </label>
-        <input type="text" name="username"
-            title="Please enter your username"><br/>
+        <input type="hidden" name="_method" value="PUT" />
+
+        <label for="name">Username: </label>
+        <input type="text" th:field="*{username}" title="Enter new username"
+            placeholder="new username "></p>
 
         <label for="password">Password: </label>
-        <input type="password" name="password"
-            title="Please enter your password"/><br/>
+        <input type="password" th:field="*{password}" title="Enter new password"
+            placeholder="new password"></p>
 
         <label for="confirm">Confirm password: </label>
-        <input type="password" name="confirm"
-            title="Please confirm your password"/><br/>
+        <input type="password" th:field="*{confirm}" title="Please confirm your password"
+            placeholder="confirm new password"></p>
 
         <label for="fullname">Full name: </label>
-        <input type="text" name="fullname"
-            title="Please enter your full name"/><br/>
+        <input type="text" th:field="*{fullname}" title="Enter new full name"
+            placeholder="new full name"></p>
 
         <label for="dob">Date of Birth:</label>
-        <input type="date" name="dob" title="Enter date of birth"
-            placeholder="Your date of birth"></p>
+        <input type="date" th:field="*{dob}" title="Enter date of birth"
+            placeholder="date of birth"></p>
 
         <label for="street">Street: </label>
-        <input type="text" name="street"
-            title="Please enter your street name"/><br/>
+        <input type="text" th:field="*{street}" title="Enter new street name"
+            placeholder="new street name"></p>
 
         <label for="city">City: </label>
-        <input type="text" name="city"
-            title="Please enter your city"/><br/>
+        <input type="text" th:field="*{city}" title="Enter new city"
+            placeholder="new city"></p>
 
         <label for="state">State: </label>
-        <input type="text" name="state"
-            title="Please enter your state"/><br/>
+        <input type="text" th:field="*{state}" title=">Enter new state"
+            placeholder="new state name"></p>
 
         <label for="zip">Zip: </label>
-        <input type="text" name="zip"
-            title="Please enter your zip code"/><br/>
+        <input type="text" th:field="*{zip}" title="Enter new zip code"
+            placeholder="new zip code"></p>
 
         <label for="phone">Phone: </label>
-        <input type="text" name="phone"
-            title="Please enter your phone number"/><br/>
+        <input type="text" th:field="*{phone}" title="Enter new phone number"
+            placeholder="new phone number"></p>
 
         <label for="role">Ruolo: </label>
-        <select name="role" id="role">
+        <select th:field="*{role}" title="Please select a role">
             <option value="STUDENT">Student</option>
             <option value="PROFESSOR">Professor</option>
             <option value="ADMIN">Admin</option>
         </select><br/>
-
-        <input type="submit" value="Register"/>
+        <br>
+        <input type="submit" value="Update"/><input type="reset" value="Reset" /></p>
     </form>
     <br>
-    <a href="#" th:href="@{/home}">Torna alla home</a>
+    <a href="#" th:href="@{/user_admin/admin-home}">Back to home</a>
 </body>
-</body>
+</html>

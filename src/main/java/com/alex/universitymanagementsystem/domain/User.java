@@ -22,7 +22,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "\"user\"")
-@Inheritance(strategy = jakarta.persistence.InheritanceType.TABLE_PER_CLASS)
+@Inheritance(strategy = jakarta.persistence.InheritanceType.JOINED)
 public class User implements UserDetails {
 
     // instance variables

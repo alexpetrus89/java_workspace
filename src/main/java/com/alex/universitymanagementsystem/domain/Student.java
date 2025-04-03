@@ -23,6 +23,7 @@ import jakarta.persistence.Transient;
 
 @Entity
 @Table(name = "student")
+//@SecondaryTable(name = "\"user\"", pkJoinColumns = @PrimaryKeyJoinColumn(name = "id"))
 @Access(AccessType.PROPERTY)
 public class Student extends User {
 

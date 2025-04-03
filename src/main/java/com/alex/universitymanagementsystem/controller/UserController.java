@@ -4,10 +4,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.lang.NonNull;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,8 +38,8 @@ public class UserController {
     // constants
     private static final String BUILDER = "builder";
     private static final String TITLE = "title";
-    private static final String ERROR = "Errore";
-    private static final String ERROR_PATH = "/error";
+    private static final String ERROR = "Controller layer error";
+    private static final String ERROR_PATH = "/exception/error";
     private static final String ERROR_MESSAGE = "errorMessage";
     private static final String STACK_TRACE = "stackTrace";
 
@@ -69,7 +71,6 @@ public class UserController {
      */
     @GetMapping(path = "/view")
     public ModelAndView getAllUsers() {
-
         List<User> users = userServiceImpl.getUsers();
         return new ModelAndView("user/read/user-list", "users", users);
     }
@@ -132,7 +133,7 @@ public class UserController {
         studentServiceImpl.addNewStudent(student);
 
         try{
-            return new ModelAndView("role/student-result", "student", student);
+            return new ModelAndView("user_student/create/student-result", "student", student);
         } catch (RuntimeException e) {
             Map<String, Object> model = new HashMap<>();
             model.put(TITLE, ERROR);
@@ -163,7 +164,7 @@ public class UserController {
         professorServiceImpl.addNewProfessor(professor);
 
         try {
-            return new ModelAndView("role/professor-result", "professor", professor);
+            return new ModelAndView("user_professor/create/professor-result", "professor", professor);
         } catch (RuntimeException e) {
             Map<String, Object> model = new HashMap<>();
             model.put(TITLE, ERROR);
@@ -177,15 +178,23 @@ public class UserController {
     /**
      * Updates the user
      * @param form
-     * @return String
+     * @return ModelAndView
      */
-    @PutMapping(path = "/update/form")
-    public String updateUser(RegistrationForm form) {
+    @PutMapping(path = "/update/build")
+    public ModelAndView updateUser(@ModelAttribute Builder builder) {
         try {
-            return userServiceImpl.updateUser(form);
+            return new ModelAndView(
+                "user/update/update-result",
+                "result",
+                userServiceImpl.updateUser(new RegistrationForm(builder)) != null?
+                    "User updated successfully" : "User not updated"
+            );
         } catch (RuntimeException e) {
-            // gestisci l'eccezione e restituisci un messaggio di errore significativo all'utente
-            return "redirect:" + ERROR_PATH;
+            Map<String, Object> model = new HashMap<>();
+            model.put(TITLE, ERROR);
+            model.put(ERROR_MESSAGE, e.getMessage());
+            model.put(STACK_TRACE, e.getStackTrace());
+            return new ModelAndView(ERROR_PATH, model);
         }
     }
 
@@ -194,17 +203,17 @@ public class UserController {
      * Deletes the user
      * @param username
      * @return ModelAndView
-     * @throws IllegalArgumentException if the authenticated user is not an admin
-     * @throws UsernameNotFoundException if the user to be deleted is not found
-     * @throws ObjectNotFoundException if the authenticated user is not found or
-     * if the user to be deleted is not found
      */
     @DeleteMapping(path = "/delete")
-    public ModelAndView deleteUser(String username) {
-
+    @PreAuthorize("hasRole('ADMIN')")
+    public ModelAndView deleteUser(@NonNull @RequestParam("id") String userId) {
         try {
-            userServiceImpl.deleteUser(username);
-            return new ModelAndView("user/delete/delete-result");
+            return new ModelAndView(
+                "user/delete/delete-result",
+                "result",
+                userServiceImpl.deleteUser(userId)?
+                    "User delete successfully" : "User not deleted"
+            );
         } catch (RuntimeException e) {
             Map<String, Object> model = new HashMap<>();
             model.put(TITLE, ERROR);

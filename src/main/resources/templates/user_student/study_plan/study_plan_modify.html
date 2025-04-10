@@ -5,30 +5,63 @@
 <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
 <head>
     <title>University Management Application</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
     <h1 th:text="${title}">Select courses to change</h1>
     <form action="#" th:action="@{/api/v1/study_plan/change}"
-        th:object="${student}" method="post">
+        th:object="${courses}" method="post">
         <input type="hidden" name="_method" value="PUT" />
 
-        <label for="name">Degree Course of new course:</label>
-        <input type="text" name="degreeCourseOfNewCourse" title="Enter name"
-            placeholder="degree course name"></p>
+        <label for="degreeCourseOfNewCourse">Degree Course of new course:</label>
+        <select name="degreeCourseOfNewCourse"
+            id="degreeCourseOfNewCourse"
+            onchange="updateCourses()">
+            <option value="">Select a degree course</option>
+            <option th:each="degreeCourse : ${courses.allDegreeCourses}"
+            th:text="${degreeCourse.name}"></option>
+        </select></p>
 
-        <label for="name">New course:</label>
-        <input type="text" name="courseToAdd" title="Enter course name"
-            placeholder="course name"></p>
+        <label for="courseToAdd">New course:</label>
+        <select name="courseToAdd" id="courseToAdd">
+            <option value="">Select a course</option>
+        </select>
 
-        <label for="name">Degree Course of old course:</label>
-        <input type="text" name="degreeCourseOfOldCourse" title="Enter name"
-            placeholder="degree course name"></p>
+        <script th:inline="javascript">
+            var authorization = /*[[${courses.authorization}]]*/
 
-        <label for="name">Old course:</label>
-        <input type="text" name="courseToRemove" title="Enter course name"
-            placeholder="course name"></p>
+            function updateCourses() {
+                var degreeCourseName = $('#degreeCourseOfNewCourse').val();
 
-        <p><input type="submit" value="Submit" /> <input type="reset" value="Reset" /></p>
+                $.ajax({
+                    type: 'GET',
+                    url: '/api/v1/degree-course/courses/view?name=' + degreeCourseName,
+                    headers: {
+                        'Authorization': 'Bearer ' + authorization,
+                    },
+                    success: function(data) {
+                        $('#courseToAdd').empty();
+                        $.each(data, function(index, course) {
+                            $('#courseToAdd').append('<option value="' + course.degreeCourseName + '">' + course.name + '</option>');
+                        });
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Errore AJAX:', error);
+                    }
+                })
+
+            }
+        </script></p>
+
+        <label for="courseToRemove">Old course:</label>
+        <select name="courseToRemove" id="courseToRemove">
+            <option value="">Select a course</option>
+            <option th:each="course : ${courses.coursesOfStudyPlan}"
+            th:if="${course.degreeCourse.name == courses.degreeCourse}"
+            th:text="${course.name}"></option>
+        </select></p>
+
+        <p><input type="submit" value="Submit"/> <input type="reset" value="Reset"/></p>
     </form>
     <br>
     <a href="#" th:href="@{/user_student/student-home}">Back to Home</a>

@@ -3,6 +3,7 @@ package com.alex.universitymanagementsystem.controller;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -50,7 +51,7 @@ public class CourseController {
     @GetMapping(path = "/view")
     public ModelAndView getCourses() {
 
-        List<CourseDto> courses = courseServiceImpl.getCourses();
+        Set<CourseDto> courses = courseServiceImpl.getCourses();
         return new ModelAndView("course/course-list", "courses", courses);
     }
 
@@ -64,7 +65,7 @@ public class CourseController {
      * @throws IllegalArgumentException if the course name or degree course name is empty
      * @throws UnsupportedOperationException if the course name or degree course name is not unique
      */
-    @GetMapping("/read/name")
+    @GetMapping(path = "/read/name")
     public ModelAndView getCourse(@RequestParam String courseName, @RequestParam String degreeCourseName) {
         CourseDto course = courseServiceImpl
             .getCourseByNameAndDegreeCourseName(courseName, degreeCourseName);
@@ -90,7 +91,7 @@ public class CourseController {
      * creates a new course
      * @return ModelAndView
      */
-    @GetMapping("/create")
+    @GetMapping(path = "/create")
     public ModelAndView createNewCourseAndReturnView() {
         return new ModelAndView("course/create/create", COURSE, new Course());
     }
@@ -99,7 +100,7 @@ public class CourseController {
      * Update Course
      * @return ModelAndView
      */
-    @GetMapping("/update")
+    @GetMapping(path = "/update")
     public ModelAndView updateCourseAndReturnView() {
         return new ModelAndView("course/update/update", COURSE, new Course());
     }
@@ -118,7 +119,7 @@ public class CourseController {
      * @throws UnsupportedOperationException if any of the parameters is not unique
      * @throws NullPointerException if any of the parameters is null
      */
-    @PostMapping("/create")
+    @PostMapping(path = "/create")
     @Transactional // con l'annotazione transactional effettua una gestione propria degli errori
     public ModelAndView createNewCourse(
         @RequestParam String name,

@@ -11,6 +11,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
 
 import com.alex.universitymanagementsystem.domain.ExaminationAppeal;
+import com.alex.universitymanagementsystem.domain.immutable.CourseId;
 
 
 @Repository
@@ -26,7 +27,7 @@ public interface ExaminationAppealRepository
      * @throws NullPointerException if the courseId is null
      */
     @Query("SELECT ea FROM ExaminationAppeal ea WHERE ea.course.id = :courseId AND ea.date = :date")
-ExaminationAppeal findByCourseIdAndDate(@NonNull @Param("courseId") UUID courseId, @NonNull @Param("date") LocalDate date);
+    ExaminationAppeal findByCourseIdAndDate(@NonNull @Param("courseId") CourseId courseId, @NonNull @Param("date") LocalDate date);
 
 
     /**
@@ -36,4 +37,16 @@ ExaminationAppeal findByCourseIdAndDate(@NonNull @Param("courseId") UUID courseI
      */
     @Query(value = "SELECT * FROM examination_appeal ea WHERE ea.course_id IN (:ids)", nativeQuery = true)
     List<ExaminationAppeal> findByIdIn(@Param("ids") List<UUID> ids);
+
+
+    /**
+     * Find all examination appeals by course ids and date
+     * @param ids
+     * @param date
+     * @return a list of examination appeals
+     */
+    @Query(value = "SELECT * FROM examination_appeal ea WHERE ea.course_id IN (:ids) AND ea.date = :date", nativeQuery = true)
+    List<ExaminationAppeal> findByDateLessThan(LocalDate expirationDateOneMonth);
+
+
 }

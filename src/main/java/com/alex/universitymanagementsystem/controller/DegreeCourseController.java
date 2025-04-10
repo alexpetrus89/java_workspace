@@ -1,6 +1,7 @@
 package com.alex.universitymanagementsystem.controller;
 
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -40,9 +41,9 @@ public class DegreeCourseController {
      * retrieves all degree courses
      * @return ModelAndView
      */
-    @GetMapping("/view")
+    @GetMapping(path = "/view")
     public ModelAndView getDegreeCourses() {
-        List<DegreeCourseDto> degreeCourses = degreeCourseServiceImpl.getDegreeCourses();
+        Set<DegreeCourseDto> degreeCourses = degreeCourseServiceImpl.getDegreeCourses();
         return new ModelAndView("degree_course/degree-course-list", "degreeCourses", degreeCourses);
     }
 
@@ -58,7 +59,7 @@ public class DegreeCourseController {
      * @throws UnsupportedOperationException if the name is not unique
      * @throws ClassCastException if the name is not a string
      */
-    @GetMapping("/courses/view")
+    @GetMapping(path = "/courses/view")
     public ModelAndView getCourses(@RequestParam String name) {
 
         List<CourseDto> courses = degreeCourseServiceImpl.getCourses(name.toUpperCase());
@@ -75,7 +76,7 @@ public class DegreeCourseController {
      * @throws IllegalArgumentException if the name is empty
      * @throws UnsupportedOperationException if the name is not unique
      */
-    @GetMapping("/professors/view")
+    @GetMapping(path = "/professors/view")
     public ModelAndView getProfessors(@RequestParam String name) {
 
         try {
@@ -98,7 +99,7 @@ public class DegreeCourseController {
      * @throws IllegalArgumentException if the name is empty
      * @throws UnsupportedOperationException if the name is not unique
      */
-    @GetMapping("/students/view")
+    @GetMapping(path = "/students/view")
     public ModelAndView getStudents(@RequestParam String name) {
 
         List<StudentDto> students = degreeCourseServiceImpl.getStudents(name.toUpperCase());

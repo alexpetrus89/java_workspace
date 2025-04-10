@@ -1,6 +1,7 @@
 package com.alex.universitymanagementsystem.service;
 
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.lang.NonNull;
 
@@ -15,9 +16,9 @@ import com.alex.universitymanagementsystem.dto.StudentDto;
 public interface DegreeCourseService {
 
     /**
-     * @return List<DegreeCourseDto>
+     * @return Set<DegreeCourseDto>
      */
-    List<DegreeCourseDto> getDegreeCourses();
+    Set<DegreeCourseDto> getDegreeCourses();
 
 
     /**

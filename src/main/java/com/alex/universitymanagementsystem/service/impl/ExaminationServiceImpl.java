@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -134,7 +135,7 @@ public class ExaminationServiceImpl implements ExaminationService {
             throw new ObjectNotFoundException(uniqueCode);
 
         try {
-            List<Course> courses = courseRepository.findByProfessor(uniqueCode);
+            Set<Course> courses = courseRepository.findByProfessor(uniqueCode);
             List<ExaminationDto> examinationsDto = new ArrayList<>();
 
             courses.forEach(course -> examinationsDto.addAll(

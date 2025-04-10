@@ -95,7 +95,7 @@ public class ProfessorController {
      * Updates a professor
      * @return ModelAndView
      */
-    @GetMapping("/update")
+    @GetMapping(path = "/update")
     public ModelAndView updateProfessorAndReturnView() {
         return new ModelAndView("professor/update/update", PROFESSOR, new Professor());
     }
@@ -114,7 +114,7 @@ public class ProfessorController {
      * @throws NullPointerException if the unique code is null
      * @throws PatternSyntaxException if the regular expression's syntax is invalid
      */
-    @PutMapping("/update")
+    @PutMapping(path = "/update")
     public ModelAndView updateProfessor(@ModelAttribute ProfessorDto professorDto) {
 
         try {

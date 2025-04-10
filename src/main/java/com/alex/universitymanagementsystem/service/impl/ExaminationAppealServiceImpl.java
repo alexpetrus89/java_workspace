@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
 import org.springframework.lang.NonNull;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import com.alex.universitymanagementsystem.domain.Course;
@@ -19,9 +20,11 @@ import com.alex.universitymanagementsystem.domain.immutable.CourseId;
 import com.alex.universitymanagementsystem.domain.immutable.DegreeCourseId;
 import com.alex.universitymanagementsystem.domain.immutable.Register;
 import com.alex.universitymanagementsystem.domain.immutable.UniqueCode;
+import com.alex.universitymanagementsystem.dto.ExaminationAppealDto;
 import com.alex.universitymanagementsystem.dto.ExaminationDto;
 import com.alex.universitymanagementsystem.enum_type.DomainType;
 import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
+import com.alex.universitymanagementsystem.mapper.ExaminationAppealMapper;
 import com.alex.universitymanagementsystem.mapper.ExaminationMapper;
 import com.alex.universitymanagementsystem.repository.CourseRepository;
 import com.alex.universitymanagementsystem.repository.DegreeCourseRepository;
@@ -100,7 +103,7 @@ public class ExaminationAppealServiceImpl implements ExaminationAppealService {
      * @throws UnsupportedOperationException if the register is not unique
      */
     @Override
-    public List<ExaminationAppeal> getExaminationAppealsAvailable(@NonNull Register register)
+    public List<ExaminationAppealDto> getExaminationAppealsAvailable(@NonNull Register register)
         throws NullPointerException, IllegalArgumentException, UnsupportedOperationException
     {
 
@@ -136,8 +139,8 @@ public class ExaminationAppealServiceImpl implements ExaminationAppealService {
                 .filter(examAppeal -> examAppeal
                     .getStudents()
                     .stream()
-                    .noneMatch(studentRegister -> studentRegister.equals(register))
-                )
+                    .noneMatch(studentRegister -> studentRegister.equals(register)))
+                .map(ExaminationAppealMapper::mapToExaminationAppealDto)
                 .toList();
 
         } catch (DataAccessException e) {
@@ -321,12 +324,31 @@ public class ExaminationAppealServiceImpl implements ExaminationAppealService {
                 .getId();
 
             Course course = courseRepository.findByNameAndDegreeCourse(courseName, degreeCourseId);
-            ExaminationAppeal examAppeal = examinationAppealRepository.findByCourseIdAndDate(course.getCourseId().id(), date);
+            ExaminationAppeal examAppeal = examinationAppealRepository.findByCourseIdAndDate(course.getCourseId(), date);
 
             if(!examinationAppealRepository.existsById(examAppeal.getId()))
                 throw new ObjectNotFoundException(DomainType.EXAMINATION_APPEAL);
 
             examinationAppealRepository.delete(examAppeal);
+        } catch (DataAccessException e) {
+            logger.error(DATA_ACCESS_ERROR, e);
+        }
+    }
+
+
+    /**
+     * Deletes expired examination appeals
+     */
+    @Scheduled(fixedDelay = 86400000) // ogni giorno
+    public void deleteExpiredExaminationAppeals() {
+        LocalDate today = LocalDate.now();
+        LocalDate expirationDateOneMonth = today.minusMonths(1);
+
+        try {
+            List<ExaminationAppeal> expiredExaminationAppealsOneMonth =
+                examinationAppealRepository.findByDateLessThan(expirationDateOneMonth);
+
+            expiredExaminationAppealsOneMonth.forEach(examinationAppealRepository::delete);
         } catch (DataAccessException e) {
             logger.error(DATA_ACCESS_ERROR, e);
         }

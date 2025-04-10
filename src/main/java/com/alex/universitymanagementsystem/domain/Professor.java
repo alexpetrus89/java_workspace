@@ -121,7 +121,7 @@ public class Professor extends User {
 
     @Override
     public String toString() {
-        return "Professor [id=" + id + ", uniqueCode=" + uniqueCode + ", fiscalCode=" + fiscalCode + ", name=" + fullname + ", email=" + username + "]";
+        return "Professor [id=" + id + ", uniqueCode=" + uniqueCode + ", name=" + fullname + ", fiscalCode=" + fiscalCode + ", email=" + username + "]";
     }
 
     @Override

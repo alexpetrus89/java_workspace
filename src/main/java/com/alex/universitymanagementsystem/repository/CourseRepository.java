@@ -1,6 +1,6 @@
 package com.alex.universitymanagementsystem.repository;
 
-import java.util.List;
+import java.util.Set;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -39,28 +39,28 @@ public interface CourseRepository
     /**
      * Retrieves a course from the repository by its type.
      * @param type the type of the course to retrieve
-     * @return a list of courses if found, null otherwise
+     * @return a set of courses if found, null otherwise
      * @throws NullPointerException if the type is null
      * @throws IllegalArgumentException if the type is null
      * @throws UnsupportedOperationException if the type is not unique
      * @see CourseType
      */
     @Query("SELECT c FROM Course c WHERE c.type = :type")
-    List<Course> findByType(@NonNull @Param("type") CourseType type);
+    Set<Course> findByType(@NonNull @Param("type") CourseType type);
 
 
     /**
      * Retrieves a list of courses associated with a specific professor.
      * @param uniqueCode the unique code of the professor whose courses
      *                   are to be retrieved
-     * @return a list of courses if found, null otherwise
+     * @return a set of courses if found, null otherwise
      * @throws NullPointerException if the unique code is null
      * @throws IllegalArgumentException if the unique code is null
      * @throws UnsupportedOperationException if the unique code is not unique
      * @see UniqueCode
      */
     @Query("SELECT c FROM Course c JOIN c.professor p WHERE p.uniqueCode = ?1")
-    List<Course> findByProfessor(@NonNull UniqueCode uniqueCode);
+    Set<Course> findByProfessor(@NonNull UniqueCode uniqueCode);
 
 
     /**

@@ -22,7 +22,7 @@ import jakarta.servlet.http.HttpServletRequest;
 
 
 @Controller
-@RequestMapping("/register")
+@RequestMapping(path = "/register")
 public class RegistrationController {
 
     // instance variables
@@ -65,6 +65,7 @@ public class RegistrationController {
         SessionStatus sessionStatus,
         @RequestParam("username") String username,
         @RequestParam("password") String password,
+        @RequestParam("confirm") String confirm,
         @RequestParam("fullname") String fullname,
         @RequestParam("dob") LocalDate dob,
         @RequestParam("street") String street,
@@ -74,6 +75,19 @@ public class RegistrationController {
         @RequestParam("phone") String phone,
         @RequestParam("role") RoleType role
     ) {
+        // username already in use check
+        if(registrationServiceImpl.isUsernameAlreadyTaken(username))
+            return "redirect:/validation/registration/username-already-taken";
+
+         // check if the password and confirm password are the same
+        if (!password.equals(confirm))
+            return "redirect:/validation/registration/password-not-match";
+
+        // check if the date of birth is valid (not in the future or today)
+        if(dob.isEqual(LocalDate.now()) || dob.isAfter(LocalDate.now()))
+            return "redirect:/validation/registration/invalid-dob";
+
+
         // create a new form builder
         Builder builder = new Builder();
         // set the values
@@ -87,10 +101,6 @@ public class RegistrationController {
         builder.withZip(zip);
         builder.withPhone(phone);
         builder.withRole(role);
-
-        // username already in use check
-        if(registrationServiceImpl.isUsernameAlreadyTaken(username))
-            return "redirect:/validation/registration/username-already-taken";
 
         // memorizza l'oggetto builder nella sessione
         request.getSession().setAttribute("builder", builder);

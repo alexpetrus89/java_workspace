@@ -3,9 +3,11 @@ package com.alex.universitymanagementsystem.mapper;
 import com.alex.universitymanagementsystem.domain.Student;
 import com.alex.universitymanagementsystem.dto.StudentDto;
 
+// This is a utility class that provides static methods for mapping between Student and StudentDto objects.
 public class StudentMapper {
 
-    private StudentMapper() {} // private constructor to prevent instantiation
+    // private constructor to prevent instantiation
+    private StudentMapper() {}
 
     public static Student mapToStudent(StudentDto studentDto) {
         return new Student(

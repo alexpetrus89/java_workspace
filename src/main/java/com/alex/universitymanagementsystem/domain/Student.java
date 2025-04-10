@@ -133,8 +133,8 @@ public class Student extends User {
     // other methods
     @Override
     public String toString() {
-        return "Student [id= " + id + ", name= " + fullname +
-            "email= " + username + ", dob= " + dob + ", age= " + age + "]";
+        return "Student [id= " + id + ", register= " + register + ", name= " + fullname +
+            ", email= " + username + ", dob= " + dob + "]";
     }
 
     @Override

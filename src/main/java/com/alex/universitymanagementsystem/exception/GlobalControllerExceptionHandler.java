@@ -40,6 +40,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.client.HttpServerErrorException.InternalServerError;
@@ -55,6 +56,9 @@ public class GlobalControllerExceptionHandler {
 
     private static final Logger logger =
         LoggerFactory.getLogger(GlobalControllerExceptionHandler.class);
+
+    // constant
+    private static final String ERROR_URL = "/exception/error";
 
     /**
      * Handles all uncaught exceptions and returns a ResponseEntity with a status of Internal Server Error (500)
@@ -140,7 +144,16 @@ public class GlobalControllerExceptionHandler {
     public ModelAndView handleCommonException(Exception e) {
         // Handle the specific exception and generate a custom error response
         logger.error("Common exception, e.g. null pointer, illegal argument, unsupported operation", e);
-        return new ModelAndView("error/error", "error message", e.getMessage());
+        return new ModelAndView(ERROR_URL, "error message", e.getMessage());
+    }
+
+
+    @ExceptionHandler(value = AccessDeniedException.class)
+    public ModelAndView handleAccessDeniedException(AccessDeniedException e) {
+        // handle the specific exception and generate a custom error response
+        logger.error("Access denied", e);
+        return new ModelAndView(ERROR_URL, "error message", e.getMessage());
+
     }
 
     /**
@@ -154,7 +167,12 @@ public class GlobalControllerExceptionHandler {
     public ModelAndView handleUsernameInvalidException(UsernameInvalidException e, HttpServletRequest request) {
         // Handle the specific exception and generate a custom error response
         logger.error("Username is invalid", e);
-        return new ModelAndView("error/error", "error message", e.getMessage());
+        ModelAndView modelAndView = new ModelAndView("/exception/registration/invalid-username");
+        modelAndView.addObject("title", "Error View");
+        modelAndView.addObject("errorMessage", e.getMessage());
+        modelAndView.addObject("status", "Error");
+        modelAndView.addObject("stackTrace", e.getStackTrace());
+        return modelAndView;
     }
 
 

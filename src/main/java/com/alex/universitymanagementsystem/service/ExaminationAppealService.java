@@ -9,6 +9,7 @@ import com.alex.universitymanagementsystem.domain.ExaminationAppeal;
 import com.alex.universitymanagementsystem.domain.Professor;
 import com.alex.universitymanagementsystem.domain.immutable.Register;
 import com.alex.universitymanagementsystem.domain.immutable.UniqueCode;
+import com.alex.universitymanagementsystem.dto.ExaminationAppealDto;
 import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
 
 
@@ -27,7 +28,7 @@ public interface ExaminationAppealService {
      * @return examination appeal
      * @throws NullPointerException if id is null
      */
-    public ExaminationAppeal getExaminationAppealById(@NonNull Long id);
+    ExaminationAppeal getExaminationAppealById(@NonNull Long id);
 
 
     /**
@@ -38,7 +39,7 @@ public interface ExaminationAppealService {
      * @throws IllegalArgumentException if the register is blank
      * @throws UnsupportedOperationException if the register is not unique
      */
-    public List<ExaminationAppeal> getExaminationAppealsAvailable(@NonNull Register register)
+    List<ExaminationAppealDto> getExaminationAppealsAvailable(@NonNull Register register)
         throws NullPointerException, IllegalArgumentException, UnsupportedOperationException;
 
 
@@ -50,7 +51,7 @@ public interface ExaminationAppealService {
      * @throws IllegalArgumentException if the register is blank
      * @throws UnsupportedOperationException if the register is not unique
      */
-    public List<ExaminationAppeal> getExaminationAppealsBooked(@NonNull Register register)
+    List<ExaminationAppeal> getExaminationAppealsBooked(@NonNull Register register)
         throws NullPointerException, IllegalArgumentException, UnsupportedOperationException;
 
 
@@ -99,7 +100,7 @@ public interface ExaminationAppealService {
      * @throws IllegalArgumentException
      * @throws ObjectNotFoundException
      */
-    public void deleteExaminationAppeal(
+    void deleteExaminationAppeal(
         @NonNull String courseName,
         @NonNull String degreeCourseName,
         @NonNull Professor professor,

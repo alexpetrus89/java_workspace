@@ -6,6 +6,7 @@ import org.springframework.lang.NonNull;
 
 import com.alex.universitymanagementsystem.domain.immutable.Register;
 import com.alex.universitymanagementsystem.dto.CourseDto;
+import com.alex.universitymanagementsystem.dto.StudyPlanDto;
 import com.alex.universitymanagementsystem.exception.ObjectAlreadyExistsException;
 import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
 
@@ -21,12 +22,23 @@ public interface StudyPlanService {
      */
     String getOrderingByRegister(@NonNull Register register) throws ObjectNotFoundException;
 
+
     /**
      * return list of courses
      * @param register the student register
      * @return Set<CourseDto>
      */
     Set<CourseDto> getCoursesByRegister(@NonNull Register register);
+
+
+    /**
+     * Retrieves the study plan of the student
+     * @param register the register of the student
+     * @return the study plan of the student
+     * @throws NullPointerException if the register is null
+     */
+    StudyPlanDto getStudyPlanByRegister(@NonNull Register register)
+        throws NullPointerException;
 
 
     /**

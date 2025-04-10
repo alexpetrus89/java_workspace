@@ -24,11 +24,12 @@
             <td>
                 <form th:action="@{/api/v1/examination-appeal/delete-booked/{id}(id=${examinationAppeal?.getId()})}" method="post">
                     <button type="submit">Delete</button>
+                    <input type="hidden" name="_method" value="DELETE">
                 </form>
             </td>
         </tr>
     </table>
     <br>
-    <a href="#" th:href="@{/user_student/examinations/examination-menu}">Back to home</a>
+    <a href="#" th:href="@{/user_student/examinations/examination-menu}">Back to menu</a>
 </body>
 </html>

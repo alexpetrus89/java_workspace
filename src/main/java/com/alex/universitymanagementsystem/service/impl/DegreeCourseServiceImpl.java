@@ -2,6 +2,8 @@ package com.alex.universitymanagementsystem.service.impl;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,15 +46,15 @@ public class DegreeCourseServiceImpl implements DegreeCourseService {
 
     /**
      * Retrieves all degree courses from the repository and maps them to DTOs.
-     * @return List of DegreeCourseDto objects representing all degree courses.
+     * @return Set of DegreeCourseDto objects representing all degree courses.
      */
     @Override
-    public List<DegreeCourseDto> getDegreeCourses() {
+    public Set<DegreeCourseDto> getDegreeCourses() {
         return degreeCourseRepository
             .findAll()
             .stream()
             .map(DegreeCourseMapper::mapToDegreeCourseDto)
-            .toList();
+            .collect(Collectors.toSet());
     }
 
 

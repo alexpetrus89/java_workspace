@@ -13,6 +13,7 @@ import com.alex.universitymanagementsystem.domain.DegreeCourse;
 import com.alex.universitymanagementsystem.domain.Student;
 import com.alex.universitymanagementsystem.domain.immutable.Register;
 import com.alex.universitymanagementsystem.dto.CourseDto;
+import com.alex.universitymanagementsystem.dto.StudyPlanDto;
 import com.alex.universitymanagementsystem.enum_type.DomainType;
 import com.alex.universitymanagementsystem.exception.ObjectAlreadyExistsException;
 import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
@@ -82,6 +83,7 @@ public class StudyPlanServiceImpl implements StudyPlanService {
     @Override
     public Set<CourseDto> getCoursesByRegister(@NonNull Register register) {
 
+        // retrieve the courses of the study plan
         return studentRepository
             .findByRegister(register)
             .getStudyPlan()
@@ -89,6 +91,31 @@ public class StudyPlanServiceImpl implements StudyPlanService {
             .stream()
             .map(CourseMapper::mapToCourseDto)
             .collect(Collectors.toSet());
+    }
+
+
+    /**
+     * Retrieves the study plan of the student
+     * @param register the register of the student
+     * @return the study plan of the student
+     * @throws NullPointerException if the register is null
+     */
+    @Override
+    public StudyPlanDto getStudyPlanByRegister(@NonNull Register register) {
+        // retrieve the ordering of the study plan
+        String ordering = studentRepository
+            .findByRegister(register)
+            .getStudyPlan()
+            .getOrdering();
+        // retrieve the courses of the study plan
+        Set<Course> courses =  studentRepository
+            .findByRegister(register)
+            .getStudyPlan()
+            .getCourses()
+            .stream()
+            .collect(Collectors.toSet());
+
+        return new StudyPlanDto(ordering, courses);
     }
 
 

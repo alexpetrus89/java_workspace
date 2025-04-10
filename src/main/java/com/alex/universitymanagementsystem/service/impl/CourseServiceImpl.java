@@ -2,6 +2,8 @@ package com.alex.universitymanagementsystem.service.impl;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.dao.DataAccessException;
 import org.springframework.lang.NonNull;
@@ -56,11 +58,11 @@ public class CourseServiceImpl implements CourseService {
     * @return List of CourseDto objects representing all courses.
     */
     @Override
-    public List<CourseDto> getCourses() {
+    public Set<CourseDto> getCourses() {
         return courseRepository.findAll()
             .stream()
             .map(CourseMapper::mapToCourseDto)
-            .toList();
+            .collect(Collectors.toSet());
     }
 
 

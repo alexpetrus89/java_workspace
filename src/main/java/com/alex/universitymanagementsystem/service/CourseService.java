@@ -1,6 +1,7 @@
 package com.alex.universitymanagementsystem.service;
 
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.lang.NonNull;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,9 +22,9 @@ public interface CourseService {
 
     /**
      * retrieve all courses
-     * @return List<CourseDto>
+     * @return Set<CourseDto>
      */
-    List<CourseDto> getCourses();
+    Set<CourseDto> getCourses();
 
 
     /**

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:th="https://www.thymeleaf.org"
+        xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
+<head>
+    <title>University Management Application</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/study-plan-list.css">
+</head>
+<body>
+    <h1>Study plan</h1>
+    <p>Ordering: <span th:text="${studyPlan.ordering}">ordering</span></p>
+    <table>
+        <tr>
+            <th>degree Course</th>
+            <th>courses</th>
+            <th>cfu</th>
+        </tr>
+        <tr th:each="course : ${studyPlan.courses}">
+            <td th:text="${course.degreeCourse.name}">degree course</td>
+            <td th:text="${course.name}">course name</td>
+            <td th:text="${course.cfu}">course cfu</td>
+        </tr>
+    </table>
+    </h1>
+    <h1>Modify study plan</h1>
+    <p>Click <a th:href="@{/api/v1/study_plan/courses}">&nbsp;here&nbsp;</a> for change courses</p>
+    <br>
+    <a href="#" th:href="@{/user_student/student-home}">Back to Home</a>
+</body>
+</html>

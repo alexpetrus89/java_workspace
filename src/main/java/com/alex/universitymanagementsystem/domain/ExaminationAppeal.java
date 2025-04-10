@@ -47,6 +47,15 @@ public class ExaminationAppeal implements Serializable {
         this.date = date;
     }
 
+    public ExaminationAppeal(Course course, String description, LocalDate date, Set<Register> students) {
+        this.course = course;
+        this.degreeCourse = course.getDegreeCourse().getName();
+        this.professor = course.getProfessor().getUniqueCode();
+        this.description = description;
+        this.date = date;
+        this.students = students;
+    }
+
     // getters
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

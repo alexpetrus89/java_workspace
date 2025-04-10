@@ -1542,12 +1542,16 @@ public class UmsDBInit implements Serializable {
 
         Course chimicaGen = courseRepository
             .findByNameAndDegreeCourse("chimica generale", degreeCourseRepository.findByName(INGEGNERIA_GESTIONALE).getId());
+
+        Course calcoloNum = courseRepository
+            .findByNameAndDegreeCourse("calcolo numerico", degreeCourseRepository.findByName(INGEGNERIA_GESTIONALE).getId());
+
         List<ExaminationAppeal> examinationAppeals = new ArrayList<>();
 
         examinationAppeals.add(
             new ExaminationAppeal(
                 analisiMat,
-                "am mort",
+                "modulo 1 + modulo 2",
                 LocalDate.of(2026, 6, 23)
             )
         );
@@ -1555,7 +1559,7 @@ public class UmsDBInit implements Serializable {
         examinationAppeals.add(
             new ExaminationAppeal(
                 geometria,
-                "am mort",
+                "matrici",
                 LocalDate.of(2025, 6, 23)
             )
         );
@@ -1563,7 +1567,7 @@ public class UmsDBInit implements Serializable {
         examinationAppeals.add(
             new ExaminationAppeal(
                 fisicaGen,
-                "am stramort",
+                "meccanica, termodinamica, elettromagnetismo",
                 LocalDate.of(2025, 4, 23)
             )
         );
@@ -1571,7 +1575,7 @@ public class UmsDBInit implements Serializable {
         examinationAppeals.add(
             new ExaminationAppeal(
                 informatica,
-                "am stramort",
+                "fondamenti di informatica, linguaggio c",
                 LocalDate.of(2025, 9, 26)
             )
         );
@@ -1579,7 +1583,7 @@ public class UmsDBInit implements Serializable {
         examinationAppeals.add(
             new ExaminationAppeal(
                 scienzaDelleCostr,
-                "am stramort",
+                "tensori, travi a go go",
                 LocalDate.of(2025, 7, 26)
             )
         );
@@ -1587,8 +1591,16 @@ public class UmsDBInit implements Serializable {
         examinationAppeals.add(
             new ExaminationAppeal(
                 chimicaGen,
-                "am stramort",
+                "chimica per tutti",
                 LocalDate.of(2025, 5, 16)
+            )
+        );
+
+        examinationAppeals.add(
+            new ExaminationAppeal(
+                calcoloNum,
+                "fondamenti del calcolo numerico",
+                LocalDate.of(2025, 5, 18)
             )
         );
 

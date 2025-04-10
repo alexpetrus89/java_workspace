@@ -43,8 +43,6 @@ public class UmsMvcConfig implements WebMvcConfigurer, Serializable {
                   .setViewName("logout");
 		registry.addViewController("/login")
                   .setViewName("login");
-            registry.addViewController("/error")
-                  .setViewName("error/error");
 
             // student utilities
             registry.addViewController("/student/student-menu")
@@ -133,8 +131,12 @@ public class UmsMvcConfig implements WebMvcConfigurer, Serializable {
                   .addViewController("/user_student/examinations/examination-menu")
                   .setViewName("/user_student/examinations/examination-menu");
             registry
-                  .addViewController("/user_student/examinations/examination_appeal/calendar")
-                  .setViewName("/user_student/examinations/examination_appeal/calendar");
+                  .addViewController("/user_student/examinations/examination_appeal/available-calendar")
+                  .setViewName("/user_student/examinations/examination_appeal/available-calendar");
+
+                  registry
+                  .addViewController("/user_student/examinations/examination_appeal/booked-calendar")
+                  .setViewName("/user_student/examinations/examination_appeal/booked-calendar");
 
             // user professor
             registry
@@ -157,6 +159,12 @@ public class UmsMvcConfig implements WebMvcConfigurer, Serializable {
             registry
                   .addViewController("/validation/registration/username-already-taken")
                   .setViewName("/validation/registration/username-already-taken");
+            registry
+                  .addViewController("/validation/registration/password-not-match")
+                  .setViewName("/validation/registration/password-not-match");
+            registry
+                  .addViewController("/validation/registration/invalid-dob")
+                  .setViewName("/validation/registration/invalid-dob");
 	}
 
       @Override

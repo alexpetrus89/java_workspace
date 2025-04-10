@@ -18,6 +18,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.alex.universitymanagementsystem.domain.ExaminationAppeal;
 import com.alex.universitymanagementsystem.domain.Professor;
 import com.alex.universitymanagementsystem.domain.Student;
+import com.alex.universitymanagementsystem.dto.ExaminationAppealDto;
 import com.alex.universitymanagementsystem.dto.StudentDto;
 import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
 import com.alex.universitymanagementsystem.service.impl.ExaminationAppealServiceImpl;
@@ -60,7 +61,7 @@ public class ExaminationAppealController {
     @GetMapping(path = "/available/student")
     public ModelAndView getExamAppealsAvailableByStudent(@AuthenticationPrincipal Student student) {
         try {
-            List<ExaminationAppeal> examinationAppeals = examinationAppealServiceImpl.getExaminationAppealsAvailable(student.getRegister());
+            List<ExaminationAppealDto> examinationAppeals = examinationAppealServiceImpl.getExaminationAppealsAvailable(student.getRegister());
             return new ModelAndView("user_student/examinations/examination_appeal/available-calendar",EXAMINATION_APPEALS, examinationAppeals);
         } catch (ObjectNotFoundException e) {
             Map<String, Object> model = new HashMap<>();
@@ -122,6 +123,7 @@ public class ExaminationAppealController {
     @GetMapping(path = "/view/students-booked/{id}")
     public ModelAndView getStudentsBooked(@PathVariable Long id, @AuthenticationPrincipal Professor professor) {
         try {
+
             List<StudentDto> students = examinationAppealServiceImpl
                 .getExaminationAppealById(id)
                 .getStudents()

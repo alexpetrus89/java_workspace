@@ -6,43 +6,38 @@ public class ChangeCoursesDto {
 
     // instance variables
     private final Set<DegreeCourseDto> allDegreeCourses;
-    private final Set<CourseDto> coursesOfStudyPlan;
-    private final Set<CourseDto> allCourses;
     private final String degreeCourse;
-    private final String authorization;
+    private final Set<CourseDto> studyPlan;
+    private final String token;
 
     // constructor
     public ChangeCoursesDto(
         Set<DegreeCourseDto> allDegreeCourses,
-        Set<CourseDto> coursesOfStudyPlan,
-        Set<CourseDto> allCourses,
         String degreeCourse,
-        String authorization
+        Set<CourseDto> studyPlan,
+        String token
     ) {
         this.allDegreeCourses = allDegreeCourses;
-        this.coursesOfStudyPlan = coursesOfStudyPlan;
-        this.allCourses = allCourses;
         this.degreeCourse = degreeCourse;
-        this.authorization = authorization;
+        this.studyPlan = studyPlan;
+        this.token = token;
     }
 
     // getters
     public Set<DegreeCourseDto> getAllDegreeCourses() {
         return allDegreeCourses;
     }
-    public Set<CourseDto> getCoursesOfStudyPlan() {
-        return coursesOfStudyPlan;
-    }
-
-    public Set<CourseDto> getAllCourses() {
-        return allCourses;
-    }
 
     public String getDegreeCourse() {
         return degreeCourse;
     }
 
-    public String getAuthorization() {
-        return authorization;
+    public Set<CourseDto> getStudyPlan() {
+        return studyPlan;
     }
+
+    public String getToken() {
+        return token;
+    }
+
 }

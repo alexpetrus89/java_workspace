@@ -18,8 +18,8 @@
         </tr>
         <tr th:each="professor : ${professors}">
             <td th:text="${professor.uniqueCode.code}">Unique Code</td>
-            <td th:text="${professor.name}">Nome</td>
-            <td th:text="${professor.email}">Email</td>
+            <td th:text="${professor.fullname}">Nome</td>
+            <td th:text="${professor.Username}">Email</td>
         </tr>
     </table>
     <br>

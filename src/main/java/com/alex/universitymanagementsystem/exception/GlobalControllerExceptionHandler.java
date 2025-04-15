@@ -87,7 +87,7 @@ public class GlobalControllerExceptionHandler {
     public ResponseEntity<String> handleRuntimeException(RuntimeException e) {
         // Handle the exception and generate a custom error response
         logger.error("A runtime exception occurred", e);
-        String errorMessage = "A runtime exception occurred, IN QUALCHE MERDOSO CONTROLLER MARCHIATO CON TRANSACTIONAL: " + e.getMessage();
+        String errorMessage = "A runtime exception occurred: " + e.getMessage();
 
         return ResponseEntity
             .status(HttpStatus.INTERNAL_SERVER_ERROR)

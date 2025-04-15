@@ -13,10 +13,11 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.alex.universitymanagementsystem.domain.Student;
+import com.alex.universitymanagementsystem.domain.immutable.Register;
 import com.alex.universitymanagementsystem.dto.ChangeCoursesDto;
 import com.alex.universitymanagementsystem.dto.CourseDto;
+import com.alex.universitymanagementsystem.dto.DegreeCourseDto;
 import com.alex.universitymanagementsystem.dto.StudyPlanDto;
-import com.alex.universitymanagementsystem.service.impl.CourseServiceImpl;
 import com.alex.universitymanagementsystem.service.impl.DegreeCourseServiceImpl;
 import com.alex.universitymanagementsystem.service.impl.StudyPlanServiceImpl;
 
@@ -28,27 +29,48 @@ public class StudyPlanController {
     // instance variables
     private final StudyPlanServiceImpl studyPlanServiceImpl;
     private final DegreeCourseServiceImpl degreeCourseServiceImpl;
-    private final CourseServiceImpl courseServiceImpl;
 
     public StudyPlanController(
         StudyPlanServiceImpl studyPlanServiceImpl,
-        DegreeCourseServiceImpl degreeCourseServiceImpl,
-        CourseServiceImpl courseServiceImpl
+        DegreeCourseServiceImpl degreeCourseServiceImpl
     ) {
         this.studyPlanServiceImpl = studyPlanServiceImpl;
         this.degreeCourseServiceImpl = degreeCourseServiceImpl;
-        this.courseServiceImpl = courseServiceImpl;
     }
 
+
+    /**
+     * This method is used to get the study plan of a student.
+     * It takes the student as a parameter and returns a ModelAndView object.
+     * @param student
+     * @return ModelAndView
+     */
     @GetMapping(path = "/view")
     public ModelAndView getStudyPlanInfo(@AuthenticationPrincipal Student student) {
         StudyPlanDto studyPlan = studyPlanServiceImpl.getStudyPlanByRegister(student.getRegister());
         return new ModelAndView("user_student/study_plan/study_plan_info", "studyPlan", studyPlan);
     }
 
+
+    /**
+     * Retrieves the courses related to a student's study plan and degree courses.
+     * This includes all available courses, all degree courses, and the courses
+     * currently in the student's study plan. The method constructs a
+     * ChangeCoursesDto object that contains this information along with the
+     * student's degree course name and a security token, then returns a
+     * ModelAndView for modifying the study plan.
+     *
+     * @param student the authenticated student whose study plan is to be retrieved
+     * @return a ModelAndView object for the "user_student/study_plan/study_plan_modify" view 
+     *         with the ChangeCoursesDto object as the model
+     */
     @GetMapping(path = "/courses")
     public ModelAndView getCourses(@AuthenticationPrincipal Student student) {
 
+        // Retrieve all courses and degree courses and the courses of the student
+        Set<DegreeCourseDto> allDegreeCourses = degreeCourseServiceImpl.getDegreeCourses();
+        String degreeCourse = student.getDegreeCourse().getName();
+        Set<CourseDto> studyPlan= studyPlanServiceImpl.getCoursesByRegister(student.getRegister());
         String token = SecurityContextHolder
             .getContext()
             .getAuthentication()
@@ -59,26 +81,34 @@ public class StudyPlanController {
             .orElseThrow(() -> new RuntimeException("Token non trovato"));
 
         ChangeCoursesDto courses = new ChangeCoursesDto(
-            degreeCourseServiceImpl.getDegreeCourses(),
-            studyPlanServiceImpl.getCoursesByRegister(student.getRegister()),
-            courseServiceImpl.getCourses(),
-            student.getDegreeCourse().getName(),
+            allDegreeCourses,
+            degreeCourse,
+            studyPlan,
             token
         );
 
         return new ModelAndView("user_student/study_plan/study_plan_modify", "courses", courses);
     }
 
+    /**
+     * This method is used to add a course to the study plan of a student.
+     * It takes the student, degree course, and course as parameters and returns a ModelAndView object.
+     * @param student
+     * @param degreeCourse
+     * @param course
+     * @return ModelAndView
+     */
     @PutMapping(path = "/change")
     public ModelAndView changeCourse(
         @AuthenticationPrincipal Student student,
         @RequestParam String degreeCourseOfNewCourse,
-        @RequestParam String courseToAdd,
         @RequestParam String degreeCourseOfOldCourse,
+        @RequestParam String courseToAdd,
         @RequestParam String courseToRemove
     ) {
-        studyPlanServiceImpl.changeCourse(student.getRegister(), degreeCourseOfNewCourse, degreeCourseOfOldCourse, courseToAdd, courseToRemove);
-        Set<CourseDto> courses = studyPlanServiceImpl.getCoursesByRegister(student.getRegister());
+        Register register = student.getRegister();
+        studyPlanServiceImpl.changeCourse(register, degreeCourseOfNewCourse, degreeCourseOfOldCourse, courseToAdd, courseToRemove);
+        Set<CourseDto> courses = studyPlanServiceImpl.getCoursesByRegister(register);
         return new ModelAndView("user_student/study_plan/study_plan_courses", "courses", courses);
     }
 

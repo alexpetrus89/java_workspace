@@ -1,7 +1,9 @@
 package com.alex.universitymanagementsystem.controller;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,8 +15,10 @@ import com.alex.universitymanagementsystem.dto.CourseDto;
 import com.alex.universitymanagementsystem.dto.DegreeCourseDto;
 import com.alex.universitymanagementsystem.dto.ProfessorDto;
 import com.alex.universitymanagementsystem.dto.StudentDto;
+import com.alex.universitymanagementsystem.exception.JsonProcessingException;
 import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
 import com.alex.universitymanagementsystem.service.impl.DegreeCourseServiceImpl;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 
@@ -109,6 +113,33 @@ public class DegreeCourseController {
             "students",
             students
         );
+    }
+
+
+    /**
+     * retrieves all courses of a given degree course for particular ajax request
+     * @param name
+     * @return a list of data transfer objects of courses
+     * @throws JsonProcessingException if the object cannot be serialized to JSON
+     */
+    @GetMapping(path = "/courses/ajax")
+    public String getStringOfSerializedCourses(@RequestParam String name) throws JsonProcessingException {
+        // get the courses from the service
+        List<CourseDto> courses = degreeCourseServiceImpl.getCourses(name.toUpperCase());
+        return "{\"degreeCourseName\": [" + courses
+            .stream()
+            .map(this::serializeCourseDto)
+            .collect(Collectors.joining(",")) + "]}";
+    }
+
+
+    private String serializeCourseDto(CourseDto courseDto) throws JsonProcessingException {
+        try {
+            return new ObjectMapper().writeValueAsString(courseDto);
+        } catch (IOException e) {
+            // Handle the exception, for example, by throwing a JsonProcessingException
+            throw new JsonProcessingException("Error serializing CourseDto", e);
+        }
     }
 
 }

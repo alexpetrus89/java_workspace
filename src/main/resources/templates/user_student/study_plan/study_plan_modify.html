@@ -11,7 +11,7 @@
     <h1 th:text="${title}">Select courses to change</h1>
     <form action="#" th:action="@{/api/v1/study_plan/change}"
         th:object="${courses}" method="post">
-        <input type="hidden" name="_method" value="PUT" />
+        <input type="hidden" name="_method" value="PUT"/>
 
         <label for="degreeCourseOfNewCourse">Degree Course of new course:</label>
         <select name="degreeCourseOfNewCourse"
@@ -20,48 +20,98 @@
             <option value="">Select a degree course</option>
             <option th:each="degreeCourse : ${courses.allDegreeCourses}"
             th:text="${degreeCourse.name}"></option>
-        </select></p>
-
-        <label for="courseToAdd">New course:</label>
-        <select name="courseToAdd" id="courseToAdd">
-            <option value="">Select a course</option>
         </select>
+        </p>
 
         <script th:inline="javascript">
-            var authorization = /*[[${courses.authorization}]]*/
+            var token = /*[[${courses.token}]]*/
 
             function updateCourses() {
                 var degreeCourseName = $('#degreeCourseOfNewCourse').val();
 
+                if (degreeCourseName === "") {
+                    alert("Seleziona un corso di laurea per proseguire");
+                    return; // Non fare nulla se non è selezionato un valore
+                }
+
                 $.ajax({
                     type: 'GET',
-                    url: '/api/v1/degree-course/courses/view?name=' + degreeCourseName,
+                    url: '/api/v1/degree-course/courses/ajax?name=' + degreeCourseName,
                     headers: {
-                        'Authorization': 'Bearer ' + authorization,
+                        'Authorization': 'Bearer ' + token,
                     },
+                    data: {
+                        degreeCourseOfOldCourse: 'INGEGNERIA INFORMATICA MAGISTRALE'
+                    },
+                    dataType: 'json',
+                    // Funzione eseguita in caso di successo della richiesta AJAX.
                     success: function(data) {
-                        $('#courseToAdd').empty();
-                        $.each(data, function(index, course) {
-                            $('#courseToAdd').append('<option value="' + course.degreeCourseName + '">' + course.name + '</option>');
-                        });
+                        try {
+                            var jsonData = data;
+                            console.log(jsonData);
+                            // Assicurati che jsonData sia un oggetto JSON con una proprietà "degreeCourseName"
+                            if (!jsonData.degreeCourseName)
+                                throw new Error('La risposta non è un oggetto JSON valido.');
+
+                            // Svuota la select
+                            $('#courseToAdd').empty();
+
+                            // Aggiungi un'opzione vuota all'inizio
+                            $('#courseToAdd').append('<option value="">Select a course</option>');
+                            $.each(jsonData.degreeCourseName, function(index, course) {
+                                // Qui puoi accedere alle proprietà del corso, ad esempio:
+                                var courseName = course.course.name;
+                                // Aggiungi l'opzione al select
+                                $('#courseToAdd').append('<option value="' + courseName + '">' + courseName + '</option>');
+                            });
+                        } catch (e) {
+                            console.error('Errore durante il parsing della risposta JSON:', e);
+                        }
                     },
+                    // Funzione eseguita in caso di errore della richiesta AJAX.
                     error: function(xhr, status, error) {
-                        console.error('Errore AJAX:', error);
+                        console.error('Errore nella richiesta AJAX:', error);
                     }
-                })
-
+                });
+                // end of ajax request
             }
-        </script></p>
 
-        <label for="courseToRemove">Old course:</label>
+            $(document).ready(function() {
+                updateCourses();
+            });
+
+            $('#degreeCourseOfNewCourse').on('change', function() {
+                updateCourses();
+            });
+
+            // Nascondi il campo degreeCourseOfOldCourse
+            $('#degreeCourseOfOldCourse').hide();
+            // Imposta il valore del campo degreeCourseOfOldCourse
+            $('#degreeCourseOfOldCourse').val($('#courseToRemove option:selected').text());
+        </script>
+        </p>
+
+        <label for="courseToAdd">Select course to add:</label>
+        <select name="courseToAdd" id="courseToAdd">
+            <option value="">Select a course</option>
+            <option th:each="course : ${courseToAdd}"
+            th:text="${course.name}"></option>
+        </select>
+        </p>
+
+        <label for="courseToRemove">Select course to remove:</label>
         <select name="courseToRemove" id="courseToRemove">
             <option value="">Select a course</option>
-            <option th:each="course : ${courses.coursesOfStudyPlan}"
-            th:if="${course.degreeCourse.name == courses.degreeCourse}"
+            <option th:each="course : ${courses.studyPlan}"
             th:text="${course.name}"></option>
-        </select></p>
+        </select>
+        </p>
 
-        <p><input type="submit" value="Submit"/> <input type="reset" value="Reset"/></p>
+        <input type="hidden" name="degreeCourseOfOldCourse" id="degreeCourseOfOldCourse" th:value="${courses.studyPlan[0].degreeCourse.name}">
+
+        <input type="submit" value="Submit"/>
+        <input type="reset" value="Reset"/>
+        </p>
     </form>
     <br>
     <a href="#" th:href="@{/user_student/student-home}">Back to Home</a>

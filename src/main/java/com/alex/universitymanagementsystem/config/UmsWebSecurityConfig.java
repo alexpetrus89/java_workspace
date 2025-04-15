@@ -121,7 +121,6 @@ public class UmsWebSecurityConfig implements Serializable {
 					"degree_course/read/read-professors",
 					"degree_course/read/read-students",
 					"api/v1/degree-course/professors/view",
-					"api/v1/degree-course/courses/view",
 					"api/v1/degree-course/students/view",
 
 					// examination
@@ -146,6 +145,7 @@ public class UmsWebSecurityConfig implements Serializable {
 					"/api/v1/study_plan/view",
 					"/api/v1/study_plan/courses",
 					"/api/v1/degree-course/courses/view",
+					"/api/v1/degree-course/courses/ajax",
 					"/api/v1/examination-appeal/available/student",
 					"/api/v1/examination-appeal/booked/student",
 					"/api/v1/examination-appeal/booked/{id}",

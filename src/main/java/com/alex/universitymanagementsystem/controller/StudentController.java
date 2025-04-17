@@ -15,7 +15,6 @@ import org.springframework.web.servlet.ModelAndView;
 import com.alex.universitymanagementsystem.domain.Student;
 import com.alex.universitymanagementsystem.domain.immutable.Register;
 import com.alex.universitymanagementsystem.dto.StudentDto;
-import com.alex.universitymanagementsystem.exception.HandleCommonExceptions;
 import com.alex.universitymanagementsystem.exception.ObjectAlreadyExistsException;
 import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
 import com.alex.universitymanagementsystem.mapper.StudentMapper;
@@ -62,11 +61,6 @@ public class StudentController {
      * @return ModelAndView
      */
     @GetMapping(path = "/read/register")
-    @HandleCommonExceptions(
-        exceptionType = IllegalArgumentException.class,
-        errorMessage = "register is blank",
-        errorCode = 400
-    )
 	public ModelAndView getStudentByRegister(@RequestParam String register) {
         StudentDto student = studentServiceImpl.getStudentByRegister(new Register(register));
         return new ModelAndView("student/read/read-result", ATTRIBUTE_STUDENT, student);

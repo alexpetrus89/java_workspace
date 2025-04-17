@@ -2,7 +2,6 @@ package com.alex.universitymanagementsystem.config;
 
 import java.io.Serializable;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.format.FormatterRegistry;
@@ -18,10 +17,6 @@ import com.alex.universitymanagementsystem.utils.StringToDegreeCourseConverter;
 
 @Configuration
 public class UmsMvcConfig implements WebMvcConfigurer, Serializable {
-
-      // constants
-      @Value("${spring.web.resources.static-locations}")
-      private String staticCssResourcesPath;
 
       // instance variables
       private final transient DegreeCourseRepository degreeCourseRepository;
@@ -134,7 +129,7 @@ public class UmsMvcConfig implements WebMvcConfigurer, Serializable {
                   .addViewController("/user_student/examinations/examination_appeal/available-calendar")
                   .setViewName("/user_student/examinations/examination_appeal/available-calendar");
 
-                  registry
+            registry
                   .addViewController("/user_student/examinations/examination_appeal/booked-calendar")
                   .setViewName("/user_student/examinations/examination_appeal/booked-calendar");
 
@@ -165,30 +160,16 @@ public class UmsMvcConfig implements WebMvcConfigurer, Serializable {
             registry
                   .addViewController("/validation/registration/invalid-dob")
                   .setViewName("/validation/registration/invalid-dob");
-	}
+            registry
+                  .addViewController("/validation/study_plan/invalid-choice")
+                  .setViewName("/validation/study_plan/invalid-choice");
+      }
 
       @Override
       public void addResourceHandlers(@NonNull ResourceHandlerRegistry registry) {
-            registry.addResourceHandler("/static/**")
+            registry
+                  .addResourceHandler("/static/**")
                   .addResourceLocations("classpath:/static/");
-            registry.addResourceHandler("/api/v1/student/css/**")
-                  .addResourceLocations(staticCssResourcesPath);
-            registry.addResourceHandler("/api/v1/professor/css/**")
-                  .addResourceLocations(staticCssResourcesPath);
-            registry.addResourceHandler("/api/v1/course/css/**")
-                  .addResourceLocations(staticCssResourcesPath);
-            registry.addResourceHandler("/api/v1/degree-course/professors/css/**")
-                  .addResourceLocations(staticCssResourcesPath);
-            registry.addResourceHandler("/api/v1/examination/css/**")
-                  .addResourceLocations(staticCssResourcesPath);
-            registry.addResourceHandler("/api/v1/user/css/**")
-                  .addResourceLocations(staticCssResourcesPath);
-            registry.addResourceHandler("/css/admin-home.css")
-                  .addResourceLocations(staticCssResourcesPath);
-            registry.addResourceHandler("/css/student-home.css")
-                  .addResourceLocations(staticCssResourcesPath);
-            registry.addResourceHandler("/css/professor-home.css")
-                  .addResourceLocations(staticCssResourcesPath);
       }
 
       @Override
@@ -200,6 +181,7 @@ public class UmsMvcConfig implements WebMvcConfigurer, Serializable {
       HiddenHttpMethodFilter hiddenHttpMethodFilter() {
             return new HiddenHttpMethodFilter();
       }
+
 
 }
 

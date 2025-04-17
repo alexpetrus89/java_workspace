@@ -15,6 +15,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+import com.alex.universitymanagementsystem.component.UmsCustomAuthenticationSuccessHandler;
 import com.alex.universitymanagementsystem.repository.UserRepository;
 
 @Configuration
@@ -70,6 +71,7 @@ public class UmsWebSecurityConfig implements Serializable {
 				requests.requestMatchers(
 					// URL accessibili a tutti gli utenti
 				"/",
+					"/shutdown",
 					"/login",
 					"/logout",
 					"/home",
@@ -162,9 +164,11 @@ public class UmsWebSecurityConfig implements Serializable {
 					"/user_professor/examinations/examination_appeal/create-examination-appeal",
 					"/user_professor/examinations/examination_appeal/create-result",
 					"/user_professor/examinations/examination_appeal/students-booked",
+					"/user_professor/examinations/examination_appeal/evaluation",
 					"/api/v1/course/view/professor",
 					"/api/v1/examination-appeal/create",
-					"/api/v1/examination-appeal/delete"
+					"/api/v1/examination-appeal/delete",
+					"/api/v1/examination-appeal/make-outcome/{register}/{id}"
 				)
 				.hasAnyRole(PROFESSOR, ADMIN)
 				.anyRequest()

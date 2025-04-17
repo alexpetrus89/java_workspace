@@ -11,15 +11,17 @@
     <h1>Examinations</h1>
     <table>
         <th>Course</th>
+        <th>Cfu</th>
         <th>Registration</th>
         <th>Name</th>
         <th>Grade</th>
         <th>Date</th>
         <th>Degree course</th>
         <tr th:each="examination : ${examinations}">
-            <td th:text="${examination.course.name}">Course name</td>
-            <td th:text="${examination.student.register.register}">Student Register</td>
-            <td th:text="${examination.student.fullname}">Student Name</td>
+            <td th:text="${examination.course.name}">Course</td>
+            <td th:text="${examination.course.cfu}">Cfu</td>
+            <td th:text="${examination.student.register.register}">Student register</td>
+            <td th:text="${examination.student.fullname}">Student name</td>
             <td>
                 <span th:text="${examination.grade}">Grade</span>
                 <span th:if="${examination.withHonors}"> with honors</span>
@@ -28,6 +30,15 @@
             <td th:text="${examination.course.degreeCourse.name}">Degree course name</td>
         </tr>
     </table>
+    <br>
+    <tr>
+        <div>CREDITS ACQUIRED: <span th:text="${#aggregates.sum(examinations.![course.cfu])}">Total CFU</span></div>
+    </tr>
+    <br>
+    <tr>
+        <span>AVERAGE RATING: </span><span th:text="${#aggregates.avg(examinations.![grade])}">AVERAGE RATING</span>
+    </tr>
+    <br>
     <br>
     <a href="#" th:href="@{/user_student/examinations/examination-menu}">Back to Menu</a>
 </body>

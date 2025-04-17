@@ -147,8 +147,8 @@ public class StudyPlanServiceImpl implements StudyPlanService {
             Student student = studentRepository.findByRegister(register);
             DegreeCourse degreeCourseNew = degreeCourseRepository.findByName(degreeCourseOfNewCourse.toUpperCase());
             DegreeCourse degreeCourseOld = degreeCourseRepository.findByName(degreeCourseOfOldCourse.toUpperCase());
-            Course courseToAdd = courseRepository.findByNameAndDegreeCourse(courseToAddName, degreeCourseNew.getId());
-            Course courseToRemove = courseRepository.findByNameAndDegreeCourse(courseToRemoveName, degreeCourseOld.getId());
+            Course courseToAdd = courseRepository.findByNameAndDegreeCourse(courseToAddName, degreeCourseNew);
+            Course courseToRemove = courseRepository.findByNameAndDegreeCourse(courseToRemoveName, degreeCourseOld);
 
             // sanity checks
             if(!student.getStudyPlan().addCourse(courseToAdd))

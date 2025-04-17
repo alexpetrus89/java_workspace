@@ -14,10 +14,10 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import com.alex.universitymanagementsystem.domain.Course;
+import com.alex.universitymanagementsystem.domain.DegreeCourse;
 import com.alex.universitymanagementsystem.domain.ExaminationAppeal;
 import com.alex.universitymanagementsystem.domain.Professor;
 import com.alex.universitymanagementsystem.domain.immutable.CourseId;
-import com.alex.universitymanagementsystem.domain.immutable.DegreeCourseId;
 import com.alex.universitymanagementsystem.domain.immutable.Register;
 import com.alex.universitymanagementsystem.domain.immutable.UniqueCode;
 import com.alex.universitymanagementsystem.dto.ExaminationAppealDto;
@@ -265,17 +265,21 @@ public class ExaminationAppealServiceImpl implements ExaminationAppealService {
         if(!degreeCourseRepository.existsByName(degreeCourseName.toUpperCase()))
             throw new ObjectNotFoundException(DomainType.DEGREE_COURSE);
 
+        if(!courseRepository.existsByNameAndDegreeCourse(courseName, degreeCourseName.toUpperCase()))
+            throw new ObjectNotFoundException(DomainType.COURSE);
+
         if(!professorRepository.existsByUniqueCode(professor.getUniqueCode()))
             throw new ObjectNotFoundException(DomainType.PROFESSOR);
 
         try {
-            DegreeCourseId degreeCourseId = degreeCourseRepository
-                .findByName(degreeCourseName.toUpperCase())
-                .getId();
+            // retrieve degreeCourse and course
+            DegreeCourse degreeCourse = degreeCourseRepository.findByName(degreeCourseName.toUpperCase());
+            Course course = courseRepository.findByNameAndDegreeCourse(courseName, degreeCourse);
 
-            Course course = courseRepository.findByNameAndDegreeCourse(courseName, degreeCourseId);
+            if(!professor.getUniqueCode().toString().equals(course.getProfessor().getUniqueCode().toString()))
+                throw new IllegalArgumentException("Professor does not teach this course");
+
             ExaminationAppeal exam = new ExaminationAppeal(course, description, date);
-
             return examinationAppealRepository.saveAndFlush(exam);
         } catch (DataAccessException e) {
             logger.error(DATA_ACCESS_ERROR, e);
@@ -319,11 +323,9 @@ public class ExaminationAppealServiceImpl implements ExaminationAppealService {
             throw new ObjectNotFoundException(DomainType.PROFESSOR);
 
         try {
-            DegreeCourseId degreeCourseId = degreeCourseRepository
-                .findByName(degreeCourseName.toUpperCase())
-                .getId();
+            DegreeCourse degreeCourse = degreeCourseRepository.findByName(degreeCourseName.toUpperCase());
 
-            Course course = courseRepository.findByNameAndDegreeCourse(courseName, degreeCourseId);
+            Course course = courseRepository.findByNameAndDegreeCourse(courseName, degreeCourse);
             ExaminationAppeal examAppeal = examinationAppealRepository.findByCourseIdAndDate(course.getCourseId(), date);
 
             if(!examinationAppealRepository.existsById(examAppeal.getId()))

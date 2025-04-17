@@ -32,7 +32,6 @@ package com.alex.universitymanagementsystem.exception;
  * qualsiasi controller. Ecco un semplice esempio:
  */
 
-import java.io.IOException;
 import java.text.ParseException;
 
 import org.slf4j.Logger;
@@ -47,7 +46,6 @@ import org.springframework.web.client.HttpServerErrorException.InternalServerErr
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
-import org.xml.sax.SAXException;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -106,7 +104,7 @@ public class GlobalControllerExceptionHandler {
     public ResponseEntity<String> handleNoResourceFoundException(NoResourceFoundException e) {
         // Handle the specific exception and generate a custom error response
         logger.error("Resource not found", e);
-        String errorMessage = "Resource not found, NON TROVA LA RISORSA E TU SEI UNO STRONZO: " + e.getMessage();
+        String errorMessage = "Resource not found, NON TROVA LA RISORSA: " + e.getMessage();
 
         return ResponseEntity
             .status(HttpStatus.NOT_FOUND)
@@ -121,11 +119,11 @@ public class GlobalControllerExceptionHandler {
      * @param e the exception to be handled
      * @return a ResponseEntity containing the error message
      */
-    @ExceptionHandler({ParseException.class, SAXException.class, IOException.class})
+    @ExceptionHandler(ParseException.class)
     public ResponseEntity<String> handleHtmlParseException(Exception e) {
         // Handle the specific exception and generate a custom error response
         logger.error("Error during HTML parsing", e);
-        String errorMessage = "Error during HTML parsing, HAI FATTO QUALCHE CAZZATA NEL FILE .HTML: " + e.getMessage();
+        String errorMessage = "Error during HTML parsing, HAI FATTO QUALCHE ERRORE IN UN FILE .HTML: " + e.getMessage();
 
         return ResponseEntity
             .status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -141,7 +139,7 @@ public class GlobalControllerExceptionHandler {
      * @return
      */
     @ExceptionHandler({NullPointerException.class, IllegalArgumentException.class, UnsupportedOperationException.class})
-    public ModelAndView handleCommonException(Exception e) {
+    public ModelAndView handleCommonExceptions(Exception e) {
         // Handle the specific exception and generate a custom error response
         logger.error("Common exception, e.g. null pointer, illegal argument, unsupported operation", e);
         return new ModelAndView(ERROR_URL, "error message", e.getMessage());

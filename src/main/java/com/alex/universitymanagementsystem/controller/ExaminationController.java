@@ -99,10 +99,15 @@ public class ExaminationController {
      * @throws NullPointerException if the register is null or empty
      */
     @GetMapping(path = "/student-register")
-    public ModelAndView getExaminationsByStudentRegister(@AuthenticationPrincipal Student student) {
+    public ModelAndView getExaminationsByStudentRegister(
+        @AuthenticationPrincipal Student student,
+        @RequestParam(required = false) String register
+    ) {
+
+        Register studRegister = student != null ? student.getRegister() : new Register(register);
 
         try {
-            List<ExaminationDto> examinations = examinationServiceImpl.getExaminationsByStudentRegister(student.getRegister());
+            List<ExaminationDto> examinations = examinationServiceImpl.getExaminationsByStudentRegister(studRegister);
             return new ModelAndView("user_student/examinations/examination-list", ATTRIBUTE_EXAMINATIONS, examinations);
         } catch (ObjectNotFoundException e) {
             Map<String, Object> model = new HashMap<>();

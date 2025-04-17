@@ -5,7 +5,7 @@
 <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
 <head>
     <title>University Management Application</title>
-    <link rel="stylesheet" type="text/css" href="/static/css/student-list.css">
+    <link rel="stylesheet" type="text/css" href="static/css/student-list.css">
 </head>
 <body>
     <h1>Read students information</h1>
@@ -15,14 +15,20 @@
             <th>Registration</th>
             <th>Email</th>
             <th>Degree Course</th>
+            <th>Evaluation</th>
         </tr>
-        <tr th:each="student : ${students}">
+        <tr th:each="student : ${appeal.students}">
             <td th:text="${student.fullname}">Nome</td>
             <td th:text="${student.register.register}">Register</td>
             <td th:text="${student.username}">Email</td>
             <td th:text="${student.degreeCourse.name}">Degree Course</td>
+            <td>
+                <a th:href="@{/api/v1/examination-appeal/make-outcome/{register}/{id}(register=${student.register.register}, id=${appeal.appealId})}">evaluation</a>
+            </td>
         </tr>
     </table>
+    <br>
+    <a href="#" th:href="@{/api/v1/examination-appeal/view/professor}">Back to check</a>
     <br>
     <a href="#" th:href="@{/user_professor/examinations/examination_appeal/examination-appeal-menu}">Back to Menu</a>
 </body>

@@ -9,8 +9,8 @@ import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
 
 import com.alex.universitymanagementsystem.domain.Course;
+import com.alex.universitymanagementsystem.domain.DegreeCourse;
 import com.alex.universitymanagementsystem.domain.immutable.CourseId;
-import com.alex.universitymanagementsystem.domain.immutable.DegreeCourseId;
 import com.alex.universitymanagementsystem.domain.immutable.UniqueCode;
 import com.alex.universitymanagementsystem.enum_type.CourseType;
 
@@ -23,16 +23,16 @@ public interface CourseRepository
     /**
      * Retrieves a course from the repository by its name and degree course.
      * @param courseName the name of the course
-     * @param degreeCourseId the id of the degree course
+     * @param degreeCourse the degree course
      * @return the course if found, null otherwise
      * @throws NullPointerException if the course name or degree course id is null
      * @throws IllegalArgumentException if the course name or degree course id is null
      * @throws UnsupportedOperationException if the course name or degree course id is not unique
      */
-    @Query("SELECT c FROM Course c WHERE c.name = :courseName AND c.degreeCourse.id = :degreeCourseId")
+    @Query("SELECT c FROM Course c WHERE c.name = :courseName AND c.degreeCourse = :degreeCourse")
     Course findByNameAndDegreeCourse(
         @Param("courseName") @NonNull String courseName,
-        @Param("degreeCourseId") @NonNull DegreeCourseId degreeCourseId
+        @Param("degreeCourse") @NonNull DegreeCourse degreeCourse
     );
 
 

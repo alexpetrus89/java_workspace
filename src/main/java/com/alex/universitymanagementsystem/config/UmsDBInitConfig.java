@@ -41,7 +41,7 @@ import com.alex.universitymanagementsystem.utils.Builder;
 import com.alex.universitymanagementsystem.utils.RegistrationForm;
 
 @Configuration
-public class UmsDBInit implements Serializable {
+public class UmsDBInitConfig implements Serializable {
 
     // constants
     private static final String INGEGNERIA_GESTIONALE = "INGEGNERIA GESTIONALE";
@@ -60,7 +60,7 @@ public class UmsDBInit implements Serializable {
     private static final String UC_GIOELE = "wer111er";
 
     private final transient Logger logger =
-        org.slf4j.LoggerFactory.getLogger(UmsDBInit.class);
+        org.slf4j.LoggerFactory.getLogger(UmsDBInitConfig.class);
 
 
     @Bean
@@ -109,7 +109,7 @@ public class UmsDBInit implements Serializable {
             initializeExaminations(studentRepository, courseRepository, degreeCourseRepository, examinationRepository);
 
             // examination appeal initializer
-            initializeExaminationAppeals(examinationAppealRepository, courseRepository, degreeCourseRepository);
+            initializeExaminationAppeals(examinationAppealRepository, courseRepository, degreeCourseRepository, studentRepository);
 
         };
     }
@@ -127,34 +127,34 @@ public class UmsDBInit implements Serializable {
     private void initializeUsers(UserRepository userRepository, PasswordEncoder passwordEncoder) {
 
         // create user  - 2 admin + 18 students + 9 professors
-        Builder formBuilderOne = new Builder();
-        formBuilderOne.withUsername("rico@gmail.com");
-        formBuilderOne.withPassword("rico");
-        formBuilderOne.withFullname("damiano ruggieri");
-        formBuilderOne.withDob(LocalDate.of(1993, 1, 1));
-        formBuilderOne.withStreet("via della nazione");
-        formBuilderOne.withCity("fasano");
-        formBuilderOne.withState("italia");
-        formBuilderOne.withZip("72015");
-        formBuilderOne.withPhone("3815674128");
-        formBuilderOne.withRole(RoleType.ADMIN);
+        Builder builderAdminOne = new Builder();
+        builderAdminOne.withUsername("rico@gmail.com");
+        builderAdminOne.withPassword("rico");
+        builderAdminOne.withFullname("damiano ruggieri");
+        builderAdminOne.withDob(LocalDate.of(1993, 1, 1));
+        builderAdminOne.withStreet("via della nazione");
+        builderAdminOne.withCity("fasano");
+        builderAdminOne.withState("italia");
+        builderAdminOne.withZip("72015");
+        builderAdminOne.withPhone("3815674128");
+        builderAdminOne.withRole(RoleType.ADMIN);
 
-        Builder formBuilderTwo = new Builder();
-        formBuilderTwo.withUsername("fido@gmail.com");
-        formBuilderTwo.withPassword("fido");
-        formBuilderTwo.withFullname("enrico ruggieri");
-        formBuilderTwo.withDob(LocalDate.of(1993, 4, 1));
-        formBuilderTwo.withStreet("via del calvario");
-        formBuilderTwo.withCity("pezze di greco");
-        formBuilderTwo.withState("italia");
-        formBuilderTwo.withZip("72015");
-        formBuilderTwo.withPhone("3815674128");
-        formBuilderTwo.withRole(RoleType.ADMIN);
+        Builder builderAdminTwo = new Builder();
+        builderAdminTwo.withUsername("fido@gmail.com");
+        builderAdminTwo.withPassword("fido");
+        builderAdminTwo.withFullname("enrico ruggieri");
+        builderAdminTwo.withDob(LocalDate.of(1993, 4, 1));
+        builderAdminTwo.withStreet("via del calvario");
+        builderAdminTwo.withCity("pezze di greco");
+        builderAdminTwo.withState("italia");
+        builderAdminTwo.withZip("72015");
+        builderAdminTwo.withPhone("3815674128");
+        builderAdminTwo.withRole(RoleType.ADMIN);
 
         // create users
         List<User> users = List.of(
-            new RegistrationForm(formBuilderOne).toUser(passwordEncoder),
-            new RegistrationForm(formBuilderTwo).toUser(passwordEncoder)
+            new RegistrationForm(builderAdminOne).toUser(passwordEncoder),
+            new RegistrationForm(builderAdminTwo).toUser(passwordEncoder)
         );
 
         // save user
@@ -282,102 +282,129 @@ public class UmsDBInit implements Serializable {
     ) {
 
         // 1
-        Builder formBuilderFour = new Builder();
-        formBuilderFour.withUsername("nino@gmail.com");
-        formBuilderFour.withPassword("nino");
-        formBuilderFour.withFullname("bob dylamie");
-        formBuilderFour.withDob(LocalDate.of(1991, 4, 6));
-        formBuilderFour.withStreet("via delle lamie di olimpia");
-        formBuilderFour.withCity("laureto");
-        formBuilderFour.withState("italia");
-        formBuilderFour.withZip("72015");
-        formBuilderFour.withPhone("3619647852");
-        formBuilderFour.withRole(RoleType.STUDENT);
+        Builder builderStudentOne = new Builder();
+        builderStudentOne.withUsername("nino@gmail.com");
+        builderStudentOne.withPassword("nino");
+        builderStudentOne.withFullname("bob dylamie");
+        builderStudentOne.withDob(LocalDate.of(1991, 4, 6));
+        builderStudentOne.withStreet("via delle lamie di olimpia");
+        builderStudentOne.withCity("laureto");
+        builderStudentOne.withState("italia");
+        builderStudentOne.withZip("72015");
+        builderStudentOne.withPhone("3619647852");
+        builderStudentOne.withRole(RoleType.STUDENT);
 
         // 2
-        Builder formBuilderFive = new Builder();
-        formBuilderFive.withUsername("luca@gmail.com");
-        formBuilderFive.withPassword("luca");
-        formBuilderFive.withFullname("pelaccio");
-        formBuilderFive.withDob(LocalDate.of(1991, 11, 12));
-        formBuilderFive.withStreet("via delle lamie di olimpia");
-        formBuilderFive.withCity("laureto");
-        formBuilderFive.withState("italia");
-        formBuilderFive.withZip("72015");
-        formBuilderFive.withPhone("38412369547");
-        formBuilderFive.withRole(RoleType.STUDENT);
+        Builder builderStudentTwo = new Builder();
+        builderStudentTwo.withUsername("luca@gmail.com");
+        builderStudentTwo.withPassword("luca");
+        builderStudentTwo.withFullname("pelaccio");
+        builderStudentTwo.withDob(LocalDate.of(1991, 11, 12));
+        builderStudentTwo.withStreet("via delle lamie di olimpia");
+        builderStudentTwo.withCity("laureto");
+        builderStudentTwo.withState("italia");
+        builderStudentTwo.withZip("72015");
+        builderStudentTwo.withPhone("38412369547");
+        builderStudentTwo.withRole(RoleType.STUDENT);
 
         // 3
-        Builder formBuilderSix = new Builder();
-        formBuilderSix.withUsername("ennio@gmail.com");
-        formBuilderSix.withPassword("ennio");
-        formBuilderSix.withFullname("ennio");
-        formBuilderSix.withDob(LocalDate.of(1991, 11, 12));
-        formBuilderSix.withStreet("via delle lamie di olimpia");
-        formBuilderSix.withCity("laureto");
-        formBuilderSix.withState("italia");
-        formBuilderSix.withZip("72015");
-        formBuilderSix.withPhone("38412369547");
-        formBuilderSix.withRole(RoleType.STUDENT);
+        Builder builderStudentThree = new Builder();
+        builderStudentThree.withUsername("ennio@gmail.com");
+        builderStudentThree.withPassword("ennio");
+        builderStudentThree.withFullname("ennio");
+        builderStudentThree.withDob(LocalDate.of(1991, 11, 12));
+        builderStudentThree.withStreet("via delle lamie di olimpia");
+        builderStudentThree.withCity("laureto");
+        builderStudentThree.withState("italia");
+        builderStudentThree.withZip("72015");
+        builderStudentThree.withPhone("38412369547");
+        builderStudentThree.withRole(RoleType.STUDENT);
 
         // 4
-        Builder formBuilderSeven = new Builder();
-        formBuilderSeven.withUsername("gino@gmail.com");
-        formBuilderSeven.withPassword("gino");
-        formBuilderSeven.withFullname("gino");
-        formBuilderSeven.withDob(LocalDate.of(1991, 11, 12));
-        formBuilderSeven.withStreet("via delle lamie di olimpia");
-        formBuilderSeven.withCity("laureto");
-        formBuilderSeven.withState("italia");
-        formBuilderSeven.withZip("72015");
-        formBuilderSeven.withPhone("38412369547");
-        formBuilderSeven.withRole(RoleType.STUDENT);
+        Builder builderStudentFour = new Builder();
+        builderStudentFour.withUsername("gino@gmail.com");
+        builderStudentFour.withPassword("gino");
+        builderStudentFour.withFullname("gino");
+        builderStudentFour.withDob(LocalDate.of(1991, 11, 12));
+        builderStudentFour.withStreet("via delle lamie di olimpia");
+        builderStudentFour.withCity("laureto");
+        builderStudentFour.withState("italia");
+        builderStudentFour.withZip("72015");
+        builderStudentFour.withPhone("38412369547");
+        builderStudentFour.withRole(RoleType.STUDENT);
 
         // 5
-        Builder formBuilderEight = new Builder();
-        formBuilderEight.withUsername("pino@gmail.com");
-        formBuilderEight.withPassword("pino");
-        formBuilderEight.withFullname("pino");
-        formBuilderEight.withDob(LocalDate.of(1991, 11, 12));
-        formBuilderEight.withStreet("via delle lamie di olimpia");
-        formBuilderEight.withCity("laureto");
-        formBuilderEight.withState("italia");
-        formBuilderEight.withZip("72015");
-        formBuilderEight.withPhone("38412369547");
-        formBuilderEight.withRole(RoleType.STUDENT);
+        Builder builderStudentFive = new Builder();
+        builderStudentFive.withUsername("pino@gmail.com");
+        builderStudentFive.withPassword("pino");
+        builderStudentFive.withFullname("pino");
+        builderStudentFive.withDob(LocalDate.of(1991, 11, 12));
+        builderStudentFive.withStreet("via delle lamie di olimpia");
+        builderStudentFive.withCity("laureto");
+        builderStudentFive.withState("italia");
+        builderStudentFive.withZip("72015");
+        builderStudentFive.withPhone("38412369547");
+        builderStudentFive.withRole(RoleType.STUDENT);
 
         // 6
-        Builder formBuilderNine = new Builder();
-        formBuilderNine.withUsername("tino@gmail.com");
-        formBuilderNine.withPassword("tino");
-        formBuilderNine.withFullname("tino");
-        formBuilderNine.withDob(LocalDate.of(1991, 11, 12));
-        formBuilderNine.withStreet("via delle lamie di olimpia");
-        formBuilderNine.withCity("laureto");
-        formBuilderNine.withState("italia");
-        formBuilderNine.withZip("72015");
-        formBuilderNine.withPhone("38412369547");
-        formBuilderNine.withRole(RoleType.STUDENT);
+        Builder builderStudentSix = new Builder();
+        builderStudentSix.withUsername("tino@gmail.com");
+        builderStudentSix.withPassword("tino");
+        builderStudentSix.withFullname("tino");
+        builderStudentSix.withDob(LocalDate.of(1991, 11, 12));
+        builderStudentSix.withStreet("via delle lamie di olimpia");
+        builderStudentSix.withCity("laureto");
+        builderStudentSix.withState("italia");
+        builderStudentSix.withZip("72015");
+        builderStudentSix.withPhone("38412369547");
+        builderStudentSix.withRole(RoleType.STUDENT);
 
         // 7
-        Builder formBuilderTen = new Builder();
-        formBuilderTen.withUsername("solo@gmail.com");
-        formBuilderTen.withPassword("tino");
-        formBuilderTen.withFullname("tino");
-        formBuilderTen.withDob(LocalDate.of(1991, 11, 12));
-        formBuilderTen.withStreet("via delle lamie di olimpia");
-        formBuilderTen.withCity("laureto");
-        formBuilderTen.withState("italia");
-        formBuilderTen.withZip("72015");
-        formBuilderTen.withPhone("38412369547");
-        formBuilderTen.withRole(RoleType.STUDENT);
+        Builder builderStudentSeven = new Builder();
+        builderStudentSeven.withUsername("solo@gmail.com");
+        builderStudentSeven.withPassword("tino");
+        builderStudentSeven.withFullname("tino");
+        builderStudentSeven.withDob(LocalDate.of(1991, 11, 12));
+        builderStudentSeven.withStreet("via delle lamie di olimpia");
+        builderStudentSeven.withCity("laureto");
+        builderStudentSeven.withState("italia");
+        builderStudentSeven.withZip("72015");
+        builderStudentSeven.withPhone("38412369547");
+        builderStudentSeven.withRole(RoleType.STUDENT);
+
+        // 8
+        Builder builderStudentEight = new Builder();
+        builderStudentEight.withUsername("otto@gmail.com");
+        builderStudentEight.withPassword("otto");
+        builderStudentEight.withFullname("otto");
+        builderStudentEight.withDob(LocalDate.of(1991, 11, 12));
+        builderStudentEight.withStreet("via delle lamie di olimpia");
+        builderStudentEight.withCity("laureto");
+        builderStudentEight.withState("italia");
+        builderStudentEight.withZip("72015");
+        builderStudentEight.withPhone("38412369547");
+        builderStudentEight.withRole(RoleType.STUDENT);
+
+        // 9
+        Builder builderStudentNine = new Builder();
+        builderStudentNine.withUsername("raffo@gmail.com");
+        builderStudentNine.withPassword("raffo");
+        builderStudentNine.withFullname("raffaele macina leone");
+        builderStudentNine.withDob(LocalDate.of(1991, 11, 12));
+        builderStudentNine.withStreet("via les claypool 71");
+        builderStudentNine.withCity("Bari");
+        builderStudentNine.withState("italia");
+        builderStudentNine.withZip("72100");
+        builderStudentNine.withPhone("38412369547");
+        builderStudentNine.withRole(RoleType.STUDENT);
+
 
         List<Student> students = new ArrayList<>();
 
         // 1
         students.add(
             new Student(
-                formBuilderFour,
+                builderStudentOne,
                 passwordEncoder,
                 new Register("123456"),
                 degreeCourseRepository.findByName(INGEGNERIA_GESTIONALE)
@@ -387,7 +414,7 @@ public class UmsDBInit implements Serializable {
         // 2
         students.add(
             new Student(
-                formBuilderFive,
+                builderStudentTwo,
                 passwordEncoder,
                 new Register("123457"),
                 degreeCourseRepository.findByName(INGEGNERIA_GESTIONALE_MAGISTRALE)
@@ -397,7 +424,7 @@ public class UmsDBInit implements Serializable {
         // 3
         students.add(
             new Student(
-                formBuilderSix,
+                builderStudentThree,
                 passwordEncoder,
                 new Register("123458"),
                 degreeCourseRepository.findByName(INGEGNERIA_INFORMATICA)
@@ -407,7 +434,7 @@ public class UmsDBInit implements Serializable {
         // 4
         students.add(
             new Student(
-                formBuilderSeven,
+                builderStudentFour,
                 passwordEncoder,
                 new Register("123459"),
                 degreeCourseRepository.findByName(INGEGNERIA_INFORMATICA_MAGISTRALE)
@@ -417,7 +444,7 @@ public class UmsDBInit implements Serializable {
         // 5
         students.add(
             new Student(
-                formBuilderEight,
+                builderStudentFive,
                 passwordEncoder,
                 new Register("123460"),
                 degreeCourseRepository.findByName(INGEGNERIA_MECCANICA)
@@ -427,7 +454,7 @@ public class UmsDBInit implements Serializable {
         // 6
         students.add(
             new Student(
-                formBuilderNine,
+                builderStudentSix,
                 passwordEncoder,
                 new Register("123461"),
                 degreeCourseRepository.findByName(INGEGNERIA_MECCANICA_MAGISTRALE)
@@ -437,10 +464,30 @@ public class UmsDBInit implements Serializable {
         // 7
         students.add(
             new Student(
-                formBuilderTen,
+                builderStudentSeven,
                 passwordEncoder,
                 new Register("123462"),
                 degreeCourseRepository.findByName(INGEGNERIA_ELETTRICA)
+            )
+        );
+
+        // 7
+        students.add(
+            new Student(
+                builderStudentEight,
+                passwordEncoder,
+                new Register("169841"),
+                degreeCourseRepository.findByName(INGEGNERIA_MECCANICA)
+            )
+        );
+
+        // 8
+        students.add(
+            new Student(
+                builderStudentNine,
+                passwordEncoder,
+                new Register("555555"),
+                degreeCourseRepository.findByName(INGEGNERIA_GESTIONALE)
             )
         );
 
@@ -865,7 +912,7 @@ public class UmsDBInit implements Serializable {
                 "fondamenti di informatica",
                 CourseType.INFORMATICA,
                 6,
-                professorRepository.findByUniqueCode(new UniqueCode(UC_GENESIO)),
+                professorRepository.findByUniqueCode(new UniqueCode(UC_GIACINTO)),
                 ingGest
             )
         );
@@ -975,7 +1022,7 @@ public class UmsDBInit implements Serializable {
                 "metodi di rappresentazione tecnica",
                 CourseType.DISEGNO,
                 6,
-                professorRepository.findByUniqueCode(new UniqueCode(UC_GIACOMO)),
+                professorRepository.findByUniqueCode(new UniqueCode(UC_GIACINTO)),
                 ingGest
             )
         );
@@ -1058,7 +1105,7 @@ public class UmsDBInit implements Serializable {
                 "gestione dei progetti",
                 CourseType.ING_GESTIONALE,
                 9,
-                professorRepository.findByUniqueCode(new UniqueCode(UC_GIOELE)),
+                professorRepository.findByUniqueCode(new UniqueCode(UC_GIACINTO)),
                 ingGest
             )
         );
@@ -1098,7 +1145,7 @@ public class UmsDBInit implements Serializable {
                 "sicurezza degli impianti industriali",
                 CourseType.ING_GESTIONALE,
                 6,
-                professorRepository.findByUniqueCode(new UniqueCode(UC_GIACOMO)),
+                professorRepository.findByUniqueCode(new UniqueCode(UC_GIACINTO)),
                 ingGest
             )
         );
@@ -1405,24 +1452,33 @@ public class UmsDBInit implements Serializable {
         ExaminationRepository examinationRepository
     ) {
 
-        // retrieve student
         // Retrieve existing Student entity from the database
         Student nino = studentRepository.findByRegister(new Register("123456"));
-
+        Student raffo = studentRepository.findByRegister(new Register("555555"));
         Student luca = studentRepository.findByRegister(new Register("123457"));
 
 
         // Retrieve existing Course entity from the database
         Course analisiMatematica = courseRepository
-            .findByNameAndDegreeCourse("analisi matematica", degreeCourseRepository.findByName(INGEGNERIA_GESTIONALE).getId());
-
+            .findByNameAndDegreeCourse("analisi matematica", degreeCourseRepository.findByName(INGEGNERIA_GESTIONALE));
 
         Course geometria = courseRepository
-            .findByNameAndDegreeCourse("geometria e algebra", degreeCourseRepository.findByName(INGEGNERIA_GESTIONALE).getId());
+            .findByNameAndDegreeCourse("geometria e algebra", degreeCourseRepository.findByName(INGEGNERIA_GESTIONALE));
+
+        Course scienzaCostr = courseRepository
+            .findByNameAndDegreeCourse("scienza delle costruzioni", degreeCourseRepository.findByName(INGEGNERIA_GESTIONALE));
+
+        Course impInd = courseRepository
+            .findByNameAndDegreeCourse("impianti industriali", degreeCourseRepository.findByName(INGEGNERIA_GESTIONALE));
+
+        Course metodiOttimizzazione = courseRepository
+            .findByNameAndDegreeCourse("metodi di ottimizzazione", degreeCourseRepository.findByName(INGEGNERIA_GESTIONALE));
 
         Course anSisDin = courseRepository
-            .findByNameAndDegreeCourse("analisi dei sistemi dinamici", degreeCourseRepository.findByName(INGEGNERIA_GESTIONALE_MAGISTRALE).getId());
+            .findByNameAndDegreeCourse("analisi dei sistemi dinamici", degreeCourseRepository.findByName(INGEGNERIA_GESTIONALE_MAGISTRALE));
 
+        Course basiDiDati = courseRepository
+            .findByNameAndDegreeCourse("basi di dati", degreeCourseRepository.findByName(INGEGNERIA_GESTIONALE_MAGISTRALE));
 
         List<ExaminationDto> examinations = new ArrayList<>();
 
@@ -1449,9 +1505,99 @@ public class UmsDBInit implements Serializable {
 
         examinations.add(
             new ExaminationDto(
+                scienzaCostr,
+                nino,
+                18,
+                true,
+                LocalDate.of(2019, 2, 18)
+            )
+        );
+
+        examinations.add(
+            new ExaminationDto(
+                impInd,
+                nino,
+                24,
+                true,
+                LocalDate.of(2020, 2, 18)
+            )
+        );
+
+        examinations.add(
+            new ExaminationDto(
+                metodiOttimizzazione,
+                nino,
+                27,
+                true,
+                LocalDate.of(2021, 2, 18)
+            )
+        );
+
+        examinations.add(
+            new ExaminationDto(
+                analisiMatematica,
+                raffo,
+                30,
+                true,
+                LocalDate.of(2022, 6, 23)
+            )
+        );
+
+        examinations.add(
+            new ExaminationDto(
+                geometria,
+                raffo,
+                30,
+                true,
+                LocalDate.of(2018, 2, 18)
+            )
+        );
+
+        examinations.add(
+            new ExaminationDto(
+                scienzaCostr,
+                raffo,
+                30,
+                true,
+                LocalDate.of(2019, 2, 18)
+            )
+        );
+
+        examinations.add(
+            new ExaminationDto(
+                impInd,
+                raffo,
+                30,
+                true,
+                LocalDate.of(2020, 2, 18)
+            )
+        );
+
+        examinations.add(
+            new ExaminationDto(
+                metodiOttimizzazione,
+                raffo,
+                21,
+                true,
+                LocalDate.of(2021, 2, 18)
+            )
+        );
+
+        examinations.add(
+            new ExaminationDto(
                 anSisDin,
                 luca,
                 28,
+                false,
+                LocalDate.of(2024, 05, 18)
+            )
+        );
+
+        examinations.add(
+            new ExaminationDto(
+                basiDiDati,
+                luca,
+                25,
                 false,
                 LocalDate.of(2024, 05, 18)
             )
@@ -1518,33 +1664,47 @@ public class UmsDBInit implements Serializable {
 
 
 
+
+
+
+
+
+
+
     // initialize examination appeal
     private void initializeExaminationAppeals(
         ExaminationAppealRepository examinationAppealRepository,
         CourseRepository courseRepository,
-        DegreeCourseRepository degreeCourseRepository
+        DegreeCourseRepository degreeCourseRepository,
+        StudentRepository studentRepository
     ) {
 
         Course analisiMat = courseRepository
-            .findByNameAndDegreeCourse("analisi matematica", degreeCourseRepository.findByName(INGEGNERIA_GESTIONALE).getId());
+            .findByNameAndDegreeCourse("analisi matematica", degreeCourseRepository.findByName(INGEGNERIA_GESTIONALE));
 
         Course geometria = courseRepository
-            .findByNameAndDegreeCourse("geometria e algebra", degreeCourseRepository.findByName(INGEGNERIA_GESTIONALE).getId());
+            .findByNameAndDegreeCourse("geometria e algebra", degreeCourseRepository.findByName(INGEGNERIA_GESTIONALE));
 
         Course fisicaGen = courseRepository
-            .findByNameAndDegreeCourse("fisica generale", degreeCourseRepository.findByName(INGEGNERIA_GESTIONALE).getId());
+            .findByNameAndDegreeCourse("fisica generale", degreeCourseRepository.findByName(INGEGNERIA_GESTIONALE));
 
         Course informatica = courseRepository
-            .findByNameAndDegreeCourse("fondamenti di informatica", degreeCourseRepository.findByName(INGEGNERIA_GESTIONALE).getId());
+            .findByNameAndDegreeCourse("fondamenti di informatica", degreeCourseRepository.findByName(INGEGNERIA_GESTIONALE));
+
+        Course gp = courseRepository
+            .findByNameAndDegreeCourse("gestione dei progetti", degreeCourseRepository.findByName(INGEGNERIA_GESTIONALE));
 
         Course scienzaDelleCostr = courseRepository
-            .findByNameAndDegreeCourse("scienza delle costruzioni", degreeCourseRepository.findByName(INGEGNERIA_GESTIONALE).getId());
+            .findByNameAndDegreeCourse("scienza delle costruzioni", degreeCourseRepository.findByName(INGEGNERIA_GESTIONALE));
 
         Course chimicaGen = courseRepository
-            .findByNameAndDegreeCourse("chimica generale", degreeCourseRepository.findByName(INGEGNERIA_GESTIONALE).getId());
+            .findByNameAndDegreeCourse("chimica generale", degreeCourseRepository.findByName(INGEGNERIA_GESTIONALE));
 
         Course calcoloNum = courseRepository
-            .findByNameAndDegreeCourse("calcolo numerico", degreeCourseRepository.findByName(INGEGNERIA_GESTIONALE).getId());
+            .findByNameAndDegreeCourse("calcolo numerico", degreeCourseRepository.findByName(INGEGNERIA_GESTIONALE));
+
+        Course economia = courseRepository
+            .findByNameAndDegreeCourse("elementi di economia", degreeCourseRepository.findByName(INGEGNERIA_GESTIONALE));
 
         List<ExaminationAppeal> examinationAppeals = new ArrayList<>();
 
@@ -1574,16 +1734,8 @@ public class UmsDBInit implements Serializable {
 
         examinationAppeals.add(
             new ExaminationAppeal(
-                informatica,
-                "fondamenti di informatica, linguaggio c",
-                LocalDate.of(2025, 9, 26)
-            )
-        );
-
-        examinationAppeals.add(
-            new ExaminationAppeal(
                 scienzaDelleCostr,
-                "tensori, travi a go go",
+                "tensori, travi, sollecitazioni",
                 LocalDate.of(2025, 7, 26)
             )
         );
@@ -1591,7 +1743,7 @@ public class UmsDBInit implements Serializable {
         examinationAppeals.add(
             new ExaminationAppeal(
                 chimicaGen,
-                "chimica per tutti",
+                "chimica inorganica",
                 LocalDate.of(2025, 5, 16)
             )
         );
@@ -1603,6 +1755,27 @@ public class UmsDBInit implements Serializable {
                 LocalDate.of(2025, 5, 18)
             )
         );
+
+        examinationAppeals.add(
+            new ExaminationAppeal(
+                economia,
+                "microeconomia + macroeconomia",
+                LocalDate.of(2025, 11, 18)
+            )
+        );
+
+        // retrieve students
+        Student nino = studentRepository.findByRegister(new Register("123456"));
+        Student raffo = studentRepository.findByRegister(new Register("555555"));
+        ExaminationAppeal gpAppeal = new ExaminationAppeal(gp, "crm, pert", LocalDate.of(2025, 10, 19));
+        gpAppeal.addStudent(nino.getRegister());
+        gpAppeal.addStudent(raffo.getRegister());
+        examinationAppeals.add(gpAppeal);
+
+        ExaminationAppeal infAppeal = new ExaminationAppeal(informatica, "programmazione", LocalDate.of(2025, 10, 19));
+        infAppeal.addStudent(nino.getRegister());
+        infAppeal.addStudent(raffo.getRegister());
+        examinationAppeals.add(infAppeal);
 
         if(examinationAppeals.isEmpty())
             throw new IllegalArgumentException("examination appeal list is empty");

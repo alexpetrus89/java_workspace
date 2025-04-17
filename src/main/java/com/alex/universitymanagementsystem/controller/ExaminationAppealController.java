@@ -8,6 +8,7 @@ import java.util.Map;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,9 +17,11 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.alex.universitymanagementsystem.domain.ExaminationAppeal;
+import com.alex.universitymanagementsystem.domain.Outcome;
 import com.alex.universitymanagementsystem.domain.Professor;
 import com.alex.universitymanagementsystem.domain.Student;
 import com.alex.universitymanagementsystem.dto.ExaminationAppealDto;
+import com.alex.universitymanagementsystem.dto.FinalizeAppealDto;
 import com.alex.universitymanagementsystem.dto.StudentDto;
 import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
 import com.alex.universitymanagementsystem.service.impl.ExaminationAppealServiceImpl;
@@ -29,12 +32,14 @@ import com.alex.universitymanagementsystem.service.impl.StudentServiceImpl;
 public class ExaminationAppealController {
 
     // constants
+    private static final String EXAMINATION_APPEAL = "examinationAppeal";
+    private static final String EXAMINATION_APPEALS = "examinationAppeals";
+
     private static final String TITLE = "title";
     private static final String ERROR = "Errore";
     private static final String ERROR_URL = "/exception/error";
     private static final String ERROR_MESSAGE = "errorMessage";
     private static final String STACK_TRACE = "stackTrace";
-    private static final String EXAMINATION_APPEALS = "examinationAppeals";
 
     // instance variables
     private final ExaminationAppealServiceImpl  examinationAppealServiceImpl;
@@ -59,7 +64,7 @@ public class ExaminationAppealController {
      * @throws ClassCastException
      */
     @GetMapping(path = "/available/student")
-    public ModelAndView getExamAppealsAvailableByStudent(@AuthenticationPrincipal Student student) {
+    public ModelAndView getExaminationAppealsAvailableByStudent(@AuthenticationPrincipal Student student) {
         try {
             List<ExaminationAppealDto> examinationAppeals = examinationAppealServiceImpl.getExaminationAppealsAvailable(student.getRegister());
             return new ModelAndView("user_student/examinations/examination_appeal/available-calendar",EXAMINATION_APPEALS, examinationAppeals);
@@ -74,7 +79,7 @@ public class ExaminationAppealController {
 
 
     @GetMapping(path = "/booked/student")
-    public ModelAndView getExamAppealsBookedByStudent(@AuthenticationPrincipal Student student) {
+    public ModelAndView getExaminationAppealsBookedByStudent(@AuthenticationPrincipal Student student) {
         try {
             List<ExaminationAppeal> examinationAppeals = examinationAppealServiceImpl.getExaminationAppealsBooked(student.getRegister());
             return new ModelAndView("user_student/examinations/examination_appeal/booked-calendar", EXAMINATION_APPEALS, examinationAppeals);
@@ -98,7 +103,7 @@ public class ExaminationAppealController {
      * @throws ClassCastException
      */
     @GetMapping(path = "/view/professor")
-    public ModelAndView getExaminationAppealsByProfessor(@AuthenticationPrincipal Professor professor) {
+    public ModelAndView getExaminationAppealsMakeByProfessor(@AuthenticationPrincipal Professor professor) {
         try {
             List<ExaminationAppeal> examinationAppeals = examinationAppealServiceImpl.getExaminationAppealsByProfessor(professor.getUniqueCode());
             return new ModelAndView("user_professor/examinations/examination_appeal/calendar", EXAMINATION_APPEALS, examinationAppeals);
@@ -131,7 +136,8 @@ public class ExaminationAppealController {
                 .map(studentServiceImpl::getStudentByRegister)
                 .toList();
 
-            return new ModelAndView("user_professor/examinations/examination_appeal/students-booked", "students", students);
+            FinalizeAppealDto appeal = new FinalizeAppealDto(id, students);
+            return new ModelAndView("user_professor/examinations/examination_appeal/students-booked", "appeal", appeal);
         } catch (ObjectNotFoundException e) {
             Map<String, Object> model = new HashMap<>();
             model.put(TITLE, ERROR);
@@ -152,7 +158,7 @@ public class ExaminationAppealController {
 
         try {
             ExaminationAppeal examAppeal = examinationAppealServiceImpl.addNewExaminationAppeal(course, degreeCourse, professor, description, date);
-            return new ModelAndView("user_professor/examinations/examination_appeal/create-result", "examinationAppeal", examAppeal);
+            return new ModelAndView("user_professor/examinations/examination_appeal/create-result", EXAMINATION_APPEAL, examAppeal);
         } catch (ObjectNotFoundException e) {
             Map<String, Object> model = new HashMap<>();
             model.put(TITLE, ERROR);
@@ -170,9 +176,8 @@ public class ExaminationAppealController {
         @RequestParam String degreeCourse,
         @RequestParam LocalDate date
     ) {
-
         try {
-        examinationAppealServiceImpl.deleteExaminationAppeal(course, degreeCourse, professor, date);
+            examinationAppealServiceImpl.deleteExaminationAppeal(course, degreeCourse, professor, date);
             return new ModelAndView("user_professor/examinations/examination_appeal/delete-result");
         } catch (ObjectNotFoundException e) {
             Map<String, Object> model = new HashMap<>();
@@ -194,7 +199,7 @@ public class ExaminationAppealController {
     public ModelAndView bookExaminationAppeal(@AuthenticationPrincipal Student student, @PathVariable Long id) {
         try {
             ExaminationAppeal examAppeal = examinationAppealServiceImpl.bookExaminationAppeal(id, student.getRegister());
-            return new ModelAndView("user_student/examinations/examination_appeal/booked-result", "examinationAppeal", examAppeal);
+            return new ModelAndView("user_student/examinations/examination_appeal/booked-result", EXAMINATION_APPEAL, examAppeal);
         } catch (ObjectNotFoundException e) {
             Map<String, Object> model = new HashMap<>();
             model.put(TITLE, ERROR);
@@ -217,5 +222,27 @@ public class ExaminationAppealController {
             return new ModelAndView(ERROR_URL, model);
         }
     }
+
+    @GetMapping(path = "/make-outcome/{register}/{id}")
+    public ModelAndView makeOutcome(@PathVariable String register, @PathVariable Long id) {
+        try {
+            ExaminationAppeal examAppeal = examinationAppealServiceImpl.getExaminationAppealById(id);
+            Outcome outcome = new Outcome(examAppeal, register);
+            return new ModelAndView("user_professor/examinations/examination_appeal/evaluation", "outcome", outcome);
+        } catch (ObjectNotFoundException e) {
+            Map<String, Object> model = new HashMap<>();
+            model.put(TITLE, ERROR);
+            model.put(ERROR_MESSAGE, e.getMessage());
+            model.put(STACK_TRACE, e.getStackTrace());
+            return new ModelAndView(ERROR_URL, model);
+        }
+    }
+
+
+    @PostMapping(path = "notify")
+    public String notifyOutcome(@ModelAttribute Outcome outcome) {
+        return "spread";
+    }
+
 
 }

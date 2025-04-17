@@ -107,7 +107,7 @@ public class CourseServiceImpl implements CourseService {
             // retrieve degree course
             DegreeCourse degreeCourse = degreeCourseRepository.findByName(degreeCourseName);
             // find course
-            return CourseMapper.mapToCourseDto(courseRepository.findByNameAndDegreeCourse(courseName, degreeCourse.getId()));
+            return CourseMapper.mapToCourseDto(courseRepository.findByNameAndDegreeCourse(courseName, degreeCourse));
         } catch (DataAccessException e) {
             logger.error(DATA_ACCESS_ERROR, e);
             return null;
@@ -234,7 +234,7 @@ public class CourseServiceImpl implements CourseService {
         try {
             // retrieve data
             DegreeCourse oldDegreeCourse = degreeCourseRepository.findByName(oldDegreeCourseName);
-            Course updatableCourse = courseRepository.findByNameAndDegreeCourse(oldCourseName, oldDegreeCourse.getId());
+            Course updatableCourse = courseRepository.findByNameAndDegreeCourse(oldCourseName, oldDegreeCourse);
             DegreeCourse newDegreeCourse = degreeCourseRepository.findByName(newDegreeCourseName);
             Professor professor = professorRepository.findByUniqueCode(new UniqueCode(newUniqueCode));
 

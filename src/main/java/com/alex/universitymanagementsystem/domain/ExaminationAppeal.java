@@ -130,5 +130,15 @@ public class ExaminationAppeal implements Serializable {
     }
 
 
+    public Outcome makeOutcome(ExaminationAppeal appeal, String register, boolean present, int grade, boolean withHonors) {
+        return new Outcome(appeal, register, present, grade, withHonors);
+    }
+
+    /*
+    public Examination makeExamination(Outcome outcome) {
+        // return new Examination(this.course, outcome., outcome.getGrade(), outcome.getWithHonors(), LocalDate.now());
+    }*/
+
+
 
 }

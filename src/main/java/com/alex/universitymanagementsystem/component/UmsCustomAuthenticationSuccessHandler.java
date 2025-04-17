@@ -1,4 +1,4 @@
-package com.alex.universitymanagementsystem.config;
+package com.alex.universitymanagementsystem.component;
 
 import java.io.IOException;
 

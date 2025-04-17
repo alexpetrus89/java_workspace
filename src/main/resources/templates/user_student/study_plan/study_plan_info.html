@@ -16,10 +16,16 @@
             <th>courses</th>
             <th>cfu</th>
         </tr>
+        <th:block th:with="sum=0"/>
         <tr th:each="course : ${studyPlan.courses}">
             <td th:text="${course.degreeCourse.name}">degree course</td>
             <td th:text="${course.name}">course name</td>
             <td th:text="${course.cfu}">course cfu</td>
+        </tr>
+        <tr>
+            <td>TOTAL UNIVERSITY CREDITS</td>
+            <td></td>
+            <td th:text="${#aggregates.sum(studyPlan.courses.![cfu])}" th:align="right">Total CFU</td>
         </tr>
     </table>
     </h1>

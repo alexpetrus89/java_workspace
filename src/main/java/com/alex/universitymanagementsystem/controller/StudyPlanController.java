@@ -107,9 +107,14 @@ public class StudyPlanController {
         @RequestParam String courseToRemove
     ) {
         Register register = student.getRegister();
-        studyPlanServiceImpl.changeCourse(register, degreeCourseOfNewCourse, degreeCourseOfOldCourse, courseToAdd, courseToRemove);
-        Set<CourseDto> courses = studyPlanServiceImpl.getCoursesByRegister(register);
-        return new ModelAndView("user_student/study_plan/study_plan_courses", "courses", courses);
+
+        try {
+            studyPlanServiceImpl.changeCourse(register, degreeCourseOfNewCourse, degreeCourseOfOldCourse, courseToAdd, courseToRemove);
+            Set<CourseDto> courses = studyPlanServiceImpl.getCoursesByRegister(register);
+            return new ModelAndView("user_student/study_plan/study_plan_courses", "courses", courses);
+        } catch (IllegalArgumentException | IllegalStateException e) {
+            return new ModelAndView("validation/study_plan/invalid-choice", "error", e.getMessage());
+        }
     }
 
 }

@@ -24,7 +24,7 @@ public class ObjectAlreadyExistsException extends RuntimeException {
         return switch (type) {
             case Register register -> String.format("Student with registration number %s already exists", register.toString());
             case UniqueCode uniqueCode -> String.format("Professor with unique code %s already exists", uniqueCode.toString());
-            case String name -> String.format("%s with name %s already exists", getIdentifierName((DomainType) type), name);
+            case DomainType domainType -> String.format("%s already exists", getIdentifierName(domainType));
             default -> "Unknown error";
         };
     }

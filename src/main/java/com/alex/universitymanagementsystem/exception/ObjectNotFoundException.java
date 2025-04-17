@@ -24,7 +24,7 @@ public class ObjectNotFoundException extends RuntimeException {
         return switch (type) {
             case Register register -> String.format("Student with registration number %s not found", register.toString());
             case UniqueCode uniqueCode -> String.format("Professor with unique code %s not found", uniqueCode.toString());
-            case String name -> String.format("%s with name %s not found", getIdentifierName((DomainType)type), name);
+            case DomainType domainType -> String.format("%s not found", getIdentifierName(domainType));
             default -> "Unknown error";
         };
     }

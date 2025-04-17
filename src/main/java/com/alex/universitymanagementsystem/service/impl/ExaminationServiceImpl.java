@@ -276,7 +276,7 @@ public class ExaminationServiceImpl implements ExaminationService {
 
         try {
             DegreeCourse degreeCourse = degreeCourseRepository.findByName(degreeCourseName.toUpperCase());
-            Course course = courseRepository.findByNameAndDegreeCourse(courseName, degreeCourse.getId());
+            Course course = courseRepository.findByNameAndDegreeCourse(courseName, degreeCourse);
             Student student = studentRepository.findByRegister(register);
 
             // the course must be part of the student's study plan
@@ -368,7 +368,7 @@ public class ExaminationServiceImpl implements ExaminationService {
             // retrieve data
             Student newStudent = studentRepository.findByRegister(newRegister);
             DegreeCourse newDegreeCourse = degreeCourseRepository.findByName(newDegreeCourseName.toUpperCase());
-            Course newCourse = courseRepository.findByNameAndDegreeCourse(newCourseName, newDegreeCourse.getId());
+            Course newCourse = courseRepository.findByNameAndDegreeCourse(newCourseName, newDegreeCourse);
             Examination updatableExamination = examinationRepository
                 .findExaminationsByCourseName(oldCourseName)
                 .stream()

@@ -15,9 +15,9 @@ import jakarta.validation.constraints.Min;
 
 // Oggetto Outcome
 @Entity
-@Table(name = "outcome")
+@Table(name = "examination_outcome")
 @Access(AccessType.PROPERTY)
-public class Outcome implements Serializable {
+public class ExaminationOutcome implements Serializable {
 
     // instance variables
     private Long id;
@@ -27,16 +27,18 @@ public class Outcome implements Serializable {
     private int grade; // voto dell'esame
     private boolean withHonors; // flag per indicare se lo studente ha accettato l'esito con lode
     private boolean accepted; // flag per indicare se lo studente ha accettato l'esito
+    private String message;
 
-    // constructor
-    public Outcome() {}
 
-    public Outcome(ExaminationAppeal examinationAppeal, String register) {
+    // constructors
+    public ExaminationOutcome() {}
+
+    public ExaminationOutcome(ExaminationAppeal examinationAppeal, String register) {
         this.examinationAppeal = examinationAppeal;
         this.register = register;
     }
 
-    public Outcome(ExaminationAppeal examinationAppeal, String register, boolean present, int grade, boolean withHonors) {
+    public ExaminationOutcome(ExaminationAppeal examinationAppeal, String register, boolean present, int grade, boolean withHonors) {
         this.examinationAppeal = examinationAppeal;
         this.register = register;
         this.present = present;
@@ -85,6 +87,11 @@ public class Outcome implements Serializable {
         return accepted;
     }
 
+    @Column(name = "message")
+    public String getMessage() {
+        return message;
+    }
+
 
     // setters
     public void setId(Long id) {
@@ -120,4 +127,9 @@ public class Outcome implements Serializable {
     public void setAccepted(boolean accepted) {
         this.accepted = accepted;
     }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
 }

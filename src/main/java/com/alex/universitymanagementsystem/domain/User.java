@@ -210,11 +210,7 @@ public class User implements UserDetails {
             Objects.equals(password, other.password) &&
             Objects.equals(fullname, other.fullname) &&
             Objects.equals(dob, other.dob) &&
-            Objects.equals(street, other.street) &&
-            Objects.equals(city, other.city) &&
             Objects.equals(state, other.state) &&
-            Objects.equals(zip, other.zip) &&
-            Objects.equals(phone, other.phone) &&
             Objects.equals(role, other.role );
     }
 

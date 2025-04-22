@@ -1,6 +1,7 @@
 package com.alex.universitymanagementsystem.repository;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -26,6 +27,25 @@ public interface UserRepository
      */
     User findByUsername(@NonNull String username)
         throws NullPointerException, IllegalArgumentException;
+
+    /**
+     * Find user by fullname
+     * @param fullname
+     * @return List<User>
+     * @throws NullPointerException if the fullname is null
+     * @throws IllegalArgumentException if the fullname is blank
+     */
+    List<User> findByFullname(@NonNull String fullname)
+        throws NullPointerException, IllegalArgumentException;
+
+    /**
+     * Find user by dob
+     * @param dob
+     * @return List<User>
+     * @throws NullPointerException if the dob is null
+     * @throws IllegalArgumentException if the dob is null
+     */
+    List<User> findByDob(@NonNull LocalDate dob);
 
 
     /**

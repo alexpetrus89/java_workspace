@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import com.alex.universitymanagementsystem.domain.Course;
 import com.alex.universitymanagementsystem.domain.DegreeCourse;
 import com.alex.universitymanagementsystem.domain.ExaminationAppeal;
+import com.alex.universitymanagementsystem.domain.ExaminationOutcome;
 import com.alex.universitymanagementsystem.domain.Professor;
 import com.alex.universitymanagementsystem.domain.immutable.CourseId;
 import com.alex.universitymanagementsystem.domain.immutable.Register;
@@ -29,6 +30,7 @@ import com.alex.universitymanagementsystem.mapper.ExaminationMapper;
 import com.alex.universitymanagementsystem.repository.CourseRepository;
 import com.alex.universitymanagementsystem.repository.DegreeCourseRepository;
 import com.alex.universitymanagementsystem.repository.ExaminationAppealRepository;
+import com.alex.universitymanagementsystem.repository.ExaminationOutcomeRepository;
 import com.alex.universitymanagementsystem.repository.ExaminationRepository;
 import com.alex.universitymanagementsystem.repository.ProfessorRepository;
 import com.alex.universitymanagementsystem.repository.StudentRepository;
@@ -49,6 +51,7 @@ public class ExaminationAppealServiceImpl implements ExaminationAppealService {
 
     // instance variables
     private final ExaminationAppealRepository examinationAppealRepository;
+    private final ExaminationOutcomeRepository examinationOutcomeRepository;
     private final ExaminationRepository examinationRepository;
     private final CourseRepository courseRepository;
     private final DegreeCourseRepository degreeCourseRepository;
@@ -58,6 +61,7 @@ public class ExaminationAppealServiceImpl implements ExaminationAppealService {
     // constructor
     public ExaminationAppealServiceImpl(
         ExaminationAppealRepository examinationAppealRepository,
+        ExaminationOutcomeRepository examinationOutcomeRepository,
         ExaminationRepository examinationRepository,
         CourseRepository courseRepository,
         DegreeCourseRepository degreeCourseRepository,
@@ -65,6 +69,7 @@ public class ExaminationAppealServiceImpl implements ExaminationAppealService {
         StudentRepository studentRepository
     ) {
         this.examinationAppealRepository = examinationAppealRepository;
+        this.examinationOutcomeRepository = examinationOutcomeRepository;
         this.examinationRepository = examinationRepository;
         this.courseRepository = courseRepository;
         this.degreeCourseRepository = degreeCourseRepository;
@@ -418,6 +423,22 @@ public class ExaminationAppealServiceImpl implements ExaminationAppealService {
                 .orElseThrow(() -> new IllegalArgumentException("Examination Appeal does not exist"));
             exam.removeStudent(register);
             examinationAppealRepository.saveAndFlush(exam);
+        } catch (DataAccessException e) {
+            logger.error(DATA_ACCESS_ERROR, e);
+        }
+    }
+
+    /**
+     * Adds an examination outcome to an examination appeal
+     * @param outcome examination outcome
+     * @throws NullPointerException if any of the parameters is null
+     * @throws IllegalArgumentException if any of the parameters is invalid
+     * @throws UnsupportedOperationException if the register is not unique
+     * @throws ObjectNotFoundException if the examination appeal does not exist
+     */
+    public void addExaminationOutcome(@NonNull ExaminationOutcome outcome) {
+        try {
+            examinationOutcomeRepository.saveAndFlush(outcome);
         } catch (DataAccessException e) {
             logger.error(DATA_ACCESS_ERROR, e);
         }

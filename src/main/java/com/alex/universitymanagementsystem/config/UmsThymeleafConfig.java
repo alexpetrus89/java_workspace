@@ -1,14 +1,20 @@
 package com.alex.universitymanagementsystem.config;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.thymeleaf.extras.springsecurity6.dialect.SpringSecurityDialect;
 import org.thymeleaf.spring6.SpringTemplateEngine;
 import org.thymeleaf.spring6.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.templatemode.TemplateMode;
 
+
 @Configuration
 public class UmsThymeleafConfig {
+
+    private static final Logger logger = LoggerFactory.getLogger(UmsThymeleafConfig.class);
 
     private final ApplicationContext applicationContext;
 
@@ -40,6 +46,7 @@ public class UmsThymeleafConfig {
         templateResolver.setSuffix(".html");
         templateResolver.setTemplateMode(TemplateMode.HTML);
         templateResolver.setCacheable(true);
+        logger.info("ExceptionTemplateResolver creato: {}", templateResolver);
         return templateResolver;
     }
 
@@ -50,6 +57,8 @@ public class UmsThymeleafConfig {
         // enables Spring's own MessageSource message resolution mechanisms.
         SpringTemplateEngine templateEngine = new SpringTemplateEngine();
         templateEngine.setTemplateResolver(templateResolver());
+        templateEngine.addDialect(securityDialect());
+        // SpringSecurityDialect is not automatically added to the template engine.
         // Enabling the SpringEL compiler with Spring 4.2.4 or newer can
         // speed up execution in most scenarios, but might be incompatible
         // with specific cases when expressions in one template are reused
@@ -57,6 +66,11 @@ public class UmsThymeleafConfig {
         // for safer backwards compatibility.
         templateEngine.setEnableSpringELCompiler(true);
         return templateEngine;
+    }
+
+    @Bean
+    SpringSecurityDialect securityDialect() {
+        return new SpringSecurityDialect();
     }
 
 }

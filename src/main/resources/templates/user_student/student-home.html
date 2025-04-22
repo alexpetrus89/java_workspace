@@ -7,6 +7,9 @@
 <head>
     <title>University Management Application</title>
     <link rel="stylesheet" type="text/css" href="/static/css/student-home.css">
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@stomp/stompjs@7.0.0/bundles/stomp.umd.min.js"></script>
+    <script src="/static/js/ums-notify.js"></script>
 </head>
 <body>
     <h1 th:inline="text">Welcome student
@@ -18,4 +21,10 @@
     <p>Click <a th:href="@{/user_student/examinations/examination-menu}">&nbsp;here&nbsp;</a> for show examinations</p>
     <h1>Logout</h1>
     <p>Click <a th:href="@{/logout}">&nbsp;here&nbsp;</a> for log out</p>
+
+    <div id="notifications">
+        <h2>Notifications</h2>
+        <div id="notification-list"></div>
+    </div>
+
 </html>

@@ -77,13 +77,21 @@ public class UserServiceImpl implements UserDetailsService{
      * @param form RegistrationForm containing updated user details.
      * @return String representing the redirect URL after the update process.
      * @throws NullPointerException if the user is null.
-     * @throws ObjectNotFoundException if the authenticated user is not found.
+     * @throws ObjectAlreadyExistsException if the user already exists.
 	 */
 	@Transactional
     public String addNewUser(@NonNull User user)
         throws NullPointerException, ObjectAlreadyExistsException {
         try {
             if(userRepository.existsById(user.getId()))
+                throw new ObjectAlreadyExistsException(DomainType.USER);
+
+            if(userRepository.findByFullname(user.getFullname())
+                    .stream()
+                    .anyMatch(u -> u.getFullname().equals(user.getFullname())) &&
+                userRepository.findByDob(user.getDob())
+                    .stream()
+                    .anyMatch(u -> u.getDob().isEqual(user.getDob())))
                 throw new ObjectAlreadyExistsException(DomainType.USER);
             // save the user
             userRepository.saveAndFlush(user);

@@ -8,7 +8,6 @@ import java.util.Map;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.alex.universitymanagementsystem.domain.ExaminationAppeal;
-import com.alex.universitymanagementsystem.domain.Outcome;
 import com.alex.universitymanagementsystem.domain.Professor;
 import com.alex.universitymanagementsystem.domain.Student;
 import com.alex.universitymanagementsystem.dto.ExaminationAppealDto;
@@ -221,27 +219,6 @@ public class ExaminationAppealController {
             model.put(STACK_TRACE, e.getStackTrace());
             return new ModelAndView(ERROR_URL, model);
         }
-    }
-
-    @GetMapping(path = "/make-outcome/{register}/{id}")
-    public ModelAndView makeOutcome(@PathVariable String register, @PathVariable Long id) {
-        try {
-            ExaminationAppeal examAppeal = examinationAppealServiceImpl.getExaminationAppealById(id);
-            Outcome outcome = new Outcome(examAppeal, register);
-            return new ModelAndView("user_professor/examinations/examination_appeal/evaluation", "outcome", outcome);
-        } catch (ObjectNotFoundException e) {
-            Map<String, Object> model = new HashMap<>();
-            model.put(TITLE, ERROR);
-            model.put(ERROR_MESSAGE, e.getMessage());
-            model.put(STACK_TRACE, e.getStackTrace());
-            return new ModelAndView(ERROR_URL, model);
-        }
-    }
-
-
-    @PostMapping(path = "notify")
-    public String notifyOutcome(@ModelAttribute Outcome outcome) {
-        return "spread";
     }
 
 

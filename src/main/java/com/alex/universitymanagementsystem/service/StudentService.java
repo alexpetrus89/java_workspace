@@ -54,7 +54,7 @@ public interface StudentService {
 	 * @throws NullPointerException if the student is null
 	 * @throws IllegalArgumentException if the given register is null or blank
 	 * @throws ObjectAlreadyExistsException if a student with the same register
-	 * 										already exists in the repository.
+	 * 		   already or with same name and dob exists in the repository.
 	 * @throws ObjectNotFoundException if the degree course does not exists
 	 */
 	@Transactional

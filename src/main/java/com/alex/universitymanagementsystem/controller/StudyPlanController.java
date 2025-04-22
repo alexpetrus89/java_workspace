@@ -68,7 +68,7 @@ public class StudyPlanController {
     public ModelAndView getCourses(@AuthenticationPrincipal Student student) {
 
         // Retrieve all courses and degree courses and the courses of the student
-        Set<DegreeCourseDto> allDegreeCourses = degreeCourseServiceImpl.getDegreeCourses();
+        Set<DegreeCourseDto> degreeCourses = degreeCourseServiceImpl.getDegreeCourses();
         String degreeCourse = student.getDegreeCourse().getName();
         Set<CourseDto> studyPlan= studyPlanServiceImpl.getCoursesByRegister(student.getRegister());
         String token = SecurityContextHolder
@@ -81,7 +81,7 @@ public class StudyPlanController {
             .orElseThrow(() -> new RuntimeException("Token non trovato"));
 
         ChangeCoursesDto courses = new ChangeCoursesDto(
-            allDegreeCourses,
+            degreeCourses,
             degreeCourse,
             studyPlan,
             token
@@ -109,6 +109,7 @@ public class StudyPlanController {
         Register register = student.getRegister();
 
         try {
+            System.out.println("CORSO DI LAUREA DEL CORSO DA SOSTITUIRE: " + degreeCourseOfOldCourse);
             studyPlanServiceImpl.changeCourse(register, degreeCourseOfNewCourse, degreeCourseOfOldCourse, courseToAdd, courseToRemove);
             Set<CourseDto> courses = studyPlanServiceImpl.getCoursesByRegister(register);
             return new ModelAndView("user_student/study_plan/study_plan_courses", "courses", courses);

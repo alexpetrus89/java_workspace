@@ -1,0 +1,17 @@
+.hidden {
+    display: none;
+}
+
+#fields {
+    display: none;
+}
+
+#withHonors {
+    display: none;
+}
+
+/* Stile per il tag relativo a present */
+.present {
+    font-weight: bold;
+    color: green;
+}

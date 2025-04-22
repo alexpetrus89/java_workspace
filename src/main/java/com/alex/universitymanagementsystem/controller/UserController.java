@@ -134,12 +134,10 @@ public class UserController {
 
         try{
             return new ModelAndView("user_student/create/student-result", "student", student);
-        } catch (RuntimeException e) {
-            Map<String, Object> model = new HashMap<>();
-            model.put(TITLE, ERROR);
-            model.put(ERROR_MESSAGE, e.getMessage());
-            model.put(STACK_TRACE, e.getStackTrace());
-            return new ModelAndView(ERROR_PATH, model);
+        } catch (ObjectAlreadyExistsException e) {
+            return new ModelAndView("exception/creation/user-already-exists", "message", e.getMessage());
+        } catch (ObjectNotFoundException e) {
+            return new ModelAndView("exception/creation/degree-course-not-found", "message", e.getMessage());
         }
     }
 

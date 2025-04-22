@@ -33,7 +33,6 @@ public class RegistrationServiceImpl {
      * @throws IllegalArgumentException if the username is blank
      */
     public boolean isUsernameAlreadyTaken(@NonNull String username) {
-
         // sanity check
 		if(username.isBlank())
             throw new UsernameInvalidException("Username cannot be blank");

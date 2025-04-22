@@ -5,6 +5,8 @@
 <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
 <head>
     <title>University Management Application</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/evaluation.css">
+    <script src="/static/js/ums-evaluation.js"></script>
 </head>
 <body>
     <h1>Enter exam grade</h1>
@@ -13,43 +15,33 @@
     <p>Course: <span th:text="${outcome.examinationAppeal.course.name}"></span></p>
     <p>Date: <span th:text="${#temporals.format(outcome.examinationAppeal.date, 'dd-MM-yyyy')}"></span></p>
 
-    <form action="#" th:action="@{/api/v1/examination-appeal/notify}" method="post">
+    <form action="#" th:action="@{/api/v1/examination-outcome/notify}" method="post">
 
         <label for="present">Present:</label>
         <input type="checkbox" name="present" value="true"
-        title="Select if present" th:checked="${outcome.present}">
+            title="Select if present"
+            onclick="showHideFields(this)" onKeyPress="handleKeyPress(event)"></p>
 
-        <label for="grade">Grade:</label>
-        <input type="text" name="grade" title="Enter grade"
-            placeholder="grade" th:value="${outcome.grade}"
-            oninput="checkGrade()"></p>
+        <div id="fields">
+            <label for="grade">Grade:</label>
+            <input type="text" name="grade" title="Enter grade"
+                placeholder="grade" th:value="${outcome.grade}"
+                oninput="checkGrade()"></p>
 
-        <script>
-            function checkGrade() {
-                var grade = document.getElementsByName("grade")[0].value;
-                if (grade == 30) {
-                    document.getElementById("withHonors").style.display = "block";
-                } else {
-                    document.getElementById("withHonors").style.display = "none";
-                }
-            }
-        </script>
-
-        <div id="withHonors" class="hidden">
-
-            <label for="withHonors">With honors:</label>
-            <input type="checkbox" name="withHonors" id="withHonors"
-                value="false" checked="false"
-                onchange="this.value = this.checked ? 'true' : 'false'"/>
-            <label for="withHonors">default value is false</label>
+            <div id="withHonors" class="hidden">
+                <label for="withHonors">With honors:</label>
+                <input type="checkbox" name="withHonors" id="withHonors"
+                    value="false" checked="false"
+                    onchange="this.value = this.checked ? 'true' : 'false'"/>
+                <label for="withHonors">default value is true</label>
+            </div>
         </div>
-
         <input type="hidden" name="withHonors" value="false"/>
 
         <p><input type="submit" value="Submit" /> <input type="reset" value="Reset" /></p>
     </form>
     <br>
-    <a href="#" th:href="@{/api/v1/examination-appeal/view//make-outcome/{register}/{id}}">Back to check</a>
+    <a href="#" th:href="@{/api/v1/examination-outcome/view//make-outcome/{register}/{id}}">Back to check</a>
     <br>
     <a href="#" th:href="@{/user_professor/examinations/examination_appeal/examination-appeal-menu}">Back to Menu</a>
 </body>

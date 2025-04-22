@@ -1,4 +1,4 @@
-package com.alex.universitymanagementsystem.repository;
+package com.alex.universitymanagementsystem.service;
 
 import org.springframework.lang.NonNull;
 

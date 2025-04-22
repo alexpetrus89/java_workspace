@@ -17,11 +17,13 @@ import com.alex.universitymanagementsystem.domain.DegreeCourse;
 import com.alex.universitymanagementsystem.domain.Student;
 import com.alex.universitymanagementsystem.domain.immutable.Register;
 import com.alex.universitymanagementsystem.dto.StudentDto;
+import com.alex.universitymanagementsystem.enum_type.DomainType;
 import com.alex.universitymanagementsystem.exception.ObjectAlreadyExistsException;
 import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
 import com.alex.universitymanagementsystem.mapper.StudentMapper;
 import com.alex.universitymanagementsystem.repository.DegreeCourseRepository;
 import com.alex.universitymanagementsystem.repository.StudentRepository;
+import com.alex.universitymanagementsystem.repository.UserRepository;
 import com.alex.universitymanagementsystem.service.StudentService;
 
 
@@ -37,14 +39,17 @@ public class StudentServiceImpl implements StudentService {
 
 	// inject repository - instance variable
 	private final StudentRepository studentRepository;
+	private final UserRepository userRepository;
 	private final DegreeCourseRepository degreeCourseRepository;
 
 	// autowired - dependency injection - constructor
 	public StudentServiceImpl(
 		StudentRepository studentRepository,
+		UserRepository userRepository,
 		DegreeCourseRepository degreeCourseRepository
 	) {
 		this.studentRepository = studentRepository;
+		this.userRepository = userRepository;
 		this.degreeCourseRepository = degreeCourseRepository;
 	}
 
@@ -127,7 +132,7 @@ public class StudentServiceImpl implements StudentService {
 	 * @throws NullPointerException if the student is null
 	 * @throws IllegalArgumentException if the given register is null or blank
 	 * @throws ObjectAlreadyExistsException if a student with the same register
-	 * 		  already exists in the repository.
+	 * 		   already or with same name and dob exists in the repository.
 	 * @throws ObjectNotFoundException if the degree course does not exists
 	 */
 	@Override
@@ -151,7 +156,14 @@ public class StudentServiceImpl implements StudentService {
 			if(!degreeCourseRepository.existsByName(student.getDegreeCourse().getName()))
 				throw new ObjectNotFoundException(student.getDegreeCourse().getName());
 
-			// save
+			if(userRepository.findByFullname(student.getFullname())
+                    .stream()
+                    .anyMatch(u -> u.getFullname().equals(student.getFullname())) &&
+                userRepository.findByDob(student.getDob())
+                    .stream()
+                    .anyMatch(u -> u.getDob().equals(student.getDob())))
+                throw new ObjectAlreadyExistsException(DomainType.STUDENT);
+			// save the student
 			studentRepository.saveAndFlush(student);
 		} catch (DataAccessException e) {
 			logger.error(DATA_ACCESS_ERROR + " while adding new student", e);

@@ -109,7 +109,6 @@ public class StudyPlanController {
         Register register = student.getRegister();
 
         try {
-            System.out.println("CORSO DI LAUREA DEL CORSO DA SOSTITUIRE: " + degreeCourseOfOldCourse);
             studyPlanServiceImpl.changeCourse(register, degreeCourseOfNewCourse, degreeCourseOfOldCourse, courseToAdd, courseToRemove);
             Set<CourseDto> courses = studyPlanServiceImpl.getCoursesByRegister(register);
             return new ModelAndView("user_student/study_plan/study_plan_courses", "courses", courses);

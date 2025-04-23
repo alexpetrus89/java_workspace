@@ -30,6 +30,10 @@ stompClient.onStompError = (frame) => {
     console.error('Additional details: ' + frame.body);
 };
 
+stompClient.debug = function (msg) {
+    console.log('STOMP DEBUG: ' + msg);
+};
+
 function setConnected(connected) {
     $("#connect").prop("disabled", connected);
     $("#disconnect").prop("disabled", !connected);
@@ -53,18 +57,23 @@ function disconnect() {
 }
 
 function sendMessage() {
-    stompClient.publish({
-        destination: "api/v1/examination-outcome/ums/notify",
-        body: JSON.stringify({'message': $("#message").val()})
-    });
+    if (stompClient.connected) {
+        stompClient.publish({
+            destination: "api/v1/examination-outcome/ums/notify",
+            body: JSON.stringify({'message': $("#message").val()})
+        });
+    } else {
+        console.log("Non connesso al server");
+    }
 }
 
 function showMessage(message) {
-    $("#notifications").append("<tr><td>" + message + "</td></tr>");
+    $("#notifications-list").append("<tr><td>" + message + "</td></tr>");
 }
 
+
 $(function () {
-    $("form").on('submit', (e) => e.preventDefault());
+    $("form").on('submit', (e) => e.preventDefault()); sendMessage();
     $( "#connect" ).click(() => connect());
     $( "#disconnect" ).click(() => disconnect());
     $( "#send" ).click(() => sendName());

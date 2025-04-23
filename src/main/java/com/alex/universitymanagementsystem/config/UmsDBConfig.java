@@ -12,7 +12,12 @@ public class UmsDBConfig implements Serializable {
     private final String password;
 
     public UmsDBConfig() {
+        // get password from environment variable
+        // This is a placeholder. In a real application, you would use a secure method to retrieve the password.
         password = System.getenv("DB_PASSWORD");
-        // Use the password value in your code...
+    }
+
+    public String getPassword() {
+        return password;
     }
 }

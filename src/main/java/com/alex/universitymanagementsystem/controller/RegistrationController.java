@@ -57,7 +57,6 @@ public class RegistrationController {
      * @param phone
      * @param role
      * @return String - redirect
-     * @throws IllegalArgumentException if the username is already taken
      */
     @PostMapping
     public String processRegistration (
@@ -78,6 +77,10 @@ public class RegistrationController {
         // username already in use check
         if(registrationServiceImpl.isUsernameAlreadyTaken(username))
             return "redirect:/validation/registration/username-already-taken";
+
+        // check if
+        if(password.isBlank() || password.isEmpty())
+            return "redirect:/validation/registration/password-is-blank";
 
          // check if the password and confirm password are the same
         if (!password.equals(confirm))

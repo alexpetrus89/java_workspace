@@ -16,7 +16,6 @@ import com.alex.universitymanagementsystem.domain.Professor;
 import com.alex.universitymanagementsystem.domain.immutable.UniqueCode;
 import com.alex.universitymanagementsystem.dto.ProfessorDto;
 import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
-import com.alex.universitymanagementsystem.mapper.ProfessorMapper;
 import com.alex.universitymanagementsystem.service.impl.ProfessorServiceImpl;
 
 @RestController
@@ -60,10 +59,10 @@ public class ProfessorController {
      * @throws NullPointerException if the unique code is null
      */
     @GetMapping(path = "/read/uniquecode")
-    public ModelAndView getProfessorsByUniqueCode(@RequestParam UniqueCode uniqueCode) {
+    public ModelAndView getProfessorByUniqueCode(@RequestParam UniqueCode uniqueCode) {
 
         try {
-            Professor professor = ProfessorMapper.mapToProfessor(professorServiceImpl.getProfessorByUniqueCode(uniqueCode));
+            ProfessorDto professor = professorServiceImpl.getProfessorByUniqueCode(uniqueCode);
             return new ModelAndView("professor/read/read-result", PROFESSOR, professor);
         } catch (UnsupportedOperationException | IllegalArgumentException | NullPointerException e) {
             return new ModelAndView(ERROR_URL, e.getMessage(), NOT_FOUND_URL);
@@ -81,10 +80,9 @@ public class ProfessorController {
      */
     @GetMapping(path = "/read/name")
     public ModelAndView getProfessorsByName(@RequestParam String name) {
-
         try {
-            Professor professor = ProfessorMapper.mapToProfessor(professorServiceImpl.getProfessorByName(name));
-            return new ModelAndView("professor/read/read-result", PROFESSOR, professor);
+            List<ProfessorDto> professors = professorServiceImpl.getProfessorByName(name);
+            return new ModelAndView("professor/read/read-results", PROFESSORS, professors);
         } catch (UnsupportedOperationException | IllegalArgumentException | NullPointerException e) {
             return new ModelAndView(ERROR_URL, e.getMessage(), NOT_FOUND_URL);
         }
@@ -119,8 +117,7 @@ public class ProfessorController {
 
         try {
             professorServiceImpl.updateProfessor(professorDto);
-            Professor professor = ProfessorMapper.mapToProfessor(professorDto);
-            return new ModelAndView("professor/update/update-result", PROFESSOR, professor);
+            return new ModelAndView("professor/update/update-result", PROFESSOR, professorDto);
         } catch (ObjectNotFoundException | IllegalArgumentException | NullPointerException | UnsupportedOperationException e) {
             return new ModelAndView(ERROR_URL, e.getMessage(), NOT_FOUND_URL);
         }

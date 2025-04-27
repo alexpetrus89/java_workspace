@@ -2,7 +2,7 @@
     <p th:text="'COURSE FOUND:'"></p>
     <p th:text="'name: ' + ${course.name}"></p>
     <p th:text="'type: ' + ${course.type.name()}"></p>
-    <p th:text="'professor: ' + ${course.professor.name}"></p>
+    <p th:text="'professor: ' + ${course.professor.fullname}"></p>
     <p th:text="'degree course: ' + ${course.degreeCourse.name}"></p>
 </div>
 <div th:if="${errorMessage}">

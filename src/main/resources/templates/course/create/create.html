@@ -19,7 +19,7 @@
 
         <label for="type">Type:</label>
         <select id="type-select" name="type" title="Select course type">
-            <option th:each="type : ${T(com.alex.studentmanagementsystem.utility.CourseType).values()}" th:value="${type}" th:text="${type.name()}"></option>
+            <option th:each="type : ${T(com.alex.universitymanagementsystem.enum_type.CourseType).values()}" th:value="${type}" th:text="${type.name()}"></option>
         </select></p>
 
         <label for="dob">Cfu:</label>

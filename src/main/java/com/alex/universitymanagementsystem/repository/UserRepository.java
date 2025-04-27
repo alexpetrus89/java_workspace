@@ -23,29 +23,24 @@ public interface UserRepository
      * @param username
      * @return User
      * @throws NullPointerException if the username is null
-     * @throws IllegalArgumentException if the username is null
      */
-    User findByUsername(@NonNull String username)
-        throws NullPointerException, IllegalArgumentException;
+    User findByUsername(@NonNull String username) throws NullPointerException;
 
     /**
      * Find user by fullname
      * @param fullname
      * @return List<User>
      * @throws NullPointerException if the fullname is null
-     * @throws IllegalArgumentException if the fullname is blank
      */
-    List<User> findByFullname(@NonNull String fullname)
-        throws NullPointerException, IllegalArgumentException;
+    List<User> findByFullname(@NonNull String fullname) throws NullPointerException;
 
     /**
      * Find user by dob
      * @param dob
      * @return List<User>
      * @throws NullPointerException if the dob is null
-     * @throws IllegalArgumentException if the dob is null
      */
-    List<User> findByDob(@NonNull LocalDate dob);
+    List<User> findByDob(@NonNull LocalDate dob) throws NullPointerException;
 
 
     /**
@@ -61,8 +56,6 @@ public interface UserRepository
      * @param role
      * @return int number of rows updated
      * @throws NullPointerException if the parameters are null
-     * @throws IllegalArgumentException if the parameters are blanks
-     * @throws UsernameNotFoundException if the user is not found
      */
     @Modifying
     @Query("""

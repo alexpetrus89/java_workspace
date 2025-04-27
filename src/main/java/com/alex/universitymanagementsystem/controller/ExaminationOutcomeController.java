@@ -68,8 +68,16 @@ public class ExaminationOutcomeController {
                     .orElse("Unknown course") + "!")
         );
         // Invia il messaggio tramite WebSocket
-        simpMessagingTemplate.convertAndSend("/topic/notifications", outcome);
-        return "OK";
+        simpMessagingTemplate.convertAndSend("/topic/notify", "La tua valutazione è stata pubblicata!");
+        return "";
     }
+
+
+    @GetMapping("/notify-websocket")
+    public String notifyWebSocket() {
+    // Invia il messaggio tramite WebSocket
+    simpMessagingTemplate.convertAndSend("/topic/notify", "La tua valutazione è stata pubblicata!");
+    return "";
+}
 
 }

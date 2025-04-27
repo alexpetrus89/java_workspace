@@ -49,12 +49,12 @@ public interface ProfessorService {
     /**
      * Retrieves a professor by name.
      * @param name the name of the professor.
-     * @return ProfessorDto object containing the professor's data.
+     * @return List<ProfessorDto> object containing the professor's data.
      * @throws NullPointerException if the name is null
      * @throws IllegalArgumentException if the name is blank
      * @throws UnsupportedOperationException if the name is not unique
      */
-    ProfessorDto getProfessorByName(@NonNull String name)
+    List<ProfessorDto> getProfessorByName(@NonNull String name)
         throws NullPointerException, IllegalArgumentException, UnsupportedOperationException;
 
 

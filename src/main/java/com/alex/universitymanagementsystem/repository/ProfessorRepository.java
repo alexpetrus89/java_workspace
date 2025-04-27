@@ -1,5 +1,7 @@
 package com.alex.universitymanagementsystem.repository;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -7,6 +9,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
 
 import com.alex.universitymanagementsystem.domain.Professor;
+import com.alex.universitymanagementsystem.domain.immutable.FiscalCode;
 import com.alex.universitymanagementsystem.domain.immutable.UniqueCode;
 import com.alex.universitymanagementsystem.domain.immutable.UserId;
 
@@ -39,19 +42,19 @@ public interface ProfessorRepository
      * @see FiscalCode
      */
     @Query(value = "SELECT s FROM Professor s WHERE s.fiscalCode = ?1")
-    Professor findByFiscalCode(@NonNull String fiscalCode);
+    Professor findByFiscalCode(@NonNull FiscalCode fiscalCode);
 
 
     /**
      * Retrieves a professor by name
      * @param name the name of the professor to retrieve
-     * @return the professor if found, null otherwise
+     * @return a list if professor with same fullname
      * @throws NullPointerException if the name is null
      * @throws IllegalArgumentException if the name is empty or null
      * @throws UnsupportedOperationException if the name is not unique
      */
     @Query(value = "SELECT s FROM Professor s WHERE s.fullname = ?1")
-    Professor findByFullname(@NonNull String name);
+    List<Professor> findByFullname(@NonNull String name);
 
 
     /**
@@ -73,7 +76,7 @@ public interface ProfessorRepository
      * @throws IllegalArgumentException if the fiscal code is null
      * @throws UnsupportedOperationException if the fiscal code is not unique
      */
-    boolean existsByFiscalCode(@NonNull String fiscalCode);
+    boolean existsByFiscalCode(@NonNull FiscalCode fiscalCode);
 
 
     /**

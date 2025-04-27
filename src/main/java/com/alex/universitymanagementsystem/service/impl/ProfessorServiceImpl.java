@@ -10,6 +10,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
 import com.alex.universitymanagementsystem.domain.Professor;
+import com.alex.universitymanagementsystem.domain.immutable.FiscalCode;
 import com.alex.universitymanagementsystem.domain.immutable.UniqueCode;
 import com.alex.universitymanagementsystem.dto.ProfessorDto;
 import com.alex.universitymanagementsystem.exception.ObjectAlreadyExistsException;
@@ -85,25 +86,28 @@ public class ProfessorServiceImpl implements ProfessorService {
     {
         if(fiscalCode.isBlank())
             throw new IllegalArgumentException("Fiscal Code cannot be null or empty");
-        return ProfessorMapper.mapToProfessorDto(professorRepository.findByFiscalCode(fiscalCode));
+        return ProfessorMapper.mapToProfessorDto(professorRepository.findByFiscalCode(new FiscalCode(fiscalCode)));
     }
 
 
     /**
      * Retrieves a professor by name.
      * @param name the name of the professor.
-     * @return ProfessorDto object containing the professor's data.
+     * @return List<ProfessorDto> object containing the professor's data.
      * @throws NullPointerException if the name is null
      * @throws IllegalArgumentException if the name is blank
-     * @throws UnsupportedOperationException if the name is not unique
      */
     @Override
-    public ProfessorDto getProfessorByName(@NonNull String name)
+    public List<ProfessorDto> getProfessorByName(@NonNull String name)
         throws NullPointerException, IllegalArgumentException, UnsupportedOperationException
     {
         if(name.isBlank())
             throw new IllegalArgumentException("Name cannot be null or empty");
-        return ProfessorMapper.mapToProfessorDto(professorRepository.findByFullname(name));
+        return professorRepository
+            .findByFullname(name)
+            .stream()
+            .map(ProfessorMapper::mapToProfessorDto)
+            .toList();
     }
 
 
@@ -126,12 +130,12 @@ public class ProfessorServiceImpl implements ProfessorService {
     {
         try {
             UniqueCode uniqueCode = professor.getUniqueCode();
-            String fiscalCode = professor.getFiscalCode();
+            FiscalCode fiscalCode = professor.getFiscalCode();
 
             if(uniqueCode == null || uniqueCode.toString().isBlank())
                 throw new IllegalArgumentException("Unique Code cannot be null or empty");
 
-            if(fiscalCode == null || fiscalCode.isBlank())
+            if(fiscalCode == null || fiscalCode.toString().isBlank())
                 throw new IllegalArgumentException("Fiscal Code cannot be null or empty");
 
             if(professorRepository.existsByUniqueCode(uniqueCode))
@@ -175,12 +179,12 @@ public class ProfessorServiceImpl implements ProfessorService {
                 throw new ObjectNotFoundException(newProfessorDto.getUniqueCode());
 
             // retrieve new data
-            String newFiscalCode = newProfessor.getFiscalCode();
+            FiscalCode newFiscalCode = newProfessor.getFiscalCode();
             String newName = newProfessor.getFullname();
             String newUsername = newProfessor.getUsername();
 
             // sanity check
-            if(newFiscalCode.isBlank() || newFiscalCode.length() != 16 || !newFiscalCode.matches("\\w{16}"))
+            if(newFiscalCode.toString().isBlank() || newFiscalCode.toString().length() != 16 || !newFiscalCode.toString().matches("\\w{16}"))
                 throw new IllegalArgumentException("Fiscal Code must be 16 alphanumeric characters");
             if(newName == null || newName.isBlank())
                 throw new IllegalArgumentException("Name cannot be null or empty");

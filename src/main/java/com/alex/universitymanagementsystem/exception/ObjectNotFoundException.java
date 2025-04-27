@@ -3,6 +3,7 @@ package com.alex.universitymanagementsystem.exception;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import com.alex.universitymanagementsystem.domain.immutable.FiscalCode;
 import com.alex.universitymanagementsystem.domain.immutable.Register;
 import com.alex.universitymanagementsystem.domain.immutable.UniqueCode;
 import com.alex.universitymanagementsystem.enum_type.DomainType;
@@ -23,6 +24,7 @@ public class ObjectNotFoundException extends RuntimeException {
     private static String formatMessageStatic(Object type) {
         return switch (type) {
             case Register register -> String.format("Student with registration number %s not found", register.toString());
+            case FiscalCode fiscalCode -> String.format("Professor with fiscal code %s already exists", fiscalCode.toString());
             case UniqueCode uniqueCode -> String.format("Professor with unique code %s not found", uniqueCode.toString());
             case DomainType domainType -> String.format("%s not found", getIdentifierName(domainType));
             default -> "Unknown error";
@@ -39,6 +41,7 @@ public class ObjectNotFoundException extends RuntimeException {
             case DomainType.DEGREE_COURSE -> "Degree course";
             case DomainType.EXAMINATION -> "Examination";
             case DomainType.EXAMINATION_APPEAL -> "Examination appeal";
+            case DomainType.EXAMINATION_OUTCOME -> "Examination outcome";
             default -> "Unknown";
         };
     }

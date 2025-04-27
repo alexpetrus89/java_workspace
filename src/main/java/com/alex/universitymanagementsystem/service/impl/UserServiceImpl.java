@@ -60,12 +60,14 @@ public class UserServiceImpl implements UserDetailsService{
      * @return UserDetails
      * @throws NullPointerException if the user is null
      * @throws IllegalArgumentException if the username is blank
-     * @throws UsernameNotFoundException if the user is not found
      */
     @Override
     public UserDetails loadUserByUsername(@NonNull String username)
-        throws NullPointerException, IllegalArgumentException, UsernameNotFoundException
+        throws NullPointerException, IllegalArgumentException
     {
+        // sanity check
+        if(username.isBlank())
+            throw new IllegalArgumentException("username cannot be blank");
         return userRepository.findByUsername(username);
     }
 

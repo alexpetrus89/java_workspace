@@ -6,8 +6,8 @@
     <title>University Management Application</title>
 </head>
 <body>
-    <h1>Invalid date of birth. Please enter a valid date (before today).</h1>
-    <br>
-    <a href="#" th:href="@{/register}">Login</a>
+    <h1>Error: invalid date of birth</h1>
+    <p>The date of birth cannot be in the future. Please enter a valid date.</p>
+    <p><a th:href="@{/register}">Return to Registration Page</a></p>
 </body>
 </html>

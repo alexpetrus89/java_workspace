@@ -1,7 +1,7 @@
 /**
  * Il file HTML student-home.html importa la libreria JavaScript StompJS,
- * che verrà utilizzata per comunicare con il nostro server tramite STOMP
- * tramite websocket.
+ * che verrà utilizzata per comunicare con il server tramite protocollo di
+ * messaggistica STOMP e tramite protocollo WebSocket.
  * Importiamo anche ums-notify.js, che contiene la logica della nostra
  * applicazione client.
  * Il seguente elenco (da src/main/resources/static/js/ums-notify.js)
@@ -9,21 +9,19 @@
  */
 
 
+// Creazione del client StompJs
+// Crea un nuovo client StompJs e lo configura per
+// connettersi al broker WebSocket all'indirizzo
+// ws://localhost:8081/ums-ws.
 const stompClient = new StompJs.Client({
-    brokerURL: 'ws://localhost:8081/ws',
+    brokerURL: 'ws://localhost:8081/ums-ws',
 });
 
-stompClient.onConnect = (frame) => {
-    setConnected(true);
-    console.log('Connected: ' + frame);
-    stompClient.subscribe('/topic/notify', (outcome) => {
-        showGreeting(JSON.parse(outcome.body).content);
-    });
-};
+// Funzione di connessione WebSocket
+function connect() {
+    stompClient.activate();
+}
 
-stompClient.onWebSocketError = (error) => {
-    console.error('Error with websocket', error);
-};
 
 stompClient.onStompError = (frame) => {
     console.error('Broker reported error: ' + frame.headers['message']);
@@ -32,6 +30,19 @@ stompClient.onStompError = (frame) => {
 
 stompClient.debug = function (msg) {
     console.log('STOMP DEBUG: ' + msg);
+};
+
+// Funzione di connessione al server Stomp
+stompClient.onConnect = function(frame) {
+    console.log('Connected: ' + frame);
+    stompClient.subscribe('/topic/notify', function(message) {
+        console.log('Received notification: ' + message.body);
+        // Visualizza la notifica nella sezione "Notifications"
+        let notificationList = document.getElementById('notification-list');
+        let notification = document.createElement('div');
+        notification.textContent = message.body;
+        notificationList.appendChild(notification);
+    });
 };
 
 function setConnected(connected) {
@@ -44,10 +55,6 @@ function setConnected(connected) {
         $("#conversation").hide();
     }
     $("#notifications").html("");
-}
-
-function connect() {
-    stompClient.activate();
 }
 
 function disconnect() {
@@ -71,13 +78,26 @@ function showMessage(message) {
     $("#notifications-list").append("<tr><td>" + message + "</td></tr>");
 }
 
-
 $(function () {
-    $("form").on('submit', (e) => e.preventDefault()); sendMessage();
-    $( "#connect" ).click(() => connect());
+    connect();
     $( "#disconnect" ).click(() => disconnect());
-    $( "#send" ).click(() => sendName());
+    $( "#send" ).click(() => sendMessage());
 });
+
+
+// Funzioni di errore WebSocket
+stompClient.onWebSocketError = (error) => {
+    console.error('Error with websocket', error);
+};
+
+stompClient.debug = function (msg) {
+    console.log('STOMP DEBUG: ' + msg);
+};
+
+stompClient.onStompError = (frame) => {
+    console.error('Broker reported error: ' + frame.headers['message']);
+    console.error('Additional details: ' + frame.body);
+};
 
 
 /**

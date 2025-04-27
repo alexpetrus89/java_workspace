@@ -69,7 +69,7 @@ public class CourseController {
     public ModelAndView getCourse(@RequestParam String courseName, @RequestParam String degreeCourseName) {
         CourseDto course = courseServiceImpl
             .getCourseByNameAndDegreeCourseName(courseName, degreeCourseName);
-        return new ModelAndView("course/read/read", COURSE, course);
+        return new ModelAndView("course/read/read-result", COURSE, course);
     }
 
     @GetMapping(path = "/view/professor")

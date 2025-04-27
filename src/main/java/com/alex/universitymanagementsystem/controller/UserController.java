@@ -20,6 +20,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.alex.universitymanagementsystem.domain.Professor;
 import com.alex.universitymanagementsystem.domain.Student;
 import com.alex.universitymanagementsystem.domain.User;
+import com.alex.universitymanagementsystem.domain.immutable.FiscalCode;
 import com.alex.universitymanagementsystem.exception.ObjectAlreadyExistsException;
 import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
 import com.alex.universitymanagementsystem.service.impl.DegreeCourseServiceImpl;
@@ -122,20 +123,18 @@ public class UserController {
      */
     @PostMapping(path = "/create-student")
     public ModelAndView createNewUserWithRoleStudent(HttpServletRequest request, @RequestParam String degreeCourse) {
-
-        // recupera l'oggetto UserDto dalla sessione
-        Builder builder = (Builder) request.getSession().getAttribute(BUILDER);
-        // create Student
-        Student student = new Student(builder, passwordEncoder);
-        // set the degree course
-        student.setDegreeCourse(degreeCourseServiceImpl.getDegreeCourseByName(degreeCourse));
-        // save
-        studentServiceImpl.addNewStudent(student);
-
         try{
+            // recupera l'oggetto UserDto dalla sessione
+            Builder builder = (Builder) request.getSession().getAttribute(BUILDER);
+            // create Student
+            Student student = new Student(builder, passwordEncoder);
+            // set the degree course
+            student.setDegreeCourse(degreeCourseServiceImpl.getDegreeCourseByName(degreeCourse));
+            // save
+            studentServiceImpl.addNewStudent(student);
             return new ModelAndView("user_student/create/student-result", "student", student);
         } catch (ObjectAlreadyExistsException e) {
-            return new ModelAndView("exception/creation/user-already-exists", "message", e.getMessage());
+            return new ModelAndView("exception/creation/student-already-exists", "message", e.getMessage());
         } catch (ObjectNotFoundException e) {
             return new ModelAndView("exception/creation/degree-course-not-found", "message", e.getMessage());
         }
@@ -145,23 +144,21 @@ public class UserController {
     /**
      * Creates a new user with role professor
      * @param request HTTP request
-     * @param fiscalCode fiscal code
+     * @param String fiscal code
      * @return ModelAndView
      * @throws ObjectAlreadyExistsException if a user with the given username already exists
      */
     @PostMapping(path = "/create-professor")
     public ModelAndView createNewUserWithRoleProfessor(HttpServletRequest request, @RequestParam String fiscalCode) {
-
-        // recupera l'oggetto UserDto dalla sessione
-        Builder builder = (Builder) request.getSession().getAttribute(BUILDER);
-        // create Student
-        Professor professor = new Professor(builder, passwordEncoder);
-        // set the degree course
-        professor.setFiscalCode(fiscalCode);
-        // saves
-        professorServiceImpl.addNewProfessor(professor);
-
         try {
+            // recupera l'oggetto UserDto dalla sessione
+            Builder builder = (Builder) request.getSession().getAttribute(BUILDER);
+            // create Student
+            Professor professor = new Professor(builder, passwordEncoder);
+            // set the degree course
+            professor.setFiscalCode(new FiscalCode(fiscalCode));
+            // saves
+            professorServiceImpl.addNewProfessor(professor);
             return new ModelAndView("user_professor/create/professor-result", "professor", professor);
         } catch (RuntimeException e) {
             Map<String, Object> model = new HashMap<>();

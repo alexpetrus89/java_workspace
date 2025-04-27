@@ -10,7 +10,7 @@
     <p th:text="'course name: ' + ${course.name}">Course name</p>
     <p th:text="'course type: ' + ${course.type.name()}">Course type</p>
     <p th:text="'course cfu: ' + ${course.cfu}">Cfu</p>
-    <p th:text="'professor: ' + ${course.professor.name}">Professor</p>
+    <p th:text="'professor: ' + ${course.professor.fullname}">Professor</p>
     <h1>Course insert</h1>
     <br>
     <a href="/api/v1/course/create">Submit another course</a>

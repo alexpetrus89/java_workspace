@@ -105,7 +105,7 @@ public class CourseServiceImpl implements CourseService {
             if(courseName.isBlank() || degreeCourseName.isBlank())
                 throw new IllegalArgumentException("Course name or degree course name cannot be empty.");
             // retrieve degree course
-            DegreeCourse degreeCourse = degreeCourseRepository.findByName(degreeCourseName);
+            DegreeCourse degreeCourse = degreeCourseRepository.findByName(degreeCourseName.toUpperCase());
             // find course
             return CourseMapper.mapToCourseDto(courseRepository.findByNameAndDegreeCourse(courseName, degreeCourse));
         } catch (DataAccessException e) {

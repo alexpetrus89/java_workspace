@@ -16,6 +16,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import com.alex.universitymanagementsystem.domain.immutable.FiscalCode;
 import com.alex.universitymanagementsystem.domain.immutable.UniqueCode;
 import com.alex.universitymanagementsystem.utils.Builder;
 
@@ -30,17 +31,12 @@ import jakarta.validation.constraints.Pattern;
 
 @Entity
 @Table(name = "professor")
-//@SecondaryTable(name = "\"user\"", pkJoinColumns = @PrimaryKeyJoinColumn(name = "id"))
 @Access(AccessType.PROPERTY)
 public class Professor extends User {
 
-    // constants
-    private static final String FISCAL_CODE_REGEX = "\\w{16}";
-    private static final String FISCAL_CODE_EXCEPTION = "Fiscal Code must be a string of exactly 16 characters and digits";
-
     //instance variables
     private UniqueCode uniqueCode;
-    private String fiscalCode;
+    private FiscalCode fiscalCode;
     private static AtomicInteger professorCounter = new AtomicInteger(100000);
 
     //default constructor
@@ -64,9 +60,7 @@ public class Professor extends User {
         String fiscalCode
     ) {
         super(builder, passwordEncoder);
-        if(fiscalCode.length() != 16 && !fiscalCode.matches(FISCAL_CODE_REGEX))
-            throw new IllegalArgumentException(FISCAL_CODE_EXCEPTION);
-        this.fiscalCode = fiscalCode.toUpperCase();
+        this.fiscalCode = new FiscalCode(fiscalCode.toUpperCase());
         this.uniqueCode = uniqueCode;
     }
 
@@ -77,9 +71,7 @@ public class Professor extends User {
         String username
     ) {
         fiscalCode = fiscalCode.toUpperCase();
-        if(fiscalCode.length() != 16 && !fiscalCode.matches(FISCAL_CODE_REGEX))
-            throw new IllegalArgumentException(FISCAL_CODE_EXCEPTION);
-        this.fiscalCode = fiscalCode;
+        this.fiscalCode = new FiscalCode(fiscalCode);
         this.uniqueCode = uniqueCode;
         this.fullname = fullname;
         this.username = username;
@@ -97,21 +89,18 @@ public class Professor extends User {
         return uniqueCode;
     }
 
+    @Embedded
     @AttributeOverride(
         name = "fiscal_code",
         column = @Column(name = "fiscal_code")
     )
     @Pattern(regexp = "^[a-zA-Z0-9]{1,16}$")
-    public String getFiscalCode() {
+    public FiscalCode getFiscalCode() {
         return fiscalCode;
     }
 
     // setters
-    public void setFiscalCode(String fiscalCode) {
-        fiscalCode = fiscalCode.toUpperCase();
-        if(fiscalCode.length() != 16 && !fiscalCode.matches(FISCAL_CODE_REGEX)) {
-            throw new IllegalArgumentException(FISCAL_CODE_EXCEPTION);
-        }
+    public void setFiscalCode(FiscalCode fiscalCode) {
         this.fiscalCode = fiscalCode;
     }
 

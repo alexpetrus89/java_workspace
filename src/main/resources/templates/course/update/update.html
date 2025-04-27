@@ -33,7 +33,7 @@
 
         <label for="type">New type:</label>
             <select id="type-select" name="new_type" title="Select new course type">
-                <option th:each="type : ${T(com.alex.studentmanagementsystem.utils.CourseType).values()}" th:value="${type}" th:text="${type.name()}"></option>
+                <option th:each="type : ${T(com.alex.universitymanagementsystem.enum_type.CourseType).values()}" th:value="${type}" th:text="${type.name()}"></option>
             </select></p>
 
         <label for="course">New cfu value:</label>

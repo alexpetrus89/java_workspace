@@ -30,7 +30,7 @@ public class RegistrationServiceImpl {
      * @param username
      * @return true if the username is already in use, false otherwise
      * @throws NullPointerException if the username is null
-     * @throws IllegalArgumentException if the username is blank
+     * @throws UsernameInvalidException if the username is blank
      */
     public boolean isUsernameAlreadyTaken(@NonNull String username) {
         // sanity check

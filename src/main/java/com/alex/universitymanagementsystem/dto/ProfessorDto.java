@@ -2,6 +2,7 @@ package com.alex.universitymanagementsystem.dto;
 
 import java.util.Objects;
 
+import com.alex.universitymanagementsystem.domain.immutable.FiscalCode;
 import com.alex.universitymanagementsystem.domain.immutable.UniqueCode;
 
 
@@ -10,7 +11,7 @@ public class ProfessorDto {
 
     // instance variables
     private UniqueCode uniqueCode;
-    private String fiscalCode;
+    private FiscalCode fiscalCode;
     private String fullname;
     private String username;
 
@@ -21,7 +22,7 @@ public class ProfessorDto {
     // constructor
     public ProfessorDto(
         UniqueCode uniqueCode,
-        String fiscalCode,
+        FiscalCode fiscalCode,
         String fullname,
         String username
     ) {
@@ -34,7 +35,7 @@ public class ProfessorDto {
 
     // getters
     public String getFiscalCode() {
-        return fiscalCode;
+        return fiscalCode.toString();
     }
 
     public UniqueCode getUniqueCode() {
@@ -52,7 +53,7 @@ public class ProfessorDto {
 
     // setters
     public void setFiscalCode(String fiscalCode) {
-        this.fiscalCode = fiscalCode;
+        this.fiscalCode = new FiscalCode(fiscalCode);
     }
 
     public void setUniqueCode(UniqueCode uniqueCode) {
@@ -82,7 +83,7 @@ public class ProfessorDto {
 
         ProfessorDto other = (ProfessorDto) obj;
         return Objects.equals(uniqueCode, other.getUniqueCode()) &&
-            Objects.equals(fiscalCode, other.getFiscalCode()) &&
+            Objects.equals(fiscalCode.toString(), other.getFiscalCode()) &&
             Objects.equals(fullname, other.getFullname()) &&
             Objects.equals(username, other.getUsername());
     }

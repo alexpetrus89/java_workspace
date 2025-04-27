@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:th="https://www.thymeleaf.org"
+        xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
+<head>
+    <title>University Management Application</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/professor-list.css">
+</head>
+<body>
+    <h1>Read professors information</h1>
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Fiscal code</th>
+            <th>Unique code</th>
+            <th>Email</th>
+        </tr>
+        <tr th:each="professor : ${professors}">
+            <td th:text="${professor.fullname}">Name</td>
+            <td th:text="${professor.fiscalCode}">Fiscal code</td>
+            <td th:text="${professor.uniqueCode.code}">Unique code</td>
+            <td th:text="${professor.username}">Email</td>
+        </tr>
+    </table>
+    <br>
+    <a href="#" th:href="@{/professor/read/read}">Search another</a>
+    <br>
+    <a href="#" th:href="@{/professor/professor-menu}">Back to Menu</a>
+</body>
+</html>

@@ -166,7 +166,9 @@ public class UmsWebSecurityConfig implements Serializable {
 					"/user_professor/examinations/examination_appeal/students-booked",
 					"/user_professor/examinations/examination_appeal/evaluation",
 					"/api/v1/course/view/professor",
+					"/api/v1/course/get/{courseId}",
 					"/api/v1/examination-appeal/create",
+					"/api/v1/examination-appeal/make",
 					"/api/v1/examination-appeal/delete",
 					"/api/v1/examination-outcome/make-outcome/{register}/{id}",
 					"/api/v1/examination-outcome/notify"

@@ -18,4 +18,8 @@ public record CourseId(UUID id) implements Serializable {
         this(UUID.randomUUID());
     }
 
+    public CourseId(String id) {
+        this(UUID.fromString(id));
+    }
+
 }

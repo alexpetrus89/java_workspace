@@ -250,36 +250,22 @@ public class ExaminationAppealServiceImpl implements ExaminationAppealService {
      */
     @Override
     public ExaminationAppeal addNewExaminationAppeal(
-        @NonNull String courseName,
-        @NonNull String degreeCourseName,
+        @NonNull CourseId courseId,
         @NonNull Professor professor,
         @NonNull String description,
         @NonNull LocalDate date
     ) throws NullPointerException, IllegalArgumentException, ObjectNotFoundException
     {
         // sanity checks
-        if(courseName.isBlank())
-            throw new IllegalArgumentException("Course name cannot be empty");
-
-        if(degreeCourseName.isBlank())
-            throw new IllegalArgumentException("Degree course name cannot be empty");
-
         if(date.isBefore(LocalDate.now()))
             throw new IllegalArgumentException("Date cannot be in the past");
-
-        if(!degreeCourseRepository.existsByName(degreeCourseName.toUpperCase()))
-            throw new ObjectNotFoundException(DomainType.DEGREE_COURSE);
-
-        if(!courseRepository.existsByNameAndDegreeCourse(courseName, degreeCourseName.toUpperCase()))
-            throw new ObjectNotFoundException(DomainType.COURSE);
 
         if(!professorRepository.existsByUniqueCode(professor.getUniqueCode()))
             throw new ObjectNotFoundException(DomainType.PROFESSOR);
 
         try {
             // retrieve degreeCourse and course
-            DegreeCourse degreeCourse = degreeCourseRepository.findByName(degreeCourseName.toUpperCase());
-            Course course = courseRepository.findByNameAndDegreeCourse(courseName, degreeCourse);
+            Course course = courseRepository.findById(courseId).orElseThrow(() -> new IllegalArgumentException("Course name cannot be empty"));
 
             if(!professor.getUniqueCode().toString().equals(course.getProfessor().getUniqueCode().toString()))
                 throw new IllegalArgumentException("Professor does not teach this course");

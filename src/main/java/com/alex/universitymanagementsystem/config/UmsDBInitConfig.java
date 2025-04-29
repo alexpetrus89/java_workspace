@@ -1650,6 +1650,14 @@ public class UmsDBInitConfig implements Serializable {
             )
         );
 
+        studyPlans.add(
+            new StudyPlanDto(
+                studentRepository.findByRegister(new Register("555555")),
+                "ORD509",
+                new HashSet<>(ingGest.getCourses())
+            )
+        );
+
         // sanity check
         if(studyPlans.isEmpty())
             throw new IllegalArgumentException("study plan list is empty");

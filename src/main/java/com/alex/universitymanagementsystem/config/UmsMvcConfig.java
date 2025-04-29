@@ -11,8 +11,10 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import com.alex.universitymanagementsystem.component.StringToCourseDtoConverter;
+import com.alex.universitymanagementsystem.component.StringToDegreeCourseConverter;
+import com.alex.universitymanagementsystem.repository.CourseRepository;
 import com.alex.universitymanagementsystem.repository.DegreeCourseRepository;
-import com.alex.universitymanagementsystem.utils.StringToDegreeCourseConverter;
 
 
 @Configuration
@@ -20,10 +22,12 @@ public class UmsMvcConfig implements WebMvcConfigurer, Serializable {
 
       // instance variables
       private final transient DegreeCourseRepository degreeCourseRepository;
+      private final transient CourseRepository courseRepository;
 
       // constructor
-      public UmsMvcConfig(DegreeCourseRepository degreeCourseRepository) {
+      public UmsMvcConfig(DegreeCourseRepository degreeCourseRepository, CourseRepository courseRepository) {
             this.degreeCourseRepository = degreeCourseRepository;
+            this.courseRepository = courseRepository;
       }
 
       // methods
@@ -175,7 +179,9 @@ public class UmsMvcConfig implements WebMvcConfigurer, Serializable {
       @Override
       public void addFormatters(@NonNull FormatterRegistry registry) {
             registry.addConverter(new StringToDegreeCourseConverter(degreeCourseRepository));
+            registry.addConverter(new StringToCourseDtoConverter(courseRepository));
       }
+
 
       @Bean
       HiddenHttpMethodFilter hiddenHttpMethodFilter() {

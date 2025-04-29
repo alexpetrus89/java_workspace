@@ -42,7 +42,7 @@ public class UmsThymeleafConfig {
     SpringResourceTemplateResolver exceptionTemplateResolver(){
         SpringResourceTemplateResolver templateResolver = new SpringResourceTemplateResolver();
         templateResolver.setApplicationContext(this.applicationContext);
-        templateResolver.setPrefix("classpath:/templates/exception");
+        templateResolver.setPrefix("templates/exception/");
         templateResolver.setSuffix(".html");
         templateResolver.setTemplateMode(TemplateMode.HTML);
         templateResolver.setCacheable(true);

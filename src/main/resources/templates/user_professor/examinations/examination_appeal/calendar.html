@@ -22,7 +22,8 @@
             <td th:text="${examinationAppeal.description}">Description</td>
             <td th:text="${examinationAppeal.date}">Date</td>
             <td>
-                <a th:href="@{/api/v1/examination-appeal/view/students-booked/{id}(id=${examinationAppeal.id})}">Show students booked</a>
+                <a th:href="@{/api/v1/examination-appeal/view/students-booked/{id}/{date}(id=${examinationAppeal.id}, date=${examinationAppeal.date.format(T(java.time.format.DateTimeFormatter).ofPattern('yyyy-MM-dd'))})}">
+                    Show students booked</a>
             </td>
         </tr>
     </table>

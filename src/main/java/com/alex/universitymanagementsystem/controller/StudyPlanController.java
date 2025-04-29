@@ -53,16 +53,18 @@ public class StudyPlanController {
 
 
     /**
-     * Retrieves the courses related to a student's study plan and degree courses.
-     * This includes all available courses, all degree courses, and the courses
-     * currently in the student's study plan. The method constructs a
-     * ChangeCoursesDto object that contains this information along with the
-     * student's degree course name and a security token, then returns a
-     * ModelAndView for modifying the study plan.
+     * Retrieves the courses related to a student's study plan and
+     * degree courses.
+     * This includes all available courses, all degree courses, and
+     * the courses currently in the student's study plan.
+     * The method constructs a ChangeCoursesDto object that contains
+     * this information along with the student's degree course name
+     * and a security token, then returns a ModelAndView for modifying
+     * the study plan.
      *
      * @param student the authenticated student whose study plan is to be retrieved
-     * @return a ModelAndView object for the "user_student/study_plan/study_plan_modify" view 
-     *         with the ChangeCoursesDto object as the model
+     * @return a ModelAndView object for the "user_student/study_plan/study_plan_modify"
+     * view with the ChangeCoursesDto object as the model
      */
     @GetMapping(path = "/courses")
     public ModelAndView getCourses(@AuthenticationPrincipal Student student) {
@@ -71,6 +73,7 @@ public class StudyPlanController {
         Set<DegreeCourseDto> degreeCourses = degreeCourseServiceImpl.getDegreeCourses();
         String degreeCourse = student.getDegreeCourse().getName();
         Set<CourseDto> studyPlan= studyPlanServiceImpl.getCoursesByRegister(student.getRegister());
+        // Retrieve authorization
         String token = SecurityContextHolder
             .getContext()
             .getAuthentication()
@@ -78,7 +81,7 @@ public class StudyPlanController {
             .stream()
             .map(GrantedAuthority::getAuthority)
             .findFirst()
-            .orElseThrow(() -> new RuntimeException("Token non trovato"));
+            .orElseThrow(() -> new RuntimeException("Token not found"));
 
         ChangeCoursesDto courses = new ChangeCoursesDto(
             degreeCourses,

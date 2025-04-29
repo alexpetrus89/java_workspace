@@ -7,6 +7,7 @@ import org.springframework.lang.NonNull;
 
 import com.alex.universitymanagementsystem.domain.ExaminationAppeal;
 import com.alex.universitymanagementsystem.domain.Professor;
+import com.alex.universitymanagementsystem.domain.immutable.CourseId;
 import com.alex.universitymanagementsystem.domain.immutable.Register;
 import com.alex.universitymanagementsystem.domain.immutable.UniqueCode;
 import com.alex.universitymanagementsystem.dto.ExaminationAppealDto;
@@ -82,13 +83,11 @@ public interface ExaminationAppealService {
      * @throws UnsupportedOperationException if the register is not unique
      */
     ExaminationAppeal addNewExaminationAppeal(
-        @NonNull String courseName,
-        @NonNull String degreeCourseName,
+        @NonNull CourseId courseId,
         @NonNull Professor professor,
         @NonNull String description,
         @NonNull LocalDate date
     ) throws NullPointerException, IllegalArgumentException, ObjectNotFoundException;
-
 
     /**
      * deletes an examination appeal

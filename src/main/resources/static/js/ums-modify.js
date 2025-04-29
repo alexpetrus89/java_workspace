@@ -1,13 +1,13 @@
 import { token } from './config.js';
 
-// Funzione per aggiornare i corsi quando la pagina è pronta
-// e quando il valore del select cambia.
+// Quando avviene l'evento "pagina pronta"
+// chiama la funzione di aggiornamento della lista di corsi
 $(document).ready(function() {
     updateCourses();
 });
 
-// Funzione per aggiornare i corsi quando il valore del select cambia.
-// chiama la funzione updateCourses per aggiornare i corsi disponibili
+// Quando avviene l'evento "selezione degree course"
+// chiama la funzione di aggiornamento della lista di corsi
 $('#degreeCourseOfNewCourse').on('change', function() {
     updateCourses();
 });
@@ -20,7 +20,7 @@ $('#degreeCourseOfOldCourse').hide();
 // Funzione per aggiornare i corsi disponibili in base al corso di laurea selezionato
 // e per gestire la richiesta AJAX.
 function updateCourses() {
-    var degreeCourseName = $('#degreeCourseOfNewCourse').val();
+    const degreeCourseName = $('#degreeCourseOfNewCourse').val();
 
     $.ajax({
         type: 'GET',
@@ -33,7 +33,7 @@ function updateCourses() {
         // Funzione eseguita in caso di successo della richiesta AJAX.
         success: function(data) {
             try {
-                var jsonData = data;
+                const jsonData = data;
                 console.log(jsonData);
                 // Assicurati che jsonData sia un oggetto JSON con una proprietà "degreeCourseName"
                 if (!jsonData.degreeCourseName)
@@ -46,7 +46,7 @@ function updateCourses() {
                 $('#courseToAdd').append('<option value="">Select a course</option>');
                 $.each(jsonData.degreeCourseName, function(index, course) {
                     // Qui puoi accedere alle proprietà del corso, ad esempio:
-                    var courseName = course.course.name;
+                    const courseName = course.course.name;
                     // Aggiungi l'opzione al select
                     $('#courseToAdd').append('<option value="' + courseName + '">' + courseName + '</option>');
                 });

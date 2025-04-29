@@ -12,13 +12,10 @@
     <h1>Create new examination appeal</h1>
     <form action="#" th:action="@{/api/v1/examination-appeal/create}" method="post">
 
-        <label for="name">Course:</label>
-        <input type="text" name="course" title="Enter course name"
-            placeholder="course name"></p>
-
-        <label for="degreeCourse">Degree Course:</label>
-        <input type="text" name="degreeCourse" title="Enter degree course name"
-            placeholder="degree course name"></p>
+        <label for="course">Select course</label>
+        <select name="courseId" title="Select a course">
+            <option th:each="course : ${courses}" th:text="${course.name} + ' - ' + ${course.degreeCourse.name}" th:value="${course.courseId.id}">Course</option>
+        </select></p>
 
         <label for="description">Description</label>
         <input type="text" name="description" title="Enter description"

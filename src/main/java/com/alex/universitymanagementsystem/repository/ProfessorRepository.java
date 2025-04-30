@@ -13,6 +13,8 @@ import com.alex.universitymanagementsystem.domain.immutable.FiscalCode;
 import com.alex.universitymanagementsystem.domain.immutable.UniqueCode;
 import com.alex.universitymanagementsystem.domain.immutable.UserId;
 
+import jakarta.persistence.PersistenceException;
+
 
 
 @Repository
@@ -24,12 +26,12 @@ public interface ProfessorRepository
      * @param uniqueCode the unique code of the professor to retrieve
      * @return the professor if found, null otherwise
      * @throws NullPointerException if the unique code is null
-     * @throws IllegalArgumentException if the unique code is empty or null
-     * @throws UnsupportedOperationException if the unique code is not unique
+     * @throws PersistenceException persistence error
      * @see UniqueCode
      */
     @Query(value = "SELECT s FROM Professor s WHERE s.uniqueCode = ?1")
-    Professor findByUniqueCode(@NonNull UniqueCode uniqueCode);
+    Professor findByUniqueCode(@NonNull UniqueCode uniqueCode)
+        throws NullPointerException, PersistenceException;
 
 
     /**
@@ -37,12 +39,12 @@ public interface ProfessorRepository
      * @param fiscalCode the fiscal code of the professor to retrieve
      * @return the professor if found, null otherwise
      * @throws NullPointerException if the fiscal code is null
-     * @throws IllegalArgumentException if the fiscal code is empty or null
-     * @throws UnsupportedOperationException if the fiscal code is not unique
+     * @throws PersistenceException persistence error
      * @see FiscalCode
      */
     @Query(value = "SELECT s FROM Professor s WHERE s.fiscalCode = ?1")
-    Professor findByFiscalCode(@NonNull FiscalCode fiscalCode);
+    Professor findByFiscalCode(@NonNull FiscalCode fiscalCode)
+        throws NullPointerException, PersistenceException;
 
 
     /**
@@ -50,11 +52,11 @@ public interface ProfessorRepository
      * @param name the name of the professor to retrieve
      * @return a list if professor with same fullname
      * @throws NullPointerException if the name is null
-     * @throws IllegalArgumentException if the name is empty or null
-     * @throws UnsupportedOperationException if the name is not unique
+     * @throws PersistenceException persistence error
      */
     @Query(value = "SELECT s FROM Professor s WHERE s.fullname = ?1")
-    List<Professor> findByFullname(@NonNull String name);
+    List<Professor> findByFullname(@NonNull String name)
+        throws NullPointerException, PersistenceException;
 
 
     /**
@@ -62,10 +64,10 @@ public interface ProfessorRepository
      * @param uniqueCode the unique code of the professor
      * @return true if the professor exists, false otherwise
      * @throws NullPointerException if the unique code is null
-     * @throws IllegalArgumentException if the unique code is null
-     * @throws UnsupportedOperationException if the unique code is not unique
+     * @throws PersistenceException persistence error
      */
-    boolean existsByUniqueCode(@NonNull UniqueCode uniqueCode);
+    boolean existsByUniqueCode(@NonNull UniqueCode uniqueCode)
+        throws NullPointerException, PersistenceException;
 
 
     /**
@@ -73,20 +75,20 @@ public interface ProfessorRepository
      * @param fiscalCode the fiscal code of the professor
      * @return true if the professor exists, false otherwise
      * @throws NullPointerException if the fiscal code is null
-     * @throws IllegalArgumentException if the fiscal code is null
-     * @throws UnsupportedOperationException if the fiscal code is not unique
+     * @throws PersistenceException persistence error
      */
-    boolean existsByFiscalCode(@NonNull FiscalCode fiscalCode);
+    boolean existsByFiscalCode(@NonNull FiscalCode fiscalCode)
+        throws NullPointerException, PersistenceException;
 
 
     /**
      * Deletes a professor by unique code
      * @param uniqueCode the unique code of the professor to delete
      * @throws NullPointerException if the unique code is null
-     * @throws IllegalArgumentException if the unique code is null
-     * @throws UnsupportedOperationException if the unique code is not unique
+     * @throws PersistenceException persistence error
      */
     @Modifying
-    void deleteByUniqueCode(@NonNull UniqueCode uniqueCode);
+    void deleteByUniqueCode(@NonNull UniqueCode uniqueCode)
+        throws NullPointerException, PersistenceException;
 
 }

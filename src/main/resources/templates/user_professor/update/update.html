@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en"
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:th="http://www.thymeleaf.org"
+        xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
+<head>
+    <title>University Management Application</title>
+</head>
+
+<body>
+    <h1>Update information</h1>
+    <form action="#" th:action="@{/api/v1/user/update/build}"
+        th:object="${builder}" method="post">
+
+        <input type="hidden" name="_method" value="PUT" />
+
+        <label for="name">Username: </label>
+        <input type="text" th:field="*{username}" title="Enter new username"
+            placeholder="new username "></p>
+
+        <label for="password">Password: </label>
+        <input type="password" th:field="*{password}" title="Enter new password"
+            placeholder="new password"></p>
+
+        <label for="confirm">Confirm password: </label>
+        <input type="password" th:field="*{confirm}" title="Please confirm your password"
+            placeholder="confirm new password"></p>
+
+        <label for="fullname">Full name: </label>
+        <input type="text" th:field="*{fullname}" title="Enter new full name"
+            placeholder="new full name"></p>
+
+        <label for="dob">Date of Birth:</label>
+        <input type="date" th:field="*{dob}" title="Enter date of birth"
+            placeholder="date of birth"></p>
+
+        <label for="street">Street: </label>
+        <input type="text" th:field="*{street}" title="Enter new street name"
+            placeholder="new street name"></p>
+
+        <label for="city">City: </label>
+        <input type="text" th:field="*{city}" title="Enter new city"
+            placeholder="new city"></p>
+
+        <label for="state">State: </label>
+        <input type="text" th:field="*{state}" title=">Enter new state"
+            placeholder="new state name"></p>
+
+        <label for="zip">Zip: </label>
+        <input type="text" th:field="*{zip}" title="Enter new zip code"
+            placeholder="new zip code"></p>
+
+        <label for="phone">Phone: </label>
+        <input type="text" th:field="*{phone}" title="Enter new phone number"
+            placeholder="new phone number"></p>
+        <br>
+
+        <label for="role">Role: </label>
+        <select th:field="*{role}" title="Please select a role">
+            <option value="PROFESSOR">Professor</option>
+        </select></p><br/>
+
+        <input type="submit" value="Update"/><input type="reset" value="Reset" /></p>
+    </form>
+    <br>
+    <a href="#" th:href="@{/user_admin/admin-home}">Back to home</a>
+</body>
+</html>

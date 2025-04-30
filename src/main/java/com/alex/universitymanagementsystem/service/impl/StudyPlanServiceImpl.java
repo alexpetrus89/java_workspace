@@ -67,7 +67,7 @@ public class StudyPlanServiceImpl implements StudyPlanService {
      */
     @Override
     public String getOrderingByRegister(@NonNull Register register) {
-
+        // retrieve student ordering
         return studentRepository
             .findByRegister(register)
             .getStudyPlan()
@@ -82,7 +82,6 @@ public class StudyPlanServiceImpl implements StudyPlanService {
      */
     @Override
     public Set<CourseDto> getCoursesByRegister(@NonNull Register register) {
-
         // retrieve the courses of the study plan
         return studentRepository
             .findByRegister(register)

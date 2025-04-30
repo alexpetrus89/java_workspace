@@ -128,6 +128,10 @@ public class UserServiceImpl implements UserDetailsService{
         if(user == null)
             throw new ObjectNotFoundException(DomainType.USER);
 
+        // check if the username is blank
+        if(form.getUsername().isBlank())
+            throw new IllegalArgumentException("Username cannot be blank");
+
         try {
             user.setUsername(form.getUsername());
             user.setPassword(passwordEncoder.encode(form.getPassword()));
@@ -138,7 +142,8 @@ public class UserServiceImpl implements UserDetailsService{
             user.setState(form.getState());
             user.setZip(form.getZip());
             user.setPhoneNumber(form.getPhone());
-            user.setRole(form.getRole());
+            if(form.getRole() != null)
+                user.setRole(form.getRole());
 
             // save the user
             return userRepository.saveAndFlush(user);

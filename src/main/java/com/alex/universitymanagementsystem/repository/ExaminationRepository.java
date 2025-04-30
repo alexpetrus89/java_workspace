@@ -14,6 +14,8 @@ import com.alex.universitymanagementsystem.domain.immutable.CourseId;
 import com.alex.universitymanagementsystem.domain.immutable.ExaminationId;
 import com.alex.universitymanagementsystem.domain.immutable.Register;
 
+import jakarta.persistence.PersistenceException;
+
 
 @Repository
 public interface ExaminationRepository
@@ -26,11 +28,11 @@ public interface ExaminationRepository
      * @param register the register of the student
      * @return a list of Examination entities associated with the specified student
      * @throws NullPointerException if the register is null
-     * @throws IllegalArgumentException if the register is blank
-     * @throws UnsupportedOperationException if the register is not unique
+     * @throws PersistenceException persistence error
      */
     @Query("SELECT e FROM Examination e WHERE e.student.register = :register")
-    List<Examination> findExaminationsByStudent(@NonNull @Param("register") Register register);
+    List<Examination> findExaminationsByStudent(@NonNull @Param("register") Register register)
+        throws NullPointerException, PersistenceException;
 
 
     /**
@@ -39,11 +41,11 @@ public interface ExaminationRepository
      * @param courseId the ID of the course
      * @return a list of Examination entities associated with the specified course
      * @throws NullPointerException if the courseId is null
-     * @throws IllegalArgumentException if the courseId is blank
-     * @throws UnsupportedOperationException if the courseId is not unique
+     * @throws PersistenceException persistence error
      */
     @Query("SELECT e FROM Examination e WHERE e.course.id = :courseId")
-    List<Examination> findExaminationsByCourseId(@NonNull @Param("courseId") CourseId courseId);
+    List<Examination> findExaminationsByCourseId(@NonNull @Param("courseId") CourseId courseId)
+        throws NullPointerException, PersistenceException;
 
 
     /**
@@ -52,10 +54,9 @@ public interface ExaminationRepository
      * @param name the name of the course
      * @return a list of Examination entities associated with the specified course
      * @throws NullPointerException if the name is null
-     * @throws IllegalArgumentException if the name is blank
-     * @throws UnsupportedOperationException if the name is not unique
+     * @throws PersistenceException persistence error
      */
     @Query("SELECT e FROM Examination e WHERE e.course.name = :name")
-    List<Examination> findExaminationsByCourseName(@NonNull @Param("name") String name);
-
+    List<Examination> findExaminationsByCourseName(@NonNull @Param("name") String name)
+        throws NullPointerException, PersistenceException;
 }

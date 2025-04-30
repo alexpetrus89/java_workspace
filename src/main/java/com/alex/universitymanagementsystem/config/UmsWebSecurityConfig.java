@@ -77,25 +77,26 @@ public class UmsWebSecurityConfig implements Serializable {
 					"/home",
 					"/register",
 					"/static/css/**",
+					"/static/js/ums-degree-courses.js",
 					"/favicon.ico",
 					"/exception/**",
 					"/validation/**",
 					"/user_student/create/create-student-from-user",
 					"/user_professor/create/create-professor-from-user",
+					"/user/update/update-result",
 					"/api/v1/user/create-admin",
 					"/api/v1/user/create-student",
-					"/api/v1/user/create-professor"
+					"/api/v1/user/create-professor",
+					"/api/v1/degree-course/ajax"
 				)
 				.permitAll()
 				.requestMatchers(
 					// user
-				"/user_admin/admin-home",
+					"/user_admin/admin-home",
 					"/user/user-menu",
 					"/user/update/update",
 					"/user/delete/delete",
 					"/api/v1/user",
-					"/api/v1/user/update",
-					"/api/v1/user/update/build",
 					"/api/v1/user/delete",
 
 					// student
@@ -118,7 +119,7 @@ public class UmsWebSecurityConfig implements Serializable {
 
 					// degree course
 					"degree_course/degree-course-menu",
-					"api/v1/degree_course/view",
+					"api/v1/degree-course/view",
 					"degree_course/read/read-courses",
 					"degree_course/read/read-professors",
 					"degree_course/read/read-students",
@@ -138,12 +139,14 @@ public class UmsWebSecurityConfig implements Serializable {
 				.hasRole(ADMIN)
 				.requestMatchers(
             		// URL accessibili solo agli utenti con ruolo STUDENT o ADMIN
-				"/user_student/student-home",
+					"/user_student/student-home",
 					"/user_student/study_plan/study_plan_courses",
 					"/user_student/study_plan/study_plan_modify",
 					"/user_student/examinations/examination_appeal/calendar",
 					"/user_student/examinations/examination_appeal/booked-result",
 					"/user_student/examinations/examination_appeal/delete-booked-result",
+					"/user_student/update/update",
+					//"/api/v1/user/update/build",
 					"/api/v1/study_plan/view",
 					"/api/v1/study_plan/courses",
 					"/api/v1/degree-course/courses/view",
@@ -152,19 +155,22 @@ public class UmsWebSecurityConfig implements Serializable {
 					"/api/v1/examination-appeal/booked/student",
 					"/api/v1/examination-appeal/booked/{id}",
 					"/api/v1/examination-appeal/delete-booked/{id}",
-					"/api/v1/user/create/student"
+					"/api/v1/user/create/student",
+					"/api/v1/user/update/student"
 				)
 				.hasAnyRole(STUDENT, ADMIN)
 				.requestMatchers(
 					// URL accessibili solo agli utenti con ruolo PROFESSOR o ADMIN
-				"/user_professor/professor-home",
-					"/api/v1/user/create/professor",
+					"/user_professor/professor-home",
 					"/user_professor/examinations/examination_appeal/examination-appeal-menu",
 					"/user_professor/examinations/examination_appeal/view/professor",
 					"/user_professor/examinations/examination_appeal/create-examination-appeal",
 					"/user_professor/examinations/examination_appeal/create-result",
 					"/user_professor/examinations/examination_appeal/students-booked",
 					"/user_professor/examinations/examination_appeal/evaluation",
+					"/user_professor/update/update",
+					"/api/v1/user/create/professor",
+					"/api/v1/user/update/professor",
 					"/api/v1/course/view/professor",
 					"/api/v1/course/get/{courseId}",
 					"/api/v1/examination-appeal/create",
@@ -174,6 +180,10 @@ public class UmsWebSecurityConfig implements Serializable {
 					"/api/v1/examination-outcome/notify"
 				)
 				.hasAnyRole(PROFESSOR, ADMIN)
+				.requestMatchers(
+					"/api/v1/user/update/build"
+				)
+				.hasAnyRole(STUDENT, PROFESSOR, ADMIN)
 				.anyRequest()
 				.authenticated()
 			)

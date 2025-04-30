@@ -138,12 +138,13 @@ public class GlobalControllerExceptionHandler {
      * @param e
      * @return
      */
-    @ExceptionHandler({NullPointerException.class, IllegalArgumentException.class, UnsupportedOperationException.class})
+    /*
+    @ExceptionHandler(NullPointerException.class)
     public ModelAndView handleCommonExceptions(Exception e) {
         // Handle the specific exception and generate a custom error response
         logger.error("Common exception, e.g. null pointer, illegal argument, unsupported operation", e);
         return new ModelAndView(ERROR_URL, "error message", e.getMessage());
-    }
+    }*/
 
 
     @ExceptionHandler(value = AccessDeniedException.class)

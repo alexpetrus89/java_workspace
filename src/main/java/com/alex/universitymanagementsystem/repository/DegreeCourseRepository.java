@@ -8,6 +8,8 @@ import org.springframework.stereotype.Repository;
 import com.alex.universitymanagementsystem.domain.DegreeCourse;
 import com.alex.universitymanagementsystem.domain.immutable.DegreeCourseId;
 
+import jakarta.persistence.PersistenceException;
+
 
 
 @Repository
@@ -19,11 +21,11 @@ public interface DegreeCourseRepository
      * @param name the name of the degree course to retrieve
      * @return the degree course if found, null otherwise
      * @throws NullPointerException if the name is null
-     * @throws IllegalArgumentException if the name is null
-     * @throws UnsupportedOperationException if the name is not unique
+     * @throws PersistenceException persistence error
      */
     @Query("SELECT s FROM DegreeCourse s WHERE s.name = ?1")
-    DegreeCourse findByName(@NonNull String name);
+    DegreeCourse findByName(@NonNull String name)
+        throws NullPointerException, PersistenceException;
 
 
     /**
@@ -31,8 +33,8 @@ public interface DegreeCourseRepository
      * @param name the name of the degree course
      * @return boolean
      * @throws NullPointerException if the name is null
-     * @throws IllegalArgumentException if the name is null
-     * @throws UnsupportedOperationException if the name is not unique
+     * @throws PersistenceException persistence error
      */
-    boolean existsByName(@NonNull String name);
+    boolean existsByName(@NonNull String name)
+        throws NullPointerException, PersistenceException;
 }

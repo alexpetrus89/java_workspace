@@ -13,6 +13,8 @@ import org.springframework.stereotype.Repository;
 import com.alex.universitymanagementsystem.domain.ExaminationAppeal;
 import com.alex.universitymanagementsystem.domain.immutable.CourseId;
 
+import jakarta.persistence.PersistenceException;
+
 
 @Repository
 public interface ExaminationAppealRepository
@@ -25,18 +27,22 @@ public interface ExaminationAppealRepository
      * @param date
      * @return an examination appeal
      * @throws NullPointerException if the courseId is null
+     * @throws PersistenceException persistence error
      */
     @Query("SELECT ea FROM ExaminationAppeal ea WHERE ea.course.id = :courseId AND ea.date = :date")
-    ExaminationAppeal findByCourseIdAndDate(@NonNull @Param("courseId") CourseId courseId, @NonNull @Param("date") LocalDate date);
+    ExaminationAppeal findByCourseIdAndDate(@NonNull @Param("courseId") CourseId courseId, @NonNull @Param("date") LocalDate date)
+        throws NullPointerException, PersistenceException;
 
 
     /**
      * Find all examination appeals by course ids
      * @param ids
      * @return a list of examination appeals
+     * @throws PersistenceException persistence error
      */
     @Query(value = "SELECT * FROM examination_appeal ea WHERE ea.course_id IN (:ids)", nativeQuery = true)
-    List<ExaminationAppeal> findByIdIn(@Param("ids") List<UUID> ids);
+    List<ExaminationAppeal> findByIdIn(@Param("ids") List<UUID> ids)
+        throws PersistenceException;
 
 
     /**
@@ -44,9 +50,12 @@ public interface ExaminationAppealRepository
      * @param ids
      * @param date
      * @return a list of examination appeals
+     * @throws NullPointerException if the expiration date is null
+     * @throws PersistenceException persistence error
      */
     @Query(value = "SELECT * FROM examination_appeal ea WHERE ea.course_id IN (:ids) AND ea.date = :date", nativeQuery = true)
-    List<ExaminationAppeal> findByDateLessThan(LocalDate expirationDateOneMonth);
+    List<ExaminationAppeal> findByDateLessThan(@NonNull LocalDate expirationDateOneMonth)
+        throws NullPointerException, PersistenceException;
 
 
 }

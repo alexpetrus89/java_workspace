@@ -7,6 +7,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 
 import com.alex.universitymanagementsystem.domain.DegreeCourse;
+import com.alex.universitymanagementsystem.domain.immutable.DegreeCourseId;
 import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
 import com.alex.universitymanagementsystem.repository.DegreeCourseRepository;
 
@@ -37,6 +38,13 @@ public class StringToDegreeCourseConverter implements Converter<String, DegreeCo
     @Override
     @Nullable
     public DegreeCourse convert(@NonNull String source) {
+        if (source.trim().isEmpty()) return null;
+        try {
+            return degreeCourseRepository.findById(new DegreeCourseId(source.trim())).orElse(null);
+        } catch (Exception e) {
+            // Ignora e prova con nome
+        }
+
         try {
             return degreeCourseRepository.findByName(source.trim().toUpperCase());
         } catch (DataAccessException e) {

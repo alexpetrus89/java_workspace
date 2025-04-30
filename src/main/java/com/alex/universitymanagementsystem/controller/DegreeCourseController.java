@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -65,9 +66,17 @@ public class DegreeCourseController {
      */
     @GetMapping(path = "/courses/view")
     public ModelAndView getCourses(@RequestParam String name) {
-
         List<CourseDto> courses = degreeCourseServiceImpl.getCourses(name.toUpperCase());
         return new ModelAndView("degree_course/course-list", "courses",courses);
+    }
+
+    /**
+     * retrieves all degree courses for particular ajax request
+     * @return a set of data transfer objects of degree courses
+     */
+    @GetMapping(path = "/ajax")
+    public ResponseEntity<Set<DegreeCourseDto>> getDegreeCoursesForAjaxRequest() {
+        return ResponseEntity.ok(degreeCourseServiceImpl.getDegreeCourses());
     }
 
 
@@ -105,9 +114,8 @@ public class DegreeCourseController {
      */
     @GetMapping(path = "/students/view")
     public ModelAndView getStudents(@RequestParam String name) {
-
+        // retrieve the students
         List<StudentDto> students = degreeCourseServiceImpl.getStudents(name.toUpperCase());
-
         return new ModelAndView(
             "degree_course/student-list",
             "students",
@@ -124,7 +132,7 @@ public class DegreeCourseController {
      */
     @GetMapping(path = "/courses/ajax")
     public String getStringOfSerializedCourses(@RequestParam String name) throws JsonProcessingException {
-        // get the courses from the service
+        // retrieve the courses
         List<CourseDto> courses = degreeCourseServiceImpl.getCourses(name.toUpperCase());
         return "{\"degreeCourseName\": [" + courses
             .stream()

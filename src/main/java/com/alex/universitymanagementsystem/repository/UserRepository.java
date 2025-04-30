@@ -14,6 +14,8 @@ import com.alex.universitymanagementsystem.domain.User;
 import com.alex.universitymanagementsystem.domain.immutable.UserId;
 import com.alex.universitymanagementsystem.enum_type.RoleType;
 
+import jakarta.persistence.PersistenceException;
+
 @Repository
 public interface UserRepository
     extends JpaRepository<User, UserId>
@@ -23,24 +25,27 @@ public interface UserRepository
      * @param username
      * @return User
      * @throws NullPointerException if the username is null
+     * @throws PersistenceException persistence error
      */
-    User findByUsername(@NonNull String username) throws NullPointerException;
+    User findByUsername(@NonNull String username) throws NullPointerException, PersistenceException;
 
     /**
      * Find user by fullname
      * @param fullname
      * @return List<User>
      * @throws NullPointerException if the fullname is null
+     * @throws PersistenceException persistence error
      */
-    List<User> findByFullname(@NonNull String fullname) throws NullPointerException;
+    List<User> findByFullname(@NonNull String fullname) throws NullPointerException, PersistenceException;
 
     /**
      * Find user by dob
      * @param dob
      * @return List<User>
      * @throws NullPointerException if the dob is null
+     * @throws PersistenceException persistence error
      */
-    List<User> findByDob(@NonNull LocalDate dob) throws NullPointerException;
+    List<User> findByDob(@NonNull LocalDate dob) throws NullPointerException, PersistenceException;
 
 
     /**
@@ -56,6 +61,7 @@ public interface UserRepository
      * @param role
      * @return int number of rows updated
      * @throws NullPointerException if the parameters are null
+     * @throws PersistenceException persistence error
      */
     @Modifying
     @Query("""
@@ -80,6 +86,6 @@ public interface UserRepository
         @Param("zip") String zip,
         @Param("phone") String phone,
         @NonNull @Param("role") RoleType role
-    );
+    ) throws NullPointerException, PersistenceException;
 
 }

@@ -6,6 +6,8 @@
 <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
 <head>
     <title>Create new Student</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="/static/js/ums-degree-courses.js"></script>
 </head>
 
 <body>
@@ -13,8 +15,9 @@
     <form action="#" th:action="@{/api/v1/user/create-student}" method="post">
 
         <label for="degreeCourse">Degree Course:</label>
-        <input type="text" name="degreeCourse" title="Enter degree course"
-            required placeholder="Your degree course" autocomplete="on"></p>
+        <select id="degreeCourse" name="degreeCourse" required>
+            <option th:each="degreeCourse : ${degreeCourses}" th:value="${degreeCourse.name}" th:text="${degreeCourse.name}"></option>
+        </select></p>
 
         <p><input type="submit" value="Submit" /> <input type="reset" value="Reset" /></p>
     </form>

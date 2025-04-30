@@ -17,13 +17,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.alex.universitymanagementsystem.domain.DegreeCourse;
 import com.alex.universitymanagementsystem.domain.Professor;
 import com.alex.universitymanagementsystem.domain.Student;
 import com.alex.universitymanagementsystem.domain.User;
 import com.alex.universitymanagementsystem.domain.immutable.FiscalCode;
 import com.alex.universitymanagementsystem.exception.ObjectAlreadyExistsException;
 import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
-import com.alex.universitymanagementsystem.service.impl.DegreeCourseServiceImpl;
 import com.alex.universitymanagementsystem.service.impl.ProfessorServiceImpl;
 import com.alex.universitymanagementsystem.service.impl.StudentServiceImpl;
 import com.alex.universitymanagementsystem.service.impl.UserServiceImpl;
@@ -48,20 +48,17 @@ public class UserController {
     private final UserServiceImpl userServiceImpl;
     private final StudentServiceImpl studentServiceImpl;
     private final ProfessorServiceImpl professorServiceImpl;
-    private final DegreeCourseServiceImpl degreeCourseServiceImpl;
     private final PasswordEncoder passwordEncoder;
 
     /** Autowired - dependency injection - constructor */
     public UserController(
         UserServiceImpl userServiceImpl,
         StudentServiceImpl studentServiceImpl,
-        DegreeCourseServiceImpl degreeCourseServiceImpl,
         PasswordEncoder passwordEncoder,
         ProfessorServiceImpl professorServiceImpl
     ) {
         this.userServiceImpl = userServiceImpl;
         this.studentServiceImpl = studentServiceImpl;
-        this.degreeCourseServiceImpl = degreeCourseServiceImpl;
         this.passwordEncoder = passwordEncoder;
         this.professorServiceImpl = professorServiceImpl;
     }
@@ -86,50 +83,56 @@ public class UserController {
         return new ModelAndView("user/update/update", BUILDER, new Builder());
     }
 
+    /**
+     * Updates the student
+     * @return ModelAndView
+     */
+    @GetMapping(path = "/update/student")
+    public ModelAndView updateStudentAndReturnView() {
+        return new ModelAndView("user_student/update/update", BUILDER, new Builder());
+    }
 
     /**
-     * Updates the user
+     * Updates the professor
+     * @return ModelAndView
+     */
+    @GetMapping(path = "/update/professor")
+    public ModelAndView updateProfessorAndReturnView() {
+        return new ModelAndView("user_professor/update/update", BUILDER, new Builder());
+    }
+
+
+    /**
+     * Creates a new user with role ADMIN
      * @param request HTTP request
      * @return String
-     * @throws RuntimeException if the updated user details are invalid
-     * @throws IllegalArgumentException if the updated user details are invalid
-     * @throws ObjectNotFoundException if the authenticated user is not found
-     * @throws UserNotFoundException if the user is not found
-     * @throws NullPointerException if the updated user details are null
-     * @throws UnsupportedOperationException if the updated user details are not unique
      */
     @PostMapping(path = "/create-admin")
     public String createUser(HttpServletRequest request) {
         try {
             Builder builder = (Builder) request.getSession().getAttribute(BUILDER);
             return userServiceImpl.addNewUser(new RegistrationForm(builder).toUser(passwordEncoder));
-        } catch (RuntimeException e) {
-        // gestisci l'eccezione e restituisci un messaggio di errore significativo all'utente
+        } catch (NullPointerException e) {
             return "forward:" + ERROR_PATH;
         }
     }
 
 
     /**
-     * Creates a new user with role student
+     * Creates a new user with role STUDENT
      * @param request HTTP request
-     * @param degreeCourse degree course name
+     * @param DegreeCourse degree course object
      * @return ModelAndView
-     * @throws ObjectAlreadyExistsException if a user with the given username already exists
-     * @throws ObjectNotFoundException if the degree course does not exist
-     * @throws IllegalArgumentException if any of the parameters is invalid
-     * @throws UnsupportedOperationException if any of the parameters is not unique
-     * @throws NullPointerException if any of the parameters is null
      */
     @PostMapping(path = "/create-student")
-    public ModelAndView createNewUserWithRoleStudent(HttpServletRequest request, @RequestParam String degreeCourse) {
+    public ModelAndView createNewUserWithRoleStudent(HttpServletRequest request, @ModelAttribute DegreeCourse degreeCourse) {
         try{
             // recupera l'oggetto UserDto dalla sessione
             Builder builder = (Builder) request.getSession().getAttribute(BUILDER);
             // create Student
             Student student = new Student(builder, passwordEncoder);
             // set the degree course
-            student.setDegreeCourse(degreeCourseServiceImpl.getDegreeCourseByName(degreeCourse));
+            student.setDegreeCourse(degreeCourse);
             // save
             studentServiceImpl.addNewStudent(student);
             return new ModelAndView("user_student/create/student-result", "student", student);
@@ -142,11 +145,10 @@ public class UserController {
 
 
     /**
-     * Creates a new user with role professor
+     * Creates a new user with role PROFESSOR
      * @param request HTTP request
      * @param String fiscal code
      * @return ModelAndView
-     * @throws ObjectAlreadyExistsException if a user with the given username already exists
      */
     @PostMapping(path = "/create-professor")
     public ModelAndView createNewUserWithRoleProfessor(HttpServletRequest request, @RequestParam String fiscalCode) {
@@ -160,19 +162,17 @@ public class UserController {
             // saves
             professorServiceImpl.addNewProfessor(professor);
             return new ModelAndView("user_professor/create/professor-result", "professor", professor);
-        } catch (RuntimeException e) {
-            Map<String, Object> model = new HashMap<>();
-            model.put(TITLE, ERROR);
-            model.put(ERROR_MESSAGE, e.getMessage());
-            model.put(STACK_TRACE, e.getStackTrace());
-            return new ModelAndView(ERROR_PATH, model);
+        } catch (ObjectAlreadyExistsException e) {
+            return new ModelAndView("exception/creation/professor-already-exists", "message", e.getMessage());
+        } catch (IllegalArgumentException | UnsupportedOperationException | ObjectNotFoundException e) {
+            return new ModelAndView("exception/creation/fiscal-code-not-found", "message", e.getMessage());
         }
     }
 
 
     /**
      * Updates the user
-     * @param form
+     * @param Builder an instance of Builder class
      * @return ModelAndView
      */
     @PutMapping(path = "/update/build")
@@ -196,7 +196,7 @@ public class UserController {
 
     /**
      * Deletes the user
-     * @param username
+     * @param String userId
      * @return ModelAndView
      */
     @DeleteMapping(path = "/delete")

@@ -11,9 +11,7 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import com.alex.universitymanagementsystem.component.StringToCourseDtoConverter;
 import com.alex.universitymanagementsystem.component.StringToDegreeCourseConverter;
-import com.alex.universitymanagementsystem.repository.CourseRepository;
 import com.alex.universitymanagementsystem.repository.DegreeCourseRepository;
 
 
@@ -22,12 +20,10 @@ public class UmsMvcConfig implements WebMvcConfigurer, Serializable {
 
       // instance variables
       private final transient DegreeCourseRepository degreeCourseRepository;
-      private final transient CourseRepository courseRepository;
 
       // constructor
-      public UmsMvcConfig(DegreeCourseRepository degreeCourseRepository, CourseRepository courseRepository) {
+      public UmsMvcConfig(DegreeCourseRepository degreeCourseRepository) {
             this.degreeCourseRepository = degreeCourseRepository;
-            this.courseRepository = courseRepository;
       }
 
       // methods
@@ -124,6 +120,9 @@ public class UmsMvcConfig implements WebMvcConfigurer, Serializable {
                   .addViewController("/user_student/create/create-student-from-user")
                   .setViewName("/user_student/create/create-student-from-user");
             registry
+                  .addViewController("/user_student/update/update")
+                  .setViewName("/user_student/update/update");
+            registry
                   .addViewController("/user_student/study_plan/study_plan_modify")
                   .setViewName("/user_student/study_plan/study_plan_modify");
             registry
@@ -144,6 +143,9 @@ public class UmsMvcConfig implements WebMvcConfigurer, Serializable {
             registry
                   .addViewController("/user_professor/create/create-professor-from-user")
                   .setViewName("/user_professor/create/create-professor-from-user");
+            registry
+                  .addViewController("/user_professor/update/update")
+                  .setViewName("/user_professor/update/update");
             registry
                   .addViewController("/user_professor/examinations/examination_appeal/examination-appeal-menu")
                   .setViewName("/user_professor/examinations/examination_appeal/examination-appeal-menu");
@@ -179,7 +181,6 @@ public class UmsMvcConfig implements WebMvcConfigurer, Serializable {
       @Override
       public void addFormatters(@NonNull FormatterRegistry registry) {
             registry.addConverter(new StringToDegreeCourseConverter(degreeCourseRepository));
-            registry.addConverter(new StringToCourseDtoConverter(courseRepository));
       }
 
 

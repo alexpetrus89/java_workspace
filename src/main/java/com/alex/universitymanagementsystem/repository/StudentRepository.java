@@ -12,6 +12,8 @@ import com.alex.universitymanagementsystem.domain.Student;
 import com.alex.universitymanagementsystem.domain.immutable.Register;
 import com.alex.universitymanagementsystem.domain.immutable.UserId;
 
+import jakarta.persistence.PersistenceException;
+
 
 
 
@@ -25,12 +27,12 @@ public interface StudentRepository
      * @param register the register of the student
      * @return the student if found, null otherwise
      * @throws NullPointerException if the register is null
-     * @throws IllegalArgumentException if the register is blank
-     * @throws UnsupportedOperationException if the register is not unique
+     * @throws PersistenceException persistence error
      * @see Register
      */
     @Query(value = "SELECT s FROM Student s WHERE s.register = ?1")
-    Student findByRegister(@NonNull Register register);
+    Student findByRegister(@NonNull Register register)
+        throws NullPointerException, PersistenceException;
 
     /**
      * Retrieves a student by name
@@ -38,10 +40,11 @@ public interface StudentRepository
      * @return List<Student> with the student if found, or an empty
      *         List if no student is found
      * @throws NullPointerException if the name is null
-     * @throws IllegalArgumentException if the name is blank
+     * @throws PersistenceException persistence error
      */
     @Query("SELECT s FROM Student s WHERE s.fullname = ?1")
-    List<Student> findByFullname(@NonNull String name);
+    List<Student> findByFullname(@NonNull String name)
+        throws NullPointerException, PersistenceException;
 
     /**
      * Retrieves a student by email
@@ -49,29 +52,30 @@ public interface StudentRepository
      * @return List<Student> with the student if found, or an empty
      *         List if no student is found
      * @throws NullPointerException if the username is null
-     * @throws IllegalArgumentException if the username is blank
+     * @throws PersistenceException persistence error
      */
     @Query("SELECT s FROM Student s WHERE s.username = ?1")
-    List<Student> findByUsername(@NonNull String username);
+    List<Student> findByUsername(@NonNull String username)
+        throws NullPointerException, PersistenceException;
 
     /**
      * Checks if a student exists by register
      * @param register the register of the student
      * @return true if the student exists, false otherwise
      * @throws NullPointerException if the register is null
-     * @throws IllegalArgumentException if the register is null
-     * @throws UnsupportedOperationException if the register is not unique
+     * @throws PersistenceException persistence error
      */
-    boolean existsByRegister(@NonNull Register register);
+    boolean existsByRegister(@NonNull Register register)
+        throws NullPointerException, PersistenceException;
 
     /**
      * Deletes a student by register
      * @param register the register of the student
      * @throws NullPointerException if the register is null
-     * @throws IllegalArgumentException if the register is null
-     * @throws UnsupportedOperationException if the register is not unique
+     * @throws PersistenceException persistence error
      */
     @Modifying
-    void deleteByRegister(@NonNull Register register);
+    void deleteByRegister(@NonNull Register register)
+        throws NullPointerException, PersistenceException;
 
 }

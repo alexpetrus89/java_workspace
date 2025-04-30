@@ -89,6 +89,10 @@ public class Builder implements Serializable {
         this.confirm = confirm;
     }
 
+    public void withConfirm(String confirm) {
+        this.confirm = confirm;
+    }
+
     public void withFullname(String fullname) {
         this.fullname = fullname;
     }

@@ -1,5 +1,6 @@
 package com.alex.universitymanagementsystem.service.impl;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -131,6 +132,14 @@ public class UserServiceImpl implements UserDetailsService{
         // check if the username is blank
         if(form.getUsername().isBlank())
             throw new IllegalArgumentException("Username cannot be blank");
+
+        // check if the password match with confirm
+        if(!form.getPassword().equals(form.getConfirm()))
+            throw new IllegalArgumentException("password cannot match");
+
+        // check if the date of birth is valid (not in the future or today)
+        if(form.getDob() == null || form.getDob().isEqual(LocalDate.now()) || form.getDob().isAfter(LocalDate.now()))
+            throw new IllegalArgumentException("invalid date of birth");
 
         try {
             user.setUsername(form.getUsername());

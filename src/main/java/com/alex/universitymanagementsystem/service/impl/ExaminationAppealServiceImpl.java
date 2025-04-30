@@ -333,15 +333,18 @@ public class ExaminationAppealServiceImpl implements ExaminationAppealService {
      * Deletes expired examination appeals
      */
     @Scheduled(fixedDelay = 86400000) // ogni giorno
-    public void deleteExpiredExaminationAppeals() {
+    public void cleanExpiredAppeals() {
         LocalDate today = LocalDate.now();
         LocalDate expirationDateOneMonth = today.minusMonths(1);
 
         try {
-            List<ExaminationAppeal> expiredExaminationAppealsOneMonth =
-                examinationAppealRepository.findByDateLessThan(expirationDateOneMonth);
+            List<ExaminationAppeal> expiredExaminationAppealsOneMonth = examinationAppealRepository
+                .findByDateLessThan(expirationDateOneMonth);
 
-            expiredExaminationAppealsOneMonth.forEach(examinationAppealRepository::delete);
+            expiredExaminationAppealsOneMonth
+                .stream()
+                .filter(ExaminationAppeal::deleteIfExpiredAndNoStudents)
+                .forEach(examinationAppealRepository::delete);
         } catch (DataAccessException e) {
             logger.error(DATA_ACCESS_ERROR, e);
         }

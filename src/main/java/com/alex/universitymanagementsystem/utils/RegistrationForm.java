@@ -11,6 +11,7 @@ public class RegistrationForm {
     // instance variables
     private String username;
     private String password;
+    private String confirm;
     private String fullname;
     private LocalDate dob;
     private String street;
@@ -26,6 +27,7 @@ public class RegistrationForm {
     public RegistrationForm(Builder formBuilder) {
         this.username = formBuilder.getUsername();
         this.password = formBuilder.getPassword();
+        this.confirm = formBuilder.getConfirm();
         this.fullname = formBuilder.getFullname();
         this.dob = formBuilder.getDob();
         this.street = formBuilder.getStreet();
@@ -43,6 +45,10 @@ public class RegistrationForm {
 
     public String getPassword() {
         return password;
+    }
+
+    public String getConfirm() {
+        return confirm;
     }
 
     public String getFullname() {
@@ -87,6 +93,10 @@ public class RegistrationForm {
         this.password = password;
     }
 
+    public void setConfirm(String confirm) {
+        this.confirm = confirm;
+    }
+
     public void setFullname(String fullname) {
         this.fullname = fullname;
     }
@@ -127,6 +137,7 @@ public class RegistrationForm {
         // set the values
         userBuilder.withUsername(username);
         userBuilder.withPassword(password);
+        userBuilder.withConfirm(confirm);
         userBuilder.withFullname(fullname);
         userBuilder.withDob(dob);
         userBuilder.withStreet(street);

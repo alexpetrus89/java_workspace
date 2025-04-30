@@ -129,6 +129,11 @@ public class ExaminationAppeal implements Serializable {
         return this.students.remove(student);
     }
 
+    public boolean deleteIfExpiredAndNoStudents() {
+        LocalDate today = LocalDate.now();
+        return today.isAfter(getDate()) && getStudents().isEmpty();
+    }
+
 
 
 }

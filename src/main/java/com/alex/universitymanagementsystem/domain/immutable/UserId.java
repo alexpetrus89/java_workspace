@@ -18,4 +18,9 @@ public record UserId(UUID id) implements Serializable {
         this(UUID.randomUUID());
     }
 
+    @Override
+    public String toString() {
+        return id.toString();
+    }
+
 }

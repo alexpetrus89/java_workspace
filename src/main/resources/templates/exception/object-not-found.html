@@ -3,12 +3,11 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 <head>
-    <title>OBJECT NOT FOUND EXCEPTION</title>
+    <title>University Management Application</title>
 </head>
 <body>
+    <p th:text="'Error: ' + ${message}"></p>
     <br>
-    <a href="#" th:href="@{/home}">Back to Menu</a>
-	<h1>OBJECT NOT FOUND</h1>
-    <p th:text="'exception: ' + ${error}">
+    <p><a href="javascript:history.back()">Go back</a></p>
 </body>
 </html>

@@ -179,7 +179,7 @@ public class CourseServiceImpl implements CourseService {
         try {
             // retrieve all data
             Professor professor = professorRepository.findByUniqueCode(new UniqueCode(uniqueCode));
-            DegreeCourse degreeCourse = degreeCourseRepository.findByName(degreeCourseName);
+            DegreeCourse degreeCourse = degreeCourseRepository.findByName(degreeCourseName.toUpperCase());
 
             // sanity checks
             if(professor == null)

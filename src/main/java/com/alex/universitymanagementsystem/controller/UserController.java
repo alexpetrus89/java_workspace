@@ -1,11 +1,10 @@
 package com.alex.universitymanagementsystem.controller;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.lang.NonNull;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -38,11 +37,7 @@ public class UserController {
 
     // constants
     private static final String BUILDER = "builder";
-    private static final String TITLE = "title";
-    private static final String ERROR = "Controller layer error";
     private static final String ERROR_PATH = "/exception/error";
-    private static final String ERROR_MESSAGE = "errorMessage";
-    private static final String STACK_TRACE = "stackTrace";
 
     // instance variables
     private final UserServiceImpl userServiceImpl;
@@ -184,12 +179,8 @@ public class UserController {
                 userServiceImpl.updateUser(new RegistrationForm(builder)) != null?
                     "User updated successfully" : "User not updated"
             );
-        } catch (RuntimeException e) {
-            Map<String, Object> model = new HashMap<>();
-            model.put(TITLE, ERROR);
-            model.put(ERROR_MESSAGE, e.getMessage());
-            model.put(STACK_TRACE, e.getStackTrace());
-            return new ModelAndView(ERROR_PATH, model);
+        } catch (IllegalArgumentException e) {
+            return new ModelAndView("exception/update/invalid-parameters", "message", e.getMessage());
         }
     }
 
@@ -209,12 +200,10 @@ public class UserController {
                 userServiceImpl.deleteUser(userId)?
                     "User delete successfully" : "User not deleted"
             );
-        } catch (RuntimeException e) {
-            Map<String, Object> model = new HashMap<>();
-            model.put(TITLE, ERROR);
-            model.put(ERROR_MESSAGE, e.getMessage());
-            model.put(STACK_TRACE, e.getStackTrace());
-            return new ModelAndView(ERROR_PATH, model);
+        } catch (UsernameNotFoundException e) {
+            return new ModelAndView("exception/object-not-found", "message", e.getMessage());
+        } catch (IllegalArgumentException e) {
+            return new ModelAndView("exception/update/invalid-parameters", "message", e.getMessage());
         }
     }
 

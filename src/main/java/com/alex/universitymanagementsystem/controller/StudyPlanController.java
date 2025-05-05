@@ -18,6 +18,8 @@ import com.alex.universitymanagementsystem.dto.ChangeCoursesDto;
 import com.alex.universitymanagementsystem.dto.CourseDto;
 import com.alex.universitymanagementsystem.dto.DegreeCourseDto;
 import com.alex.universitymanagementsystem.dto.StudyPlanDto;
+import com.alex.universitymanagementsystem.exception.ObjectAlreadyExistsException;
+import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
 import com.alex.universitymanagementsystem.service.impl.DegreeCourseServiceImpl;
 import com.alex.universitymanagementsystem.service.impl.StudyPlanServiceImpl;
 
@@ -25,6 +27,9 @@ import com.alex.universitymanagementsystem.service.impl.StudyPlanServiceImpl;
 @RestController
 @RequestMapping(path ="api/v1/study_plan")
 public class StudyPlanController {
+
+    // constants
+    private static final String ERROR = "error";
 
     // instance variables
     private final StudyPlanServiceImpl studyPlanServiceImpl;
@@ -115,8 +120,12 @@ public class StudyPlanController {
             studyPlanServiceImpl.changeCourse(register, degreeCourseOfNewCourse, degreeCourseOfOldCourse, courseToAdd, courseToRemove);
             Set<CourseDto> courses = studyPlanServiceImpl.getCoursesByRegister(register);
             return new ModelAndView("user_student/study_plan/study_plan_courses", "courses", courses);
+        } catch (ObjectAlreadyExistsException e) {
+            return new ModelAndView("exception/object-already-exists", ERROR, e.getMessage());
+        } catch (ObjectNotFoundException e) {
+            return new ModelAndView("exception/object-not-found", ERROR, e.getMessage());
         } catch (IllegalArgumentException | IllegalStateException e) {
-            return new ModelAndView("validation/study_plan/invalid-choice", "error", e.getMessage());
+            return new ModelAndView("validation/study_plan/invalid-choice", ERROR, e.getMessage());
         }
     }
 

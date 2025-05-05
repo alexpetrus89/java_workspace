@@ -84,8 +84,40 @@ public class ExaminationServiceImpl implements ExaminationService {
 
 
     /**
+     * Get all examinations by course id
+     * @param courseId course id of the course
+     * @return List<ExaminationDto>
+     * @throws NullPointerException if the courseId is null
+     * @throws ObjectNotFoundException if the course does not exist
+     * @throws IllegalArgumentException if the courseId is Blank
+     * @throws UnsupportedOperationException if the courseId is not unique
+     */
+    @Override
+    public List<ExaminationDto> getExaminationsByCourseId(@NonNull CourseId courseId)
+        throws NullPointerException, ObjectNotFoundException, IllegalArgumentException, UnsupportedOperationException
+    {
+        if(courseId.toString().isBlank())
+            throw new IllegalArgumentException("CourseId cannot be null or empty");
+
+        if (!courseRepository.existsById(courseId))
+            throw new ObjectNotFoundException(DomainType.COURSE);
+
+        try {
+            return examinationRepository
+                .findExaminationsByCourseId(courseId)
+                .stream()
+                .map(ExaminationMapper::mapToExaminationDto)
+                .toList();
+        } catch (DataAccessException e) {
+            logger.error(DATA_ACCESS_ERROR, e);
+            return Collections.emptyList();
+        }
+    }
+
+
+    /**
      * Get all examinations by student register
-     * @param Register register
+     * @param register register of the student
      * @return List<ExaminationDto>
      * @throws NullPointerException if the register is null
      * @throws IllegalArgumentException if the register is blank
@@ -155,38 +187,6 @@ public class ExaminationServiceImpl implements ExaminationService {
 
 
     /**
-     * Get all examinations by course id
-     * @param courseId course id of the course
-     * @return List<ExaminationDto>
-     * @throws NullPointerException if the courseId is null
-     * @throws ObjectNotFoundException if the course does not exist
-     * @throws IllegalArgumentException if the courseId is Blank
-     * @throws UnsupportedOperationException if the courseId is not unique
-     */
-    @Override
-    public List<ExaminationDto> getExaminationsByCourseId(@NonNull CourseId courseId)
-        throws NullPointerException, ObjectNotFoundException, IllegalArgumentException, UnsupportedOperationException
-    {
-        if(courseId.toString().isBlank())
-            throw new IllegalArgumentException("CourseId cannot be null or empty");
-
-        if (!courseRepository.existsById(courseId))
-            throw new ObjectNotFoundException(DomainType.COURSE);
-
-        try {
-            return examinationRepository
-                .findExaminationsByCourseId(courseId)
-                .stream()
-                .map(ExaminationMapper::mapToExaminationDto)
-                .toList();
-        } catch (DataAccessException e) {
-            logger.error(DATA_ACCESS_ERROR, e);
-            return Collections.emptyList();
-        }
-    }
-
-
-    /**
      * Get all examinations by course name
      * @param name name of the course
      * @return List<ExaminationDto>
@@ -220,12 +220,12 @@ public class ExaminationServiceImpl implements ExaminationService {
 
     /**
      * Add new examination
-     * @param register register of the student
-     * @param courseName name of the course
-     * @param degreeCourseName name of the degree course
-     * @param grade grade of the examination
+     * @param register of the student
+     * @param name of the course
+     * @param name of the degree course
+     * @param grade of the examination
      * @param withHonors whether the examination was passed with honors
-     * @param date date of the examination
+     * @param date of the examination
      * @return Examination
      * @throws NullPointerException if the unique code is null or the course name is null
      * @throws IllegalArgumentException if the unique code is blank or the course name is
@@ -242,7 +242,7 @@ public class ExaminationServiceImpl implements ExaminationService {
         @NonNull Register register,
         @NonNull String courseName,
         @NonNull String degreeCourseName,
-        int grade,
+        @NonNull String grade,
         boolean withHonors,
         @NonNull LocalDate date
     ) throws NullPointerException, IllegalArgumentException, ObjectAlreadyExistsException, ObjectNotFoundException
@@ -258,17 +258,27 @@ public class ExaminationServiceImpl implements ExaminationService {
         if(degreeCourseName.isBlank())
             throw new IllegalArgumentException("Degree course name cannot be null or empty");
 
-        if(grade < 0 || grade > 30)
-            throw new IllegalArgumentException("Grade must be between 0 and 30");
+        int intGrade = 0;
+        try {
+            intGrade = Integer.parseInt(grade);
 
-        if(withHonors && grade != 30)
-            throw new IllegalArgumentException("With honors can only be true if the grade is 30");
+            if(intGrade < 0 || intGrade > 30)
+                throw new IllegalArgumentException("Grade must be between 0 and 30");
+
+            if(withHonors && intGrade != 30)
+                throw new IllegalArgumentException("With honors can only be true if the grade is 30");
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Grade must be a valid number");
+        }
 
         if(date.isAfter(java.time.LocalDate.now()))
             throw new IllegalArgumentException("The date must be at least less than today");
 
         if (!studentRepository.existsByRegister(register))
             throw new ObjectNotFoundException(DomainType.STUDENT);
+
+        if(!degreeCourseRepository.existsByName(degreeCourseName))
+            throw new ObjectNotFoundException(DomainType.DEGREE_COURSE);
 
         if (!courseRepository.existsByNameAndDegreeCourse(courseName, degreeCourseName))
             throw new ObjectNotFoundException(DomainType.COURSE);
@@ -279,8 +289,12 @@ public class ExaminationServiceImpl implements ExaminationService {
             Course course = courseRepository.findByNameAndDegreeCourse(courseName, degreeCourse);
             Student student = studentRepository.findByRegister(register);
 
+            // the student must be part of the degree course
+            if(!degreeCourse.getStudents().contains(student))
+                throw new IllegalStateException("student's must be part of the degree course");
+
             // the course must be part of the student's study plan
-            if(!student.getStudyPlan().getCourses().contains(course)) // check if the course is in the student's courses
+            if(!student.getStudyPlan().getCourses().contains(course))
                 throw new ObjectNotFoundException(DomainType.COURSE);
 
             // check if the examination already exists
@@ -293,7 +307,7 @@ public class ExaminationServiceImpl implements ExaminationService {
                 });
 
             // create
-            Examination examination = new Examination(course, student, grade, withHonors, date);
+            Examination examination = new Examination(course, student, intGrade, withHonors, date);
             // save
             examinationRepository.saveAndFlush(examination);
             return examination;
@@ -322,6 +336,7 @@ public class ExaminationServiceImpl implements ExaminationService {
      * @throws IllegalArgumentException if any of the parameters is blank or
      *         if the grade is not between 0 and 30 or if the date is in the
      *         past
+     * @throws IllegalStateException if the student is not part of the degree course
      * @throws UnsupportedOperationException if the unique code is not unique
      */
     @Override
@@ -333,10 +348,10 @@ public class ExaminationServiceImpl implements ExaminationService {
         @NonNull Register newRegister,
         @NonNull String newCourseName,
         @NonNull String newDegreeCourseName,
-        int grade,
+        @NonNull String grade,
         boolean withHonors,
         @NonNull LocalDate date
-    ) throws NullPointerException, IllegalArgumentException, ObjectNotFoundException, UnsupportedOperationException
+    ) throws NullPointerException, IllegalArgumentException, IllegalStateException, ObjectNotFoundException, UnsupportedOperationException
     {
 
         // sanity checks
@@ -349,17 +364,27 @@ public class ExaminationServiceImpl implements ExaminationService {
         if(oldDegreeCourseName.isBlank() || newDegreeCourseName.isBlank())
             throw new IllegalArgumentException("Degree course name cannot be null or empty");
 
-        if(grade < 0 || grade > 30)
-            throw new IllegalArgumentException("Grade must be between 0 and 30");
+        int intGrade = 0;
+        try {
+            intGrade = Integer.parseInt(grade);
 
-        if(withHonors && grade != 30)
-            throw new IllegalArgumentException("With honors can only be true if the grade is 30");
+            if(intGrade < 0 || intGrade > 30)
+                throw new IllegalArgumentException("Grade must be between 0 and 30");
+
+            if(withHonors && intGrade != 30)
+                throw new IllegalArgumentException("With honors can only be true if the grade is 30");
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Grade must be a valid number");
+        }
 
         if(date.isAfter(java.time.LocalDate.now()))
             throw new IllegalArgumentException("The date must be at least less than today");
 
         if (!studentRepository.existsByRegister(newRegister))
             throw new ObjectNotFoundException(DomainType.STUDENT);
+
+        if(!degreeCourseRepository.existsByName(newDegreeCourseName))
+            throw new ObjectNotFoundException(DomainType.DEGREE_COURSE);
 
         if (!courseRepository.existsByNameAndDegreeCourse(newCourseName, newDegreeCourseName))
             throw new ObjectNotFoundException(DomainType.COURSE);
@@ -377,6 +402,10 @@ public class ExaminationServiceImpl implements ExaminationService {
                 .findFirst()
                 .orElseThrow(() -> new ObjectNotFoundException(DomainType.EXAMINATION));
 
+            // the student must be part of the degree course
+            if(!newDegreeCourse.getStudents().contains(newStudent))
+                throw new IllegalStateException("student's must be part of the degree course");
+
             // the course must be part of the student's study plan
             if(!newStudent.getStudyPlan().getCourses().contains(newCourse))
                 throw new ObjectNotFoundException(DomainType.COURSE);
@@ -384,7 +413,7 @@ public class ExaminationServiceImpl implements ExaminationService {
             // update
             updatableExamination.setCourse(newCourse);
             updatableExamination.setStudent(newStudent);
-            updatableExamination.setGrade(grade);
+            updatableExamination.setGrade(intGrade);
             updatableExamination.setWithHonors(withHonors);
             updatableExamination.setDate(date);
 

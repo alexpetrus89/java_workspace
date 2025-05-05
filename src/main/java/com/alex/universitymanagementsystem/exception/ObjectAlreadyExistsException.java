@@ -47,7 +47,8 @@ public class ObjectAlreadyExistsException extends RuntimeException {
     }
 
     // getter
-    public String getBaseMessage() {
+    @Override
+    public String getMessage() {
         return message;
     }
 

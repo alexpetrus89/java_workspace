@@ -118,12 +118,12 @@ public interface CourseService {
 
 
     /**
-     * delete a course
-     * @param CourseId id to be deleted
-     * @throws NullPointerException if the id is null
-     * @throws ObjectNotFoundException if no course with the given id exists
-     * @throws IllegalArgumentException if the id is empty
-     * @throws UnsupportedOperationException if the id is not unique
+     * Deletes a course from the repository by its id.
+     * @param id id of the course to be deleted
+     * @throws NullPointerException if the id is null.
+     * @throws ObjectNotFoundException if no course with the given id exists.
+     * @throws IllegalArgumentException if the id is empty.
+     * @throws UnsupportedOperationException if the id is not unique.
      */
     @Transactional
     void deleteCourse(@NonNull CourseId id)

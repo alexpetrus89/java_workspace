@@ -107,9 +107,6 @@ public class StudentController {
      * Updates a student
      * @param studentDto the student data transfer object
      * @return ModelAndView
-     * @throws ObjectNotFoundException if the student does not exist
-     * @throws IllegalArgumentException if the register is null or empty
-     * @throws UnsupportedOperationException if the register is not unique
      */
     @PutMapping(path = "/update")
     public ModelAndView updateStudent(@ModelAttribute StudentDto studentDto) {

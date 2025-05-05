@@ -636,12 +636,12 @@ public class UmsDBInitConfig implements Serializable {
         Builder fbProfTwo = new Builder();
         fbProfTwo.withUsername("professore.genesio@dominio.it");
         fbProfTwo.withPassword("gene");
-        fbProfTwo.withFullname("gilles villeneuve");
-        fbProfTwo.withDob(LocalDate.of(1993, 4, 6));
-        fbProfTwo.withStreet("via di vancouver");
-        fbProfTwo.withCity("vancouver");
-        fbProfTwo.withState("canada");
-        fbProfTwo.withZip("48759");
+        fbProfTwo.withFullname("tazio nuvolari");
+        fbProfTwo.withDob(LocalDate.of(1968, 4, 6));
+        fbProfTwo.withStreet("via di babel");
+        fbProfTwo.withCity("firenze");
+        fbProfTwo.withState("italia");
+        fbProfTwo.withZip("41695");
         fbProfTwo.withPhone("8749652314");
         fbProfTwo.withRole(RoleType.PROFESSOR);
 
@@ -660,12 +660,12 @@ public class UmsDBInitConfig implements Serializable {
         Builder fbProfThree = new Builder();
         fbProfThree.withUsername("professore.giacomo@dominio.it");
         fbProfThree.withPassword("giaco");
-        fbProfThree.withFullname("gilles villeneuve");
-        fbProfThree.withDob(LocalDate.of(1993, 4, 6));
-        fbProfThree.withStreet("via di vancouver");
-        fbProfThree.withCity("vancouver");
-        fbProfThree.withState("canada");
-        fbProfThree.withZip("48759");
+        fbProfThree.withFullname("giacomo agostini");
+        fbProfThree.withDob(LocalDate.of(1984, 8, 7));
+        fbProfThree.withStreet("via di florio");
+        fbProfThree.withCity("palermo");
+        fbProfThree.withState("italia");
+        fbProfThree.withZip("91000");
         fbProfThree.withPhone("8749652314");
         fbProfThree.withRole(RoleType.PROFESSOR);
 
@@ -684,7 +684,7 @@ public class UmsDBInitConfig implements Serializable {
         Builder fbProfFour = new Builder();
         fbProfFour.withUsername("professore.gioele@dominio.it");
         fbProfFour.withPassword("gioele");
-        fbProfFour.withFullname("gilles villeneuve");
+        fbProfFour.withFullname("john surtees");
         fbProfFour.withDob(LocalDate.of(1993, 4, 6));
         fbProfFour.withStreet("via di vancouver");
         fbProfFour.withCity("vancouver");

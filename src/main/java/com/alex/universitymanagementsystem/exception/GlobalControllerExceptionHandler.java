@@ -40,6 +40,7 @@ import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.client.HttpServerErrorException.InternalServerError;
@@ -55,9 +56,6 @@ public class GlobalControllerExceptionHandler {
     private static final Logger logger =
         LoggerFactory.getLogger(GlobalControllerExceptionHandler.class);
 
-    // constant
-    private static final String ERROR_URL = "/exception/error";
-
     /**
      * Handles all uncaught exceptions and returns a ResponseEntity with a status of Internal Server Error (500)
      * and a body containing the error message. The exception is logged at the ERROR level.
@@ -69,23 +67,6 @@ public class GlobalControllerExceptionHandler {
         // Handle the exception and generate a custom error response
         logger.error("An error occurred", e);
         String errorMessage = "A generic exception occurred: " + e.getMessage();
-
-        return ResponseEntity
-            .status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .body(errorMessage);
-    }
-
-    /**
-     * Handles RuntimeException exceptions and returns a ResponseEntity with a status of Internal Server Error (500)
-     * and a body containing the error message. The exception is logged at the ERROR level.
-     * @param e the RuntimeException exception to be handled
-     * @return a ResponseEntity containing the error message
-     */
-    @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<String> handleRuntimeException(RuntimeException e) {
-        // Handle the exception and generate a custom error response
-        logger.error("A runtime exception occurred", e);
-        String errorMessage = "A runtime exception occurred: " + e.getMessage();
 
         return ResponseEntity
             .status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -131,56 +112,16 @@ public class GlobalControllerExceptionHandler {
     }
 
 
-    /**
-     * Handles exceptions that occur when a null pointer, illegal argument, or unsupported operation is encountered.
-     * Returns a ModelAndView with a view name of "error/error" and a model containing the error message.
-     * The exception is logged at the ERROR level.
-     * @param e
-     * @return
-     */
-    /*
-    @ExceptionHandler(NullPointerException.class)
-    public ModelAndView handleCommonExceptions(Exception e) {
-        // Handle the specific exception and generate a custom error response
-        logger.error("Common exception, e.g. null pointer, illegal argument, unsupported operation", e);
-        return new ModelAndView(ERROR_URL, "error message", e.getMessage());
-    }*/
-
-
     @ExceptionHandler(value = AccessDeniedException.class)
-    public ModelAndView handleAccessDeniedException(AccessDeniedException e) {
+    public ResponseEntity<String> handleAccessDeniedException(AccessDeniedException e) {
         // handle the specific exception and generate a custom error response
         logger.error("Access denied", e);
-        return new ModelAndView(ERROR_URL, "error message", e.getMessage());
+        String errorMessage = "Access denied, NON HAI I PERMESSI: " + e.getMessage();
 
+        return ResponseEntity
+            .status(HttpStatus.METHOD_NOT_ALLOWED)
+            .body(errorMessage);
     }
-
-    /**
-     * Handles exceptions that occur when a username is invalid or already taken.
-     * Returns a ModelAndView with a view name of "error/error" and a model containing the error message.
-     * The exception is logged at the ERROR level.
-     * @param e the exception to be handled
-     * @return a ModelAndView containing the error message
-     */
-    @ExceptionHandler(UsernameInvalidException.class)
-    public ModelAndView handleUsernameInvalidException(UsernameInvalidException e, HttpServletRequest request) {
-        // Handle the specific exception and generate a custom error response
-        logger.error("Username is invalid", e);
-        ModelAndView modelAndView = new ModelAndView("/exception/registration/invalid-username");
-        modelAndView.addObject("title", "Error View");
-        modelAndView.addObject("errorMessage", e.getMessage());
-        modelAndView.addObject("status", "Error");
-        modelAndView.addObject("stackTrace", e.getStackTrace());
-        return modelAndView;
-    }
-
-
-
-
-
-
-
-
 
 
     /**
@@ -223,5 +164,51 @@ public class GlobalControllerExceptionHandler {
 
 
     // Add more @ExceptionHandler methods for other specific exceptions
+    /**
+     * Handles exceptions that occur when a username is invalid or already taken.
+     * Returns a ModelAndView with a view name of "error/error" and a model containing the error message.
+     * The exception is logged at the ERROR level.
+     * @param e the exception to be handled
+     * @return a ModelAndView containing the error message
+     */
+    @ExceptionHandler(UsernameInvalidException.class)
+    public ModelAndView handleUsernameInvalidException(UsernameInvalidException e, HttpServletRequest request) {
+        // Handle the specific exception and generate a custom error response
+        logger.error("Username is invalid", e);
+        ModelAndView modelAndView = new ModelAndView("/exception/registration/invalid-username");
+        modelAndView.addObject("title", "Error View");
+        modelAndView.addObject("errorMessage", e.getMessage());
+        modelAndView.addObject("status", "Error");
+        modelAndView.addObject("stackTrace", e.getStackTrace());
+        return modelAndView;
+    }
+
+
+
+    /**
+     * Handles exceptions that occur when Assertion error is throw.
+     * Returns a ModelAndView with a view name of "exception/assertion/assertion" and
+     * a model containing the error message.
+     * The exception is logged at the ERROR level.
+     */
+    @ExceptionHandler(AssertionError.class)
+    public ModelAndView handleAssertionError(AssertionError e) {
+        // Handle the specific exception and generate a custom error response
+        logger.error("Assertion error", e);
+        String message = "An error occurred: " + e.getMessage();
+
+        return new ModelAndView("exception/assertion/assertion", "message", message);
+    }
+
+
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    public ModelAndView handlerMissingServletRequestParameter(MissingServletRequestParameterException e) {
+        // Handle the specific exception and generate a custom error response
+        logger.error("Missing servlet request parameter", e);
+        String message = "Parameter cannot be null: " + e.getMessage();
+
+        return new ModelAndView("exception/read/error", "message", message);
+    }
+
 
 }

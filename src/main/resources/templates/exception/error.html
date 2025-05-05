@@ -11,6 +11,6 @@
     <h1 th:text="${title}">Error View</h1>
     <h1 th:text="${errorMessage}">An error occurred</h1>
     <h1 th:text="${status}">Status:</h1>
-    <p th:text="${stackTrace}">Stack trace:</p>
+    <p th:each="element : ${stackTrace}" th:text="${element}">Stack trace:</p>
 </body>
 </html>

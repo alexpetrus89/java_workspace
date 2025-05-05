@@ -28,10 +28,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @RequestMapping(path = "api/v1/degree-course")
 public class DegreeCourseController {
 
-    // constants
-    private static final String ERROR_URL = "/exception/error";
-    private static final String NOT_FOUND_URL = "exception/object-not-found";
-
     // instance variables
     private final DegreeCourseServiceImpl degreeCourseServiceImpl;
 
@@ -96,8 +92,8 @@ public class DegreeCourseController {
             List<ProfessorDto> professors = degreeCourseServiceImpl.getProfessors(name.toUpperCase());
             return new ModelAndView("degree_course/professor-with-course-list","professors", professors);
 
-        } catch (ObjectNotFoundException e) {
-            return new ModelAndView(ERROR_URL, e.getMessage(), NOT_FOUND_URL);
+        } catch (NullPointerException | IllegalArgumentException | UnsupportedOperationException  e) {
+            return new ModelAndView("exception/read/error", "message", e.getMessage());
         }
 
     }

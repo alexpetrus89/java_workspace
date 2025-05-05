@@ -1,9 +1,7 @@
 package com.alex.universitymanagementsystem.controller;
 
 import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -36,12 +34,6 @@ public class ExaminationAppealController {
     private static final String EXAMINATION_APPEAL = "examinationAppeal";
     private static final String EXAMINATION_APPEALS = "examinationAppeals";
 
-    private static final String TITLE = "title";
-    private static final String ERROR = "Errore";
-    private static final String ERROR_URL = "/exception/error";
-    private static final String ERROR_MESSAGE = "errorMessage";
-    private static final String STACK_TRACE = "stackTrace";
-
     // instance variables
     private final ExaminationAppealServiceImpl  examinationAppealServiceImpl;
     private final StudentServiceImpl studentServiceImpl;
@@ -61,38 +53,29 @@ public class ExaminationAppealController {
     /**
      * Retrieves all examination appeals for a student
      * @return ModelAndView
-     * @throws ObjectNotFoundException
-     * @throws IllegalArgumentException
-     * @throws UnsupportedOperationException
-     * @throws NullPointerException
-     * @throws ClassCastException
      */
     @GetMapping(path = "/available/student")
     public ModelAndView getExaminationAppealsAvailableByStudent(@AuthenticationPrincipal Student student) {
         try {
             List<ExaminationAppealDto> examAppeals = examinationAppealServiceImpl.getExaminationAppealsAvailable(student.getRegister());
             return new ModelAndView("user_student/examinations/examination_appeal/available-calendar",EXAMINATION_APPEALS, examAppeals);
-        } catch (ObjectNotFoundException e) {
-            Map<String, Object> model = new HashMap<>();
-            model.put(TITLE, ERROR);
-            model.put(ERROR_MESSAGE, e.getMessage());
-            model.put(STACK_TRACE, e.getStackTrace());
-            return new ModelAndView(ERROR_URL, model);
+        } catch (NullPointerException | IllegalArgumentException | UnsupportedOperationException e) {
+            return new ModelAndView("exception/read/error", "message", e.getMessage());
         }
     }
 
 
+    /**
+     * Retrieves all examination appeals for a student
+     * @return ModelAndView
+     */
     @GetMapping(path = "/booked/student")
     public ModelAndView getExaminationAppealsBookedByStudent(@AuthenticationPrincipal Student student) {
         try {
             List<ExaminationAppeal> examAppeals = examinationAppealServiceImpl.getExaminationAppealsBooked(student.getRegister());
             return new ModelAndView("user_student/examinations/examination_appeal/booked-calendar", EXAMINATION_APPEALS, examAppeals);
-        } catch (ObjectNotFoundException e) {
-            Map<String, Object> model = new HashMap<>();
-            model.put(TITLE, ERROR);
-            model.put(ERROR_MESSAGE, e.getMessage());
-            model.put(STACK_TRACE, e.getStackTrace());
-            return new ModelAndView(ERROR_URL, model);
+        } catch (NullPointerException | IllegalArgumentException | UnsupportedOperationException e) {
+            return new ModelAndView("exception/read/error", "message", e.getMessage());
         }
     }
 
@@ -100,40 +83,27 @@ public class ExaminationAppealController {
     /**
      * Retrieves all examination appeals for a professor
      * @return ModelAndView
-     * @throws ObjectNotFoundException
-     * @throws IllegalArgumentException
-     * @throws UnsupportedOperationException
-     * @throws NullPointerException
-     * @throws ClassCastException
      */
     @GetMapping(path = "/view/professor")
     public ModelAndView getExaminationAppealsMakeByProfessor(@AuthenticationPrincipal Professor professor) {
         try {
             List<ExaminationAppeal> examAppeals = examinationAppealServiceImpl.getExaminationAppealsByProfessor(professor.getUniqueCode());
             return new ModelAndView("user_professor/examinations/examination_appeal/calendar", EXAMINATION_APPEALS, examAppeals);
-        } catch (ObjectNotFoundException e) {
-            Map<String, Object> model = new HashMap<>();
-            model.put(TITLE, ERROR);
-            model.put(ERROR_MESSAGE, e.getMessage());
-            model.put(STACK_TRACE, e.getStackTrace());
-            return new ModelAndView(ERROR_URL, model);
+        } catch (NullPointerException | IllegalArgumentException | ObjectNotFoundException | UnsupportedOperationException e) {
+            return new ModelAndView("exception/read/error", "message", e.getMessage());
         }
     }
 
     /**
      * Retrieves all students for an examination appeal
-     * @param id
-     * @param date
-     * @param professor
+     * @param Long id of the examination appel
+     * @param LocalDate date of the examination appeal
+     * @param Professor professor owner of the examination appeal
      * @return ModelAndView
-     * @throws ObjectNotFoundException
-     * @throws IllegalArgumentException
-     * @throws UnsupportedOperationException
      */
     @GetMapping(path = "/view/students-booked/{id}/{date}")
     public ModelAndView getStudentsBooked(@PathVariable Long id, @PathVariable LocalDate date, @AuthenticationPrincipal Professor professor) {
         try {
-
             List<StudentDto> students = examinationAppealServiceImpl
                 .getExaminationAppealById(id)
                 .getStudents()
@@ -143,22 +113,30 @@ public class ExaminationAppealController {
 
             FinalizeAppealDto appeal = new FinalizeAppealDto(id, date, students);
             return new ModelAndView("user_professor/examinations/examination_appeal/students-booked", "appeal", appeal);
-        } catch (ObjectNotFoundException e) {
-            Map<String, Object> model = new HashMap<>();
-            model.put(TITLE, ERROR);
-            model.put(ERROR_MESSAGE, e.getMessage());
-            model.put(STACK_TRACE, e.getStackTrace());
-            return new ModelAndView(ERROR_URL, model);
+        } catch (NullPointerException | IllegalArgumentException | ObjectNotFoundException | UnsupportedOperationException e) {
+            return new ModelAndView("exception/read/error", "message", e.getMessage());
         }
     }
 
 
+    /**
+     * methods for courses functionality
+     * @param Professor professor
+     * @return ModelAndView
+     */
     @GetMapping(path = "/make")
     public ModelAndView getProfessorCourses(@AuthenticationPrincipal Professor professor) {
         List<CourseDto> courses = courseServiceImpl.getCoursesByProfessor(professor);
         return new ModelAndView("user_professor/examinations/examination_appeal/create-examination-appeal", "courses", courses);
     }
 
+    /**
+     * Create new examination appeal
+     * @param Professor professor owners of the examination appeal
+     * @param String course id
+     * @param String description of the examination appeal
+     * @param LocalDate date of the examination appeal
+     */
     @PostMapping(path = "/create")
     public ModelAndView createNewExaminationAppeal(
         @AuthenticationPrincipal Professor professor,
@@ -172,16 +150,19 @@ public class ExaminationAppealController {
             return new ModelAndView("user_professor/examinations/examination_appeal/create-result", EXAMINATION_APPEAL, examAppeal);
         } catch (IllegalArgumentException e) {
             return new ModelAndView("exception/examination_appeal/invalid-parameter", "error", e.getMessage());
-        } catch (ObjectNotFoundException e) {
-            Map<String, Object> model = new HashMap<>();
-            model.put(TITLE, ERROR);
-            model.put(ERROR_MESSAGE, e.getMessage());
-            model.put(STACK_TRACE, e.getStackTrace());
-            return new ModelAndView(ERROR_URL, model);
+        } catch (NullPointerException | ObjectNotFoundException | UnsupportedOperationException e) {
+            return new ModelAndView("exception/read/error", "message", e.getMessage());
         }
     }
 
 
+    /**
+     * Delete an examination appeal
+     * @param Professor professor owners of the examination appeal
+     * @param String course id
+     * @param String degree course id
+     * @param LocalDate date of the examination appeal
+     */
     @DeleteMapping(path = "/delete")
     public ModelAndView deleteExaminationAppeal(
         @AuthenticationPrincipal Professor professor,
@@ -192,20 +173,16 @@ public class ExaminationAppealController {
         try {
             examinationAppealServiceImpl.deleteExaminationAppeal(course, degreeCourse, professor, date);
             return new ModelAndView("user_professor/examinations/examination_appeal/delete-result");
-        } catch (ObjectNotFoundException e) {
-            Map<String, Object> model = new HashMap<>();
-            model.put(TITLE, ERROR);
-            model.put(ERROR_MESSAGE, e.getMessage());
-            model.put(STACK_TRACE, e.getStackTrace());
-            return new ModelAndView(ERROR_URL, model);
+        } catch (NullPointerException | IllegalArgumentException | ObjectNotFoundException e) {
+            return new ModelAndView("exception/read/error", "message", e.getMessage());
         }
     }
 
 
     /**
      * Book an examination appeal
-     * @param student
-     * @param id
+     * @param Student student
+     * @param Long id
      * @return ModelAndView
      */
     @PostMapping(path = "/booked/{id}")
@@ -213,26 +190,24 @@ public class ExaminationAppealController {
         try {
             ExaminationAppeal examAppeal = examinationAppealServiceImpl.bookExaminationAppeal(id, student.getRegister());
             return new ModelAndView("user_student/examinations/examination_appeal/booked-result", EXAMINATION_APPEAL, examAppeal);
-        } catch (ObjectNotFoundException e) {
-            Map<String, Object> model = new HashMap<>();
-            model.put(TITLE, ERROR);
-            model.put(ERROR_MESSAGE, e.getMessage());
-            model.put(STACK_TRACE, e.getStackTrace());
-            return new ModelAndView(ERROR_URL, model);
+        } catch (NullPointerException | IllegalArgumentException | UnsupportedOperationException e) {
+            return new ModelAndView("exception/read/error", "message", e.getMessage());
         }
     }
 
+    /**
+     * Delete an examination appeal reservation
+     * @param Student student
+     * @param Long id
+     * @return ModelAndView
+     */
     @DeleteMapping(path = "delete-booked/{id}")
     public ModelAndView deleteBookedExaminationAppeal(@AuthenticationPrincipal Student student, @PathVariable Long id) {
         try {
             examinationAppealServiceImpl.deleteBookedExaminationAppeal(id, student.getRegister());
             return new ModelAndView("user_student/examinations/examination_appeal/delete-booked-result");
-        } catch (ObjectNotFoundException e) {
-            Map<String, Object> model = new HashMap<>();
-            model.put(TITLE, ERROR);
-            model.put(ERROR_MESSAGE, e.getMessage());
-            model.put(STACK_TRACE, e.getStackTrace());
-            return new ModelAndView(ERROR_URL, model);
+        } catch (NullPointerException | IllegalArgumentException | IllegalStateException | UnsupportedOperationException e) {
+            return new ModelAndView("exception/read/error", "message", e.getMessage());
         }
     }
 

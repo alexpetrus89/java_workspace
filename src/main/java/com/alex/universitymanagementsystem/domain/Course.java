@@ -85,6 +85,7 @@ public class Course implements Serializable {
     }
 
     @ManyToOne // owning side
+    @OnDelete(action = OnDeleteAction.SET_NULL)
     public Professor getProfessor() {
         return professor;
     }

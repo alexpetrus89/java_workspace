@@ -101,7 +101,7 @@ public class ExaminationAppealServiceImpl implements ExaminationAppealService {
 
     /**
      * Retrieves all examination appeals for a student
-     * @param register
+     * @param register student register
      * @return a list of examination appeals available
      * @throws NullPointerException if any of the parameters is null
      * @throws IllegalArgumentException if the register is blank
@@ -157,7 +157,7 @@ public class ExaminationAppealServiceImpl implements ExaminationAppealService {
 
     /**
      * Retrieves all examination appeals for a student
-     * @param register
+     * @param register student register
      * @return a list of examination appeals available
      * @throws NullPointerException if any of the parameters is null
      * @throws IllegalArgumentException if the register is blank
@@ -201,7 +201,7 @@ public class ExaminationAppealServiceImpl implements ExaminationAppealService {
 
     /**
      * Retrieves all examination appeals for a student
-     * @param uniqueCode
+     * @param uniqueCode professor unique code
      * @return a list of examination appeals
      * @throws NullPointerException if any of the parameters is null
      * @throws IllegalArgumentException if the unique code is blank

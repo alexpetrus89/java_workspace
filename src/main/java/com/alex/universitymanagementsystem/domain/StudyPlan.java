@@ -71,7 +71,7 @@ public class StudyPlan implements Serializable {
     @Column(name = "courses")
     @ManyToMany(targetEntity=Course.class)
     @JoinTable(name = "study_plan_courses", joinColumns = @JoinColumn(name = "study_plan_id"), inverseJoinColumns = @JoinColumn(name = "course_id"))
-    @OnDelete(action = OnDeleteAction.NO_ACTION)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     public Set<Course> getCourses() {
         return courses;
     }

@@ -5,9 +5,10 @@
     <p th:text="'name: ' + ${professor.fullname}"></p>
     <p th:text="'email: ' + ${professor.username}"></p>
 </div>
-<div th:if="${errorMessage}">
-    <p th:text="${errorMessage}"></p>
+<div th:if="${message}">
+    <p th:text="${message}"></p>
 </div>
 <br>
 <a href="#" th:href="@{/professor/read/read}">Search another</a>
+</br>
 <a href="#" th:href="@{/professor/professor-menu}">Back to Menu</a>

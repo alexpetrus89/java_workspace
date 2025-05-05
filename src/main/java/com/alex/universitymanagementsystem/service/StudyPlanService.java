@@ -44,10 +44,10 @@ public interface StudyPlanService {
     /**
      * Change courses to the study plan
      * @param register student register
-     * @param string name of degree course of new course
-     * @param string name of degree course of old course
-     * @param string name of the course to add
-     * @param string name of the course to remove
+     * @param degreeCourseOfNewCourse name of degree course of new course
+     * @param degreeCourseOfOldCourse name of degree course of old course
+     * @param courseToAddName name of the course to add
+     * @param courseToRemoveName name of the course to remove
      * @throws NullPointerException if any of the parameters are null
      * @throws ObjectAlreadyExistsException if a course with the same name already exists
      * @throws ObjectNotFoundException if a degree course with the given name does not exist

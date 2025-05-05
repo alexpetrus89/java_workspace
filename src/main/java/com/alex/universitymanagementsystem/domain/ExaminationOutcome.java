@@ -21,13 +21,13 @@ public class ExaminationOutcome implements Serializable {
 
     // instance variables
     private Long id;
-    private ExaminationAppeal examinationAppeal;
+    private ExaminationAppeal examinationAppeal; // appello di riferimento
     private String register; // matricola dello studente
     private boolean present; // flag per indicare se lo studente si è presentato all'esame
     private int grade; // voto dell'esame
     private boolean withHonors; // flag per indicare se lo studente ha accettato l'esito con lode
     private boolean accepted; // flag per indicare se lo studente ha accettato l'esito
-    private String message;
+    private String message; // informazioni generiche
 
 
     // constructors

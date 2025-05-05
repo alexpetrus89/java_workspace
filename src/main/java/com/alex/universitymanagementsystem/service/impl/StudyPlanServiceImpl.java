@@ -119,16 +119,17 @@ public class StudyPlanServiceImpl implements StudyPlanService {
 
 
     /**
-     * Adds a course to the study plan
+     * Change courses to the study plan
      * @param register student register
-     * @param string name of degree course of new course
-     * @param string name of degree course of old course
-     * @param string name of the course to add
-     * @param string name of the course to remove
+     * @param degreeCourseOfNewCourse name of degree course of new course
+     * @param degreeCourseOfOldCourse name of degree course of old course
+     * @param courseToAddName name of the course to add
+     * @param courseToRemoveName name of the course to remove
      * @throws NullPointerException if any of the parameters are null
      * @throws ObjectAlreadyExistsException if a course with the same name already exists
      * @throws ObjectNotFoundException if a degree course with the given name does not exist
-     * @throws IllegalArgumentException if the cfu of the new course is not equal to the cfu of the old course
+     * @throws IllegalArgumentException if the cfu of the new course is not equal to the cfu
+     *                                  of the old course
      * @throws IllegalStateException if the course has examinations
      */
     @Override
@@ -139,7 +140,11 @@ public class StudyPlanServiceImpl implements StudyPlanService {
         @NonNull String degreeCourseOfOldCourse,
         @NonNull String courseToAddName,
         @NonNull String courseToRemoveName
-    ) throws NullPointerException, ObjectAlreadyExistsException, ObjectNotFoundException, IllegalArgumentException {
+    ) throws NullPointerException, ObjectAlreadyExistsException, ObjectNotFoundException, IllegalArgumentException, IllegalStateException
+    {
+        // sanity checks
+        if(courseToAddName.equals(courseToRemoveName))
+            throw new ObjectAlreadyExistsException(DomainType.COURSE);
 
         try {
             // retrieve all data
@@ -150,15 +155,13 @@ public class StudyPlanServiceImpl implements StudyPlanService {
             Course courseToRemove = courseRepository.findByNameAndDegreeCourse(courseToRemoveName, degreeCourseOld);
 
             // sanity checks
-            if(!student.getStudyPlan().addCourse(courseToAdd))
-                throw new ObjectAlreadyExistsException(DomainType.COURSE);
-
-            if(!student.getStudyPlan().removeCourse(courseToRemove))
+            if(courseToRemove == null)
                 throw new ObjectNotFoundException(DomainType.COURSE);
 
             if(!courseToAdd.getCfu().equals(courseToRemove.getCfu()))
                 throw new IllegalArgumentException("courses needs to have same cfu");
 
+            // if the course to remove has examinations, throw exception
             if(examinationRepository
                 .findExaminationsByStudent(register)
                 .stream()
@@ -174,6 +177,10 @@ public class StudyPlanServiceImpl implements StudyPlanService {
                 .forEach(examAppeal -> examinationAppealServiceImpl
                     .deleteBookedExaminationAppeal(examAppeal.getId(), register));
 
+            // add the new course
+            student.getStudyPlan().addCourse(courseToAdd);
+            // remove the old course
+            student.getStudyPlan().removeCourse(courseToRemove);
             // save
             studyPlanRepository.saveAndFlush(student.getStudyPlan());
         } catch (DataAccessException e) {

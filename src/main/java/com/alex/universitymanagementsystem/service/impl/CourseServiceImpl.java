@@ -269,7 +269,7 @@ public class CourseServiceImpl implements CourseService {
 
     /**
      * Deletes a course from the repository by its id.
-     * @param CourseId id
+     * @param id id of the course to be deleted
      * @throws NullPointerException if the id is null.
      * @throws ObjectNotFoundException if no course with the given id exists.
      * @throws IllegalArgumentException if the id is empty.

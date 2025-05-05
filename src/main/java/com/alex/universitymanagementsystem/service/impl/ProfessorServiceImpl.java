@@ -66,8 +66,10 @@ public class ProfessorServiceImpl implements ProfessorService {
     public ProfessorDto getProfessorByUniqueCode(@NonNull UniqueCode uniqueCode)
         throws NullPointerException, IllegalArgumentException, UnsupportedOperationException
     {
+        // sanity check
         if(uniqueCode.toString().isBlank())
             throw new IllegalArgumentException("Unique Code cannot be null or empty");
+
         return ProfessorMapper.mapToProfessorDto(professorRepository.findByUniqueCode(uniqueCode));
     }
 

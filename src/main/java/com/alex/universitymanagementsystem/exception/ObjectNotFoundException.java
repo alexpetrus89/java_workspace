@@ -47,7 +47,8 @@ public class ObjectNotFoundException extends RuntimeException {
     }
 
     // getter
-    public String getBaseMessage() {
+    @Override
+    public String getMessage() {
         return message;
     }
 }

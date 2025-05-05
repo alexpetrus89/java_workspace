@@ -234,7 +234,6 @@ public class StudentServiceImpl implements StudentService {
 	 * 								   the repository.
 	 * @throws NullPointerException if the register is null.
 	 * @throws IllegalArgumentException if the given register is empty.
-	 * @throws UnsupportedOperationException if the register is not unique
 	 */
 	@Override
 	@Transactional
@@ -243,9 +242,13 @@ public class StudentServiceImpl implements StudentService {
 		throws NullPointerException, IllegalArgumentException, ObjectNotFoundException
 	{
 		try {
-			// sanity check
+			// sanity checks
+			if(register.toString().isBlank())
+				throw new IllegalArgumentException("Register cannot be blank");
+
 			if(!studentRepository.existsByRegister(register))
 				throw new ObjectNotFoundException(register);
+
 			// delete
 			studentRepository.deleteByRegister(register);
 		} catch (DataAccessException e) {

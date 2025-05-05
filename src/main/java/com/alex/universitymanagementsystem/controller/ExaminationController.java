@@ -1,9 +1,7 @@
 package com.alex.universitymanagementsystem.controller;
 
 import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -34,11 +32,6 @@ public class ExaminationController {
     private static final String ATTRIBUTE_EXAMINATION = "examination";
     private static final String ATTRIBUTE_EXAMINATIONS = "examinations";
     private static final String VIEW_PATH = "examination/examination-list";
-    private static final String TITLE = "title";
-    private static final String ERROR = "Errore";
-    private static final String ERROR_URL = "/exception/error";
-    private static final String ERROR_MESSAGE = "errorMessage";
-    private static final String STACK_TRACE = "stackTrace";
 
     // instance variable
     private final ExaminationServiceImpl examinationServiceImpl;
@@ -56,7 +49,6 @@ public class ExaminationController {
      */
     @GetMapping(path = "/view")
     public ModelAndView getExaminations() {
-
         List<ExaminationDto> examinations = examinationServiceImpl.getExaminations();
         return new ModelAndView(VIEW_PATH, ATTRIBUTE_EXAMINATIONS, examinations);
     }
@@ -66,11 +58,6 @@ public class ExaminationController {
      * Returns a list of examinations by course name
      * @param name name of the course
      * @return ModelAndView
-     * @throws ObjectNotFoundException if the course does not exist
-     * @throws IllegalArgumentException if the name is null or empty
-     * @throws ClassCastException if the name is not a string
-     * @throws UnsupportedOperationException if the name is not unique
-     * @throws NullPointerException if the name is null
      */
     @GetMapping(path = "/course-name")
     public ModelAndView getExaminationsByCourseName(@RequestParam String name) {
@@ -78,12 +65,8 @@ public class ExaminationController {
         try {
             List<ExaminationDto> examinations = examinationServiceImpl.getExaminationsByCourseName(name);
             return new ModelAndView(VIEW_PATH, ATTRIBUTE_EXAMINATIONS, examinations);
-        } catch (ObjectNotFoundException e) {
-            Map<String, Object> model = new HashMap<>();
-            model.put(TITLE, ERROR);
-            model.put(ERROR_MESSAGE, e.getMessage());
-            model.put(STACK_TRACE, e.getStackTrace());
-            return new ModelAndView(ERROR_URL, model);
+        } catch (NullPointerException | IllegalArgumentException | ObjectNotFoundException | UnsupportedOperationException  e) {
+            return new ModelAndView("exception/read/error", "message", e.getMessage());
         }
     }
 
@@ -92,11 +75,6 @@ public class ExaminationController {
      * Returns a list of examinations by student register
      * @param register register of the student
      * @return ModelAndView
-     * @throws ObjectNotFoundException if the student does not exist
-     * @throws IllegalArgumentException if the register is null or empty
-     * @throws ClassCastException if the register is not a string
-     * @throws UnsupportedOperationException if the register is not unique
-     * @throws NullPointerException if the register is null or empty
      */
     @GetMapping(path = "/student-register")
     public ModelAndView getExaminationsByStudentRegister(
@@ -104,17 +82,13 @@ public class ExaminationController {
         @RequestParam(required = false) String register
     ) {
 
-        Register studRegister = student != null ? student.getRegister() : new Register(register);
-
         try {
+            Register studRegister = student != null ? student.getRegister() : new Register(register);
+
             List<ExaminationDto> examinations = examinationServiceImpl.getExaminationsByStudentRegister(studRegister);
             return new ModelAndView("user_student/examinations/examination-list", ATTRIBUTE_EXAMINATIONS, examinations);
-        } catch (ObjectNotFoundException e) {
-            Map<String, Object> model = new HashMap<>();
-            model.put(TITLE, ERROR);
-            model.put(ERROR_MESSAGE, e.getMessage());
-            model.put(STACK_TRACE, e.getStackTrace());
-            return new ModelAndView(ERROR_URL, model);
+        } catch (NullPointerException | IllegalArgumentException | ObjectNotFoundException | UnsupportedOperationException  e) {
+            return new ModelAndView("exception/read/error", "message", e.getMessage());
         }
     }
 
@@ -123,11 +97,6 @@ public class ExaminationController {
      * Returns a list of examinations by professor unique code
      * @param uniqueCode unique code of the professor
      * @return ModelAndView
-     * @throws ObjectNotFoundException if the professor does not exist
-     * @throws NullPointerException if the unique code is null
-     * @throws UnsupportedOperationException if the unique code is not unique
-     * @throws ClassCastException if the unique code is not a string
-     * @throws IllegalArgumentException if the unique code is empty
      */
     @GetMapping(path = "/professor-unique-code")
     public ModelAndView getExaminationsByProfessorUniqueCode(@RequestParam String uniqueCode) {
@@ -135,12 +104,8 @@ public class ExaminationController {
         try {
             List<ExaminationDto> examinations = examinationServiceImpl.getExaminationsByProfessorUniqueCode(new UniqueCode(uniqueCode));
             return new ModelAndView(VIEW_PATH, ATTRIBUTE_EXAMINATIONS, examinations);
-        } catch (ObjectNotFoundException e) {
-            Map<String, Object> model = new HashMap<>();
-            model.put(TITLE, ERROR);
-            model.put(ERROR_MESSAGE, e.getMessage());
-            model.put(STACK_TRACE, e.getStackTrace());
-            return new ModelAndView(ERROR_URL, model);
+        } catch (NullPointerException | IllegalArgumentException | ObjectNotFoundException | UnsupportedOperationException  e) {
+            return new ModelAndView("exception/read/error", "message", e.getMessage());
         }
     }
 
@@ -174,11 +139,6 @@ public class ExaminationController {
      * @param withHonors whether the examination was passed with honors
      * @param date the date of the examination
      * @return a ModelAndView containing the details of the newly added examination
-     * @throws ObjectAlreadyExistsException if the examination already exists
-     * @throws ObjectNotFoundException if the student or course does not exist
-     * @throws IllegalArgumentException if the date is in the past or the grade
-     *                                  is not between 0 and 30 or Degree course
-     *                                  does not match
      */
     @PostMapping(path = "/create")
     public ModelAndView createNewExamination(
@@ -195,37 +155,29 @@ public class ExaminationController {
                 new Register(register),
                 courseName,
                 degreeCourseName.toUpperCase(),
-                Integer.parseInt(grade),
+                grade,
                 withHonors,
                 date
             );
             return new ModelAndView( "examination/create/create-result", ATTRIBUTE_EXAMINATION, examination);
-        } catch (ObjectNotFoundException e) {
-            Map<String, Object> model = new HashMap<>();
-            model.put(TITLE, ERROR);
-            model.put(ERROR_MESSAGE, e.getMessage());
-            model.put(STACK_TRACE, e.getStackTrace());
-            return new ModelAndView(ERROR_URL, model);
+        } catch (NullPointerException | IllegalArgumentException | IllegalStateException | ObjectNotFoundException | ObjectAlreadyExistsException | UnsupportedOperationException e) {
+            return new ModelAndView("exception/read/error", "message", e.getMessage());
         }
     }
 
 
     /**
-     * Updates an existing Examination
-     * @param oldRegister the old student's registration number
-     * @param oldCourseName the old course name
-     * @param oldDegreeCourseName the old degree course name
-     * @param newRegister the new student's registration number
-     * @param newCourseName the new course name
-     * @param newDegreeCourseName the new degree course name
-     * @param grade the new grade obtained in the examination
-     * @param withHonors whether the examination was passed with honors
-     * @param date the new date of the examination
-     * @return a ModelAndView containing the details of the updated examination
-     * @throws ObjectNotFoundException if the student or course does not exist
-     * @throws IllegalArgumentException if the date is in the past or the grade
-     *                                  is not between 0 and 30 or Degree course
-     *                                  does not match
+     * Update existing examination
+     * @param Register oldRegister the old student's register
+     * @param String oldCourseName the old course name
+     * @param String oldDegreeCourseName the old degree course name
+     * @param Register newRegister the new student's register
+     * @param String newCourseName the new course name
+     * @param String newDegreeCourseName the new degree course name
+     * @param String grade the new grade
+     * @param Boolean withHonors whether the examination was passed with honors
+     * @param LocalDate date the new date
+     * @return Examination
      */
     @PutMapping(path = "/update")
     @Transactional
@@ -250,17 +202,13 @@ public class ExaminationController {
                 new Register(newRegister.toLowerCase()),
                 newCourseName.toLowerCase(),
                 newDegreeCourseName.toUpperCase(),
-                Integer.parseInt(grade),
+                grade,
                 withHonors,
                 date
             );
             return new ModelAndView("examination/create/create-result", ATTRIBUTE_EXAMINATION, examination);
-        } catch (ObjectAlreadyExistsException e) {
-            Map<String, Object> model = new HashMap<>();
-            model.put(TITLE, ERROR);
-            model.put(ERROR_MESSAGE, e.getMessage());
-            model.put(STACK_TRACE, e.getStackTrace());
-            return new ModelAndView(ERROR_URL, model);
+        } catch (NullPointerException | IllegalArgumentException | ObjectNotFoundException | UnsupportedOperationException  e) {
+            return new ModelAndView("exception/read/error", "message", e.getMessage());
         }
     }
 
@@ -290,12 +238,8 @@ public class ExaminationController {
                 courseName.toLowerCase()
             );
             return new ModelAndView("examination/delete/delete-result");
-        } catch (RuntimeException e) {
-            Map<String, Object> model = new HashMap<>();
-            model.put(TITLE, ERROR);
-            model.put(ERROR_MESSAGE, e.getMessage());
-            model.put(STACK_TRACE, e.getStackTrace());
-            return new ModelAndView(ERROR_URL, model);
+        } catch (NullPointerException | IllegalArgumentException | ObjectNotFoundException | UnsupportedOperationException  e) {
+            return new ModelAndView("exception/read/error", "message", e.getMessage());
         }
     }
 

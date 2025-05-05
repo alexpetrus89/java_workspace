@@ -61,7 +61,7 @@ public class DegreeCourseServiceImpl implements DegreeCourseService {
     /**
      * Retrieves a degree course from the repository by its name and
      * maps it to a DTO.
-     * @param name the name of the degree course
+     * @param String name the name of the degree course
      * @return DegreeCourseDto object representing the degree course
      *         with the given name.
      * @throws NullPointerException if the name is null
@@ -87,7 +87,7 @@ public class DegreeCourseServiceImpl implements DegreeCourseService {
     /**
      * Retrieves all courses of a given degree course from the repository and
      * maps them to DTOs.
-     * @param name the name of the degree course
+     * @param String name the name of the degree course
      * @return List<CourseDto> objects representing all courses of the given
      *         degree course.
      * @throws NullPointerException if the name is null.
@@ -118,7 +118,7 @@ public class DegreeCourseServiceImpl implements DegreeCourseService {
     /**
      * Retrieves all professors of a given degree course from the
      * repository and maps them to DTOs.
-     * @param name the name of the degree course
+     * @param String name the name of the degree course
      * @return List<ProfessorDto> representing all professors of the given
      *         degree course
      * @throws NullPointerException if the name is null.
@@ -137,6 +137,7 @@ public class DegreeCourseServiceImpl implements DegreeCourseService {
                 .findByName(name)
                 .getCourses()
                 .stream()
+                .filter(course -> course.getProfessor() != null)
                 .map(Course::getProfessor)
                 .distinct()
                 .map(ProfessorMapper::mapToProfessorDto)
@@ -151,7 +152,7 @@ public class DegreeCourseServiceImpl implements DegreeCourseService {
     /**
      * Retrieves all students of a given degree course from the
      * repository and maps them to DTOs.
-     * @param name the name of the degree course.
+     * @param String name the name of the degree course.
      * @return List of StudentDto objects representing all students of the
      *         given degree course.
      * @throws NullPointerException if the name is null.

@@ -25,7 +25,6 @@ public class ProfessorController {
     // constants
     private static final String PROFESSOR = "professor";
     private static final String PROFESSORS = "professors";
-    private static final String ERROR_URL = "/exception/error";
     private static final String NOT_FOUND_URL = "exception/object-not-found";
 
     // instance variable
@@ -65,7 +64,7 @@ public class ProfessorController {
             ProfessorDto professor = professorServiceImpl.getProfessorByUniqueCode(uniqueCode);
             return new ModelAndView("professor/read/read-result", PROFESSOR, professor);
         } catch (UnsupportedOperationException | IllegalArgumentException | NullPointerException e) {
-            return new ModelAndView(ERROR_URL, e.getMessage(), NOT_FOUND_URL);
+            return new ModelAndView(NOT_FOUND_URL, "message", "professor not found");
         }
     }
 
@@ -84,7 +83,7 @@ public class ProfessorController {
             List<ProfessorDto> professors = professorServiceImpl.getProfessorByName(name);
             return new ModelAndView("professor/read/read-results", PROFESSORS, professors);
         } catch (UnsupportedOperationException | IllegalArgumentException | NullPointerException e) {
-            return new ModelAndView(ERROR_URL, e.getMessage(), NOT_FOUND_URL);
+            return new ModelAndView(NOT_FOUND_URL, "message", "professor not found");
         }
     }
 
@@ -119,7 +118,7 @@ public class ProfessorController {
             professorServiceImpl.updateProfessor(professorDto);
             return new ModelAndView("professor/update/update-result", PROFESSOR, professorDto);
         } catch (ObjectNotFoundException | IllegalArgumentException | NullPointerException | UnsupportedOperationException e) {
-            return new ModelAndView(ERROR_URL, e.getMessage(), NOT_FOUND_URL);
+            return new ModelAndView(NOT_FOUND_URL, "message", "professor not found");
         }
     }
 

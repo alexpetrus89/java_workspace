@@ -28,8 +28,21 @@ public interface ExaminationService {
 
 
     /**
+     * Get all examinations by course id
+     * @param courseId course id of the course
+     * @return List<ExaminationDto>
+     * @throws NullPointerException if the courseId is null
+     * @throws ObjectNotFoundException if the course does not exist
+     * @throws IllegalArgumentException if the courseId is Blank
+     * @throws UnsupportedOperationException if the courseId is not unique
+     */
+    List<ExaminationDto> getExaminationsByCourseId(@NonNull CourseId courseId)
+        throws NullPointerException, ObjectNotFoundException, IllegalArgumentException, UnsupportedOperationException;
+
+
+    /**
      * Get all examinations by student register
-     * @param Register register
+     * @param register of the student
      * @return List<ExaminationDto>
      * @throws NullPointerException if the register is null
      * @throws IllegalArgumentException if the register is blank
@@ -42,7 +55,7 @@ public interface ExaminationService {
 
     /**
      * Get all examinations by professor unique code
-     * @param uniqueCode unique code of the professor
+     * @param uniqueCode of the professor
      * @return List<ExaminationDto>
      * @throws NullPointerException if the unique code is null
      * @throws IllegalArgumentException if the unique code is blank
@@ -51,19 +64,6 @@ public interface ExaminationService {
      */
     List<ExaminationDto> getExaminationsByProfessorUniqueCode(@NonNull UniqueCode uniqueCode)
         throws NullPointerException, IllegalArgumentException, ObjectNotFoundException, UnsupportedOperationException;
-
-
-    /**
-     * Get all examinations by course id
-     * @param courseId course id of the course
-     * @return List<ExaminationDto>
-     * @throws NullPointerException if the courseId is null
-     * @throws ObjectNotFoundException if the course does not exist
-     * @throws IllegalArgumentException if the courseId is Blank
-     * @throws UnsupportedOperationException if the courseId is not unique
-     */
-    List<ExaminationDto> getExaminationsByCourseId(@NonNull CourseId courseId)
-        throws NullPointerException, ObjectNotFoundException, IllegalArgumentException, UnsupportedOperationException;
 
 
     /**
@@ -81,12 +81,12 @@ public interface ExaminationService {
 
     /**
      * Add new examination
-     * @param register register of the student
-     * @param courseName name of the course
-     * @param degreeCourseName name of the degree course
-     * @param grade grade of the examination
+     * @param register of the student
+     * @param name of the course
+     * @param name of the degree course
+     * @param grade of the examination
      * @param withHonors whether the examination was passed with honors
-     * @param date date of the examination
+     * @param date of the examination
      * @return Examination
      * @throws NullPointerException if the unique code is null or the course name is null
      * @throws IllegalArgumentException if the unique code is blank or the course name is
@@ -102,10 +102,10 @@ public interface ExaminationService {
         @NonNull Register register,
         @NonNull String courseName,
         @NonNull String degreeCourseName,
-        int grade,
+        @NonNull String grade,
         boolean withHonors,
         @NonNull LocalDate date
-    ) throws NullPointerException, IllegalArgumentException, ObjectAlreadyExistsException, ObjectNotFoundException;
+    ) throws NullPointerException, IllegalArgumentException, IllegalStateException, ObjectAlreadyExistsException, ObjectNotFoundException;
 
 
     /**
@@ -126,6 +126,7 @@ public interface ExaminationService {
      * @throws IllegalArgumentException if any of the parameters is blank or
      *         if the grade is not between 0 and 30 or if the date is in the
      *         past
+     * @throws IllegalStateException if the student is not part of the degree course
      * @throws UnsupportedOperationException if the unique code is not unique
      */
 	@Transactional
@@ -136,10 +137,10 @@ public interface ExaminationService {
         @NonNull Register newRegister,
         @NonNull String newCourseName,
         @NonNull String newDegreeCourseName,
-        int grade,
+        @NonNull String grade,
         boolean withHonors,
         @NonNull LocalDate date
-    ) throws NullPointerException, IllegalArgumentException, ObjectNotFoundException, UnsupportedOperationException;
+    ) throws NullPointerException, IllegalArgumentException, IllegalStateException, ObjectNotFoundException, UnsupportedOperationException;
 
 
     /**

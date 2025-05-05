@@ -5,8 +5,20 @@
     content="width=device-width, initial-scale=1">
 <head>
     <title>University Management Application</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/registration.css">
 </head>
 <body>
+
+    <div th:if="${error}">
+        Unable to register. Please check your data.
+    </div>
+
+    <h1>UNI-JOURNEY - Registration</h1>
+
+    <p>Already registered? Click&nbsp;
+        <a th:href="@{/login}">here</a>&nbsp; to login.
+    </p>
+
     <h1>Registration to University Management Website</h1>
     <form method="POST" th:action="@{/register}" id="registerForm">
         <label for="username">Username: </label>
@@ -59,6 +71,8 @@
         <input type="submit" value="Submit"/><input type="reset" value="Reset"/>
     </form>
     <br>
-    <a href="#" th:href="@{/home}">Torna alla home</a>
+    <div class="form-actions">
+        <a href="/" class="home-link">Home</a>
+    </div>
 </body>
 </html>

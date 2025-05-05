@@ -1775,7 +1775,7 @@ public class UmsDBInitConfig implements Serializable {
         // retrieve students
         Student nino = studentRepository.findByRegister(new Register("123456"));
         Student raffo = studentRepository.findByRegister(new Register("555555"));
-        ExaminationAppeal gpAppeal = new ExaminationAppeal(gp, "crm, pert", LocalDate.of(2025, 10, 19));
+        ExaminationAppeal gpAppeal = new ExaminationAppeal(gp, "crm, pert", LocalDate.of(2025, 04, 30));
         gpAppeal.addStudent(nino.getRegister());
         gpAppeal.addStudent(raffo.getRegister());
         examinationAppeals.add(gpAppeal);

@@ -1,32 +1,49 @@
 <!DOCTYPE html>
-<html lang="en"
-        xmlns="http://www.w3.org/1999/xhtml"
-        xmlns:th="http://www.thymeleaf.org"
-        xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
-<meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
-    <title>University Management Application</title>
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1">
+    <title>Create New Examination Appeal</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/create-examinatio-appeal.css">
 </head>
-
 <body>
-    <h1>Create new examination appeal</h1>
-    <form action="#" th:action="@{/api/v1/examination-appeal/create}" method="post">
+    <header class="main-header">
+        <h1>Create New Examination Appeal</h1>
+    </header>
 
-        <label for="course">Select course</label>
-        <select name="courseId" title="Select a course">
-            <option th:each="course : ${courses}" th:text="${course.name} + ' - ' + ${course.degreeCourse.name}" th:value="${course.courseId.id}">Course</option>
-        </select></p>
+    <main class="form-container">
+        <form action="#" th:action="@{/api/v1/examination-appeal/create}" method="post" class="appeal-form">
 
-        <label for="description">Description</label>
-        <input type="text" name="description" title="Enter description"
-            placeholder="description"></p>
+            <div class="form-group">
+                <label for="courseId">Select Course</label>
+                <select name="courseId" id="courseId" title="Select a course" required>
+                    <option value="" disabled selected>Select a course</option>
+                    <option th:each="course : ${courses}"
+                            th:value="${course.courseId.id}"
+                            th:text="${course.name + ' - ' + course.degreeCourse.name}">Course</option>
+                </select>
+            </div>
 
-        <label for="date">Date:</label>
-        <input type="date" name="date" title="Enter appeals date"
-                placeholder="appeals date"></p>
+            <div class="form-group">
+                <label for="description">Description</label>
+                <input type="text" id="description" name="description" placeholder="Enter description" required>
+            </div>
 
-        <p><input type="submit" value="Submit" /> <input type="reset" value="Reset" /></p>
-    </form>
-    <br>
-    <a href="#" th:href="@{/user_professor/examinations/examination_appeal/examination-appeal-menu}">Back to menu</a>
+            <div class="form-group">
+                <label for="date">Appeal Date</label>
+                <input type="date" id="date" name="date" required>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Submit</button>
+                <button type="reset" class="btn btn-secondary">Reset</button>
+            </div>
+        </form>
+
+        <div class="back-link">
+            <a th:href="@{/user_professor/examinations/examination_appeal/examination-appeal-menu}">Back to menu</a>
+        </div>
+    </main>
 </body>
+</html>

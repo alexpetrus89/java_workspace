@@ -1,11 +1,8 @@
 package com.alex.universitymanagementsystem.service;
 
-import java.util.List;
-
 import org.springframework.lang.NonNull;
 
 import com.alex.universitymanagementsystem.domain.ExaminationOutcome;
-import com.alex.universitymanagementsystem.domain.immutable.UniqueCode;
 import com.alex.universitymanagementsystem.exception.ObjectAlreadyExistsException;
 import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
 
@@ -35,8 +32,11 @@ public interface ExaminationOutcomeService {
      * @throws IllegalArgumentException if any of the parameters is invalid
      * @throws UnsupportedOperationException if the unique code is not unique
      */
+    /*
     List<ExaminationOutcome> getOutcomesByCourseAndProfessor(@NonNull String course, @NonNull UniqueCode uniqueCode)
         throws NullPointerException, IllegalArgumentException, UnsupportedOperationException;
+    */
+
 
     /**
      * Save an examination outcome

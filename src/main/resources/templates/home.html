@@ -1,20 +1,84 @@
 <!DOCTYPE html>
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
-        xmlns:th="https://www.thymeleaf.org"
-        xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
-        <meta charset="utf-8" name="viewport"
-        content="width=device-width, initial-scale=1">
+<html lang="it"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>University Management Application</title>
-    <link rel="stylesheet" type="text/css" href="static/css/home.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="/static/css/home.css">
 </head>
+
 <body>
-    <h1 th:inline="text">Welcome
-        <span th:remove="tag" sec:authentication="name"> from thymeleaf</span>!
-    </h1>
-    <h1>Logout</h1>
-    <p>Click <a th:href="@{/logout}">&nbsp;here&nbsp;</a> for log out</p>
-    <h1>Login</h1>
-    <p>Click <a th:href="@{/login}">&nbsp;here&nbsp;</a> to log in</p>
-</body>
+    <header class="main-header">
+        <h1>UNI-JOURNEY</h1>
+    </header>
+
+    <section class="hero">
+        <div class="overlay">
+            <h2>Benvenuto nel portale universitario</h2>
+            <p>Gestione semplificata di studenti, corsi e personale.</p>
+        </div>
+    </section>
+
+    <!-- Sezione descrittiva -->
+    <div class="description-box">
+        <h4>University Management</h4>
+        <p>Soluzione per la gestione di studenti, corsi e personale accademico.</p>
+    </div>
+
+    <!-- Gruppo allineato: Benvenuto, Login, Logout -->
+    <div class="card-group">
+        <div class="card">
+            <i class="fas fa-user-circle fa-3x"></i> <!-- Icona Benvenuto -->
+            <h3>Benvenuto</h3>
+            <p th:inline="text">Ciao <span th:remove="tag" sec:authentication="name">Utente</span>!</p>
+        </div>
+
+        <div class="card">
+            <i class="fas fa-sign-in-alt fa-3x"></i> <!-- Icona Login -->
+            <h3>Login</h3>
+            <p>Fai clic <a th:href="@{/login}">qui</a> per accedere.</p>
+        </div>
+
+        <div class="card">
+            <i class="fas fa-sign-out-alt fa-3x"></i> <!-- Icona Logout -->
+            <h3>Logout</h3>
+            <p>Fai clic <a th:href="@{/logout}">qui</a> per uscire.</p>
+        </div>
+    </div>
+
+    </main>
+    <footer class="footer">
+        <div class="footer-content">
+
+            <div class="footer-left">
+                <h4>Contatti</h4>
+                <p>Email: info@universityapp.com</p>
+                <p>Telefono: +39 0123 456789</p>
+            </div>
+
+            <div class="footer-center">
+                <h4>Seguici</h4>
+                <p>
+                    <a href="#" target="_blank">Facebook</a> |
+                    <a href="#" target="_blank">LinkedIn</a> |
+                    <a href="#" target="_blank">Twitter</a>
+                </p>
+            </div>
+            <div class="footer-right">
+                <p>
+                    <a href="#">Termini e Condizioni</a> |
+                    <a href="#">Informativa sulla Privacy</a>
+                </p>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2025 University Management App - Tutti i diritti riservati</p>
+        </div>
+    </footer>
 </html>

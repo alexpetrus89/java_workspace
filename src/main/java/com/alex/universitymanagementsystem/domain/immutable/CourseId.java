@@ -22,4 +22,8 @@ public record CourseId(UUID id) implements Serializable {
         this(UUID.fromString(id));
     }
 
+    public UUID getId() {
+        return id;
+    }
+
 }

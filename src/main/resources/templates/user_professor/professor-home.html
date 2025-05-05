@@ -2,23 +2,49 @@
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml"
         xmlns:th="https://www.thymeleaf.org"
         xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
-        <meta charset="utf-8" name="viewport"
-        content="width=device-width, initial-scale=1">
 <head>
-    <title>University Management Application</title>
+    <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
+    <title>UNI-JOURNEY - Professor Home </title>
     <link rel="stylesheet" type="text/css" href="/static/css/professor-home.css">
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@stomp/stompjs@7.0.0/bundles/stomp.umd.min.js"></script>
+    <script src="/static/js/ums-notify.js"></script>
 </head>
 <body>
-    <h1 th:inline="text">Welcome professor
-        <span th:remove="tag" sec:authentication="name">thymeleaf</span>!
-    </h1>
-    <h1>My courses</h1>
-    <p>Click <a th:href="@{/api/v1/course/view/professor}">&nbsp;here&nbsp;</a> for show my courses</p>
-    <h1>Appeals</h1>
-    <p>Click <a th:href="@{/user_professor/examinations/examination_appeal/examination-appeal-menu}">&nbsp;here&nbsp;</a> for show examinations</p>
-    <h1>Update information</h1>
-    <p>Click <a th:href="@{/api/v1/user/update/professor}">&nbsp;here&nbsp;</a> for update information</p>
-    <h1>Logout</h1>
-    <p>Click <a th:href="@{/logout}">&nbsp;here&nbsp;</a> for log out</p>
+    <h1>Welcome <span sec:authentication="name"></span>!</h1>
+
+    <div class="card-container">
+
+        <div class="card">
+            <h2>My Courses</h2>
+            <p>Click <a th:href="@{/api/v1/course/view/professor}">here</a> to view your courses</p>
+        </div>
+
+        <div class="card">
+            <h2>Examination Appeals</h2>
+            <p>Click <a th:href="@{/user_professor/examinations/examination_appeal/examination-appeal-menu}">here</a> to manage appeals</p>
+        </div>
+
+        <div class="card">
+            <h2>Update Information</h2>
+            <p>Click <a th:href="@{/api/v1/user/update/professor}">here</a> to update your personal data</p>
+        </div>
+
+        <div class="card logout-card">
+            <h2>Logout</h2>
+            <p>Click <a th:href="@{/logout}">here</a> to log out</p>
+        </div>
+
+    </div>
+
+    <div id="notifications">
+        <h2>Notifications</h2>
+        <div id="notification-list"></div>
+    </div>
+
+    <div class="form-actions">
+        <a href="/" class="home-link">Home</a>
+    </div>
+
 </body>
 </html>

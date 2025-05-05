@@ -15,7 +15,7 @@
     <p>Course: <span th:text="${outcome.examinationAppeal.course.name}"></span></p>
     <p>Date: <span th:text="${#temporals.format(outcome.examinationAppeal.date, 'dd-MM-yyyy')}"></span></p>
 
-    <form action="#" th:action="@{/api/v1/examination-outcome/notify}" method="post">
+    <form action="#" th:action="@{/api/v1/examination-outcome/create}" method="post">
 
         <label for="present">Present:</label>
         <input type="checkbox" name="present" value="true"
@@ -41,7 +41,7 @@
         <p><input type="submit" value="Submit" /> <input type="reset" value="Reset" /></p>
     </form>
     <br>
-    <a href="#" th:href="@{/api/v1/examination-outcome/view//make-outcome/{register}/{id}}">Back to check</a>
+    <a href="#" th:href="@{/api/v1/examination-outcome/view/make-outcome/{register}/{id}}">Back to check</a>
     <br>
     <a href="#" th:href="@{/user_professor/examinations/examination_appeal/examination-appeal-menu}">Back to Menu</a>
 </body>

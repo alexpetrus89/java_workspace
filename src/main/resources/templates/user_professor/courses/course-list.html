@@ -2,28 +2,36 @@
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml"
         xmlns:th="https://www.thymeleaf.org"
         xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
-<meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
 <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Courses List</title>
-    <link rel="stylesheet" type="text/css" href="static/css/course-list.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/course-list.css">
 </head>
 <body>
-    <h1>Courses List</h1>
-    <table>
-        <tr>
-            <th>Name</th>
-            <th>Type</th>
-            <th>Cfu</th>
-            <th>Degree Course</th>
-        </tr>
-        <tr th:each="course : ${courses}">
-            <td th:text="${course.name}">Course name</td>
-            <td th:text="${course.type.name()}">Course type</td>
-            <td th:text="${course.cfu}">Cfu</td>
-            <td th:text="${course.degreeCourse.name}">Degree Course</td>
-        </tr>
-    </table>
-    <br>
-    <a href="#" th:href="@{/user_professor/professor-home}">Back to Menu</a>
+    <div class="container">
+        <h1>Professor Courses List</h1>
+        <table class="styled-table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Cfu</th>
+                    <th>Degree Course</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="course : ${courses}">
+                    <td th:text="${course.name}">Course name</td>
+                    <td th:text="${course.type.name()}">Course type</td>
+                    <td th:text="${course.cfu}">Cfu</td>
+                    <td th:text="${course.degreeCourse.name}">Degree Course</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="form-actions">
+            <a href="#" th:href="@{/user_professor/professor-home}" class="home-button">Back to Menu</a>
+        </div>
+    </div>
 </body>
 </html>

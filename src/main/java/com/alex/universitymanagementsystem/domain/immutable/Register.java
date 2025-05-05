@@ -20,4 +20,8 @@ public record Register(String register) implements Serializable {
         return String.format(register);
     }
 
+    public String getRegister() {
+        return register;
+    }
+
 }

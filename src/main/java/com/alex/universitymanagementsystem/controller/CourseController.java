@@ -1,8 +1,6 @@
 package com.alex.universitymanagementsystem.controller;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -30,13 +28,6 @@ import jakarta.transaction.Transactional;
 @RestController
 @RequestMapping(path = "api/v1/course")
 public class CourseController {
-
-    // constants
-    private static final String TITLE = "title";
-    private static final String ERROR = "Errore";
-    private static final String ERROR_URL = "/exception/error";
-    private static final String ERROR_MESSAGE = "errorMessage";
-    private static final String STACK_TRACE = "stackTrace";
 
     private static final String COURSE = "course";
     private final CourseServiceImpl courseServiceImpl;
@@ -84,12 +75,8 @@ public class CourseController {
         try {
             List<CourseDto> courses = courseServiceImpl.getCoursesByProfessor(professor);
             return new ModelAndView("user_professor/courses/course-list", "courses", courses);
-        } catch (ObjectNotFoundException e) {
-            Map<String, Object> model = new HashMap<>();
-            model.put(TITLE, ERROR);
-            model.put(ERROR_MESSAGE, e.getMessage());
-            model.put(STACK_TRACE, e.getStackTrace());
-            return new ModelAndView(ERROR_URL, model);
+        } catch (NullPointerException | UnsupportedOperationException e) {
+            return new ModelAndView("exception/read/error", "message", e.getMessage());
         }
     }
 
@@ -139,12 +126,8 @@ public class CourseController {
         try{
             CourseDto course = courseServiceImpl.addNewCourse(name, type, cfu, uniqueCode, degreeCourseName);
             return new ModelAndView("course/create/create-result", COURSE, course);
-        } catch (RuntimeException e) {
-            Map<String, Object> model = new HashMap<>();
-            model.put(TITLE, ERROR);
-            model.put(ERROR_MESSAGE, e.getMessage());
-            model.put(STACK_TRACE, e.getStackTrace());
-            return new ModelAndView(ERROR_URL, model);
+        } catch (NullPointerException | IllegalArgumentException | ObjectNotFoundException | ObjectAlreadyExistsException | UnsupportedOperationException  e) {
+            return new ModelAndView("exception/read/error", "message", e.getMessage());
         }
 
     }
@@ -189,12 +172,8 @@ public class CourseController {
                     newUniqueCode.toLowerCase()
             );
             return new ModelAndView("course/update/update-result", COURSE,course);
-        } catch (RuntimeException e) {
-            Map<String, Object> model = new HashMap<>();
-            model.put(TITLE, ERROR);
-            model.put(ERROR_MESSAGE, e.getMessage());
-            model.put(STACK_TRACE, e.getStackTrace());
-            return new ModelAndView(ERROR_URL, model);
+        } catch (NullPointerException | IllegalArgumentException | ObjectNotFoundException | ObjectAlreadyExistsException | UnsupportedOperationException  e) {
+            return new ModelAndView("exception/read/error", "message", e.getMessage());
         }
     }
 
@@ -219,12 +198,8 @@ public class CourseController {
             // delete
             courseServiceImpl.deleteCourse(courseDto.getCourseId());
             return new ModelAndView("course/delete/delete-result", COURSE, courseDto);
-        } catch (RuntimeException e) {
-            Map<String, Object> model = new HashMap<>();
-            model.put(TITLE, ERROR);
-            model.put(ERROR_MESSAGE, e.getMessage());
-            model.put(STACK_TRACE, e.getStackTrace());
-            return new ModelAndView(ERROR_URL, model);
+        } catch (NullPointerException | IllegalArgumentException | ObjectNotFoundException | UnsupportedOperationException e) {
+            return new ModelAndView("exception/read/error", "message", e.getMessage());
         }
     }
 

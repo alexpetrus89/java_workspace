@@ -5,10 +5,14 @@
 <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
 <head>
     <title>University Management Application</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/study_plan_modify.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="/static/js/ums-modify.js" type="module"></script>
 </head>
 <body>
+    <header class="main-header">
+        <h1>UNI-JOURNEY</h1>
+    </header>
     <h1 th:text="${title}">Select courses to change</h1>
     <form action="#" th:action="@{/api/v1/study_plan/change}"
         th:object="${courses}" method="post">
@@ -44,9 +48,12 @@
         <input type="reset" value="Reset"/>
         </p>
     </form>
-    <br>
-    <a href="#" th:href="@{/api/v1/study_plan/view}">Back to study plan</a>
-    <br>
-    <a href="#" th:href="@{/user_student/student-home}">Back to home</a>
+    <!-- Links moved below the form -->
+    <div class="form-actions">
+        <a th:href="@{/api/v1/study_plan/view}" class="home-link">Back to Study Plan</a>
+    </div>
+    <div class="form-actions">
+        <a th:href="@{/user_student/student-home}" class="home-link">Back to Home</a>
+    </div>
 </body>
 </html>

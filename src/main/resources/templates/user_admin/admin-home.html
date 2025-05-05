@@ -1,30 +1,67 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml"
-        xmlns:th="https://www.thymeleaf.org"
-        xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
-        <meta charset="utf-8" name="viewport"
-        content="width=device-width, initial-scale=1">
+    xmlns:th="https://www.thymeleaf.org"
+    xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
+    <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
     <title>University Management Application</title>
     <link rel="stylesheet" type="text/css" href="/static/css/admin-home.css">
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@stomp/stompjs@7.0.0/bundles/stomp.umd.min.js"></script>
+    <script src="/static/js/ums-notify.js"></script>
 </head>
+
 <body>
-    <h1 th:inline="text">Welcome admin
-        <span th:remove="tag" sec:authentication="name">thymeleaf</span>!
-    </h1>
-    <h1>Logout</h1>
-    <p>Click <a th:href="@{/logout}">&nbsp;here&nbsp;</a> for log out</p>
-    <h1>User menu</h1>
-    <p>Click <a th:href="@{/user/user-menu}">&nbsp;here&nbsp;</a> and select option</p>
-    <h1>Student menu</h1>
-    <p>Click <a th:href="@{/student/student-menu}">&nbsp;here&nbsp;</a> and select an option</p>
-    <h1>Professor menu</h1>
-    <p>Click <a th:href="@{/professor/professor-menu}">&nbsp;here&nbsp;</a> and select an option</p>
-    <h1>Course menu</h1>
-    <p>Click <a th:href="@{/course/course-menu}">&nbsp;here&nbsp;</a> and select an option</p>
-    <h1>Degree Course menu</h1>
-    <p>Click <a th:href="@{/degree_course/degree-course-menu}">&nbsp;here&nbsp;</a> and select an option</p>
-    <h1>Examination menu</h1>
-    <p>Click <a th:href="@{/examination/examination-menu}">&nbsp;here&nbsp;</a> and select an option</p>
+
+    <h1>Welcome admin <span sec:authentication="name"></span>!</h1>
+
+    <div class="card-container">
+
+        <div class="card">
+            <h2>User Menu</h2>
+            <p>Click <a th:href="@{/user/user-menu}">here</a> to manage users</p>
+        </div>
+
+        <div class="card">
+            <h2>Student Menu</h2>
+            <p>Click <a th:href="@{/student/student-menu}">here</a> to manage students</p>
+        </div>
+
+        <div class="card">
+            <h2>Professor Menu</h2>
+            <p>Click <a th:href="@{/professor/professor-menu}">here</a> to manage professors</p>
+        </div>
+
+        <div class="card">
+            <h2>Course Menu</h2>
+            <p>Click <a th:href="@{/course/course-menu}">here</a> to manage courses</p>
+        </div>
+
+        <div class="card">
+            <h2>Degree Course Menu</h2>
+            <p>Click <a th:href="@{/degree_course/degree-course-menu}">here</a> to manage degree courses</p>
+        </div>
+
+        <div class="card">
+            <h2>Examination Menu</h2>
+            <p>Click <a th:href="@{/examination/examination-menu}">here</a> to manage examinations</p>
+        </div>
+
+        <div class="card logout-card">
+            <h2>Logout</h2>
+            <p>Click <a th:href="@{/logout}">here</a> to log out</p>
+        </div>
+
+    </div>
+
+    <div id="notifications">
+        <h2>Notifications</h2>
+        <div id="notification-list"></div>
+    </div>
+
+    <div class="form-actions">
+        <a href="/" class="home-link">Home</a>
+    </div>
+
 </body>
 </html>

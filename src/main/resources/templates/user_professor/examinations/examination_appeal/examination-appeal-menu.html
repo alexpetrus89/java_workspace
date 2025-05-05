@@ -1,21 +1,41 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml"
-        xmlns:th="https://www.thymeleaf.org"
-        xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
-        <meta charset="utf-8" name="viewport"
-        content="width=device-width, initial-scale=1">
+    xmlns:th="https://www.thymeleaf.org"
+    xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
-    <title>University Management Application</title>
+    <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
+    <title>Appeal management</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/examination-appeal-menu.css">
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@stomp/stompjs@7.0.0/bundles/stomp.umd.min.js"></script>
+    <script src="/static/js/ums-notify.js"></script>
 </head>
 <body>
-    <h1>Check appeal</h1>
-    <p>Click <a th:href="@{/api/v1/examination-appeal/view/professor}">&nbsp;here&nbsp;</a> for show my courses</p>
-    <h1>Create appeal</h1>
-    <p>Click <a th:href="@{/api/v1/examination-appeal/make}">&nbsp;here&nbsp;</a> for create appeal</p>
-    <h1>Delete appeal</h1>
-    <p>Click <a th:href="@{/user_professor/examinations/examination_appeal/delete-examination-appeal}">&nbsp;here&nbsp;</a> for delete appeal</p>
-    <br>
-    <h1>Back to menu</h1>
-    <a href="#" th:href="@{/user_professor/professor-home}">Back to home</a>
+
+    <h1>Appeal management menù</h1>
+
+    <div class="card-container">
+
+        <div class="card">
+            <h2>Check Appeals</h2>
+            <p>Click <a th:href="@{/api/v1/examination-appeal/view/professor}">here</a> to view your courses and appeals</p>
+        </div>
+
+        <div class="card">
+            <h2>Create Appeal</h2>
+            <p>Click <a th:href="@{/api/v1/examination-appeal/make}">here</a> to create a new appeal</p>
+        </div>
+
+        <div class="card">
+            <h2>Delete Appeal</h2>
+            <p>Click <a th:href="@{/user_professor/examinations/examination_appeal/delete-examination-appeal}">here</a> to delete an appeal</p>
+        </div>
+
+    </div>
+
+    <div class="form-actions">
+        <a th:href="@{/user_professor/professor-home}" class="home-link">Back to Home</a>
+    </div>
+
 </body>
 </html>

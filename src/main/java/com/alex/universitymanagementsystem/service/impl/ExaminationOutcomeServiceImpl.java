@@ -1,20 +1,19 @@
 package com.alex.universitymanagementsystem.service.impl;
 
-import java.util.Collections;
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
+import com.alex.universitymanagementsystem.domain.Course;
 import com.alex.universitymanagementsystem.domain.ExaminationOutcome;
+import com.alex.universitymanagementsystem.domain.Student;
 import com.alex.universitymanagementsystem.domain.immutable.Register;
-import com.alex.universitymanagementsystem.domain.immutable.UniqueCode;
 import com.alex.universitymanagementsystem.enum_type.DomainType;
 import com.alex.universitymanagementsystem.exception.ObjectAlreadyExistsException;
 import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
+import com.alex.universitymanagementsystem.repository.CourseRepository;
 import com.alex.universitymanagementsystem.repository.ExaminationAppealRepository;
 import com.alex.universitymanagementsystem.repository.ExaminationOutcomeRepository;
 import com.alex.universitymanagementsystem.repository.StudentRepository;
@@ -35,15 +34,18 @@ public class ExaminationOutcomeServiceImpl implements ExaminationOutcomeService 
     private final ExaminationOutcomeRepository examinationOutcomeRepository;
     private final ExaminationAppealRepository examinationAppealRepository;
     private final StudentRepository studentRepository;
+    private final CourseRepository courseRepository;
 
     public ExaminationOutcomeServiceImpl(
         ExaminationOutcomeRepository examinationOutcomeRepository,
         ExaminationAppealRepository examinationAppealRepository,
-        StudentRepository studentRepository
+        StudentRepository studentRepository,
+        CourseRepository courseRepository
     ) {
         this.examinationOutcomeRepository = examinationOutcomeRepository;
         this.examinationAppealRepository = examinationAppealRepository;
         this.studentRepository = studentRepository;
+        this.courseRepository = courseRepository;
     }
 
 
@@ -58,10 +60,12 @@ public class ExaminationOutcomeServiceImpl implements ExaminationOutcomeService 
      * @throws UnsupportedOperationException if the register is not unique
      */
     @Override
-    public ExaminationOutcome getOutcomeByCourseAndStudent(@NonNull String course, @NonNull String register)
+    public ExaminationOutcome getOutcomeByCourseAndStudent(@NonNull String name, @NonNull String register)
         throws NullPointerException, IllegalArgumentException, UnsupportedOperationException
     {
         try {
+            Student student = studentRepository.findByRegister(new Register(register));
+            Course course = courseRepository.findByNameAndDegreeCourse(name, student.getDegreeCourse());
             return examinationOutcomeRepository.findByCourseAndRegister(course, register);
         } catch (DataAccessException e) {
             logger.error(DATA_ACCESS_ERROR, e);
@@ -69,27 +73,6 @@ public class ExaminationOutcomeServiceImpl implements ExaminationOutcomeService 
         }
     }
 
-
-    /**
-     * Get a list of examination outcomes by professor unique code
-     * @param course name of the course
-     * @param uniqueCode of the professor owner of the examination appeal
-     * @return List<ExaminationOutcome> outcomes
-     * @throws NullPointerException if any of the parameters is null
-     * @throws IllegalArgumentException if any of the parameters is invalid
-     * @throws UnsupportedOperationException if the unique code is not unique
-     */
-    @Override
-    public List<ExaminationOutcome> getOutcomesByCourseAndProfessor(@NonNull String course, @NonNull UniqueCode uniqueCode)
-        throws NullPointerException, IllegalArgumentException, UnsupportedOperationException
-    {
-        try {
-            return examinationOutcomeRepository.findByCourseAndUniqueCode(course, uniqueCode);
-        } catch (DataAccessException e) {
-            logger.error(DATA_ACCESS_ERROR, e);
-            return Collections.emptyList();
-        }
-    }
 
 
     /**
@@ -126,10 +109,16 @@ public class ExaminationOutcomeServiceImpl implements ExaminationOutcomeService 
 
 
     @Override
-    public ExaminationOutcome deleteExaminationOutcome(@NonNull ExaminationOutcome outcome) throws NullPointerException,
-            IllegalArgumentException, ObjectNotFoundException, UnsupportedOperationException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'deleteExaminationOutcome'");
+    public ExaminationOutcome deleteExaminationOutcome(@NonNull ExaminationOutcome outcome)
+        throws NullPointerException, IllegalArgumentException, ObjectNotFoundException, UnsupportedOperationException
+    {
+        try {
+            examinationOutcomeRepository.delete(outcome);
+            return outcome;
+        } catch (DataAccessException e) {
+            logger.error(DATA_ACCESS_ERROR, e);
+            return null;
+        }
     }
 
 }

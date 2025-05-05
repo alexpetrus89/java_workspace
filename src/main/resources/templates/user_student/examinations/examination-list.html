@@ -2,44 +2,52 @@
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml"
         xmlns:th="https://www.thymeleaf.org"
         xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
-<meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
 <head>
+    <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
     <title>Examinations</title>
-    <link rel="stylesheet" type="text/css" href="/static/css/examination-list.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/examination-list.css"> <!-- Include the unified CSS -->
 </head>
 <body>
     <h1>Examinations</h1>
-    <table>
-        <th>Course</th>
-        <th>Cfu</th>
-        <th>Registration</th>
-        <th>Name</th>
-        <th>Grade</th>
-        <th>Date</th>
-        <th>Degree course</th>
-        <tr th:each="examination : ${examinations}">
-            <td th:text="${examination.course.name}">Course</td>
-            <td th:text="${examination.course.cfu}">Cfu</td>
-            <td th:text="${examination.student.register.register}">Student register</td>
-            <td th:text="${examination.student.fullname}">Student name</td>
-            <td>
-                <span th:text="${examination.grade}">Grade</span>
-                <span th:if="${examination.withHonors}"> with honors</span>
-            </td>
-            <td th:text="${examination.date}">Date</td>
-            <td th:text="${examination.course.degreeCourse.name}">Degree course name</td>
-        </tr>
-    </table>
-    <br>
-    <tr>
+
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Course</th>
+                    <th>Cfu</th>
+                    <th>Registration</th>
+                    <th>Name</th>
+                    <th>Grade</th>
+                    <th>Date</th>
+                    <th>Degree Course</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="examination : ${examinations}">
+                    <td th:text="${examination.course.name}">Course</td>
+                    <td th:text="${examination.course.cfu}">Cfu</td>
+                    <td th:text="${examination.student.register.register}">Student register</td>
+                    <td th:text="${examination.student.fullname}">Student name</td>
+                    <td>
+                        <span th:text="${examination.grade}">Grade</span>
+                        <span th:if="${examination.withHonors}"> with honors</span>
+                    </td>
+                    <td th:text="${examination.date}">Date</td>
+                    <td th:text="${examination.course.degreeCourse.name}">Degree course name</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="summary">
         <div>CREDITS ACQUIRED: <span th:text="${#aggregates.sum(examinations.![course.cfu])}">Total CFU</span></div>
-    </tr>
-    <br>
-    <tr>
-        <span>AVERAGE RATING: </span><span th:text="${#aggregates.avg(examinations.![grade])}">AVERAGE RATING</span>
-    </tr>
-    <br>
-    <br>
-    <a href="#" th:href="@{/user_student/examinations/examination-menu}">Back to Menu</a>
+        <div>AVERAGE RATING: <span th:text="${#aggregates.avg(examinations.![grade])}">Average Rating</span></div>
+    </div>
+
+    <div class="form-actions">
+        <a th:href="@{/user_student/examinations/examination-menu}" class="home-link">Back to Menu</a>
+    </div>
+
 </body>
 </html>

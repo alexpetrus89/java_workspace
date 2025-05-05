@@ -1,59 +1,103 @@
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f7f7f7; /* Modifica il colore di sfondo */
-    background-image: linear-gradient(to bottom, #f7f7f7, #e7e7e7); /* Aggiunge un gradiente di colore */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(to bottom, #f0f4f8, #dfe9f3);
+    color: #333;
+    margin: 0;
+    padding: 0;
 }
 
 h1 {
-    color: #3498db; /* Modifica il colore del titolo */
-    font-size: 36px; /* Aumenta la dimensione del titolo */
-    text-align: center; /* Centra il titolo */
-    line-height: 1.2; /* Aggiunge lo stesso spazio tra le linee */
-    margin-bottom: 20px; /* Aggiunge dello spazio tra le intestazioni */
-    height: 60px; /* Imposta la stessa altezza per tutte le intestazioni */
-    display: flex; /* Allinea i paragrafi con le intestazioni */
-    align-items: center; /* Allinea i paragrafi con le intestazioni */
-    justify-content: center; /* Allinea tutti gli elementi al centro */
+    color: #0056b3;
+    font-size: 32px;
+    text-align: center;
+    margin-top: 40px;
+    margin-bottom: 20px;
 }
 
-a {
+h2 {
+    color: #333;
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.card-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    padding: 20px;
+}
+
+.card {
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
+    padding: 20px;
+    width: 280px;
+    text-align: center;
+    border: 1px solid #e0e0e0;
+}
+
+.logout-card {
+    background-color: #ffecec;
+    border: 1px solid #ffcccc;
+}
+
+.card a {
     text-decoration: none;
-    color: #2ecc71; /* Modifica il colore dei link */
+    color: #3498db;
+    font-weight: bold;
 }
 
-a:hover {
-    color: #1abc9c; /* Modifica il colore dei link al passaggio del mouse */
+.card a:hover {
+    color: #1abc9c;
 }
 
-.container {
-    max-width: 800px;
+#notifications {
+    max-width: 600px;
     margin: 40px auto;
     padding: 20px;
-    background-color: #fff;
+    background-color: #fefefe;
+    border-radius: 12px;
     border: 1px solid #ddd;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    background-image: linear-gradient(to bottom, #fff, #f7f7f7); /* Aggiunge un gradiente di colore */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
-/* Aggiunge un'ombra ai bordi del contenitore */
-.container::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    z-index: -1;
+#notifications h2 {
+    text-align: center;
+    color: #2c3e50;
+    margin-bottom: 10px;
 }
 
-p {
-    line-height: 1.2;
-    height: 60px;
-    display: flex;
-    align-items: center;
-    justify-content: center; /* Allinea tutti gli elementi al centro */
+#notification-list {
+    font-size: 15px;
+    color: #555;
+    padding-top: 10px;
+}
+/* Link alla homepage */
+.home-link {
+    display: block;
+    text-align: center;
+    margin-top: 15px;
+    font-weight: 500;
+    color: #3498db;
+}
+.form-actions {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.home-link {
+    display: inline-block;
+    padding: 12px 20px;
+    background-color: #3498db;
+    color: white;
+    font-weight: bold;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+}
+
+.home-link:hover {
+    background-color: #2980b9;
 }

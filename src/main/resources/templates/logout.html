@@ -6,15 +6,18 @@
         content="width=device-width, initial-scale=1">
 <head>
     <title>University Management Application</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/logout.css">
 </head>
 <body>
-    <h1 th:inline="text">Hello
-        <span th:remove="tag" sec:authentication="name">thymeleaf</span>!
-    </h1>
+    <h1>Hello <span sec:authentication="name"></span>!</h1>
+
     <form th:action="@{/logout}" method="post">
         <input type="submit" value="Sign Out"/>
     </form>
-    <br>
-    <a href="/home">Back to Home</a>
+
+    <div class="form-actions">
+        <a href="/home" class="home-link">Back to Home</a>
+    </div>
+
 </body>
 </html>

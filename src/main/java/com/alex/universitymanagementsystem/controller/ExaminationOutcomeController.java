@@ -1,7 +1,5 @@
 package com.alex.universitymanagementsystem.controller;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -18,25 +16,27 @@ import org.springframework.web.util.HtmlUtils;
 import com.alex.universitymanagementsystem.domain.Course;
 import com.alex.universitymanagementsystem.domain.ExaminationAppeal;
 import com.alex.universitymanagementsystem.domain.ExaminationOutcome;
-import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
+import com.alex.universitymanagementsystem.exception.ObjectAlreadyExistsException;
 import com.alex.universitymanagementsystem.service.impl.ExaminationAppealServiceImpl;
+import com.alex.universitymanagementsystem.service.impl.ExaminationOutcomeServiceImpl;
+
 
 @RestController
 @RequestMapping(path = "api/v1/examination-outcome")
 public class ExaminationOutcomeController {
 
-    // constants
-    private static final String TITLE = "title";
-    private static final String ERROR = "Errore";
-    private static final String ERROR_URL = "/exception/error";
-    private static final String ERROR_MESSAGE = "errorMessage";
-    private static final String STACK_TRACE = "stackTrace";
-
     // instance variables
+    private final ExaminationOutcomeServiceImpl examinationOutcomeServiceImpl;
     private final ExaminationAppealServiceImpl  examinationAppealServiceImpl;
     private final SimpMessagingTemplate simpMessagingTemplate;
+
     // constructor
-    public ExaminationOutcomeController(ExaminationAppealServiceImpl examinationAppealService, SimpMessagingTemplate simpMessagingTemplate) {
+    public ExaminationOutcomeController(
+        ExaminationOutcomeServiceImpl examinationOutcomeService,
+        ExaminationAppealServiceImpl examinationAppealService,
+        SimpMessagingTemplate simpMessagingTemplate
+    ) {
+        this.examinationOutcomeServiceImpl = examinationOutcomeService;
         this.examinationAppealServiceImpl = examinationAppealService;
         this.simpMessagingTemplate = simpMessagingTemplate;
     }
@@ -47,14 +47,21 @@ public class ExaminationOutcomeController {
             ExaminationAppeal examAppeal = examinationAppealServiceImpl.getExaminationAppealById(id);
             ExaminationOutcome outcome = new ExaminationOutcome(examAppeal, register);
             return new ModelAndView("user_professor/examinations/examination_appeal/evaluation", "outcome", outcome);
-        } catch (ObjectNotFoundException e) {
-            Map<String, Object> model = new HashMap<>();
-            model.put(TITLE, ERROR);
-            model.put(ERROR_MESSAGE, e.getMessage());
-            model.put(STACK_TRACE, e.getStackTrace());
-            return new ModelAndView(ERROR_URL, model);
+        } catch (NullPointerException e) {
+            return new ModelAndView("exception/read/error", "message", e.getMessage());
         }
     }
+
+    @PostMapping(path = "/create")
+    public ModelAndView addNewOutcome(@ModelAttribute ExaminationOutcome outcome) {
+        try {
+            ExaminationOutcome newOutcome = examinationOutcomeServiceImpl.addNewExaminationOutcome(outcome);
+            return new ModelAndView("user_professor/examinations/examination_appeal/evaluation", "outcome", newOutcome);
+        } catch (NullPointerException | IllegalArgumentException | ObjectAlreadyExistsException e) {
+            return new ModelAndView("exception/read/error", "message", e.getMessage());
+        }
+    }
+
 
 
     @SendTo("/topic/notify")

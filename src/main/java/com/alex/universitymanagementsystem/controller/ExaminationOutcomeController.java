@@ -56,7 +56,7 @@ public class ExaminationOutcomeController {
     @GetMapping(path = "/view/course")
     public ModelAndView getExaminationOutcome(@RequestParam String course, @AuthenticationPrincipal Student student) {
         try {
-            ExaminationOutcome outcome = examinationOutcomeServiceImpl.getOutcomeByCourseAndStudent(course, student.getRegister().toString());
+            ExaminationOutcome outcome = examinationOutcomeServiceImpl.getOutcomeByCourseAndStudent(course.toLowerCase(), student.getRegister().toString());
             return outcome != null ?
                 new ModelAndView("user_student/examinations/examination_appeal/outcome-result", "outcome", outcome) :
                 new ModelAndView("user_student/examinations/examination_appeal/student-absent");

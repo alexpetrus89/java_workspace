@@ -1508,7 +1508,7 @@ public class UmsDBInitConfig implements Serializable {
                 scienzaCostr,
                 nino,
                 18,
-                true,
+                false,
                 LocalDate.of(2019, 2, 18)
             )
         );
@@ -1518,7 +1518,7 @@ public class UmsDBInitConfig implements Serializable {
                 impInd,
                 nino,
                 24,
-                true,
+                false,
                 LocalDate.of(2020, 2, 18)
             )
         );
@@ -1528,7 +1528,7 @@ public class UmsDBInitConfig implements Serializable {
                 metodiOttimizzazione,
                 nino,
                 27,
-                true,
+                false,
                 LocalDate.of(2021, 2, 18)
             )
         );
@@ -1568,7 +1568,7 @@ public class UmsDBInitConfig implements Serializable {
                 impInd,
                 raffo,
                 30,
-                true,
+                false,
                 LocalDate.of(2020, 2, 18)
             )
         );
@@ -1578,7 +1578,7 @@ public class UmsDBInitConfig implements Serializable {
                 metodiOttimizzazione,
                 raffo,
                 21,
-                true,
+                false,
                 LocalDate.of(2021, 2, 18)
             )
         );

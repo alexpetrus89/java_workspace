@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="https://www.thymeleaf.org"
-      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+    xmlns:th="https://www.thymeleaf.org"
+    xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
     <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
-    <title>Examination Menu</title>
+    <title>Uni Journey</title>
     <link rel="stylesheet" type="text/css" href="/static/css/examination-menu.css">
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@stomp/stompjs@7.0.0/bundles/stomp.umd.min.js"></script>
@@ -12,7 +12,7 @@
 </head>
 <body>
 
-    <h1>Examination Menu</h1>
+    <h1>Examination menu</h1>
 
     <div class="card-container">
 
@@ -22,12 +22,12 @@
         </div>
 
         <div class="card">
-            <h2>Available Appeals</h2>
+            <h2>Available appeals</h2>
             <p>Click <a th:href="@{/api/v1/examination-appeal/available/student}">here</a> to view available appeals</p>
         </div>
 
         <div class="card">
-            <h2>Booked Appeals</h2>
+            <h2>Booked appeals</h2>
             <p>Click <a th:href="@{/api/v1/examination-appeal/booked/student}">here</a> to view your booked appeals</p>
         </div>
 
@@ -36,11 +36,6 @@
             <p>Click <a th:href="@{/user_student/examinations/examination_appeal/outcome}">here</a> to view your result</p>
         </div>
 
-    </div>
-
-    <div id="notifications">
-        <h2>Notifications</h2>
-        <div id="notification-list"></div>
     </div>
 
     <div class="form-actions">

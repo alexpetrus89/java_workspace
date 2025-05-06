@@ -78,6 +78,7 @@ public class UmsWebSecurityConfig implements Serializable {
 					"/register",
 					"/static/css/**",
 					"/static/js/ums-degree-courses.js",
+					"/static/images/**",
 					"/favicon.ico",
 					"/exception/**",
 					"/validation/**",
@@ -129,7 +130,6 @@ public class UmsWebSecurityConfig implements Serializable {
 					// examination
 					"examination/examination-menu",
 					"api/v1/examination/view",
-					"api/v1/examination/create/create",
 					"api/v1/examination/update/update",
 					"api/v1/examination/delete/delete",
 					"api/v1/examination/read/course-name",
@@ -145,8 +145,10 @@ public class UmsWebSecurityConfig implements Serializable {
 					"/user_student/examinations/examination_appeal/calendar",
 					"/user_student/examinations/examination_appeal/booked-result",
 					"/user_student/examinations/examination_appeal/delete-booked-result",
+					"/user_student/examinations/examination_appeal/outcome",
+					"/user_student/examinations/examination_appeal/outcome-result",
+					"/user_student/examinations/examination_appeal/student-absent",
 					"/user_student/update/update",
-					//"/api/v1/user/update/build",
 					"/api/v1/study_plan/view",
 					"/api/v1/study_plan/courses",
 					"/api/v1/degree-course/courses/view",
@@ -156,7 +158,9 @@ public class UmsWebSecurityConfig implements Serializable {
 					"/api/v1/examination-appeal/booked/{id}",
 					"/api/v1/examination-appeal/delete-booked/{id}",
 					"/api/v1/user/create/student",
-					"/api/v1/user/update/student"
+					"/api/v1/user/update/student",
+					"/api/v1/examination-outcome/view/course",
+					"/api/v1/examination/create/create"
 				)
 				.hasAnyRole(STUDENT, ADMIN)
 				.requestMatchers(
@@ -168,6 +172,7 @@ public class UmsWebSecurityConfig implements Serializable {
 					"/user_professor/examinations/examination_appeal/create-result",
 					"/user_professor/examinations/examination_appeal/students-booked",
 					"/user_professor/examinations/examination_appeal/evaluation",
+					"/user_professor/examinations/examination_appeal/outcome-result",
 					"/user_professor/update/update",
 					"/api/v1/user/create/professor",
 					"/api/v1/user/update/professor",

@@ -33,17 +33,20 @@ public class ExaminationOutcomeServiceImpl implements ExaminationOutcomeService 
     // instance variable
     private final ExaminationOutcomeRepository examinationOutcomeRepository;
     private final ExaminationAppealRepository examinationAppealRepository;
+    private final ExaminationAppealServiceImpl examinationAppealServiceImpl;
     private final StudentRepository studentRepository;
     private final CourseRepository courseRepository;
 
     public ExaminationOutcomeServiceImpl(
         ExaminationOutcomeRepository examinationOutcomeRepository,
         ExaminationAppealRepository examinationAppealRepository,
+        ExaminationAppealServiceImpl examinationAppealServiceImpl,
         StudentRepository studentRepository,
         CourseRepository courseRepository
     ) {
         this.examinationOutcomeRepository = examinationOutcomeRepository;
         this.examinationAppealRepository = examinationAppealRepository;
+        this.examinationAppealServiceImpl = examinationAppealServiceImpl;
         this.studentRepository = studentRepository;
         this.courseRepository = courseRepository;
     }
@@ -97,10 +100,14 @@ public class ExaminationOutcomeServiceImpl implements ExaminationOutcomeService 
             if(!studentRepository.existsByRegister(new Register(outcome.getRegister())))
                 throw new IllegalArgumentException("student does not exist");
 
-            if(!examinationOutcomeRepository.existsById(outcome.getId()))
+            if(outcome.getId() != null && examinationOutcomeRepository.existsById(outcome.getId()))
                 throw new ObjectAlreadyExistsException(DomainType.EXAMINATION_OUTCOME);
 
-            return examinationOutcomeRepository.saveAndFlush(outcome);
+            if(outcome.isPresent())
+                examinationOutcomeRepository.saveAndFlush(outcome);
+
+            examinationAppealServiceImpl.deleteBookedExaminationAppeal(outcome.getExaminationAppeal().getId(), new Register(outcome.getRegister()));
+            return outcome;
         } catch (DataAccessException e) {
             logger.error(DATA_ACCESS_ERROR, e);
             return null;
@@ -108,6 +115,15 @@ public class ExaminationOutcomeServiceImpl implements ExaminationOutcomeService 
     }
 
 
+    /**
+     * Delete an examination outcome
+     * @param outcome examination outcome of the student
+     * @return ExaminationOutcome outcome
+     * @throws NullPointerException if any of the parameters is null
+     * @throws IllegalArgumentException if any of the parameters is invalid
+     * @throws ObjectNotFoundException if the outcome does not exist
+     * @throws UnsupportedOperationException if the outcome is not unique
+     */
     @Override
     public ExaminationOutcome deleteExaminationOutcome(@NonNull ExaminationOutcome outcome)
         throws NullPointerException, IllegalArgumentException, ObjectNotFoundException, UnsupportedOperationException
@@ -120,5 +136,6 @@ public class ExaminationOutcomeServiceImpl implements ExaminationOutcomeService 
             return null;
         }
     }
+
 
 }

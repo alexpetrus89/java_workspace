@@ -1,12 +1,30 @@
-<div th:if="${examinationAppeal}">
-    <p th:text="'examination booked:'"></p>
-    <p th:text="'degree course: ' + ${examinationAppeal.degreeCourse}"></p>
-    <p th:text="'course: ' + ${examinationAppeal.course.name}"></p>
-    <p th:text="'description: ' + ${examinationAppeal.description}"></p>
-    <p th:text="'date: ' + ${examinationAppeal.date}"></p>
-</div>
-<div th:if="${errorMessage}">
-    <p th:text="${errorMessage}"></p>
-</div>
-<br>
-<a href="#" th:href="@{/user_student/examinations/examination-menu}">Back to menu</a>
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dettagli Appello d'Esame</title>
+    <link rel="stylesheet" href="/static/css/booked-result.css">
+</head>
+<body>
+    <div class="container">
+        <h1 class="titolo">Dettagli Appello d'Esame</h1>
+
+        <div class="messaggio-errore" th:if="${errorMessage}">
+            <p th:text="${errorMessage}"></p>
+        </div>
+
+        <div class="appello" th:if="${examinationAppeal}">
+            <p><strong>Corso di Laurea:</strong> <span th:text="${examinationAppeal.degreeCourse}"></span></p>
+            <p><strong>Corso:</strong> <span th:text="${examinationAppeal.course.name}"></span></p>
+            <p><strong>Descrizione:</strong> <span th:text="${examinationAppeal.description}"></span></p>
+            <p><strong>Data:</strong> <span th:text="${examinationAppeal.date}"></span></p>
+        </div>
+
+        <div class="azione">
+            <a href="#" th:href="@{/user_student/examinations/examination-menu}" class="btn">Torna al Menu</a>
+        </div>
+    </div>
+</body>
+</html>
+

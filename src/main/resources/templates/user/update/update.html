@@ -3,68 +3,68 @@
         xmlns="http://www.w3.org/1999/xhtml"
         xmlns:th="http://www.thymeleaf.org"
         xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
-<meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
 <head>
+    <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
     <title>University Management Application</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/update-professor.css">
 </head>
 
 <body>
-    <h1>Update information of selected user</h1>
-    <form action="#" th:action="@{/api/v1/user/update/build}"
-        th:object="${builder}" method="post">
+    <div class="container">
+        <h1>Update information</h1>
+        <form action="#" th:action="@{/api/v1/user/update/build}" th:object="${builder}" method="post">
 
-        <input type="hidden" name="_method" value="PUT" />
+            <input type="hidden" name="_method" value="PUT" />
 
-        <label for="name">Username: </label>
-        <input type="text" th:field="*{username}" title="Enter new username"
-            placeholder="new username "></p>
+            <label for="name">Username: </label>
+            <input type="text" th:field="*{username}" title="Enter new username" placeholder="new username">
 
-        <label for="password">Password: </label>
-        <input type="password" th:field="*{password}" title="Enter new password"
-            placeholder="new password"></p>
+            <label for="password">Password: </label>
+            <input type="password" th:field="*{password}" title="Enter new password" placeholder="new password">
 
-        <label for="confirm">Confirm password: </label>
-        <input type="password" th:field="*{confirm}" title="Please confirm your password"
-            placeholder="confirm new password"></p>
+            <label for="confirm">Confirm password: </label>
+            <input type="password" th:field="*{confirm}" title="Please confirm your password" placeholder="confirm new password">
 
-        <label for="fullname">Full name: </label>
-        <input type="text" th:field="*{fullname}" title="Enter new full name"
-            placeholder="new full name"></p>
+            <label for="fullname">Full name: </label>
+            <input type="text" th:field="*{fullname}" title="Enter new full name" placeholder="new full name">
 
-        <label for="dob">Date of Birth:</label>
-        <input type="date" th:field="*{dob}" title="Enter date of birth"
-            placeholder="date of birth"></p>
+            <label for="dob">Date of Birth:</label>
+            <input type="date" th:field="*{dob}" title="Enter date of birth" placeholder="date of birth">
 
-        <label for="street">Street: </label>
-        <input type="text" th:field="*{street}" title="Enter new street name"
-            placeholder="new street name"></p>
+            <label for="street">Street: </label>
+            <input type="text" th:field="*{street}" title="Enter new street name" placeholder="new street name">
 
-        <label for="city">City: </label>
-        <input type="text" th:field="*{city}" title="Enter new city"
-            placeholder="new city"></p>
+            <label for="city">City: </label>
+            <input type="text" th:field="*{city}" title="Enter new city" placeholder="new city">
 
-        <label for="state">State: </label>
-        <input type="text" th:field="*{state}" title=">Enter new state"
-            placeholder="new state name"></p>
+            <label for="state">State: </label>
+            <input type="text" th:field="*{state}" title="Enter new state" placeholder="new state name">
 
-        <label for="zip">Zip: </label>
-        <input type="text" th:field="*{zip}" title="Enter new zip code"
-            placeholder="new zip code"></p>
+            <label for="zip">Zip: </label>
+            <input type="text" th:field="*{zip}" title="Enter new zip code" placeholder="new zip code">
 
-        <label for="phone">Phone: </label>
-        <input type="text" th:field="*{phone}" title="Enter new phone number"
-            placeholder="new phone number"></p>
+            <label for="phone">Phone: </label>
+            <input type="text" th:field="*{phone}" title="Enter new phone number" placeholder="new phone number">
+            <br>
 
-        <label for="role">Ruolo: </label>
-        <select th:field="*{role}" title="Please select a role">
-            <option value="STUDENT">Student</option>
-            <option value="PROFESSOR">Professor</option>
-            <option value="ADMIN">Admin</option>
-        </select><br/>
-        <br>
-        <input type="submit" value="Update"/><input type="reset" value="Reset" /></p>
-    </form>
-    <br>
-    <a href="#" th:href="@{/user_admin/admin-home}">Back to home</a>
+            <label for="role">Role: </label>
+            <select th:field="*{role}" title="Please select a role">
+                <option value="STUDENT">Student</option>
+                <option value="PROFESSOR">Professor</option>
+                <option value="ADMIN">Admin</option>
+            </select>
+            <br/>
+
+            <div class="form-actions">
+                <input type="submit" value="Update" class="btn primary-btn"/>
+                <input type="reset" value="Reset" class="btn secondary-btn"/>
+            </div>
+        </form>
+
+        <!-- Updated Back to Menu Link -->
+        <div class="form-actions">
+            <a th:href="@{/user/user-menu}" class="home-link">Back to Menu</a>
+        </div>
+    </div>
 </body>
 </html>

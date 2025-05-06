@@ -81,7 +81,7 @@ public class ExaminationOutcome implements Serializable {
     }
 
     @Column(name = "with_honors")
-    public boolean getWithHonors() {
+    public boolean isWithHonors() {
         return withHonors;
     }
 

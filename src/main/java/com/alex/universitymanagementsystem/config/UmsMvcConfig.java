@@ -136,6 +136,18 @@ public class UmsMvcConfig implements WebMvcConfigurer, Serializable {
                   .addViewController("/user_student/examinations/examination_appeal/booked-calendar")
                   .setViewName("/user_student/examinations/examination_appeal/booked-calendar");
 
+            registry
+                  .addViewController("/user_student/examinations/examination_appeal/outcome")
+                  .setViewName("/user_student/examinations/examination_appeal/outcome");
+
+            registry
+                  .addViewController("/user_student/examinations/examination_appeal/outcome-result")
+                  .setViewName("/user_student/examinations/examination_appeal/outcome-result");
+
+            registry
+                  .addViewController("/user_student/examinations/examination_appeal/student-absent")
+                  .setViewName("/user_student/examinations/examination_appeal/student-absent");
+
             // user professor
             registry
                   .addViewController("/user_professor/professor-home")

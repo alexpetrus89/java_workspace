@@ -4,21 +4,21 @@
     xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
     <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1">
-    <title>Create New Examination Appeal</title>
+    <title>Uni Journey</title>
     <link rel="stylesheet" type="text/css" href="/static/css/create-examinatio-appeal.css">
 </head>
 <body>
     <header class="main-header">
-        <h1>Create New Examination Appeal</h1>
+        <h1>Create new examination appeal</h1>
     </header>
 
     <main class="form-container">
         <form action="#" th:action="@{/api/v1/examination-appeal/create}" method="post" class="appeal-form">
 
             <div class="form-group">
-                <label for="courseId">Select Course</label>
-                <select name="courseId" id="courseId" title="Select a course" required>
-                    <option value="" disabled selected>Select a course</option>
+                <label for="courseId">Select course</label>
+                <select name="courseId" id="courseId" placeholder="courses" required>
+                    <option value="" disabled selected>courses</option>
                     <option th:each="course : ${courses}"
                             th:value="${course.courseId.id}"
                             th:text="${course.name + ' - ' + course.degreeCourse.name}">Course</option>
@@ -27,11 +27,11 @@
 
             <div class="form-group">
                 <label for="description">Description</label>
-                <input type="text" id="description" name="description" placeholder="Enter description" required>
+                <input type="text" id="description" name="description" placeholder="enter description" required>
             </div>
 
             <div class="form-group">
-                <label for="date">Appeal Date</label>
+                <label for="date">Date</label>
                 <input type="date" id="date" name="date" required>
             </div>
 

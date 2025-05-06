@@ -1,18 +1,37 @@
+/* Titolo della pagina */
+.title {
+    font-family: 'Avenir', cursive;
+    color: #151154;
+    font-weight: bold;
+    font-size: 50px;
+    text-align: center;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    border: 2px solid #ffffff;
+    padding: 10px;
+    background-color: rgba(255, 255, 255, 0.5);
+}
+
+.title-container {
+    font-family: 'Avenir', cursive;
+    padding: 10px; /* riduco la dimensione del padding */
+    text-align: center;
+    margin: 20px auto; /* riduco la dimensione del margine */
+    width: 40%; /* riduco la dimensione della larghezza */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08); /* riduco la dimensione dell'ombra */
+}
+
+
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background: linear-gradient(to bottom, #f0f4f8, #dfe9f3);
     color: #333;
     margin: 0;
     padding: 0;
-}
-
-/* Titolo della pagina */
-h1 {
-    color: #0056b3;
-    font-size: 32px;
-    text-align: center;
-    margin-top: 40px;
-    margin-bottom: 20px;
+    /* Immagine */
+    background-image: url('/static/images/uni_4.jpg');
+    background-size: cover;
+    background-position: center;
 }
 
 /* Form container */
@@ -24,6 +43,7 @@ form {
     border-radius: 12px;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
     border: 1px solid #e0e0e0;
+    font-family: 'Open Sans', sans-serif;
 }
 
 /* Etichette */
@@ -32,6 +52,25 @@ label {
     margin-bottom: 8px;
     font-weight: 600;
     color: #444;
+}
+
+/* Link alla registrazione */
+.register-link {
+    font-size: 16px;
+    font-family: 'Lato', sans-serif;
+    font-weight: bold;
+    color: #666;
+    text-align: center;
+}
+
+.register-link a {
+    color: #3498db;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.register-link a:hover {
+    color: #2ecc71;
 }
 
 /* Campi input */
@@ -86,32 +125,31 @@ p {
     text-align: center;
     margin-top: 20px;
     color: #555;
+
 }
 
 /* Link alla homepage */
 .home-link {
-    display: block;
+    display: block, inline-block;
     text-align: center;
-    margin-top: 15px;
-    font-weight: 500;
-    color: #3498db;
-}
-.form-actions {
-    text-align: center;
-    margin-top: 20px;
-}
-
-.home-link {
-    display: inline-block;
+    margin-top: 50px;
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 500, bold;
+    color: white;
     padding: 12px 20px;
     background-color: #3498db;
-    color: white;
-    font-weight: bold;
     text-decoration: none;
     border-radius: 8px;
     transition: background-color 0.3s ease;
 }
 
+.form-actions {
+    text-align: center;
+    margin-top: 20px;
+}
+
+
 .home-link:hover {
     background-color: #2980b9;
 }
+

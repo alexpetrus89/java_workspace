@@ -1,76 +1,89 @@
 <!DOCTYPE html>
 <html lang="en"
-        xmlns="http://www.w3.org/1999/xhtml"
-        xmlns:th="http://www.thymeleaf.org"
-        xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
-<meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
+    <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
     <title>Update Examination</title>
     <link rel="stylesheet" type="text/css" href="/static/css/examination-update.css">
 </head>
-
 <body>
-    <h1>Insert examination information for update</h1>
-    <form action="#" th:action="@{/api/v1/examination/update}" method="post">
 
-        <input type="hidden" name="_method" value="PUT" />
+    <div class="container">
+        <h1>Update Examination Information</h1>
 
-        <label for="registration">Old Registration:</label>
-        <input type="text" name="old_register" title="Enter old's student registration number"
-            placeholder="registration number"></p>
+        <form action="#" th:action="@{/api/v1/examination/update}" method="post">
 
-        <label for="course">Old Course:</label>
-        <input type="text" name="old_course" title="Enter old course"
-            placeholder="course"></p>
+            <input type="hidden" name="_method" value="PUT" />
 
-        <label for="course">Old Degree Course:</label>
-        <input type="text" name="old_degree_course" title="Enter old degree course name"
-            placeholder="old degree course name"></p>
+            <div class="form-group">
+                <label for="old_register">Old Registration</label>
+                <input type="text" name="old_register" id="old_register" placeholder="Enter old student registration number" title="Enter old student registration number" required />
+            </div>
 
-        <label for="registration">New Registration:</label>
-        <input type="text" name="new_register" title="Enter student registration number"
-            placeholder="registration number"></p>
+            <div class="form-group">
+                <label for="old_course">Old Course</label>
+                <input type="text" name="old_course" id="old_course" placeholder="Enter old course name" title="Enter old course name" required />
+            </div>
 
-        <label for="course">New Course:</label>
-        <input type="text" name="new_course" title="Enter course"
-            placeholder="course"></p>
+            <div class="form-group">
+                <label for="old_degree_course">Old Degree Course</label>
+                <input type="text" name="old_degree_course" id="old_degree_course" placeholder="Enter old degree course name" title="Enter old degree course name" required />
+            </div>
 
-        <label for="course">New Degree Course:</label>
-        <input type="text" name="new_degree_course" title="Enter new degree course name"
-            placeholder="new degree course name"></p>
+            <div class="form-group">
+                <label for="new_register">New Registration</label>
+                <input type="text" name="new_register" id="new_register" placeholder="Enter new student registration number" title="Enter new student registration number" required />
+            </div>
 
-        <label for="grade">Grade:</label>
-        <input type="text" name="grade" title="Enter grade"
-            placeholder="grade"
-            oninput="checkGrade()"></p>
+            <div class="form-group">
+                <label for="new_course">New Course</label>
+                <input type="text" name="new_course" id="new_course" placeholder="Enter new course name" title="Enter new course name" required />
+            </div>
 
-        <script>
-            function checkGrade() {
-                var grade = document.getElementsByName("grade")[0].value;
-                if (grade == 30) {
-                    document.getElementById("withHonors").style.display = "block";
-                } else {
-                    document.getElementById("withHonors").style.display = "none";
-                }
-            }
-        </script>
+            <div class="form-group">
+                <label for="new_degree_course">New Degree Course</label>
+                <input type="text" name="new_degree_course" id="new_degree_course" placeholder="Enter new degree course name" title="Enter new degree course name" required />
+            </div>
 
-        <div id="withHonors" class="hidden">
+            <div class="form-group">
+                <label for="grade">Grade</label>
+                <input type="text" name="grade" id="grade" placeholder="Enter grade" title="Enter grade" oninput="checkGrade()" required />
+            </div>
 
-            <label for="withHonors">With honors:</label>
-            <input type="checkbox" name="withHonors" id="withHonors"
-                value="false" checked="false"
-                onchange="this.value = this.checked ? 'true' : 'false'"/>
-            <label for="withHonors">default value is false</label>
+            <div id="withHonors" class="form-group hidden">
+                <label for="withHonors">With Honors</label>
+                <input type="checkbox" name="withHonors" id="withHonors" value="false" onchange="this.value = this.checked ? 'true' : 'false'" />
+                <label for="withHonors">Default value is false</label>
+            </div>
+
+            <div class="form-group">
+                <label for="date">Date of Examination</label>
+                <input type="date" name="date" id="date" placeholder="Select date of examination" title="Enter date of examination" required />
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn primary-btn">Update</button>
+                <button type="reset" class="btn secondary-btn">Reset</button>
+            </div>
+        </form>
+
+        <div class="form-actions">
+            <a th:href="@{/examination/examination-menu}" class="home-link">Back to Menu</a>
         </div>
+    </div>
 
-        <input type="hidden" name="withHonors" value="false"/>
+    <script>
+        function checkGrade() {
+            var grade = document.getElementById("grade").value;
+            if (grade == 30) {
+                document.getElementById("withHonors").style.display = "block";
+            } else {
+                document.getElementById("withHonors").style.display = "none";
+            }
+        }
+    </script>
 
-        <label for="dob">Date of Examination:</label>
-        <input type="date" name="date" title="Enter date of examination"
-            placeholder="date of examination"></p>
-
-        <p><input type="submit" value="Submit" /> <input type="reset" value="Reset" /></p>
-    </form>
-    <a href="#" th:href="@{/examination/examination-menu}">Back to Menu</a>
 </body>
+</html>

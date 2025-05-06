@@ -1,19 +1,38 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml"
-        xmlns:th="https://www.thymeleaf.org"
-        xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
-<meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
+    xmlns:th="https://www.thymeleaf.org"
+    xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
+    <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
     <title>User Menu</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/user-menu.css"> <!-- Assicurati che il percorso del CSS sia corretto -->
 </head>
 <body>
-    <h1>View a list of all users</h1>
-    <p>Click <a th:href="@{/api/v1/user/view}">here</a> for took all users</p>
-    <h1>Update information</h1>
-    <p>Click <a th:href="@{/api/v1/user/update}">here</a> for update user information</p>
-    <h1>Delete user</h1>
-    <p>Click <a th:href="@{/user/delete/delete}">here</a> for delete user</p>
-    <br>
-    <a href="#" th:href="@{/user_admin/admin-home}">Back to Home</a>
+
+    <h1>User Menu</h1>
+
+    <div class="card-container">
+
+        <div class="card">
+            <h2>View All Users</h2>
+            <p>Click <a th:href="@{/api/v1/user/view}">here</a> to view all users</p>
+        </div>
+
+        <div class="card">
+            <h2>Update User Information</h2>
+            <p>Click <a th:href="@{/api/v1/user/update}">here</a> to update user information</p>
+        </div>
+
+        <div class="card">
+            <h2>Delete User</h2>
+            <p>Click <a th:href="@{/user/delete/delete}">here</a> to delete a user</p>
+        </div>
+
+    </div>
+
+    <div class="form-actions">
+        <a th:href="@{/user_admin/admin-home}" class="home-link">Back to Home</a>
+    </div>
+
 </body>
 </html>

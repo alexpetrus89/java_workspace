@@ -3,39 +3,48 @@
         xmlns="http://www.w3.org/1999/xhtml"
         xmlns:th="http://www.thymeleaf.org"
         xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
-<meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
 <head>
+    <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
     <title>University Management Application</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/update.css"> <!-- Aggiungi il CSS -->
 </head>
 
 <body>
-    <h1>Update existing Student</h1>
-    <form action="#" th:action="@{/api/v1/student/update}"
-        th:object="${student}" method="post">
 
-        <input type="hidden" name="_method" value="PUT" />
+    <div class="container">
+        <h1>Update student information</h1>
 
-        <label for="id">Registration Number:</label>
-        <input type="text" th:field="*{register}" title="Enter register"
-            placeholder="Your registration number"></p>
+        <form action="#" th:action="@{/api/v1/student/update}"
+            th:object="${student}" method="post">
 
-        <label for="name">Name:</label>
-        <input type="text" th:field="*{fullname}" title="Enter name"
-            placeholder="Your name"></p>
+            <input type="hidden" name="_method" value="PUT" />
 
-        <label for="email">Email:</label>
-        <input type="text" th:field="*{username}" title="Enter email"
-            placeholder="Your email"></p>
+            <label for="id">Registration Number:</label>
+            <input type="text" th:field="*{register}" title="Enter registration number" placeholder="Your registration number" required />
 
-        <label for="dob">Date of Birth:</label>
-        <input type="date" th:field="*{dob}" title="Enter date of birth"
-            placeholder="Your date of birth"></p>
+            <label for="name">Name:</label>
+            <input type="text" th:field="*{fullname}" title="Enter name" placeholder="Your name" required />
 
-        <label for="degreeCourse">Degree Course:</label>
-        <input type="text" th:field="*{degreeCourse}" title="Enter degree course"
-            placeholder="Your degree course"></p>
+            <label for="email">Email:</label>
+            <input type="email" th:field="*{username}" title="Enter email" placeholder="Your email" required />
 
-        <p><input type="submit" value="Update" /> <input type="reset" value="Reset" /></p>
-    </form>
-    <a href="#" th:href="@{/student/student-menu}">Back to Menu</a>
+            <label for="dob">Date of Birth:</label>
+            <input type="date" th:field="*{dob}" title="Enter date of birth" placeholder="Your date of birth" required />
+
+            <label for="degreeCourse">Degree Course:</label>
+            <input type="text" th:field="*{degreeCourse}" title="Enter degree course" placeholder="Your degree course" required />
+
+            <div class="form-actions">
+                <input type="submit" value="Update" class="btn primary-btn"/>
+                <input type="reset" value="Reset" class="btn secondary-btn"/>
+            </div>
+        </form>
+
+        <!-- Back to Menu Link -->
+        <div class="form-actions">
+            <a th:href="@{/student/student-menu}" class="home-link">Back to Menu</a>
+        </div>
+    </div>
+
 </body>
+</html>

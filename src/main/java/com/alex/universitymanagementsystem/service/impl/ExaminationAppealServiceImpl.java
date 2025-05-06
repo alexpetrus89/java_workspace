@@ -285,12 +285,13 @@ public class ExaminationAppealServiceImpl implements ExaminationAppealService {
      * @param degreeCourseName
      * @param professor
      * @param date
+     * @return boolean
      * @throws NullPointerException
      * @throws IllegalArgumentException
      * @throws ObjectNotFoundException
      */
     @Override
-    public void deleteExaminationAppeal(
+    public boolean deleteExaminationAppeal(
         @NonNull String courseName,
         @NonNull String degreeCourseName,
         @NonNull Professor professor,
@@ -319,12 +320,14 @@ public class ExaminationAppealServiceImpl implements ExaminationAppealService {
             Course course = courseRepository.findByNameAndDegreeCourse(courseName, degreeCourse);
             ExaminationAppeal examAppeal = examinationAppealRepository.findByCourseIdAndDate(course.getCourseId(), date);
 
-            if(!examinationAppealRepository.existsById(examAppeal.getId()))
-                throw new ObjectNotFoundException(DomainType.EXAMINATION_APPEAL);
+            if(examAppeal == null || !examinationAppealRepository.existsById(examAppeal.getId()))
+                return false;
 
             examinationAppealRepository.delete(examAppeal);
+            return true;
         } catch (DataAccessException e) {
             logger.error(DATA_ACCESS_ERROR, e);
+            return false;
         }
     }
 
@@ -416,6 +419,7 @@ public class ExaminationAppealServiceImpl implements ExaminationAppealService {
             logger.error(DATA_ACCESS_ERROR, e);
         }
     }
+
 
     /**
      * Adds an examination outcome to an examination appeal

@@ -14,12 +14,14 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.alex.universitymanagementsystem.domain.Examination;
+import com.alex.universitymanagementsystem.domain.ExaminationOutcome;
 import com.alex.universitymanagementsystem.domain.Student;
 import com.alex.universitymanagementsystem.domain.immutable.Register;
 import com.alex.universitymanagementsystem.domain.immutable.UniqueCode;
 import com.alex.universitymanagementsystem.dto.ExaminationDto;
 import com.alex.universitymanagementsystem.exception.ObjectAlreadyExistsException;
 import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
+import com.alex.universitymanagementsystem.service.impl.ExaminationOutcomeServiceImpl;
 import com.alex.universitymanagementsystem.service.impl.ExaminationServiceImpl;
 
 import jakarta.transaction.Transactional;
@@ -35,10 +37,15 @@ public class ExaminationController {
 
     // instance variable
     private final ExaminationServiceImpl examinationServiceImpl;
+    private final ExaminationOutcomeServiceImpl examinationOutcomeServiceImpl;
 
     // autowired - dependency injection - constructor
-    public ExaminationController(ExaminationServiceImpl examinationServiceImpl) {
+    public ExaminationController(
+        ExaminationServiceImpl examinationServiceImpl,
+        ExaminationOutcomeServiceImpl examinationOutcomeServiceImpl
+    ) {
         this.examinationServiceImpl = examinationServiceImpl;
+        this.examinationOutcomeServiceImpl = examinationOutcomeServiceImpl;
     }
 
 
@@ -159,6 +166,8 @@ public class ExaminationController {
                 withHonors,
                 date
             );
+            ExaminationOutcome outcome = examinationOutcomeServiceImpl.getOutcomeByCourseAndStudent(courseName, register);
+            examinationOutcomeServiceImpl.deleteExaminationOutcome(outcome);
             return new ModelAndView( "examination/create/create-result", ATTRIBUTE_EXAMINATION, examination);
         } catch (NullPointerException | IllegalArgumentException | IllegalStateException | ObjectNotFoundException | ObjectAlreadyExistsException | UnsupportedOperationException e) {
             return new ModelAndView("exception/read/error", "message", e.getMessage());

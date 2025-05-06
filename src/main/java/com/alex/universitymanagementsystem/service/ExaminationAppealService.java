@@ -95,11 +95,12 @@ public interface ExaminationAppealService {
      * @param degreeCourseName
      * @param professor
      * @param date
+     * @return boolean
      * @throws NullPointerException
      * @throws IllegalArgumentException
      * @throws ObjectNotFoundException
      */
-    void deleteExaminationAppeal(
+    boolean deleteExaminationAppeal(
         @NonNull String courseName,
         @NonNull String degreeCourseName,
         @NonNull Professor professor,

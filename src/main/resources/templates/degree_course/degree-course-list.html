@@ -1,23 +1,34 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml"
-        xmlns:th="https://www.thymeleaf.org"
-        xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
-<meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
+    xmlns:th="https://www.thymeleaf.org"
+    xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
+    <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
     <title>Degree Courses List</title>
-    <link rel="stylesheet" type="text/css" href="/static/css/degree-course-list.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/degree-course-list.css"> <!-- Assicurati che il CSS sia corretto -->
 </head>
 <body>
-    <h1>Degree Courses List</h1>
-    <table class ="table">
-        <tr>
-            <th>Name</th>
-        </tr>
-        <tr th:each="degreeCourse : ${degreeCourses}">
-            <td th:text="${degreeCourse.name}"></td>
-        </tr>
-    </table>
-    <br>
-    <a href="#" th:href="@{/degree_course/degree-course-menu}">Back to Menu</a>
+
+    <h1 class="main-title">Degree Courses List</h1>
+
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="degreeCourse : ${degreeCourses}">
+                    <td th:text="${degreeCourse.name}">Degree Course Name</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="form-actions">
+        <a th:href="@{/degree_course/degree-course-menu}" class="home-link">Back to Menu</a>
+    </div>
+
 </body>
 </html>

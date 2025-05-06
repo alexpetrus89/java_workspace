@@ -1,12 +1,12 @@
 <!DOCTYPE HTML>
 <html lang="en" xmlns:th="https://www.thymeleaf.org">
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
 <head>
-    <title>University Management Application</title>
+    <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
+    <title>Uni Journey</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/appeal-delete-result.css">
 </head>
 <body>
-	<h1>Appeal delete</h1>
+	<h1 th:text="${result}">Delete result</h1>
     <br>
     <a href="#" th:href="@{/user_professor/examinations/examination_appeal/examination-appeal-menu}">Back to Menu</a>
     <br>

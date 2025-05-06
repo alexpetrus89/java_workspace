@@ -1,19 +1,40 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml"
-        xmlns:th="https://www.thymeleaf.org"
-        xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
-<meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
+    xmlns:th="https://www.thymeleaf.org"
+    xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
+    <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
     <title>Professor Menu</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/professor-menu.css"> <!-- Aggiungi il CSS -->
 </head>
 <body>
-    <h1>View a list of Professor</h1>
-    <p>Click <a th:href="@{/api/v1/professor/view}">here</a> for took all professors</p>
-    <h1>Read Professor information</h1>
-    <p>Click <a th:href="@{read/read}">here</a> for read professor information</p>
-    <h1>Update Professor</h1>
-    <p>Click <a th:href="@{/api/v1/professor/update}">here</a> for update professor</p>
-    <br>
-    <a href="#" th:href="@{/user_admin/admin-home}">Back to Home</a>
+
+    <h1>Professor Menu</h1>
+
+    <!-- Card Container per le opzioni -->
+    <div class="card-container">
+
+        <div class="card">
+            <h2>View Professors</h2>
+            <p>Click <a th:href="@{/api/v1/professor/view}">here</a> to view all professors</p>
+        </div>
+
+        <div class="card">
+            <h2>Read Professor Information</h2>
+            <p>Click <a th:href="@{read/read}">here</a> to read professor information</p>
+        </div>
+
+        <div class="card">
+            <h2>Update Professor</h2>
+            <p>Click <a th:href="@{/api/v1/professor/update}">here</a> to update professor information</p>
+        </div>
+
+    </div>
+
+    <!-- Back to Home Link -->
+    <div class="form-actions">
+        <a th:href="@{/home}" class="home-link">Back to Home</a>
+    </div>
+
 </body>
 </html>

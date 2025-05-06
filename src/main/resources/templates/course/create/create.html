@@ -1,40 +1,62 @@
 <!DOCTYPE html>
 <html lang="en"
-        xmlns="http://www.w3.org/1999/xhtml"
-        xmlns:th="http://www.thymeleaf.org"
-        xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
-<meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
-    <title>Create new Course</title>
+    <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
+    <title>Create New Course</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/create-appeal.css"> <!-- Assicurati che esista -->
 </head>
-
 <body>
-    <h1>Create new Course</h1>
-    <form action="#" th:action="@{/api/v1/course/create}"
-        th:object="${course}" method="post">
 
-        <label for="name">Name:</label>
-        <input type="text" name="name" title="Enter course name"
-            placeholder="course name"></p>
+    <header class="main-header">
+        <h1>Create New Course</h1>
+    </header>
 
-        <label for="type">Type:</label>
-        <select id="type-select" name="type" title="Select course type">
-            <option th:each="type : ${T(com.alex.universitymanagementsystem.enum_type.CourseType).values()}" th:value="${type}" th:text="${type.name()}"></option>
-        </select></p>
+    <main class="form-container">
+        <form action="#" th:action="@{/api/v1/course/create}" th:object="${course}" method="post" class="course-form">
 
-        <label for="dob">Cfu:</label>
-        <input type="number" name="cfu" title="Enter credits"
-            placeholder="credits"></p>
+            <div class="form-group">
+                <label for="name">Course Name</label>
+                <input type="text" name="name" id="name" placeholder="Enter course name" title="Enter course name" required>
+            </div>
 
-        <label for="uniqueCode">Assign professor by Unique code:</label>
-        <input type="text" name="uniqueCode" title="Enter unique code"
-            placeholder="Professor unique code"></p>
+            <div class="form-group">
+                <label for="type-select">Course Type</label>
+                <select id="type-select" name="type" title="Select course type" required>
+                    <option value="" disabled selected>Select a type</option>
+                    <option th:each="type : ${T(com.alex.universitymanagementsystem.enum_type.CourseType).values()}"
+                            th:value="${type}"
+                            th:text="${type.name()}">Type</option>
+                </select>
+            </div>
 
-        <label for="degreeCourse">Degree Course:</label>
-        <input type="text" name="degreeCourseName" title="Enter degree course"
-            placeholder="Your degree course"></p>
+            <div class="form-group">
+                <label for="cfu">CFU</label>
+                <input type="number" name="cfu" id="cfu" placeholder="Enter CFU" title="Enter credits" required>
+            </div>
 
-        <p><input type="submit" value="Submit" /> <input type="reset" value="Reset" /></p>
-    </form>
-    <a href="#" th:href="@{/course/course-menu}">Back to Menu</a>
+            <div class="form-group">
+                <label for="uniqueCode">Professor Unique Code</label>
+                <input type="text" name="uniqueCode" id="uniqueCode" placeholder="Enter professor's unique code" title="Enter unique code" required>
+            </div>
+
+            <div class="form-group">
+                <label for="degreeCourseName">Degree Course</label>
+                <input type="text" name="degreeCourseName" id="degreeCourseName" placeholder="Enter degree course name" title="Enter degree course" required>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Submit</button>
+                <button type="reset" class="btn btn-secondary">Reset</button>
+            </div>
+        </form>
+
+        <div class="back-link">
+            <a th:href="@{/course/course-menu}">Back to Menu</a>
+        </div>
+    </main>
+
 </body>
+</html>

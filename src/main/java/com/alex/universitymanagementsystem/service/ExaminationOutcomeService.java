@@ -20,23 +20,8 @@ public interface ExaminationOutcomeService {
      * @throws IllegalArgumentException if any of the parameters is invalid
      * @throws UnsupportedOperationException if the register is not unique
      */
-    ExaminationOutcome getOutcomeByCourseAndStudent(@NonNull String Course, @NonNull String register)
+    ExaminationOutcome getOutcomeByCourseAndStudent(@NonNull String course, @NonNull String register)
         throws NullPointerException, IllegalArgumentException, UnsupportedOperationException;
-
-    /**
-     * Get a list of examination outcomes by professor unique code
-     * @param course name of the course
-     * @param uniqueCode of the professor owner of the examination appeal
-     * @return List<ExaminationOutcome> outcomes
-     * @throws NullPointerException if any of the parameters is null
-     * @throws IllegalArgumentException if any of the parameters is invalid
-     * @throws UnsupportedOperationException if the unique code is not unique
-     */
-    /*
-    List<ExaminationOutcome> getOutcomesByCourseAndProfessor(@NonNull String course, @NonNull UniqueCode uniqueCode)
-        throws NullPointerException, IllegalArgumentException, UnsupportedOperationException;
-    */
-
 
     /**
      * Save an examination outcome

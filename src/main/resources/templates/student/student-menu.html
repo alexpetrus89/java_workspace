@@ -1,22 +1,36 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml"
-        xmlns:th="https://www.thymeleaf.org"
-        xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
-<meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
+    xmlns:th="https://www.thymeleaf.org"
+    xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
+    <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
     <title>Student Menu</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/student-menu.css"> <!-- Assicurati che il percorso sia corretto -->
 </head>
 <body>
-    <h1>View a list of all Students</h1>
-    <p>Click <a th:href="@{/api/v1/student/view}">here</a> for took all students</p>
 
-    <h1>Read Student information</h1>
-    <p>Click <a th:href="@{read/read}">here</a> for read student information</p>
+    <h1 class="main-title">Student Menu</h1>
 
-    <h1>Update Student</h1>
-    <p>Click <a th:href="@{/api/v1/student/update}">here</a> for update student</p>
+    <div class="card-container">
+        <div class="card">
+            <h2>View All Students</h2>
+            <p>Click <a th:href="@{/api/v1/student/view}">here</a> to view the full list of students.</p>
+        </div>
 
-    <br>
-    <a href="#" th:href="@{/user_admin/admin-home}">Back to Home</a>
+        <div class="card">
+            <h2>Read Student Information</h2>
+            <p>Click <a th:href="@{read/read}">here</a> to read a student's information.</p>
+        </div>
+
+        <div class="card">
+            <h2>Update Student Information</h2>
+            <p>Click <a th:href="@{/api/v1/student/update}">here</a> to update student information.</p>
+        </div>
+    </div>
+
+    <div class="form-actions">
+        <a th:href="@{/user_admin/admin-home}" class="home-link">Back to Home</a>
+    </div>
+
 </body>
 </html>

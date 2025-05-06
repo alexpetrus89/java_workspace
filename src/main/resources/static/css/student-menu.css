@@ -1,0 +1,102 @@
+/* Reset base */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f7f9fc;
+    color: #333;
+}
+
+h1 {
+    text-align: center;
+    margin-top: 20px;
+    color: #2c3e50;
+}
+
+.card-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    padding: 30px;
+}
+
+.card {
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    padding: 20px;
+    width: 280px;
+    transition: transform 0.2s ease-in-out;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.card h2 {
+    margin-top: 0;
+    font-size: 1.3em;
+    color: #0074d9;
+}
+
+.card p {
+    font-size: 1em;
+    line-height: 1.5;
+}
+
+.card a {
+    color: #0074d9;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.card a:hover {
+    text-decoration: underline;
+}
+
+.logout-card {
+    border: 1px solid #e74c3c;
+}
+
+.logout-card h2 {
+    color: #e74c3c;
+}
+
+#notifications {
+    padding: 20px 40px;
+    background-color: #eef2f7;
+    border-top: 1px solid #ccc;
+}
+
+#notifications h2 {
+    margin-bottom: 10px;
+    color: #34495e;
+}
+
+#notification-list {
+    background-color: #fff;
+    padding: 10px;
+    border-radius: 6px;
+    min-height: 50px;
+    box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.1);
+}
+
+.form-actions {
+    text-align: center;
+    margin: 30px 0;
+}
+
+.home-link {
+    display: inline-block;
+    background-color: #0074d9;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.home-link:hover {
+    background-color: #005fa3;
+}

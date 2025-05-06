@@ -1,20 +1,32 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml"
-        xmlns:th="https://www.thymeleaf.org"
-        xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
-        <meta charset="utf-8" name="viewport"
-        content="width=device-width, initial-scale=1">
+    xmlns:th="https://www.thymeleaf.org"
+    xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
-    <title>Enter degree course name</title>
+    <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
+    <title>Enter Degree Course Name</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/read-student.css"> <!-- Assicurati che il CSS sia corretto -->
 </head>
 <body>
-    <h1>degree course</h1>
-    <form th:action="@{/api/v1/degree-course/courses/view}" method="get">
-        <input type="text" name="name" placeholder="Enter degree course name" />
-        <button type="submit">Search</button>
-        <input type="reset" value="Reset" />
-    </form>
-    <br>
-    <a href="#" th:href="@{/degree_course/degree-course-menu}">Back to Menu</a>
+
+    <div class="error-message" th:if="${error}">
+        Unable to find the degree course. Please check your input.
+    </div>
+
+    <h1 class="main-title">Degree Course Search</h1>
+
+    <div class="form-container">
+        <h2>Search by Degree Course Name</h2>
+        <form th:action="@{/api/v1/degree-course/courses/view}" method="get">
+            <input type="text" name="name" placeholder="Enter degree course name" required />
+            <button type="submit">Search</button>
+            <input type="reset" value="Reset" />
+        </form>
+    </div>
+
+    <div class="form-actions">
+        <a th:href="@{/degree_course/degree-course-menu}" class="home-link">Back to Menu</a>
+    </div>
+
 </body>
 </html>

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:th="https://www.thymeleaf.org"
+        xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+        <meta charset="utf-8" name="viewport"
+        content="width=device-width, initial-scale=1">
+<head>
+    <title>Uni Journey</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/outcome-result.css">
+</head>
+<body>
+
+    <div class="container">
+    <h1>Outcome</h1>
+    <div th:if="${outcome}"></div>
+    <p th:text="'course: ' + ${outcome.examinationAppeal.course.name}"></p>
+    <p th:text="'date: ' + ${outcome.examinationAppeal.date}"></p>
+    <p th:text="'grade: ' + ${outcome.grade}"></p>
+    <p th:if="${outcome.withHonors}" th:text="'with honors'"></p>
+    <br>
+    <form th:action="@{/api/v1/examination/create}" method="post">
+        <input type="hidden" name="register" th:value="${outcome.register}">
+        <input type="hidden" name="courseName" th:value="${outcome.examinationAppeal.course.name}">
+        <input type="hidden" name="degreeCourseName" th:value="${outcome.examinationAppeal.course.degreeCourse.name}">
+        <input type="hidden" name="grade" th:value="${outcome.grade}">
+        <input type="hidden" name="withHonors" th:value="${outcome.withHonors}">
+        <input type="hidden" name="date" th:value="${outcome.examinationAppeal.date}">
+        <button type="submit">Accetta voto</button>
+    </form>
+    <button type="button" onclick="window.location.href='/user_student/examinations/examination-menu';">Rifiuta voto</button>
+    </br>
+    <a href="#" th:href="@{/user_student/examinations/examination-menu}">Back to Menu</a>
+    </div>
+</body>
+</html>

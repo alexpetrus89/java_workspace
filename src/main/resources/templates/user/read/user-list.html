@@ -1,39 +1,50 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml"
-        xmlns:th="https://www.thymeleaf.org"
-        xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
-<meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
+    xmlns:th="https://www.thymeleaf.org"
+    xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
+    <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
     <title>Users List</title>
-    <link rel="stylesheet" type="text/css" href="static/css/user-list.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/user-list.css">
 </head>
 <body>
+
     <h1>Users List</h1>
-    <table>
-        <tr>
-            <th>User ID</th>
-            <th>Username</th>
-            <th>Fullname</th>
-            <th>Street</th>
-            <th>City</th>
-            <th>State</th>
-            <th>Zip</th>
-            <th>Phone</th>
-            <th>Role</th>
-        </tr>
-        <tr th:each="user : ${users}">
-            <td th:text="${user.id}">User ID</td>
-            <td th:text="${user.username}">Username</td>
-            <td th:text="${user.fullname}">Fullname</td>
-            <td th:text="${user.street}">Street</td>
-            <td th:text="${user.city}">City</td>
-            <td th:text="${user.state}">State</td>
-            <td th:text="${user.zip}">Zip</td>
-            <td th:text="${user.phone}">Phone</td>
-            <td th:text="${user.role}">Role</td>
-        </tr>
-    </table>
-    <br>
-    <a href="#" th:href="@{/user/user-menu}">Back to Menu</a>
+
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>User ID</th>
+                    <th>Username</th>
+                    <th>Fullname</th>
+                    <th>Street</th>
+                    <th>City</th>
+                    <th>State</th>
+                    <th>Zip</th>
+                    <th>Phone</th>
+                    <th>Role</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="user : ${users}">
+                    <td th:text="${user.id}">User ID</td>
+                    <td th:text="${user.username}">Username</td>
+                    <td th:text="${user.fullname}">Fullname</td>
+                    <td th:text="${user.street}">Street</td>
+                    <td th:text="${user.city}">City</td>
+                    <td th:text="${user.state}">State</td>
+                    <td th:text="${user.zip}">Zip</td>
+                    <td th:text="${user.phone}">Phone</td>
+                    <td th:text="${user.role}">Role</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="form-actions">
+        <a th:href="@{/user/user-menu}" class="home-link">Back to Menu</a>
+    </div>
+
 </body>
 </html>

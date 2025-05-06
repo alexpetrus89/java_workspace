@@ -5,7 +5,7 @@
         <meta charset="utf-8" name="viewport"
         content="width=device-width, initial-scale=1">
 <head>
-    <title>University Management Application</title>
+    <title>Uni Journey</title>
     <link rel="stylesheet" type="text/css" href="/static/css/login.css">
 </head>
 <body>
@@ -15,12 +15,12 @@
     <div th:if="${param.logout}">
         You have been logged out.
     </div>
-    <h1>UNI-JOURNEY - Login</h1>
+    <div class="title-container">
+        <h1 class="title">UNI JOURNEY Login</h1>
+    </div>
     <div th:if="${error}">
         Unable to login. Check your username and password.
     </div>
-    <p>New user? Click&nbsp;
-        <a th:href="@{/register}">here</a>&nbsp; to register.</p>
 
         <form method="POST" th:action="@{/login}" id="loginForm">
             <label for="username">Username: </label>
@@ -28,6 +28,8 @@
             <label for="password">Password: </label>
             <input type="password" name="password" id="password" /><br/>
             <input type="submit" value="Login"/>
+            <p class="register-link">New user? Click&nbsp;
+                <a class="register-link" th:href="@{/register}">here</a>&nbsp;to register.</p>
         </form>
         <div class="form-actions">
             <a href="/" class="home-link">Home</a>

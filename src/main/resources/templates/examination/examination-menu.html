@@ -1,27 +1,58 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml"
-        xmlns:th="https://www.thymeleaf.org"
-        xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
-<meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
+    xmlns:th="https://www.thymeleaf.org"
+    xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
+    <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
     <title>Examination Menu</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/examination-menu.css"> <!-- Aggiungi il CSS se necessario -->
 </head>
 <body>
-    <h1>View all exams</h1>
-    <p>Click <a th:href="@{/api/v1/examination/view}">here</a> for took all exams</p>
-    <h1>See the exams taken relating to a given course</h1>
-    <p>Click <a th:href="@{/examination/read/examination-course}">here</a> for took all exams relating to a given course</p>
-    <h1>See all exams passed by a given student</h1>
-    <p>Click <a th:href="@{/examination/read/examination-student}">here</a> for took all exams passed by a given student</p>
-    <h1>See the exams related to a subject taught by the professor</h1>
-    <p>Click <a th:href="@{/examination/read/examination-professor}">here</a> for took all exams related to a subject taught by the professor</p>
-    <h1>Create new examination</h1>
-    <p>Click <a th:href="@{/api/v1/examination/create}">here</a> for create new examination</p>
-    <h1>Update existing examination</h1>
-    <p>Click <a th:href="@{/api/v1/examination/update}">here</a> for update examination</p>
-    <h1>Delete existing examination</h1>
-    <p>Click <a th:href="@{delete/delete}">here</a> for delete examination</p>
-    <br>
-    <a href="#" th:href="@{/user_admin/admin-home}">Back to Home</a>
+
+    <h1 class="main-title">Examination Menu</h1>
+
+    <div class="card-container">
+
+        <div class="card">
+            <h2>View All Exams</h2>
+            <p>Click <a th:href="@{/api/v1/examination/view}">here</a> to view all exams</p>
+        </div>
+
+        <div class="card">
+            <h2>See Exams by Course</h2>
+            <p>Click <a th:href="@{/examination/read/examination-course}">here</a> to see exams related to a specific course</p>
+        </div>
+
+        <div class="card">
+            <h2>See Exams by Student</h2>
+            <p>Click <a th:href="@{/examination/read/examination-student}">here</a> to see exams passed by a given student</p>
+        </div>
+
+        <div class="card">
+            <h2>See Exams by Professor's Subject</h2>
+            <p>Click <a th:href="@{/examination/read/examination-professor}">here</a> to see exams related to a subject taught by the professor</p>
+        </div>
+
+        <div class="card">
+            <h2>Create New Examination</h2>
+            <p>Click <a th:href="@{/api/v1/examination/create}">here</a> to create a new examination</p>
+        </div>
+
+        <div class="card">
+            <h2>Update Existing Examination</h2>
+            <p>Click <a th:href="@{/api/v1/examination/update}">here</a> to update an existing examination</p>
+        </div>
+
+        <div class="card">
+            <h2>Delete Existing Examination</h2>
+            <p>Click <a th:href="@{delete/delete}">here</a> to delete an examination</p>
+        </div>
+
+    </div>
+
+    <div class="form-actions">
+        <a th:href="@{/user_admin/admin-home}" class="home-link">Back to Home</a>
+    </div>
+
 </body>
 </html>

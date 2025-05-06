@@ -1,48 +1,59 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml"
-        xmlns:th="https://www.thymeleaf.org"
-        xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
-<meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
+    xmlns:th="https://www.thymeleaf.org"
+    xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
-    <title>University Management Application</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uni Journey</title>
     <link rel="stylesheet" type="text/css" href="/static/css/evaluation.css">
     <script src="/static/js/ums-evaluation.js"></script>
 </head>
 <body>
-    <h1>Enter exam grade</h1>
-    <p>Student register: <span th:text="${outcome.register}"></span></p>
-    <p>Degree course: <span th:text="${outcome.examinationAppeal.degreeCourse}"></span></p>
-    <p>Course: <span th:text="${outcome.examinationAppeal.course.name}"></span></p>
-    <p>Date: <span th:text="${#temporals.format(outcome.examinationAppeal.date, 'dd-MM-yyyy')}"></span></p>
+    <div class="container">
+        <h1>Enter grade</h1>
+        <p>Student register: <span th:text="${outcome.register}"></span></p>
+        <p>Degree course: <span th:text="${outcome.examinationAppeal.degreeCourse}"></span></p>
+        <p>Course: <span th:text="${outcome.examinationAppeal.course.name}"></span></p>
+        <p>Date: <span th:text="${#temporals.format(outcome.examinationAppeal.date, 'dd-MM-yyyy')}"></span></p>
 
-    <form action="#" th:action="@{/api/v1/examination-outcome/create}" method="post">
+        <form action="#" th:action="@{/api/v1/examination-outcome/create}" method="post" th:object="${outcome}">
+            <input type="hidden" th:field="*{examinationAppeal.id}" />
+            <input type="hidden" th:field="*{examinationAppeal.degreeCourse}" />
+            <input type="hidden" th:field="*{examinationAppeal.course.name}" />
+            <input type="hidden" th:field="*{examinationAppeal.date}" />
+            <input type="hidden" th:field="*{register}" />
 
-        <label for="present">Present:</label>
-        <input type="checkbox" name="present" value="true"
-            title="Select if present"
-            onclick="showHideFields(this)" onKeyPress="handleKeyPress(event)"></p>
+            <label for="present">Present:</label>
+            <input type="checkbox" th:field="*{present}" value="true"
+                title="Select if present"
+                onclick="showHideFields(this)" onKeyPress="handleKeyPress(event)">
 
-        <div id="fields">
-            <label for="grade">Grade:</label>
-            <input type="text" name="grade" title="Enter grade"
-                placeholder="grade" th:value="${outcome.grade}"
-                oninput="checkGrade()"></p>
+            <div id="fields">
+                <label for="grade">Grade:</label>
+                <input type="text" th:field="*{grade}" title="Enter grade"
+                    placeholder="grade"
+                    oninput="checkGrade()">
 
-            <div id="withHonors" class="hidden">
-                <label for="withHonors">With honors:</label>
-                <input type="checkbox" name="withHonors" id="withHonors"
-                    value="false" checked="false"
-                    onchange="this.value = this.checked ? 'true' : 'false'"/>
-                <label for="withHonors">default value is true</label>
+                <div id="withHonors" class="hidden">
+                    <label for="withHonors">With honors:</label>
+                    <input type="checkbox" th:field="*{withHonors}" id="withHonors"
+                        value="false" checked="false"
+                        onchange="this.value = this.checked ? 'true' : 'false'"/>
+                    <label for="withHonors">default value is true</label>
+                </div>
             </div>
-        </div>
-        <input type="hidden" name="withHonors" value="false"/>
+            <input type="hidden" th:field="*{withHonors}" value="false"/>
 
-        <p><input type="submit" value="Submit" /> <input type="reset" value="Reset" /></p>
-    </form>
-    <br>
-    <a href="#" th:href="@{/api/v1/examination-outcome/view/make-outcome/{register}/{id}}">Back to check</a>
-    <br>
-    <a href="#" th:href="@{/user_professor/examinations/examination_appeal/examination-appeal-menu}">Back to Menu</a>
+            <p>
+                <input type="submit" value="Submit" />
+                <input type="reset" value="Reset" />
+            </p>
+        </form>
+
+        <a href="#" th:href="@{/api/v1/examination-appeal/view/professor}">Back to check</a>
+        <br>
+        <a href="#" th:href="@{/user_professor/examinations/examination_appeal/examination-appeal-menu}">Back to Menu</a>
+    </div>
 </body>
 </html>

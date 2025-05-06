@@ -1,30 +1,53 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml"
-        xmlns:th="https://www.thymeleaf.org"
-        xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
-<meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
+    xmlns:th="https://www.thymeleaf.org"
+    xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
-    <title>Examination Menu</title>
+    <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
+    <title>Course Menu</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/course-menu.css"> <!-- Assicurati che il file esista -->
 </head>
 <body>
-    <h1>View all courses</h1>
-    <p>Click <a th:href="@{/api/v1/course/view}">here</a> for took all exams</p>
 
-    <h1>Read Course information</h1>
-    <p>Click <a th:href="@{read/read}">here</a> for read course information</p>
+    <h1>Course menu</h1>
 
-    <h1>Create new Course</h1>
-    <p>Click <a th:href="@{/api/v1/course/create}">here</a> for create new course</p>
+    <div class="card-container">
 
-    <h1>Update Course</h1>
-    <p>Click <a th:href="@{/api/v1/course/update}">here</a> for update course</p>
+        <div class="card">
+            <h2>All courses</h2>
+            <p>Click <a th:href="@{/api/v1/course/view}">here</a> to view all courses</p>
+        </div>
 
-    <h1>Delete Course</h1>
-    <p>Click <a th:href="@{delete/delete}">here</a> for delete course</p>
+        <div class="card">
+            <h2>Course Information</h2>
+            <p>Click <a th:href="@{/api/v1/course/read}">here</a> to read course information</p>
+        </div>
 
-    <h1>See the exams taken relating to a given course</h1>
-    <p>Click <a th:href="@{/examination/read/examination-course}">here</a> for took all exams relating to a given course</p>
-    <br>
-    <a href="#" th:href="@{/user_admin/admin-home}">Back to Home</a>
+        <div class="card">
+            <h2>New course</h2>
+            <p>Click <a th:href="@{/api/v1/course/create}">here</a> to create a new course</p>
+        </div>
+
+        <div class="card">
+            <h2>Update course</h2>
+            <p>Click <a th:href="@{/api/v1/course/update}">here</a> to update course information</p>
+        </div>
+
+        <div class="card">
+            <h2>Delete course</h2>
+            <p>Click <a th:href="@{/api/v1/course/delete}">here</a> to delete a course</p>
+        </div>
+
+        <div class="card">
+            <h2>Exams related to a course</h2>
+            <p>Click <a th:href="@{/examination/read/examination-course}">here</a> to view exams for a course</p>
+        </div>
+
+    </div>
+
+    <div class="form-actions">
+        <a th:href="@{/user_admin/admin-home}" class="home-link">Back to Home</a>
+    </div>
+
 </body>
 </html>

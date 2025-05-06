@@ -171,8 +171,12 @@ public class ExaminationAppealController {
         @RequestParam LocalDate date
     ) {
         try {
-            examinationAppealServiceImpl.deleteExaminationAppeal(course, degreeCourse, professor, date);
-            return new ModelAndView("user_professor/examinations/examination_appeal/delete-result");
+            return new ModelAndView(
+                "user_professor/examinations/examination_appeal/delete-result",
+                "result",
+                examinationAppealServiceImpl.deleteExaminationAppeal(course, degreeCourse, professor, date) ?
+                    "appeal delete successfully" : "appeal not deleted"
+            );
         } catch (NullPointerException | IllegalArgumentException | ObjectNotFoundException e) {
             return new ModelAndView("exception/read/error", "message", e.getMessage());
         }

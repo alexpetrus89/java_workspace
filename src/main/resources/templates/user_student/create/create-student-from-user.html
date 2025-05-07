@@ -4,8 +4,7 @@
     xmlns:th="http://www.thymeleaf.org"
     xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
     <title>Uni Journey</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="/static/js/ums-degree-courses.js"></script>
@@ -92,8 +91,8 @@
             <label for="degreeCourse">Degree Course:</label>
             <select id="degreeCourse" name="degreeCourse" required>
                 <option value="">-- Select a Course --</option>
-                <option th:each="degreeCourse : ${degreeCourses}" 
-                        th:value="${degreeCourse.name}" 
+                <option th:each="degreeCourse : ${degreeCourses}"
+                        th:value="${degreeCourse.name}"
                         th:text="${degreeCourse.name}">
                 </option>
             </select>

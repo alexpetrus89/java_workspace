@@ -145,6 +145,7 @@ public class ExaminationAppealServiceImpl implements ExaminationAppealService {
                     .getStudents()
                     .stream()
                     .noneMatch(studentRegister -> studentRegister.equals(register)))
+                .filter(examAppeal -> examAppeal.getDate().isAfter(LocalDate.now()))
                 .map(ExaminationAppealMapper::mapToExaminationAppealDto)
                 .toList();
 

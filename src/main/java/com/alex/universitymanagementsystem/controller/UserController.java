@@ -1,5 +1,6 @@
 package com.alex.universitymanagementsystem.controller;
 
+import java.util.HashSet;
 import java.util.List;
 
 import org.springframework.lang.NonNull;
@@ -19,6 +20,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.alex.universitymanagementsystem.domain.DegreeCourse;
 import com.alex.universitymanagementsystem.domain.Professor;
 import com.alex.universitymanagementsystem.domain.Student;
+import com.alex.universitymanagementsystem.domain.StudyPlan;
 import com.alex.universitymanagementsystem.domain.User;
 import com.alex.universitymanagementsystem.domain.immutable.FiscalCode;
 import com.alex.universitymanagementsystem.exception.ObjectAlreadyExistsException;
@@ -128,6 +130,8 @@ public class UserController {
             Student student = new Student(builder, passwordEncoder);
             // set the degree course
             student.setDegreeCourse(degreeCourse);
+            // set the study plan
+            student.setStudyPlan(new StudyPlan(student, "ORD270", new HashSet<>(degreeCourse.getCourses())));
             // save
             studentServiceImpl.addNewStudent(student);
             return new ModelAndView("user_student/create/student-result", "student", student);

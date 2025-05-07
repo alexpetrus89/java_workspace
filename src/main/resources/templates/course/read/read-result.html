@@ -1,14 +1,25 @@
-<div th:if="${course}">
-    <p th:text="'COURSE FOUND:'"></p>
-    <p th:text="'name: ' + ${course.name}"></p>
-    <p th:text="'type: ' + ${course.type.name()}"></p>
-    <p th:text="'professor: ' + ${course.professor?.fullname}"></p>
-    <p th:text="'degree course: ' + ${course.degreeCourse.name}"></p>
-</div>
-<div th:if="${errorMessage}">
-    <p th:text="${errorMessage}"></p>
-</div>
-<br>
-<a href="#" th:href="@{/course/read/read}">Read Again</a>
-<br>
-<a href="#" th:href="@{/course/course-menu}">Back to Menu</a>
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:th="https://www.thymeleaf.org"
+    xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+    <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
+    <title>Uni Journey</title>
+</head>
+<body>
+    <div th:if="${course}">
+        <p th:text="'COURSE FOUND:'"></p>
+        <p th:text="'name: ' + ${course.name}"></p>
+        <p th:text="'type: ' + ${course.type.name()}"></p>
+        <p th:text="'professor: ' + ${course.professor?.fullname}"></p>
+        <p th:text="'degree course: ' + ${course.degreeCourse.name}"></p>
+    </div>
+    <div th:if="${errorMessage}">
+        <p th:text="${errorMessage}"></p>
+    </div>
+    <br>
+    <a href="#" th:href="@{/course/read/read}">Read Again</a>
+    <br>
+    <a href="#" th:href="@{/course/course-menu}">Back to Menu</a>
+</body>
+</html>

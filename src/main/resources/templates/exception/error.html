@@ -2,15 +2,16 @@
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml"
     xmlns:th="http://www.thymeleaf.org"
     xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
-<meta charset="utf-8" name="viewport"
-    content="width=device-width, initial-scale=1">
 <head>
-    <title>University Management Application</title>
+    <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
+    <title>Uni Journey</title>
 </head>
 <body>
     <h1 th:text="${title}">Error View</h1>
     <h1 th:text="${errorMessage}">An error occurred</h1>
     <h1 th:text="${status}">Status:</h1>
     <p th:each="element : ${stackTrace}" th:text="${element}">Stack trace:</p>
+    <br>
+    <p><a href="javascript:history.back()">Go back</a></p>
 </body>
 </html>

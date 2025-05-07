@@ -23,6 +23,7 @@ import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
 import com.alex.universitymanagementsystem.mapper.StudentMapper;
 import com.alex.universitymanagementsystem.repository.DegreeCourseRepository;
 import com.alex.universitymanagementsystem.repository.StudentRepository;
+import com.alex.universitymanagementsystem.repository.StudyPlanRepository;
 import com.alex.universitymanagementsystem.repository.UserRepository;
 import com.alex.universitymanagementsystem.service.StudentService;
 
@@ -41,16 +42,19 @@ public class StudentServiceImpl implements StudentService {
 	private final StudentRepository studentRepository;
 	private final UserRepository userRepository;
 	private final DegreeCourseRepository degreeCourseRepository;
+	private final StudyPlanRepository studyPlanRepository;
 
 	// autowired - dependency injection - constructor
 	public StudentServiceImpl(
 		StudentRepository studentRepository,
 		UserRepository userRepository,
-		DegreeCourseRepository degreeCourseRepository
+		DegreeCourseRepository degreeCourseRepository,
+		StudyPlanRepository studyPlanRepository
 	) {
 		this.studentRepository = studentRepository;
 		this.userRepository = userRepository;
 		this.degreeCourseRepository = degreeCourseRepository;
+		this.studyPlanRepository = studyPlanRepository;
 	}
 
 
@@ -165,6 +169,8 @@ public class StudentServiceImpl implements StudentService {
                 throw new ObjectAlreadyExistsException(DomainType.STUDENT);
 			// save the student
 			studentRepository.saveAndFlush(student);
+			// save the study plan
+			studyPlanRepository.saveAndFlush(student.getStudyPlan());
 		} catch (DataAccessException e) {
 			logger.error(DATA_ACCESS_ERROR + " while adding new student", e);
 		}

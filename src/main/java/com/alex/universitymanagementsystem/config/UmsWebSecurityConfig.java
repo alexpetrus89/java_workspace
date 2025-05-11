@@ -65,7 +65,6 @@ public class UmsWebSecurityConfig implements Serializable {
 	 */
     @Bean
 	SecurityFilterChain securityFilterChain(HttpSecurity http) throws AccessDeniedException {
-
 		try {
 			http.authorizeHttpRequests(requests ->
 				requests.requestMatchers(
@@ -93,13 +92,9 @@ public class UmsWebSecurityConfig implements Serializable {
 				.permitAll()
 				.requestMatchers(
 					// user
-					"/user_admin/admin-home",
-					"/user/user-menu",
-					"/user/update/update",
-					"/user/delete/delete",
+					"/user_admin/**",
 					"/api/v1/user",
 					"/api/v1/user/delete",
-
 					// student
 					"/api/v1/student/view",
 					"/api/v1/student/read/read",
@@ -111,77 +106,61 @@ public class UmsWebSecurityConfig implements Serializable {
 					"/api/v1/professor/update/update",
 
 					// course
-					"course/course-menu",
-					"api/v1/course/view",
-					"api/v1/course/read/read",
-					"api/v1/course/create/create",
-					"api/v1/course/update/update",
-					"api/v1/course/delete/delete",
+					"/course/course-menu",
+					"/api/v1/course/view",
+					"/api/v1/course/read/read",
+					"/api/v1/course/create/create",
+					"/api/v1/course/update/update",
+					"/api/v1/course/delete/delete",
 
 					// degree course
-					"degree_course/degree-course-menu",
-					"api/v1/degree-course/view",
-					"degree_course/read/read-courses",
-					"degree_course/read/read-professors",
-					"degree_course/read/read-students",
-					"api/v1/degree-course/professors/view",
-					"api/v1/degree-course/students/view",
+					"/degree_course/degree-course-menu",
+					"/degree_course/read/read-courses",
+					"/degree_course/read/read-professors",
+					"/degree_course/read/read-students",
+					"/api/v1/degree-course/view",
+					"/api/v1/degree-course/professors/view",
+					"/api/v1/degree-course/students/view",
 
 					// examination
-					"examination/examination-menu",
-					"api/v1/examination/view",
-					"api/v1/examination/update/update",
-					"api/v1/examination/delete/delete",
-					"api/v1/examination/read/course-name",
-					"api/v1/examination/read/student-register",
-					"api/v1/examination/read/professor-unique-code"
+					"/examination/examination-menu",
+					"/api/v1/examination/view",
+					"/api/v1/examination/update/update",
+					"/api/v1/examination/delete/delete",
+					"/api/v1/examination/read/course-name",
+					"/api/v1/examination/read/student-register",
+					"/api/v1/examination/read/professor-unique-code"
 				)
 				.hasRole(ADMIN)
 				.requestMatchers(
             		// URL accessibili solo agli utenti con ruolo STUDENT o ADMIN
-					"/user_student/student-home",
-					"/user_student/study_plan/study_plan_courses",
-					"/user_student/study_plan/study_plan_modify",
-					"/user_student/examinations/examination_appeal/calendar",
-					"/user_student/examinations/examination_appeal/booked-result",
-					"/user_student/examinations/examination_appeal/delete-booked-result",
-					"/user_student/examinations/examination_appeal/outcome",
-					"/user_student/examinations/examination_appeal/outcome-result",
-					"/user_student/examinations/examination_appeal/student-absent",
-					"/user_student/update/update",
+					"/user_student/**",
+					"/api/v1/user/create/student",
+					"/api/v1/user/update/student",
 					"/api/v1/study_plan/view",
-					"/api/v1/study_plan/courses",
+					"/api/v1/study_plan/modify",
+					"/api/v1/study_plan/change",
 					"/api/v1/degree-course/courses/view",
 					"/api/v1/degree-course/courses/ajax",
+					"/api/v1/examination/create/create",
 					"/api/v1/examination-appeal/available/student",
 					"/api/v1/examination-appeal/booked/student",
 					"/api/v1/examination-appeal/booked/{id}",
 					"/api/v1/examination-appeal/delete-booked/{id}",
-					"/api/v1/user/create/student",
-					"/api/v1/user/update/student",
-					"/api/v1/examination-outcome/view/course",
-					"/api/v1/examination/create/create"
+					"/api/v1/examination-outcome/view/course"
 				)
 				.hasAnyRole(STUDENT, ADMIN)
 				.requestMatchers(
 					// URL accessibili solo agli utenti con ruolo PROFESSOR o ADMIN
-					"/user_professor/professor-home",
-					"/user_professor/examinations/examination_appeal/examination-appeal-menu",
-					"/user_professor/examinations/examination_appeal/view/professor",
-					"/user_professor/examinations/examination_appeal/create-examination-appeal",
-					"/user_professor/examinations/examination_appeal/create-result",
-					"/user_professor/examinations/examination_appeal/students-booked",
-					"/user_professor/examinations/examination_appeal/evaluation",
-					"/user_professor/examinations/examination_appeal/outcome-result",
-					"/user_professor/update/update",
+					"/user_professor/**",
 					"/api/v1/user/create/professor",
 					"/api/v1/user/update/professor",
 					"/api/v1/course/view/professor",
-					"/api/v1/course/get/{courseId}",
-					"/api/v1/examination-appeal/create",
+					"/api/v1/course/read/{courseId}",
 					"/api/v1/examination-appeal/make",
+					"/api/v1/examination-appeal/create",
 					"/api/v1/examination-appeal/delete",
-					"/api/v1/examination-outcome/make-outcome/{register}/{id}",
+					"/api/v1/examination-outcome/make/{register}/{id}",
 					"/api/v1/examination-outcome/notify"
 				)
 				.hasAnyRole(PROFESSOR, ADMIN)

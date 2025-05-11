@@ -14,9 +14,9 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.alex.universitymanagementsystem.domain.Student;
 import com.alex.universitymanagementsystem.domain.immutable.Register;
-import com.alex.universitymanagementsystem.dto.ChangeCoursesDto;
 import com.alex.universitymanagementsystem.dto.CourseDto;
 import com.alex.universitymanagementsystem.dto.DegreeCourseDto;
+import com.alex.universitymanagementsystem.dto.ModifyCoursesDto;
 import com.alex.universitymanagementsystem.dto.StudyPlanDto;
 import com.alex.universitymanagementsystem.exception.ObjectAlreadyExistsException;
 import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
@@ -71,14 +71,13 @@ public class StudyPlanController {
      * @return a ModelAndView object for the "user_student/study_plan/study_plan_modify"
      * view with the ChangeCoursesDto object as the model
      */
-    @GetMapping(path = "/courses")
-    public ModelAndView getCourses(@AuthenticationPrincipal Student student) {
+    @GetMapping(path = "/modify")
+    public ModelAndView modifyStudyPlan(@AuthenticationPrincipal Student student) {
 
-        // Retrieve all courses and degree courses and the courses of the student
+        // Retrieve all degree courses, student's degree course, student's study plan and security token
         Set<DegreeCourseDto> degreeCourses = degreeCourseServiceImpl.getDegreeCourses();
         String degreeCourse = student.getDegreeCourse().getName();
         Set<CourseDto> studyPlan= studyPlanServiceImpl.getCoursesByRegister(student.getRegister());
-        // Retrieve authorization
         String token = SecurityContextHolder
             .getContext()
             .getAuthentication()
@@ -88,7 +87,7 @@ public class StudyPlanController {
             .findFirst()
             .orElseThrow(() -> new RuntimeException("Token not found"));
 
-        ChangeCoursesDto courses = new ChangeCoursesDto(
+        ModifyCoursesDto courses = new ModifyCoursesDto(
             degreeCourses,
             degreeCourse,
             studyPlan,
@@ -107,7 +106,7 @@ public class StudyPlanController {
      * @return ModelAndView
      */
     @PutMapping(path = "/change")
-    public ModelAndView changeCourse(
+    public ModelAndView changeCourses(
         @AuthenticationPrincipal Student student,
         @RequestParam String degreeCourseOfNewCourse,
         @RequestParam String degreeCourseOfOldCourse,

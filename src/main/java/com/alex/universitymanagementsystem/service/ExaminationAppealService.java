@@ -10,7 +10,6 @@ import com.alex.universitymanagementsystem.domain.Professor;
 import com.alex.universitymanagementsystem.domain.immutable.CourseId;
 import com.alex.universitymanagementsystem.domain.immutable.Register;
 import com.alex.universitymanagementsystem.domain.immutable.UniqueCode;
-import com.alex.universitymanagementsystem.dto.ExaminationAppealDto;
 import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
 
 
@@ -40,7 +39,7 @@ public interface ExaminationAppealService {
      * @throws IllegalArgumentException if the register is blank
      * @throws UnsupportedOperationException if the register is not unique
      */
-    List<ExaminationAppealDto> getExaminationAppealsAvailable(@NonNull Register register)
+    List<ExaminationAppeal> getExaminationAppealsAvailable(@NonNull Register register)
         throws NullPointerException, IllegalArgumentException, UnsupportedOperationException;
 
 

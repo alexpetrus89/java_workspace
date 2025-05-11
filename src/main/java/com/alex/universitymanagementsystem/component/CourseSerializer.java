@@ -5,6 +5,7 @@ import java.io.IOException;
 import org.springframework.boot.jackson.JsonComponent;
 
 import com.alex.universitymanagementsystem.dto.CourseDto;
+import com.alex.universitymanagementsystem.exception.JsonProcessingException;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -57,7 +58,7 @@ public class CourseSerializer extends JsonSerializer<CourseDto> {
         try {
             this.serialize(courseDto, generator, this.provider);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new JsonProcessingException("parsing error", e);
         }
 
     }

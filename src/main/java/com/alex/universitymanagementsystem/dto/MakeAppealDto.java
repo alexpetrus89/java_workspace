@@ -3,7 +3,7 @@ package com.alex.universitymanagementsystem.dto;
 import java.time.LocalDate;
 import java.util.List;
 
-public class FinalizeAppealDto {
+public class MakeAppealDto {
 
     // instance variables
     private Long appealId;
@@ -11,7 +11,7 @@ public class FinalizeAppealDto {
     private List<StudentDto> students;
 
     // constructor
-    public FinalizeAppealDto(Long appealId, LocalDate date, List<StudentDto> students) {
+    public MakeAppealDto(Long appealId, LocalDate date, List<StudentDto> students) {
         this.appealId = appealId;
         this.date = date;
         this.students = students;

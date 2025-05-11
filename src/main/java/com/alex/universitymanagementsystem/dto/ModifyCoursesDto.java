@@ -2,7 +2,7 @@ package com.alex.universitymanagementsystem.dto;
 
 import java.util.Set;
 
-public class ChangeCoursesDto {
+public class ModifyCoursesDto {
 
     // instance variables
     private final Set<DegreeCourseDto> degreeCourses;
@@ -11,7 +11,7 @@ public class ChangeCoursesDto {
     private final String token;
 
     // constructor
-    public ChangeCoursesDto(
+    public ModifyCoursesDto(
         Set<DegreeCourseDto> degreeCourses,
         String degreeCourse,
         Set<CourseDto> studyPlan,

@@ -34,6 +34,8 @@ public class ExaminationController {
     private static final String ATTRIBUTE_EXAMINATION = "examination";
     private static final String ATTRIBUTE_EXAMINATIONS = "examinations";
     private static final String VIEW_PATH = "examination/examination-list";
+    private static final String EXCEPTION_VIEW_NAME = "exception/read/error";
+    private static final String EXCEPTION_MESSAGE = "message";
 
     // instance variable
     private final ExaminationServiceImpl examinationServiceImpl;
@@ -73,7 +75,7 @@ public class ExaminationController {
             List<ExaminationDto> examinations = examinationServiceImpl.getExaminationsByCourseName(name);
             return new ModelAndView(VIEW_PATH, ATTRIBUTE_EXAMINATIONS, examinations);
         } catch (NullPointerException | IllegalArgumentException | ObjectNotFoundException | UnsupportedOperationException  e) {
-            return new ModelAndView("exception/read/error", "message", e.getMessage());
+            return new ModelAndView(EXCEPTION_VIEW_NAME, EXCEPTION_MESSAGE, e.getMessage());
         }
     }
 
@@ -93,9 +95,9 @@ public class ExaminationController {
             Register studRegister = student != null ? student.getRegister() : new Register(register);
 
             List<ExaminationDto> examinations = examinationServiceImpl.getExaminationsByStudentRegister(studRegister);
-            return new ModelAndView("user_student/examinations/examination-list", ATTRIBUTE_EXAMINATIONS, examinations);
+            return new ModelAndView("user_student/examinations/examinations", ATTRIBUTE_EXAMINATIONS, examinations);
         } catch (NullPointerException | IllegalArgumentException | ObjectNotFoundException | UnsupportedOperationException  e) {
-            return new ModelAndView("exception/read/error", "message", e.getMessage());
+            return new ModelAndView(EXCEPTION_VIEW_NAME, EXCEPTION_MESSAGE, e.getMessage());
         }
     }
 
@@ -112,7 +114,7 @@ public class ExaminationController {
             List<ExaminationDto> examinations = examinationServiceImpl.getExaminationsByProfessorUniqueCode(new UniqueCode(uniqueCode));
             return new ModelAndView(VIEW_PATH, ATTRIBUTE_EXAMINATIONS, examinations);
         } catch (NullPointerException | IllegalArgumentException | ObjectNotFoundException | UnsupportedOperationException  e) {
-            return new ModelAndView("exception/read/error", "message", e.getMessage());
+            return new ModelAndView(EXCEPTION_VIEW_NAME, EXCEPTION_MESSAGE, e.getMessage());
         }
     }
 
@@ -170,7 +172,7 @@ public class ExaminationController {
             examinationOutcomeServiceImpl.deleteExaminationOutcome(outcome);
             return new ModelAndView( "examination/create/create-result", ATTRIBUTE_EXAMINATION, examination);
         } catch (NullPointerException | IllegalArgumentException | IllegalStateException | ObjectNotFoundException | ObjectAlreadyExistsException | UnsupportedOperationException e) {
-            return new ModelAndView("exception/read/error", "message", e.getMessage());
+            return new ModelAndView(EXCEPTION_VIEW_NAME, EXCEPTION_MESSAGE, e.getMessage());
         }
     }
 
@@ -217,7 +219,7 @@ public class ExaminationController {
             );
             return new ModelAndView("examination/create/create-result", ATTRIBUTE_EXAMINATION, examination);
         } catch (NullPointerException | IllegalArgumentException | ObjectNotFoundException | UnsupportedOperationException  e) {
-            return new ModelAndView("exception/read/error", "message", e.getMessage());
+            return new ModelAndView(EXCEPTION_VIEW_NAME, EXCEPTION_MESSAGE, e.getMessage());
         }
     }
 
@@ -227,13 +229,6 @@ public class ExaminationController {
      * @param register the student's registration
      * @param courseName the course name
      * @return ModelAndView
-     * @throws ObjectNotFoundException if the student or course does not exist
-     * @throws IllegalArgumentException if the course name is null or empty
-     *                                  or the register is null or empty
-     * @throws UnsupportedOperationException if the course name is not unique
-     *                                   or if the register is not unique
-     * @throws NullPointerException if the course name is null or the register
-     *                              is null
      */
     @DeleteMapping(path = "/delete")
     public ModelAndView deleteExamination(
@@ -248,7 +243,7 @@ public class ExaminationController {
             );
             return new ModelAndView("examination/delete/delete-result");
         } catch (NullPointerException | IllegalArgumentException | ObjectNotFoundException | UnsupportedOperationException  e) {
-            return new ModelAndView("exception/read/error", "message", e.getMessage());
+            return new ModelAndView(EXCEPTION_VIEW_NAME, EXCEPTION_MESSAGE, e.getMessage());
         }
     }
 

@@ -17,7 +17,6 @@ import com.alex.universitymanagementsystem.dto.DegreeCourseDto;
 import com.alex.universitymanagementsystem.dto.ProfessorDto;
 import com.alex.universitymanagementsystem.dto.StudentDto;
 import com.alex.universitymanagementsystem.exception.JsonProcessingException;
-import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
 import com.alex.universitymanagementsystem.service.impl.DegreeCourseServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -27,6 +26,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @RestController
 @RequestMapping(path = "api/v1/degree-course")
 public class DegreeCourseController {
+
+    // constants
+    private static final String EXCEPTION_VIEW_NAME = "exception/read/error";
+    private static final String EXCEPTION_MESSAGE = "message";
 
     // instance variables
     private final DegreeCourseServiceImpl degreeCourseServiceImpl;
@@ -48,31 +51,19 @@ public class DegreeCourseController {
         return new ModelAndView("degree_course/degree-course-list", "degreeCourses", degreeCourses);
     }
 
-
     /**
      * retrieves all courses of a given degree course
      * @param name the name of the degree course
      * @return ModelAndView
-     * @throws ObjectNotFoundException if no degree course with the
-     *                                 given name exists
-     * @throws NullPointerException if the name is null
-     * @throws IllegalArgumentException if the name is empty
-     * @throws UnsupportedOperationException if the name is not unique
-     * @throws ClassCastException if the name is not a string
      */
     @GetMapping(path = "/courses/view")
     public ModelAndView getCourses(@RequestParam String name) {
-        List<CourseDto> courses = degreeCourseServiceImpl.getCourses(name.toUpperCase());
-        return new ModelAndView("degree_course/course-list", "courses",courses);
-    }
-
-    /**
-     * retrieves all degree courses for particular ajax request
-     * @return a set of data transfer objects of degree courses
-     */
-    @GetMapping(path = "/ajax")
-    public ResponseEntity<Set<DegreeCourseDto>> getDegreeCoursesForAjaxRequest() {
-        return ResponseEntity.ok(degreeCourseServiceImpl.getDegreeCourses());
+        try {
+            List<CourseDto> courses = degreeCourseServiceImpl.getCourses(name.toUpperCase());
+            return new ModelAndView("degree_course/course-list", "courses",courses);
+        } catch (NullPointerException | IllegalArgumentException | UnsupportedOperationException | ClassCastException e) {
+            return new ModelAndView(EXCEPTION_VIEW_NAME, EXCEPTION_MESSAGE, e.getMessage());
+        }
     }
 
 
@@ -80,20 +71,14 @@ public class DegreeCourseController {
      * retrieves all professors of a given degree course
      * @param name the name of the degree course
      * @return ModelAndView
-     * @throws ObjectNotFoundException if no degree course with the given name exists
-     * @throws NullPointerException if the name is null
-     * @throws IllegalArgumentException if the name is empty
-     * @throws UnsupportedOperationException if the name is not unique
      */
     @GetMapping(path = "/professors/view")
     public ModelAndView getProfessors(@RequestParam String name) {
-
         try {
             List<ProfessorDto> professors = degreeCourseServiceImpl.getProfessors(name.toUpperCase());
             return new ModelAndView("degree_course/professor-with-course-list","professors", professors);
-
         } catch (NullPointerException | IllegalArgumentException | UnsupportedOperationException  e) {
-            return new ModelAndView("exception/read/error", "message", e.getMessage());
+            return new ModelAndView(EXCEPTION_VIEW_NAME, EXCEPTION_MESSAGE, e.getMessage());
         }
 
     }
@@ -103,37 +88,46 @@ public class DegreeCourseController {
      * retrieves all students of a given degree course
      * @param name the name of the degree course
      * @return ModelAndView
-     * @throws ObjectNotFoundException if no degree course with the given name exists
-     * @throws NullPointerException if the name is null
-     * @throws IllegalArgumentException if the name is empty
-     * @throws UnsupportedOperationException if the name is not unique
      */
     @GetMapping(path = "/students/view")
     public ModelAndView getStudents(@RequestParam String name) {
-        // retrieve the students
-        List<StudentDto> students = degreeCourseServiceImpl.getStudents(name.toUpperCase());
-        return new ModelAndView(
-            "degree_course/student-list",
-            "students",
-            students
-        );
+        try {
+            List<StudentDto> students = degreeCourseServiceImpl.getStudents(name.toUpperCase());
+            return new ModelAndView("degree_course/student-list","students", students);
+        } catch (NullPointerException | IllegalArgumentException | UnsupportedOperationException e) {
+            return new ModelAndView(EXCEPTION_VIEW_NAME, EXCEPTION_MESSAGE, e.getMessage());
+        }
     }
 
 
     /**
-     * retrieves all courses of a given degree course for particular ajax request
+     * retrieves all degree courses for ajax request
+     * @return http response entity
+     */
+    @GetMapping(path = "/ajax")
+    public ResponseEntity<Set<DegreeCourseDto>> getDegreeCoursesForAjaxRequest() {
+        return ResponseEntity.ok(degreeCourseServiceImpl.getDegreeCourses());
+    }
+
+
+    /**
+     * retrieves all courses of a given degree course for ajax request
      * @param name
-     * @return a list of data transfer objects of courses
+     * @return String - a JSON string
      * @throws JsonProcessingException if the object cannot be serialized to JSON
      */
     @GetMapping(path = "/courses/ajax")
-    public String getStringOfSerializedCourses(@RequestParam String name) throws JsonProcessingException {
+    public String getJsonOfCourses(@RequestParam String name) throws JsonProcessingException {
+        try {
         // retrieve the courses
-        List<CourseDto> courses = degreeCourseServiceImpl.getCourses(name.toUpperCase());
-        return "{\"degreeCourseName\": [" + courses
-            .stream()
-            .map(this::serializeCourseDto)
-            .collect(Collectors.joining(",")) + "]}";
+            List<CourseDto> courses = degreeCourseServiceImpl.getCourses(name.toUpperCase());
+            return "{\"degreeCourseName\": [" + courses
+                .stream()
+                .map(this::serializeCourseDto)
+                .collect(Collectors.joining(",")) + "]}";
+        } catch (NullPointerException | IllegalArgumentException | UnsupportedOperationException | ClassCastException e) {
+            return "{\"message\": \"" + e.getMessage() + "\"}";
+        }
     }
 
 
@@ -141,7 +135,6 @@ public class DegreeCourseController {
         try {
             return new ObjectMapper().writeValueAsString(courseDto);
         } catch (IOException e) {
-            // Handle the exception, for example, by throwing a JsonProcessingException
             throw new JsonProcessingException("Error serializing CourseDto", e);
         }
     }

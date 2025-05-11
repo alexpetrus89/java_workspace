@@ -5,31 +5,28 @@
 <head>
     <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
     <title>Uni Journey</title>
-    <link rel="stylesheet" type="text/css" href="/static/css/delete-examination-appeal.css"> <!-- Assicurati che il percorso del CSS sia corretto -->
+    <link rel="stylesheet" type="text/css" href="/static/css/delete-examination-appeal.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="/static/js/ums-examination-appeals.js" type="module"></script>
+</head>
 </head>
 <body>
     <header class="main-header">
         <h1>UNI JOURNEY - Delete appeal</h1>
     </header>
+    <h1 th:text="${title}">Select examination appeal to delete</h1>
     <div class="form-container">
-        <h1>Delete existing appeal</h1>
         <form action="#" th:action="@{/api/v1/examination-appeal/delete}" method="post">
             <input type="hidden" name="_method" value="DELETE" />
 
-            <div class="form-group">
-                <label for="course">Course:</label>
-                <input type="text" name="course" title="Enter course name" placeholder="Course name" required />
-            </div>
-
-            <div class="form-group">
-                <label for="degreeCourse">Degree Course:</label>
-                <input type="text" name="degreeCourse" title="Enter degree course name" placeholder="Degree course name" required />
-            </div>
-
-            <div class="form-group">
-                <label for="date">Date:</label>
-                <input type="date" name="date" title="Enter exam date" placeholder="Appeal date" required />
-            </div>
+            <label for="appeal">Appeal to delete :</label>
+            <select name="appeal" id="appeal">
+                <option value="">Select appeal</option>
+                <option th:each="appeal : ${deleteAppeal.appeals}"
+                        th:value="${appeal.id}"
+                        th:text="${appeal.course + ' - ' + appeal.degreeCourse + ' - ' appeal.date}">Appeal</option>
+            </select>
+            </p>
 
             <div class="form-actions">
                 <button type="submit" class="btn btn-primary">Submit</button>

@@ -30,6 +30,10 @@ import com.alex.universitymanagementsystem.service.impl.ExaminationOutcomeServic
 @RequestMapping(path = "api/v1/examination-outcome")
 public class ExaminationOutcomeController {
 
+    // constants
+    private static final String EXCEPTION_VIEW_NAME = "exception/read/error";
+    private static final String EXCEPTION_MESSAGE = "message";
+
     // instance variables
     private final ExaminationOutcomeServiceImpl examinationOutcomeServiceImpl;
     private final ExaminationAppealServiceImpl  examinationAppealServiceImpl;
@@ -58,10 +62,10 @@ public class ExaminationOutcomeController {
         try {
             ExaminationOutcome outcome = examinationOutcomeServiceImpl.getOutcomeByCourseAndStudent(course.toLowerCase(), student.getRegister().toString());
             return outcome != null ?
-                new ModelAndView("user_student/examinations/examination_appeal/outcome-result", "outcome", outcome) :
-                new ModelAndView("user_student/examinations/examination_appeal/student-absent");
+                new ModelAndView("user_student/examinations/examination_outcome/outcome-result", "outcome", outcome) :
+                new ModelAndView("user_student/examinations/examination_outcome/student-absent");
         } catch (NullPointerException | IllegalArgumentException | UnsupportedOperationException e) {
-            return new ModelAndView("exception/read/error", "message", e.getMessage());
+            return new ModelAndView(EXCEPTION_VIEW_NAME, EXCEPTION_MESSAGE, e.getMessage());
         }
     }
 
@@ -72,14 +76,14 @@ public class ExaminationOutcomeController {
      * @param id of the examination appeal
      * @return ModelAndView
      */
-    @GetMapping(path = "/make-outcome/{register}/{id}")
+    @GetMapping(path = "/make/{register}/{id}")
     public ModelAndView makeExaminationOutcome(@PathVariable String register, @PathVariable Long id) {
         try {
             ExaminationAppeal examAppeal = examinationAppealServiceImpl.getExaminationAppealById(id);
             ExaminationOutcome outcome = new ExaminationOutcome(examAppeal, register);
-            return new ModelAndView("user_professor/examinations/examination_appeal/evaluation", "outcome", outcome);
+            return new ModelAndView("user_professor/examinations/examination_outcome/evaluation", "outcome", outcome);
         } catch (NullPointerException e) {
-            return new ModelAndView("exception/read/error", "message", e.getMessage());
+            return new ModelAndView(EXCEPTION_VIEW_NAME, EXCEPTION_MESSAGE, e.getMessage());
         }
     }
 
@@ -93,13 +97,13 @@ public class ExaminationOutcomeController {
     public ModelAndView addNewOutcome(@ModelAttribute ExaminationOutcome outcome) {
         try {
             return new ModelAndView(
-                "user_professor/examinations/examination_appeal/outcome-result",
+                "user_professor/examinations/examination_outcome/outcome-result",
                 "result",
                 examinationOutcomeServiceImpl.addNewExaminationOutcome(outcome) != null?
                     "outcome created successfully" : "outcome not created"
             );
         } catch (NullPointerException | IllegalArgumentException | ObjectAlreadyExistsException e) {
-            return new ModelAndView("exception/read/error", "message", e.getMessage());
+            return new ModelAndView(EXCEPTION_VIEW_NAME, EXCEPTION_MESSAGE, e.getMessage());
         }
     }
 
@@ -108,9 +112,9 @@ public class ExaminationOutcomeController {
     public ModelAndView deleteExaminationOutcome(@PathVariable ExaminationOutcome outcome) {
         try {
             examinationOutcomeServiceImpl.deleteExaminationOutcome(outcome);
-            return new ModelAndView("user_professor/examinations/examination_appeal/delete-result");
+            return new ModelAndView("user_professor/examinations/examination_appeal/delete/delete-result");
         } catch (NullPointerException | IllegalArgumentException | UnsupportedOperationException e) {
-            return new ModelAndView("exception/read/error", "message", e.getMessage());
+            return new ModelAndView(EXCEPTION_VIEW_NAME, EXCEPTION_MESSAGE, e.getMessage());
         }
     }
 

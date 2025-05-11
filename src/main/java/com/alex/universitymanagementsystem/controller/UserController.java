@@ -39,7 +39,8 @@ public class UserController {
 
     // constants
     private static final String BUILDER = "builder";
-    private static final String ERROR_PATH = "/exception/error";
+    private static final String EXCEPTION_PATH = "/exception/error";
+    private static final String EXCEPTION_MESSAGE = "message";
 
     // instance variables
     private final UserServiceImpl userServiceImpl;
@@ -67,7 +68,7 @@ public class UserController {
     @GetMapping(path = "/view")
     public ModelAndView getAllUsers() {
         List<User> users = userServiceImpl.getUsers();
-        return new ModelAndView("user/read/user-list", "users", users);
+        return new ModelAndView("user_admin/read/user-list", "users", users);
     }
 
 
@@ -77,7 +78,7 @@ public class UserController {
      */
     @GetMapping(path = "/update")
     public ModelAndView updateUserAndReturnView() {
-        return new ModelAndView("user/update/update", BUILDER, new Builder());
+        return new ModelAndView("user_admin/update/update", BUILDER, new Builder());
     }
 
     /**
@@ -110,7 +111,7 @@ public class UserController {
             Builder builder = (Builder) request.getSession().getAttribute(BUILDER);
             return userServiceImpl.addNewUser(new RegistrationForm(builder).toUser(passwordEncoder));
         } catch (NullPointerException e) {
-            return "forward:" + ERROR_PATH;
+            return "forward:" + EXCEPTION_PATH;
         }
     }
 
@@ -136,9 +137,9 @@ public class UserController {
             studentServiceImpl.addNewStudent(student);
             return new ModelAndView("user_student/create/student-result", "student", student);
         } catch (ObjectAlreadyExistsException e) {
-            return new ModelAndView("exception/creation/student-already-exists", "message", e.getMessage());
+            return new ModelAndView("exception/creation/student-already-exists", EXCEPTION_MESSAGE, e.getMessage());
         } catch (ObjectNotFoundException e) {
-            return new ModelAndView("exception/creation/degree-course-not-found", "message", e.getMessage());
+            return new ModelAndView("exception/creation/degree-course-not-found", EXCEPTION_MESSAGE, e.getMessage());
         }
     }
 
@@ -162,9 +163,9 @@ public class UserController {
             professorServiceImpl.addNewProfessor(professor);
             return new ModelAndView("user_professor/create/professor-result", "professor", professor);
         } catch (ObjectAlreadyExistsException e) {
-            return new ModelAndView("exception/creation/professor-already-exists", "message", e.getMessage());
+            return new ModelAndView("exception/creation/professor-already-exists", EXCEPTION_MESSAGE, e.getMessage());
         } catch (IllegalArgumentException | UnsupportedOperationException | ObjectNotFoundException e) {
-            return new ModelAndView("exception/creation/fiscal-code-not-found", "message", e.getMessage());
+            return new ModelAndView("exception/creation/fiscal-code-not-found", EXCEPTION_MESSAGE, e.getMessage());
         }
     }
 
@@ -178,13 +179,13 @@ public class UserController {
     public ModelAndView updateUser(@ModelAttribute Builder builder) {
         try {
             return new ModelAndView(
-                "user/update/update-result",
+                "user_admin/update/update-result",
                 "result",
                 userServiceImpl.updateUser(new RegistrationForm(builder)) != null?
                     "User updated successfully" : "User not updated"
             );
         } catch (IllegalArgumentException e) {
-            return new ModelAndView("exception/update/invalid-parameters", "message", e.getMessage());
+            return new ModelAndView("exception/update/invalid-parameters", EXCEPTION_MESSAGE, e.getMessage());
         }
     }
 
@@ -199,15 +200,15 @@ public class UserController {
     public ModelAndView deleteUser(@NonNull @RequestParam("id") String userId) {
         try {
             return new ModelAndView(
-                "user/delete/delete-result",
+                "user_admin/delete/delete-result",
                 "result",
                 userServiceImpl.deleteUser(userId)?
                     "User delete successfully" : "User not deleted"
             );
         } catch (UsernameNotFoundException e) {
-            return new ModelAndView("exception/object-not-found", "message", e.getMessage());
+            return new ModelAndView("exception/object-not-found", EXCEPTION_MESSAGE, e.getMessage());
         } catch (IllegalArgumentException e) {
-            return new ModelAndView("exception/update/invalid-parameters", "message", e.getMessage());
+            return new ModelAndView("exception/update/invalid-parameters", EXCEPTION_MESSAGE, e.getMessage());
         }
     }
 

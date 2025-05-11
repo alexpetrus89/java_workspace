@@ -29,7 +29,7 @@
                     <td th:text="${student.username}">Email</td>
                     <td th:text="${student.degreeCourse.name}">Degree Course</td>
                     <td>
-                        <a th:href="@{/api/v1/examination-outcome/make-outcome/{register}/{id}(register=${student.register.register}, id=${appeal.appealId})}"
+                        <a th:href="@{/api/v1/examination-outcome/make/{register}/{id}(register=${student.register.register}, id=${appeal.appealId})}"
                             th:if="${appeal.date lt T(java.time.LocalDate).now()}">Evaluation</a>
                     </td>
                 </tr>

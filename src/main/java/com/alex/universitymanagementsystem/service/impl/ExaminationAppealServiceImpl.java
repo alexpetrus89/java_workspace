@@ -21,11 +21,9 @@ import com.alex.universitymanagementsystem.domain.Professor;
 import com.alex.universitymanagementsystem.domain.immutable.CourseId;
 import com.alex.universitymanagementsystem.domain.immutable.Register;
 import com.alex.universitymanagementsystem.domain.immutable.UniqueCode;
-import com.alex.universitymanagementsystem.dto.ExaminationAppealDto;
 import com.alex.universitymanagementsystem.dto.ExaminationDto;
 import com.alex.universitymanagementsystem.enum_type.DomainType;
 import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
-import com.alex.universitymanagementsystem.mapper.ExaminationAppealMapper;
 import com.alex.universitymanagementsystem.mapper.ExaminationMapper;
 import com.alex.universitymanagementsystem.repository.CourseRepository;
 import com.alex.universitymanagementsystem.repository.DegreeCourseRepository;
@@ -108,7 +106,7 @@ public class ExaminationAppealServiceImpl implements ExaminationAppealService {
      * @throws UnsupportedOperationException if the register is not unique
      */
     @Override
-    public List<ExaminationAppealDto> getExaminationAppealsAvailable(@NonNull Register register)
+    public List<ExaminationAppeal> getExaminationAppealsAvailable(@NonNull Register register)
         throws NullPointerException, IllegalArgumentException, UnsupportedOperationException
     {
 
@@ -146,7 +144,6 @@ public class ExaminationAppealServiceImpl implements ExaminationAppealService {
                     .stream()
                     .noneMatch(studentRegister -> studentRegister.equals(register)))
                 .filter(examAppeal -> examAppeal.getDate().isAfter(LocalDate.now()))
-                .map(ExaminationAppealMapper::mapToExaminationAppealDto)
                 .toList();
 
         } catch (DataAccessException e) {

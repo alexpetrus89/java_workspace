@@ -161,6 +161,9 @@ public class StudyPlanServiceImpl implements StudyPlanService {
             if(!courseToAdd.getCfu().equals(courseToRemove.getCfu()))
                 throw new IllegalArgumentException("courses needs to have same cfu");
 
+            if(courseToAdd.getName().equals(courseToRemove.getName()))
+                throw new IllegalArgumentException("you cannot replace a course with an identical one");
+
             // if the course to remove has examinations, throw exception
             if(examinationRepository
                 .findExaminationsByStudent(register)

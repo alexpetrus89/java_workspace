@@ -7,7 +7,7 @@
     <title>Uni Journey</title>
     <link rel="stylesheet" type="text/css" href="/static/css/study_plan_modify.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="/static/js/ums-modify.js" type="module"></script>
+    <script src="/static/js/ums-modify-study-plan.js" type="module"></script>
 </head>
 <body>
     <header class="main-header">
@@ -34,6 +34,8 @@
         </select>
         </p>
 
+        <input type="hidden" name="degreeCourseOfOldCourse" id="degreeCourseOfOldCourse" th:value="${courses.studyPlan[0].degreeCourse.name}"/>
+
         <label for="courseToRemove">Select course to remove:</label>
         <select name="courseToRemove" id="courseToRemove">
             <option value="">Select a course</option>
@@ -41,8 +43,6 @@
             th:text="${course.name}"></option>
         </select>
         </p>
-
-        <input type="hidden" name="degreeCourseOfOldCourse" id="degreeCourseOfOldCourse" th:value="${courses.studyPlan[0].degreeCourse.name}"/>
 
         <input type="submit" value="Submit"/>
         <input type="reset" value="Reset"/>

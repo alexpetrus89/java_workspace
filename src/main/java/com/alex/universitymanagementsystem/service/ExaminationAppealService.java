@@ -114,7 +114,7 @@ public interface ExaminationAppealService {
      * @throws IllegalArgumentException if any of the parameters is invalid
      * @throws UnsupportedOperationException if the register is not unique
      */
-    ExaminationAppeal bookExaminationAppeal(@NonNull Long id, @NonNull Register register)
+    ExaminationAppeal addStudentToAppeal(@NonNull Long id, @NonNull Register register)
         throws NullPointerException, IllegalArgumentException, UnsupportedOperationException;
 
 
@@ -127,7 +127,7 @@ public interface ExaminationAppealService {
      * @throws UnsupportedOperationException
      * @throws IllegalStateException
      */
-    void deleteBookedExaminationAppeal(@NonNull Long id, @NonNull Register register)
+    void removeStudentFromAppeal(@NonNull Long id, @NonNull Register register)
         throws NullPointerException, IllegalArgumentException, UnsupportedOperationException, IllegalStateException;
 
 

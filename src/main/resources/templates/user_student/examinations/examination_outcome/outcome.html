@@ -6,18 +6,29 @@
     <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
     <title>Uni Journey</title>
     <link rel="stylesheet" type="text/css" href="/static/css/outcome.css">
-
 </head>
 <body>
-    <div class="container">
-        <h1>Search outcome</h1>
-        <form th:action="@{/api/v1/examination-outcome/view/course}" method="get">
-            <input type="text" name="course" placeholder="Enter course name" />
-            <button type="submit">Search</button>
-            <input type="reset" value="Reset" />
+
+    <div class="form-container">
+        <h1>Select appeal</h1>
+        <form th:action="@{/api/v1/examination-outcome/outcome}" method="get">
+
+            <select id="id" name="id"  title="Select an appeal">
+            <option value="">appeals</option>
+                <option th:if="${outcomes != null}"
+                    th:each="outcome : ${outcomes}" th:value="${outcome.id}" th:with="text=${outcome.examinationAppeal.degreeCourse + ' - ' + outcome.examinationAppeal.course.name + ' - ' + outcome.examinationAppeal.date}" th:text="${text}">Outcome</option>
+            </select>
+            </p>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Submit</button>
+                <button type="reset" class="btn btn-secondary">Reset</button>
+            </div>
         </form>
         <br>
-        <a href="#" th:href="@{/user_student/examinations/examination-menu}">Back to Menu</a>
+        <div class="link-container">
+            <a href="#" th:href="@{/user_student/examinations/examination-menu}">Back to Menu</a>
+        </div>
     </div>
 </body>
 </html>

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:th="https://www.thymeleaf.org"
+    xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+    <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
+    <title>Uni Journey</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/confirm-refusal.css">
+</head>
+<body>
+
+    <div class="container">
+    <h1>Confirm refusal</h1>
+    <p>Are you shore you want to refuse the grade?</p>
+    <form th:action="@{/api/v1/examination-outcome/confirm-refusal}" method="post">
+        <button type="submit" name="confirm" value="yes">Yes</button>
+        <button type="submit" name="confirm" value="no">No</button>
+    </form>
+    </div>
+</body>
+</html>

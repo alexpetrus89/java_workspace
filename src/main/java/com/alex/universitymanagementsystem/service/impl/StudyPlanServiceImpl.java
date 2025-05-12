@@ -178,7 +178,7 @@ public class StudyPlanServiceImpl implements StudyPlanService {
                 .stream()
                 .filter(exam -> exam.getCourse().getCourseId().equals(courseToRemove.getCourseId()))
                 .forEach(examAppeal -> examinationAppealServiceImpl
-                    .deleteBookedExaminationAppeal(examAppeal.getId(), register));
+                    .removeStudentFromAppeal(examAppeal.getId(), register));
 
             // add the new course
             student.getStudyPlan().addCourse(courseToAdd);

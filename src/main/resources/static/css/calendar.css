@@ -9,8 +9,15 @@ body {
     flex-direction: column;
     align-items: center;
     max-width: 100%;
-    padding-left: 20px;  /* Spazio a sinistra */
-    padding-right: 20px; /* Spazio a destra */
+}
+
+/* Intestazione */
+.main-header {
+    background-color: #004080;
+    width: 100%;
+    padding: 20px 0;
+    color: white;
+    text-align: center;
 }
 
 /* Container for the whole page */
@@ -23,14 +30,6 @@ body {
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     margin-bottom: 20px; /* Added spacing below the table */
-}
-
-/* Title */
-h1 {
-    text-align: center;
-    color: #0074d9;
-    font-size: 1.8rem;  /* Reduced font size */
-    margin-bottom: 15px;  /* Reduced space between the title and table */
 }
 
 /* Table Styling */

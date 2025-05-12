@@ -310,28 +310,6 @@ public class ExaminationAppealServiceImpl implements ExaminationAppealService {
 
 
     /**
-     * Deletes expired examination appeals
-     */
-    @Scheduled(fixedDelay = 86400000) // ogni giorno
-    public void cleanExpiredAppeals() {
-        LocalDate today = LocalDate.now();
-        LocalDate expirationDateOneMonth = today.minusMonths(1);
-
-        try {
-            List<ExaminationAppeal> expiredExaminationAppealsOneMonth = examinationAppealRepository
-                .findByDateLessThan(expirationDateOneMonth);
-
-            expiredExaminationAppealsOneMonth
-                .stream()
-                .filter(ExaminationAppeal::deleteIfExpiredAndNoStudents)
-                .forEach(examinationAppealRepository::delete);
-        } catch (DataAccessException e) {
-            logger.error(DATA_ACCESS_ERROR, e);
-        }
-    }
-
-
-    /**
      * Adds a student to an examination appeal
      * @param id examination appeal ids
      * @param register student register
@@ -341,7 +319,7 @@ public class ExaminationAppealServiceImpl implements ExaminationAppealService {
      * @throws UnsupportedOperationException if the register is not unique
      */
     @Override
-    public ExaminationAppeal bookExaminationAppeal(@NonNull Long id, @NonNull Register register)
+    public ExaminationAppeal addStudentToAppeal(@NonNull Long id, @NonNull Register register)
         throws NullPointerException, IllegalArgumentException, UnsupportedOperationException
     {
         if(id.toString().isBlank())
@@ -375,7 +353,7 @@ public class ExaminationAppealServiceImpl implements ExaminationAppealService {
      * @throws IllegalStateException if the student is not in the examination appeal
      */
     @Override
-    public void deleteBookedExaminationAppeal(@NonNull Long id, @NonNull Register register)
+    public void removeStudentFromAppeal(@NonNull Long id, @NonNull Register register)
         throws NullPointerException, IllegalArgumentException, UnsupportedOperationException, IllegalStateException
     {
         if(id.toString().isBlank())
@@ -409,6 +387,30 @@ public class ExaminationAppealServiceImpl implements ExaminationAppealService {
     public void addExaminationOutcome(@NonNull ExaminationOutcome outcome) {
         try {
             examinationOutcomeRepository.saveAndFlush(outcome);
+        } catch (DataAccessException e) {
+            logger.error(DATA_ACCESS_ERROR, e);
+        }
+    }
+
+
+
+    /**
+     * Deletes expired examination appeals
+     */
+    @Scheduled(fixedDelay = 86400000) // ogni giorno
+    private void cleanExpiredAppeals() {
+        LocalDate today = LocalDate.now();
+        // clean instance every mouth
+        LocalDate expirationDateOneMonth = today.minusMonths(1);
+
+        try {
+            List<ExaminationAppeal> expiredExaminationAppealsOneMonth = examinationAppealRepository
+                .findByDateLessThan(expirationDateOneMonth);
+
+            expiredExaminationAppealsOneMonth
+                .stream()
+                .filter(ExaminationAppeal::deleteIfExpiredAndNoStudents)
+                .forEach(examinationAppealRepository::delete);
         } catch (DataAccessException e) {
             logger.error(DATA_ACCESS_ERROR, e);
         }

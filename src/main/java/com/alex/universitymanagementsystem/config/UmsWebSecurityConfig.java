@@ -147,7 +147,9 @@ public class UmsWebSecurityConfig implements Serializable {
 					"/api/v1/examination-appeal/booked/student",
 					"/api/v1/examination-appeal/booked/{id}",
 					"/api/v1/examination-appeal/delete-booked/{id}",
-					"/api/v1/examination-outcome/view/course"
+					"/api/v1/examination-outcome/view",
+					"/api/v1/examination-outcome/outcome",
+					"/api/v1/examination-outcome/confirm-refusal"
 				)
 				.hasAnyRole(STUDENT, ADMIN)
 				.requestMatchers(

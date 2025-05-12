@@ -1,5 +1,7 @@
 package com.alex.universitymanagementsystem.controller;
 
+import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -23,6 +25,8 @@ import com.alex.universitymanagementsystem.domain.Student;
 import com.alex.universitymanagementsystem.exception.ObjectAlreadyExistsException;
 import com.alex.universitymanagementsystem.service.impl.ExaminationAppealServiceImpl;
 import com.alex.universitymanagementsystem.service.impl.ExaminationOutcomeServiceImpl;
+
+import jakarta.servlet.http.HttpServletResponse;
 
 
 
@@ -53,17 +57,30 @@ public class ExaminationOutcomeController {
 
     /**
      * View an examination outcome
-     * @param course of the student
      * @param student of the student
      * @return ModelAndView
      */
-    @GetMapping(path = "/view/course")
-    public ModelAndView getExaminationOutcome(@RequestParam String course, @AuthenticationPrincipal Student student) {
+    @GetMapping(path = "/view")
+    public ModelAndView getExaminationOutcomes(@AuthenticationPrincipal Student student) {
         try {
-            ExaminationOutcome outcome = examinationOutcomeServiceImpl.getOutcomeByCourseAndStudent(course.toLowerCase(), student.getRegister().toString());
-            return outcome != null ?
-                new ModelAndView("user_student/examinations/examination_outcome/outcome-result", "outcome", outcome) :
-                new ModelAndView("user_student/examinations/examination_outcome/student-absent");
+            List<ExaminationOutcome> outcomes = examinationOutcomeServiceImpl.getStudentOutcomes(student.getRegister().toString());
+            return new ModelAndView("user_student/examinations/examination_outcome/outcome", "outcomes", outcomes);
+        } catch (NullPointerException | IllegalArgumentException | UnsupportedOperationException e) {
+            return new ModelAndView(EXCEPTION_VIEW_NAME, EXCEPTION_MESSAGE, e.getMessage());
+        }
+    }
+
+
+    /**
+     * Get an examination outcome
+     * @param outcome
+     * @return ModelAndView
+     */
+    @GetMapping(path = "/outcome")
+    public ModelAndView getOutcome(@RequestParam Long id) {
+        try {
+            ExaminationOutcome outcome = examinationOutcomeServiceImpl.getOutcomeById(id);
+            return new ModelAndView("user_student/examinations/examination_outcome/outcome-result", "outcome", outcome);
         } catch (NullPointerException | IllegalArgumentException | UnsupportedOperationException e) {
             return new ModelAndView(EXCEPTION_VIEW_NAME, EXCEPTION_MESSAGE, e.getMessage());
         }
@@ -82,7 +99,7 @@ public class ExaminationOutcomeController {
             ExaminationAppeal examAppeal = examinationAppealServiceImpl.getExaminationAppealById(id);
             ExaminationOutcome outcome = new ExaminationOutcome(examAppeal, register);
             return new ModelAndView("user_professor/examinations/examination_outcome/evaluation", "outcome", outcome);
-        } catch (NullPointerException e) {
+        } catch (NullPointerException | IllegalArgumentException e) {
             return new ModelAndView(EXCEPTION_VIEW_NAME, EXCEPTION_MESSAGE, e.getMessage());
         }
     }
@@ -94,7 +111,7 @@ public class ExaminationOutcomeController {
      * @return ModelAndView
      */
     @PostMapping(path = "/create")
-    public ModelAndView addNewOutcome(@ModelAttribute ExaminationOutcome outcome) {
+    public ModelAndView addNewExaminationOutcome(@ModelAttribute ExaminationOutcome outcome) {
         try {
             return new ModelAndView(
                 "user_professor/examinations/examination_outcome/outcome-result",
@@ -136,11 +153,30 @@ public class ExaminationOutcomeController {
     }
 
 
-    @GetMapping("/notify-websocket")
+    @GetMapping(path = "/notify-websocket")
     public String notifyWebSocket() {
-    // Invia il messaggio tramite WebSocket
-    simpMessagingTemplate.convertAndSend("/topic/notify", "La tua valutazione è stata pubblicata!");
-    return "";
+        // Invia il messaggio tramite WebSocket
+        simpMessagingTemplate.convertAndSend("/topic/notify", "La tua valutazione è stata pubblicata!");
+        return "";
+    }
+
+
+    /**
+     * Handle the confirmation of refusal
+     * @param confirm of the refusal
+     * @param model
+     * @return String
+     */
+    @PostMapping(path = "confirm-refusal")
+    public void handleRefusalConfirmation(@RequestParam("confirm") String confirm, HttpServletResponse response)
+        throws IOException
+    {
+        if (confirm.equals("yes"))
+        // Reindirizza alla pagina di conferma del rifiuto
+            response.sendRedirect("/user_student/examinations/examination_outcome/refusal-confirmed");
+        else
+        // Reindirizza alla pagina di outcome-result
+            response.sendRedirect("/api/v1/examination-outcome/view");
     }
 
 }

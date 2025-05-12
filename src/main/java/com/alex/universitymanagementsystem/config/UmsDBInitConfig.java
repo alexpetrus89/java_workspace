@@ -1714,6 +1714,9 @@ public class UmsDBInitConfig implements Serializable {
         Course economia = courseRepository
             .findByNameAndDegreeCourse("elementi di economia", degreeCourseRepository.findByName(INGEGNERIA_GESTIONALE));
 
+        Course sicurezza = courseRepository
+            .findByNameAndDegreeCourse("sicurezza degli impianti industriali", degreeCourseRepository.findByName(INGEGNERIA_GESTIONALE));
+
         List<ExaminationAppeal> examinationAppeals = new ArrayList<>();
 
         examinationAppeals.add(
@@ -1772,9 +1775,19 @@ public class UmsDBInitConfig implements Serializable {
             )
         );
 
+        examinationAppeals.add(
+            new ExaminationAppeal(
+                sicurezza,
+                "sicurezza degli impianti industriali",
+                LocalDate.of(2025, 05, 03)
+            )
+        );
+
         // retrieve students
         Student nino = studentRepository.findByRegister(new Register("123456"));
         Student raffo = studentRepository.findByRegister(new Register("555555"));
+
+        // add students
         ExaminationAppeal gpAppeal = new ExaminationAppeal(gp, "crm, pert", LocalDate.of(2025, 04, 30));
         gpAppeal.addStudent(nino.getRegister());
         gpAppeal.addStudent(raffo.getRegister());
@@ -1784,6 +1797,11 @@ public class UmsDBInitConfig implements Serializable {
         infAppeal.addStudent(nino.getRegister());
         infAppeal.addStudent(raffo.getRegister());
         examinationAppeals.add(infAppeal);
+
+        ExaminationAppeal sicurezzaAppeal = new ExaminationAppeal(sicurezza, "sicurezza degli impianti industriali", LocalDate.of(2025, 05, 07));
+        sicurezzaAppeal.addStudent(nino.getRegister());
+        sicurezzaAppeal.addStudent(raffo.getRegister());
+        examinationAppeals.add(sicurezzaAppeal);
 
         if(examinationAppeals.isEmpty())
             throw new IllegalArgumentException("examination appeal list is empty");

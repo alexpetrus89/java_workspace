@@ -10,8 +10,9 @@
 </head>
 <body>
     <header class="main-header">
-        <h1>UNI JOURNEY - Delete appeal</h1>
+        <h1>Delete appeal</h1>
     </header>
+
     <h1 th:text="${title}">Select examination appeal to delete</h1>
     <div class="form-container">
         <form action="#" th:action="@{/api/v1/examination-appeal/delete}" method="post">
@@ -20,8 +21,8 @@
             <label for="appeal">Appeal to delete :</label>
             <select id="appeal" name="id" >
                 <option value="">Select appeal</option>
-                <option th:if="${deleteAppeal != null}"
-                    th:each="appeal : ${deleteAppeal.appeals}" th:value="${appeal.id}" th:with="text=${appeal.course.name + ' - ' + appeal.degreeCourse + ' - ' + appeal.date}" th:text="${text}">Appeal</option>
+                <option th:if="${appeals != null}"
+                    th:each="appeal : ${appeals}" th:value="${appeal.id}" th:with="text=${appeal.course.name + ' - ' + appeal.degreeCourse + ' - ' + appeal.date}" th:text="${text}">Appeal</option>
             </select>
             </p>
 

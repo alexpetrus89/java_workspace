@@ -150,7 +150,7 @@ public class ExaminationController {
      * @return a ModelAndView containing the details of the newly added examination
      */
     @PostMapping(path = "/create")
-    public ModelAndView createNewExamination(
+    public ModelAndView createNewExaminationByAdmin(
         @RequestParam String register,
         @RequestParam String courseName,
         @RequestParam String degreeCourseName,

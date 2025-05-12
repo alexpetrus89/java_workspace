@@ -3,9 +3,7 @@ package com.alex.universitymanagementsystem.controller;
 import java.time.LocalDate;
 import java.util.List;
 
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,7 +18,6 @@ import com.alex.universitymanagementsystem.domain.Professor;
 import com.alex.universitymanagementsystem.domain.Student;
 import com.alex.universitymanagementsystem.domain.immutable.CourseId;
 import com.alex.universitymanagementsystem.dto.CourseDto;
-import com.alex.universitymanagementsystem.dto.DeleteAppealDto;
 import com.alex.universitymanagementsystem.dto.MakeAppealDto;
 import com.alex.universitymanagementsystem.dto.StudentDto;
 import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
@@ -59,7 +56,7 @@ public class ExaminationAppealController {
      * @return ModelAndView
      */
     @GetMapping(path = "/available/student")
-    public ModelAndView getExaminationAppealsAvailableByStudent(@AuthenticationPrincipal Student student) {
+    public ModelAndView getExaminationAppealsAvailableForStudent(@AuthenticationPrincipal Student student) {
         try {
             List<ExaminationAppeal> examAppeals = examinationAppealServiceImpl.getExaminationAppealsAvailable(student.getRegister());
             return new ModelAndView("user_student/examinations/examination_appeal/available-calendar",EXAMINATION_APPEALS, examAppeals);
@@ -145,17 +142,7 @@ public class ExaminationAppealController {
     public ModelAndView deleteExaminationAppeal(@AuthenticationPrincipal Professor professor) {
         try {
             List<ExaminationAppeal> appeals = examinationAppealServiceImpl.getExaminationAppealsByProfessor(professor.getUniqueCode());
-            String token = SecurityContextHolder
-                .getContext()
-                .getAuthentication()
-                .getAuthorities()
-                .stream()
-                .map(GrantedAuthority::getAuthority)
-                .findFirst()
-                .orElseThrow(() -> new RuntimeException("Token not found"));
-
-            DeleteAppealDto deleteAppeal = new DeleteAppealDto(appeals, token);
-            return new ModelAndView("user_professor/examinations/examination_appeal/delete/delete-examination-appeal", "deleteAppeal", deleteAppeal);
+            return new ModelAndView("user_professor/examinations/examination_appeal/delete/delete-examination-appeal", "appeals", appeals);
         } catch (NullPointerException | IllegalArgumentException | UnsupportedOperationException e) {
             return new ModelAndView(EXCEPTION_VIEW_NAME, EXCEPTION_MESSAGE, e.getMessage());
         }
@@ -222,7 +209,7 @@ public class ExaminationAppealController {
     @PostMapping(path = "/booked/{id}")
     public ModelAndView bookExaminationAppeal(@AuthenticationPrincipal Student student, @PathVariable Long id) {
         try {
-            ExaminationAppeal examAppeal = examinationAppealServiceImpl.bookExaminationAppeal(id, student.getRegister());
+            ExaminationAppeal examAppeal = examinationAppealServiceImpl.addStudentToAppeal(id, student.getRegister());
             return new ModelAndView("user_student/examinations/examination_appeal/booked-result", EXAMINATION_APPEAL, examAppeal);
         } catch (NullPointerException | IllegalArgumentException | UnsupportedOperationException e) {
             return new ModelAndView(EXCEPTION_VIEW_NAME, EXCEPTION_MESSAGE, e.getMessage());
@@ -238,7 +225,7 @@ public class ExaminationAppealController {
     @DeleteMapping(path = "delete-booked/{id}")
     public ModelAndView deleteBookedExaminationAppeal(@AuthenticationPrincipal Student student, @PathVariable Long id) {
         try {
-            examinationAppealServiceImpl.deleteBookedExaminationAppeal(id, student.getRegister());
+            examinationAppealServiceImpl.removeStudentFromAppeal(id, student.getRegister());
             return new ModelAndView("user_student/examinations/examination_appeal/delete-booked-result");
         } catch (NullPointerException | IllegalArgumentException | IllegalStateException | UnsupportedOperationException e) {
             return new ModelAndView(EXCEPTION_VIEW_NAME, EXCEPTION_MESSAGE, e.getMessage());

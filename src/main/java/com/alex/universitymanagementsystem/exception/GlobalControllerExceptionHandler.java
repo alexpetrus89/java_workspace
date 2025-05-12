@@ -39,7 +39,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.support.MethodArgumentNotValidException;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.validation.BindException;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -53,8 +56,12 @@ import jakarta.servlet.http.HttpServletRequest;
 @RestControllerAdvice
 public class GlobalControllerExceptionHandler {
 
+    // logger
     private static final Logger logger =
         LoggerFactory.getLogger(GlobalControllerExceptionHandler.class);
+
+    // constants
+    private static final String EXCEPTION_VIEW_NAME = "exception/read/error";
 
     /**
      * Handles all uncaught exceptions and returns a ResponseEntity with a status of Internal Server Error (500)
@@ -66,11 +73,11 @@ public class GlobalControllerExceptionHandler {
     public ResponseEntity<String> handleException(Exception e) {
         // Handle the exception and generate a custom error response
         logger.error("An error occurred", e);
-        String errorMessage = "A generic exception occurred: " + e.getMessage();
+        String message = "A generic exception occurred: " + e.getMessage();
 
         return ResponseEntity
             .status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .body(errorMessage);
+            .body(message);
     }
 
 
@@ -85,11 +92,11 @@ public class GlobalControllerExceptionHandler {
     public ResponseEntity<String> handleNoResourceFoundException(NoResourceFoundException e) {
         // Handle the specific exception and generate a custom error response
         logger.error("Resource not found", e);
-        String errorMessage = "Resource not found, NON TROVA LA RISORSA: " + e.getMessage();
+        String message = "Resource not found, NON TROVA LA RISORSA: " + e.getMessage();
 
         return ResponseEntity
             .status(HttpStatus.NOT_FOUND)
-            .body(errorMessage);
+            .body(message);
     }
 
 
@@ -104,11 +111,11 @@ public class GlobalControllerExceptionHandler {
     public ResponseEntity<String> handleHtmlParseException(Exception e) {
         // Handle the specific exception and generate a custom error response
         logger.error("Error during HTML parsing", e);
-        String errorMessage = "Error during HTML parsing, HAI FATTO QUALCHE ERRORE IN UN FILE .HTML: " + e.getMessage();
+        String message = "Error during HTML parsing, HAI FATTO QUALCHE ERRORE IN UN FILE .HTML: " + e.getMessage();
 
         return ResponseEntity
             .status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .body(errorMessage);
+            .body(message);
     }
 
 
@@ -116,11 +123,11 @@ public class GlobalControllerExceptionHandler {
     public ResponseEntity<String> handleAccessDeniedException(AccessDeniedException e) {
         // handle the specific exception and generate a custom error response
         logger.error("Access denied", e);
-        String errorMessage = "Access denied, NON HAI I PERMESSI: " + e.getMessage();
+        String message = "Access denied, NON HAI I PERMESSI: " + e.getMessage();
 
         return ResponseEntity
             .status(HttpStatus.METHOD_NOT_ALLOWED)
-            .body(errorMessage);
+            .body(message);
     }
 
 
@@ -136,11 +143,11 @@ public class GlobalControllerExceptionHandler {
     public ResponseEntity<String> handleNoHandlerFoundException(NoHandlerFoundException e) {
         // Handle the specific exception and generate a custom error response
         logger.error("No handler found for request", e);
-        String errorMessage = "No controller/handler found for request: " + e.getMessage();
+        String message = "No controller/handler found for request: " + e.getMessage();
 
         return ResponseEntity
             .status(HttpStatus.NOT_FOUND)
-            .body(errorMessage);
+            .body(message);
     }
 
 
@@ -155,11 +162,11 @@ public class GlobalControllerExceptionHandler {
     public ResponseEntity<String> handleInternalServerError(InternalServerError e) {
         // Handle the specific exception and generate a custom error response
         logger.error("Internal server error", e);
-        String errorMessage = "Internal server error: " + e.getMessage();
+        String message = "Internal server error: " + e.getMessage();
 
         return ResponseEntity
             .status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .body(errorMessage);
+            .body(message);
     }
 
 
@@ -184,7 +191,6 @@ public class GlobalControllerExceptionHandler {
     }
 
 
-
     /**
      * Handles exceptions that occur when Assertion error is throw.
      * Returns a ModelAndView with a view name of "exception/assertion/assertion" and
@@ -201,6 +207,29 @@ public class GlobalControllerExceptionHandler {
     }
 
 
+    /**
+     * Handles exceptions that occur when a method argument is not valid.
+     * Returns a ModelAndView with a view name of "exception/validation/validation" and
+     * a model containing the error message.
+     * The exception is logged at the ERROR level.
+     */
+    @ExceptionHandler({MethodArgumentNotValidException.class, BindException.class})
+    public ModelAndView handleValidationException(Exception e) {
+        // Handle the specific exception and generate a custom error response
+        logger.error("Validation error", e);
+        String message = "An error occurred: " + getErrorMessage(e);
+        // You can customize the view name and model attributes as needed
+
+        return new ModelAndView(EXCEPTION_VIEW_NAME, "message", message);
+    }
+
+
+    /**
+     * Handles exceptions that occur when a servlet request parameter is missing.
+     * Returns a ModelAndView with a view name of "exception/read/error" and
+     * a model containing the error message.
+     * The exception is logged at the ERROR level.
+     */
     @ExceptionHandler(MissingServletRequestParameterException.class)
     public ModelAndView handlerMissingServletRequestParameter(MissingServletRequestParameterException e) {
         // Handle the specific exception and generate a custom error response
@@ -210,5 +239,22 @@ public class GlobalControllerExceptionHandler {
         return new ModelAndView("exception/read/error", "message", message);
     }
 
+
+
+
+    private String getErrorMessage(Exception e) {
+        if (e instanceof MethodArgumentNotValidException) {
+            MethodArgumentNotValidException ex = (MethodArgumentNotValidException) e;
+            BindingResult bindingResult = ex.getBindingResult();
+            return (bindingResult != null) ?
+                bindingResult.getAllErrors().get(0).getDefaultMessage() :
+                "An error occurred";
+        } else if (e instanceof BindException) {
+            BindException ex = (BindException) e;
+            return ex.getBindingResult().getAllErrors().get(0).getDefaultMessage();
+        } else {
+            return "An error occurred";
+        }
+    }
 
 }

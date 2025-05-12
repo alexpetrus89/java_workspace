@@ -141,6 +141,14 @@ public class UmsMvcConfig implements WebMvcConfigurer, Serializable {
                   .setViewName("/user_student/examinations/examination_outcome/outcome-result");
 
             registry
+                  .addViewController("/user_student/examinations/examination_outcome/confirm-refusal")
+                  .setViewName("/user_student/examinations/examination_outcome/confirm-refusal");
+
+            registry
+                  .addViewController("/user_student/examinations/examination_outcome/refusal-confirmed")
+                  .setViewName("/user_student/examinations/examination_outcome/refusal-confirmed");
+
+            registry
                   .addViewController("/user_student/examinations/examination_outcome/student-absent")
                   .setViewName("/user_student/examinations/examination_outcome/student-absent");
 
@@ -231,7 +239,8 @@ public class UmsMvcConfig implements WebMvcConfigurer, Serializable {
             return new HiddenHttpMethodFilter();
       }
 
-
 }
+
+
 
 

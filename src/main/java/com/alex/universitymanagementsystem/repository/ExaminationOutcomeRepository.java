@@ -1,6 +1,9 @@
 package com.alex.universitymanagementsystem.repository;
 
 
+import java.time.LocalDate;
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -29,14 +32,22 @@ public interface ExaminationOutcomeRepository
 
 
     /**
-     * Find examination outcomes by course and unique code
-     * @param course
-     * @param uniqueCode
-     * @return List<ExaminationOutcome>
+     * Find examination outcomes by student register
+     * @param register
+     * @return List of examination outcomes
+     * @throws NullPointerException if register is null
+     * @throws PersistenceException persistence error
      */
-    /*
-    @Query("SELECT eo FROM ExaminationOutcome eo "
-        + "WHERE ea.examinationAppeal.course.name = :course AND ea.professor.uniqueCode = :uniqueCode")
-    List<ExaminationOutcome> findByCourseAndUniqueCode(@NonNull @Param("course") String course, @NonNull @Param("uniqueCode") UniqueCode uniqueCode);
-        */
+    List<ExaminationOutcome> findByRegister(@NonNull String register);
+
+
+    /**
+     * Find examination outcomes with date less of assigned value
+     * @param date
+     * @return List of examination outcomes
+     * @throws NullPointerException if date is null
+     * @throws PersistenceException persistence error
+     */
+    List<ExaminationOutcome> findByDateLessThan(@NonNull LocalDate date);
+
 }

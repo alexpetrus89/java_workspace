@@ -25,9 +25,9 @@
             <input type="hidden" name="grade" th:value="${outcome.grade}">
             <input type="hidden" name="withHonors" th:value="${outcome.withHonors}">
             <input type="hidden" name="date" th:value="${outcome.examinationAppeal.date}">
-            <button type="submit">Accetta voto</button>
+            <button type="submit">Accept grade</button>
         </form>
-        <button type="button" onclick="window.location.href='/user_student/examinations/examination-menu';">Rifiuta voto</button>
+        <button type="button" onclick="window.location.href='/user_student/examinations/examination_outcome/confirm-refusal';">Refuse grade</button>
     </div>
     </br>
     <a href="#" th:href="@{/user_student/examinations/examination-menu}">Back to Menu</a>

@@ -46,12 +46,16 @@ form {
 input[type="text"],
 input[type="reset"],
 button {
-    padding: 10px 20px;
-    font-size: 1rem;
+    padding: 5px 10px; /* riduci il padding dei bottoni */
+    font-size: 0.8rem; /* riduci la dimensione del font dei bottoni */
     border: 1px solid #ccc;
     border-radius: 5px;
     width: 100%;
-    max-width: 250px;
+    max-width: 150px; /* riduci la larghezza massima dei bottoni */
+}
+
+select {
+    height: 40px; /* aumenta l'altezza della riga di selezione */
 }
 
 /* Colore di sfondo per il bottone */
@@ -68,6 +72,10 @@ button:hover {
 }
 
 /* Stile per i link */
+.link-container {
+    text-align: center;
+}
+
 a {
     display: inline-block;
     margin-top: 20px;

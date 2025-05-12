@@ -7,8 +7,6 @@
     <title>Uni Journey</title>
     <link rel="stylesheet" type="text/css" href="/static/css/delete-examination-appeal.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="/static/js/ums-examination-appeals.js" type="module"></script>
-</head>
 </head>
 <body>
     <header class="main-header">
@@ -20,11 +18,10 @@
             <input type="hidden" name="_method" value="DELETE" />
 
             <label for="appeal">Appeal to delete :</label>
-            <select name="appeal" id="appeal">
+            <select id="appeal" name="id" >
                 <option value="">Select appeal</option>
-                <option th:each="appeal : ${deleteAppeal.appeals}"
-                        th:value="${appeal.id}"
-                        th:text="${appeal.course + ' - ' + appeal.degreeCourse + ' - ' appeal.date}">Appeal</option>
+                <option th:if="${deleteAppeal != null}"
+                    th:each="appeal : ${deleteAppeal.appeals}" th:value="${appeal.id}" th:with="text=${appeal.course.name + ' - ' + appeal.degreeCourse + ' - ' + appeal.date}" th:text="${text}">Appeal</option>
             </select>
             </p>
 

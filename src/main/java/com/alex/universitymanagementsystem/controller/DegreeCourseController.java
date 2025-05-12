@@ -51,6 +51,7 @@ public class DegreeCourseController {
         return new ModelAndView("degree_course/degree-course-list", "degreeCourses", degreeCourses);
     }
 
+
     /**
      * retrieves all courses of a given degree course
      * @param name the name of the degree course

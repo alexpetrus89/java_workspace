@@ -198,15 +198,13 @@ public class ExaminationAppealController {
     @DeleteMapping(path = "/delete")
     public ModelAndView deleteExaminationAppeal(
         @AuthenticationPrincipal Professor professor,
-        @RequestParam String course,
-        @RequestParam String degreeCourse,
-        @RequestParam LocalDate date
+        @RequestParam Long id
     ) {
         try {
             return new ModelAndView(
                 "user_professor/examinations/examination_appeal/delete/delete-result",
                 "result",
-                examinationAppealServiceImpl.deleteExaminationAppeal(course, degreeCourse, professor, date) ?
+                examinationAppealServiceImpl.deleteExaminationAppeal(professor, id) ?
                     "appeal delete successfully" : "appeal not deleted"
             );
         } catch (NullPointerException | IllegalArgumentException | ObjectNotFoundException e) {

@@ -3,6 +3,7 @@ package com.alex.universitymanagementsystem.service.impl;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -14,7 +15,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import com.alex.universitymanagementsystem.domain.Course;
-import com.alex.universitymanagementsystem.domain.DegreeCourse;
 import com.alex.universitymanagementsystem.domain.ExaminationAppeal;
 import com.alex.universitymanagementsystem.domain.ExaminationOutcome;
 import com.alex.universitymanagementsystem.domain.Professor;
@@ -26,7 +26,6 @@ import com.alex.universitymanagementsystem.enum_type.DomainType;
 import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
 import com.alex.universitymanagementsystem.mapper.ExaminationMapper;
 import com.alex.universitymanagementsystem.repository.CourseRepository;
-import com.alex.universitymanagementsystem.repository.DegreeCourseRepository;
 import com.alex.universitymanagementsystem.repository.ExaminationAppealRepository;
 import com.alex.universitymanagementsystem.repository.ExaminationOutcomeRepository;
 import com.alex.universitymanagementsystem.repository.ExaminationRepository;
@@ -52,7 +51,6 @@ public class ExaminationAppealServiceImpl implements ExaminationAppealService {
     private final ExaminationOutcomeRepository examinationOutcomeRepository;
     private final ExaminationRepository examinationRepository;
     private final CourseRepository courseRepository;
-    private final DegreeCourseRepository degreeCourseRepository;
     private final ProfessorRepository professorRepository;
     private final StudentRepository studentRepository;
 
@@ -62,7 +60,6 @@ public class ExaminationAppealServiceImpl implements ExaminationAppealService {
         ExaminationOutcomeRepository examinationOutcomeRepository,
         ExaminationRepository examinationRepository,
         CourseRepository courseRepository,
-        DegreeCourseRepository degreeCourseRepository,
         ProfessorRepository professorRepository,
         StudentRepository studentRepository
     ) {
@@ -70,10 +67,10 @@ public class ExaminationAppealServiceImpl implements ExaminationAppealService {
         this.examinationOutcomeRepository = examinationOutcomeRepository;
         this.examinationRepository = examinationRepository;
         this.courseRepository = courseRepository;
-        this.degreeCourseRepository = degreeCourseRepository;
         this.professorRepository = professorRepository;
         this.studentRepository = studentRepository;
     }
+
 
     /**
      * Retrieves all examination appeals
@@ -90,10 +87,13 @@ public class ExaminationAppealServiceImpl implements ExaminationAppealService {
      * @param id
      * @return examination appeal
      * @throws NullPointerException if id is null
+     * @throws NoSuchElementException if the examination appeal does not exist
      */
     @Override
     public ExaminationAppeal getExaminationAppealById(@NonNull Long id) {
-        return examinationAppealRepository.findById(id).orElseThrow();
+        return examinationAppealRepository
+            .findById(id)
+            .orElseThrow(() -> new NoSuchElementException("Examination Appeal does not exist"));
     }
 
 
@@ -154,9 +154,9 @@ public class ExaminationAppealServiceImpl implements ExaminationAppealService {
 
 
     /**
-     * Retrieves all examination appeals for a student
+     * Retrieves all examination appeals booked by a student
      * @param register student register
-     * @return a list of examination appeals available
+     * @return a list of examination appeals booked
      * @throws NullPointerException if any of the parameters is null
      * @throws IllegalArgumentException if the register is blank
      * @throws UnsupportedOperationException if the register is not unique
@@ -198,7 +198,7 @@ public class ExaminationAppealServiceImpl implements ExaminationAppealService {
 
 
     /**
-     * Retrieves all examination appeals for a student
+     * Retrieves all examination appeals made by professor
      * @param uniqueCode professor unique code
      * @return a list of examination appeals
      * @throws NullPointerException if any of the parameters is null
@@ -279,44 +279,23 @@ public class ExaminationAppealServiceImpl implements ExaminationAppealService {
 
     /**
      * deletes an examination appeal
-     * @param courseName
-     * @param degreeCourseName
      * @param professor
-     * @param date
+     * @param id
      * @return boolean
      * @throws NullPointerException
      * @throws IllegalArgumentException
      * @throws ObjectNotFoundException
      */
     @Override
-    public boolean deleteExaminationAppeal(
-        @NonNull String courseName,
-        @NonNull String degreeCourseName,
-        @NonNull Professor professor,
-        @NonNull LocalDate date
-    ) throws NullPointerException, IllegalArgumentException, ObjectNotFoundException
+    public boolean deleteExaminationAppeal(@NonNull Professor professor, @NonNull Long id)
+        throws NullPointerException, IllegalArgumentException, ObjectNotFoundException
     {
-        // sanity checks
-        if(courseName.isBlank())
-            throw new IllegalArgumentException("Course name cannot be empty");
-
-        if(degreeCourseName.isBlank())
-            throw new IllegalArgumentException("Degree course name cannot be empty");
-
-        if(date.isBefore(LocalDate.now()))
-            throw new IllegalArgumentException("Date cannot be in the past");
-
-        if(!degreeCourseRepository.existsByName(degreeCourseName.toUpperCase()))
-            throw new ObjectNotFoundException(DomainType.DEGREE_COURSE);
-
         if(!professorRepository.existsByUniqueCode(professor.getUniqueCode()))
             throw new ObjectNotFoundException(DomainType.PROFESSOR);
 
         try {
-            DegreeCourse degreeCourse = degreeCourseRepository.findByName(degreeCourseName.toUpperCase());
-
-            Course course = courseRepository.findByNameAndDegreeCourse(courseName, degreeCourse);
-            ExaminationAppeal examAppeal = examinationAppealRepository.findByCourseIdAndDate(course.getCourseId(), date);
+            ExaminationAppeal examAppeal = examinationAppealRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Examination Appeal does not exist"));
 
             if(examAppeal == null || !examinationAppealRepository.existsById(examAppeal.getId()))
                 return false;

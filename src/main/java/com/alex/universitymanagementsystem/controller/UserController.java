@@ -81,6 +81,7 @@ public class UserController {
         return new ModelAndView("user_admin/update/update", BUILDER, new Builder());
     }
 
+
     /**
      * Updates the student
      * @return ModelAndView
@@ -89,6 +90,7 @@ public class UserController {
     public ModelAndView updateStudentAndReturnView() {
         return new ModelAndView("user_student/update/update", BUILDER, new Builder());
     }
+
 
     /**
      * Updates the professor

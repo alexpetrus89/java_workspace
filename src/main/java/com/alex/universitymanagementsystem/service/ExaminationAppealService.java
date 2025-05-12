@@ -2,6 +2,7 @@ package com.alex.universitymanagementsystem.service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.springframework.lang.NonNull;
 
@@ -15,6 +16,7 @@ import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
 
 public interface ExaminationAppealService {
 
+
     /**
      * Retrieves all examination appeals
      * @return a list of examination appeals
@@ -27,6 +29,7 @@ public interface ExaminationAppealService {
      * @param id
      * @return examination appeal
      * @throws NullPointerException if id is null
+     * @throws NoSuchElementException if the examination appeal does not exist
      */
     ExaminationAppeal getExaminationAppealById(@NonNull Long id);
 
@@ -46,7 +49,7 @@ public interface ExaminationAppealService {
     /**
      * Retrieves all examination appeals booked by a student
      * @param register student register
-     * @return a list of examination appeals available
+     * @return a list of examination appeals booked
      * @throws NullPointerException if any of the parameters is null
      * @throws IllegalArgumentException if the register is blank
      * @throws UnsupportedOperationException if the register is not unique
@@ -56,7 +59,7 @@ public interface ExaminationAppealService {
 
 
     /**
-     * Retrieves all examination appeals for a professor
+     * Retrieves all examination appeals made by professor
      * @param uniqueCode professor unique code
      * @return a list of examination appeals
      * @throws NullPointerException if any of the parameters is null
@@ -88,23 +91,18 @@ public interface ExaminationAppealService {
         @NonNull LocalDate date
     ) throws NullPointerException, IllegalArgumentException, ObjectNotFoundException;
 
+
     /**
      * deletes an examination appeal
-     * @param courseName
-     * @param degreeCourseName
      * @param professor
-     * @param date
+     * @param id
      * @return boolean
      * @throws NullPointerException
      * @throws IllegalArgumentException
      * @throws ObjectNotFoundException
      */
-    boolean deleteExaminationAppeal(
-        @NonNull String courseName,
-        @NonNull String degreeCourseName,
-        @NonNull Professor professor,
-        @NonNull LocalDate date
-    ) throws NullPointerException, IllegalArgumentException, ObjectNotFoundException;
+    boolean deleteExaminationAppeal(@NonNull Professor professor, @NonNull Long id)
+        throws NullPointerException, IllegalArgumentException, ObjectNotFoundException;
 
 
     /**

@@ -16,7 +16,7 @@ import com.alex.universitymanagementsystem.domain.Student;
 import com.alex.universitymanagementsystem.domain.immutable.Register;
 import com.alex.universitymanagementsystem.dto.CourseDto;
 import com.alex.universitymanagementsystem.dto.DegreeCourseDto;
-import com.alex.universitymanagementsystem.dto.ModifyCoursesDto;
+import com.alex.universitymanagementsystem.dto.ModifyStudyPlanDto;
 import com.alex.universitymanagementsystem.dto.StudyPlanDto;
 import com.alex.universitymanagementsystem.exception.ObjectAlreadyExistsException;
 import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
@@ -87,7 +87,7 @@ public class StudyPlanController {
             .findFirst()
             .orElseThrow(() -> new RuntimeException("Token not found"));
 
-        ModifyCoursesDto courses = new ModifyCoursesDto(
+        ModifyStudyPlanDto courses = new ModifyStudyPlanDto(
             degreeCourses,
             degreeCourse,
             studyPlan,

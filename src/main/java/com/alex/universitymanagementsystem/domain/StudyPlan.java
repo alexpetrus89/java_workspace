@@ -59,6 +59,7 @@ public class StudyPlan implements Serializable {
 
     @OneToOne
     @JoinColumn(name = "student_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     public Student getStudent() {
         return student;
     }

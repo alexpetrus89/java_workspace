@@ -7,6 +7,7 @@ body {
     margin: 0;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: #f0f2f5;
+    text-align: center;
 }
 
 /* Contenitore centrale per il modulo */
@@ -56,9 +57,24 @@ input[type="text"] {
 }
 
 /* Checkbox */
-input[type="checkbox"] {
-    margin-right: 10px;
+.present-checkbox {
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
+
+.present-checkbox span {
+    font-size: 14px;
+    margin-right: 10px;
+    text-align: center;
+}
+
+.present-checkbox input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+}
+
+
 
 /* Pulsanti di invio e reset */
 input[type="submit"],
@@ -115,8 +131,16 @@ a:hover {
     display: none;
 }
 
-/* Nasconde inizialmente la sezione 'con lode' */
 #withHonors {
     display: none;
 }
 
+#withHonors input[type="checkbox"] {
+    margin: 0 auto;
+}
+
+
+#withHonors span {
+    font-size: 14px;
+    margin-right: 10px;
+}

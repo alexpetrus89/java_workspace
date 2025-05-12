@@ -13,10 +13,10 @@
         Unable to find the degree course. Please check your input.
     </div>
 
-    <h1 class="main-title">Degree Course Search</h1>
+    <h1 class="main-title">Professors</h1>
 
     <div class="form-container">
-        <h2>Search by Degree Course Name</h2>
+        <h2>Find by degree course name</h2>
         <form th:action="@{/api/v1/degree-course/professors/view}" method="get">
             <input type="text" name="name" placeholder="Enter degree course name" required />
             <button type="submit">Search</button>

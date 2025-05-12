@@ -18,12 +18,14 @@ import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.PrimaryKeyJoinColumn;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
 
 @Entity
 @Table(name = "student")
 @Access(AccessType.PROPERTY)
+@PrimaryKeyJoinColumn(name = "id")
 public class Student extends User {
 
     // instance variables

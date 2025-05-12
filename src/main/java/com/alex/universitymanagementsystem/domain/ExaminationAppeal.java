@@ -73,7 +73,7 @@ public class ExaminationAppeal implements Serializable {
     @Column(name = "degreeCourse")
     public String getDegreeCourse() { return degreeCourse; }
 
-    @Column(name = "professor")
+    @Column(name = "professor_unique_code")
     public UniqueCode getProfessor() { return professor; }
 
     @Column(name = "description")
@@ -83,7 +83,7 @@ public class ExaminationAppeal implements Serializable {
     public LocalDate getDate() { return date; }
 
     @Column(name = "students")
-    @ElementCollection
+    @ElementCollection(targetClass = Register.class)
     public Set<Register> getStudents() { return students; }
 
     // setters

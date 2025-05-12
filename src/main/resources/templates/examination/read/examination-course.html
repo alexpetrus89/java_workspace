@@ -13,10 +13,10 @@
         Unable to find exams for the given course. Please check your input.
     </div>
 
-    <h1 class="main-title">Find Exams by Course</h1>
+    <h1 class="main-title">Find exams by course</h1>
 
     <div class="form-container">
-        <h2>Search by Course Name</h2>
+        <h2>Search by course name</h2>
         <form th:action="@{/api/v1/examination/course-name}" method="get">
             <input type="text" name="name" placeholder="Enter course name" required />
             <button type="submit">Search</button>

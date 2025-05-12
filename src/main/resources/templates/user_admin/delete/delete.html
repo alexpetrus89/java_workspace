@@ -9,11 +9,11 @@
 </head>
 <body>
     <header class="main-header">
-        <h1>UNI-JOURNEY - Delete User</h1>
+        <h1>UNI JOURNEY</h1>
     </header>
 
     <div class="form-container">
-        <h1>Delete User</h1>
+        <h1>Delete user</h1>
         <form action="#" th:action="@{/api/v1/user/delete}" method="post" sec:authorize="hasRole('ADMIN')">
             <input type="hidden" name="_method" value="DELETE" />
             <input type="hidden" name="_csrf" th:value="${_csrf.token}">

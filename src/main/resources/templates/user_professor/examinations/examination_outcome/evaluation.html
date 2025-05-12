@@ -23,30 +23,32 @@
             <input type="hidden" th:field="*{examinationAppeal.date}" />
             <input type="hidden" th:field="*{register}" />
 
-            <label for="present">Present:</label>
-            <input type="checkbox" th:field="*{present}" value="true"
-                title="Select if present"
-                onclick="showHideFields(this)" onKeyPress="handleKeyPress(event)">
+            <div class="present-checkbox">
+                <label for="present">Present:</label>
+                <input type="checkbox" th:field="*{present}" value="true"
+                    title="Select if present"
+                    onclick="showHideFields(this)" onKeyPress="handleKeyPress(event)">
+            </div>
 
             <div id="fields">
                 <label for="grade">Grade:</label>
                 <input type="text" th:field="*{grade}" title="Enter grade"
                     placeholder="grade"
                     oninput="checkGrade()">
-
-                <div id="withHonors" class="hidden">
-                    <label for="withHonors">With honors:</label>
-                    <input type="checkbox" th:field="*{withHonors}" id="withHonors"
-                        value="false" checked="false"
-                        onchange="this.value = this.checked ? 'true' : 'false'"/>
-                    <label for="withHonors">default value is true</label>
-                </div>
             </div>
-            <input type="hidden" th:field="*{withHonors}" value="false"/>
+
+            <div id="withHonors" class="hidden">
+                <label for="withHonors">With honors:</label>
+                <input type="checkbox" th:field="*{withHonors}" id="withHonors"
+                    value="false" checked="false"
+                    onchange="this.value = this.checked ? 'true' : 'false'"/>
+            </div>
 
             <p>
+            <div id="buttons">
                 <input type="submit" value="Submit" />
                 <input type="reset" value="Reset" />
+            </div>
             </p>
         </form>
 

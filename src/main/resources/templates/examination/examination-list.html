@@ -5,7 +5,7 @@
 <head>
     <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
     <title>Uni Journey</title>
-    <link rel="stylesheet" type="text/css" href="/static/css/examination-list.css"> <!-- Assicurati che il CSS esista -->
+    <link rel="stylesheet" type="text/css" href="/static/css/examinations.css">
 </head>
 <body>
 
@@ -26,8 +26,8 @@
             <tbody>
                 <tr th:each="examination : ${examinations}">
                     <td th:text="${examination.course.name}">Course name</td>
-                    <td th:text="${examination.student.register.register}">Student Register</td>
-                    <td th:text="${examination.student.fullname}">Student Name</td>
+                    <td th:text="${examination?.student.register.register}">Student Register</td>
+                    <td th:text="${examination?.student.fullname}">Student Name</td>
                     <td>
                         <span th:text="${examination.grade}">Grade</span>
                         <span th:if="${examination.withHonors}"> with honors</span>

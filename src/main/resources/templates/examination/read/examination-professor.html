@@ -13,10 +13,10 @@
         Unable to find exams for the given professor. Please check your input.
     </div>
 
-    <h1 class="main-title">Find Exams by Professor</h1>
+    <h1 class="main-title">Find exams by professor</h1>
 
     <div class="form-container">
-        <h2>Search by Professor's Unique Code</h2>
+        <h2>Search by professor's unique code</h2>
         <form th:action="@{/api/v1/examination/professor-unique-code}" method="get">
             <input type="text" name="uniqueCode" placeholder="Enter Professor Unique Code" required />
             <button type="submit">Search</button>

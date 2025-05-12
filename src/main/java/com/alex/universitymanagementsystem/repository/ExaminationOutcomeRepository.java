@@ -48,6 +48,8 @@ public interface ExaminationOutcomeRepository
      * @throws NullPointerException if date is null
      * @throws PersistenceException persistence error
      */
-    List<ExaminationOutcome> findByDateLessThan(@NonNull LocalDate date);
+    @Query("SELECT eo FROM ExaminationOutcome eo " +
+            "WHERE eo.examinationAppeal.date < :date ")
+    List<ExaminationOutcome> findByDateLessThan(@NonNull @Param("date") LocalDate date);
 
 }

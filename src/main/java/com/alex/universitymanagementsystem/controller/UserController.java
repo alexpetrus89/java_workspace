@@ -39,6 +39,7 @@ public class UserController {
 
     // constants
     private static final String BUILDER = "builder";
+    private static final String REDIRECT_LOGIN = "redirect:/login";
     private static final String EXCEPTION_PATH = "/exception/error";
     private static final String EXCEPTION_MESSAGE = "message";
 
@@ -111,8 +112,10 @@ public class UserController {
     public String createUser(HttpServletRequest request) {
         try {
             Builder builder = (Builder) request.getSession().getAttribute(BUILDER);
-            return userServiceImpl.addNewUser(new RegistrationForm(builder).toUser(passwordEncoder));
-        } catch (NullPointerException e) {
+            if(userServiceImpl.addNewUser(new RegistrationForm(builder).toUser(passwordEncoder)) != null)
+                return REDIRECT_LOGIN;
+            else return "forward:" + EXCEPTION_PATH;
+        } catch (NullPointerException | ObjectAlreadyExistsException _) {
             return "forward:" + EXCEPTION_PATH;
         }
     }

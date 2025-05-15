@@ -17,34 +17,18 @@ const stompClient = new StompJs.Client({
     brokerURL: 'ws://localhost:8081/ums-ws',
 });
 
-// Funzione di connessione WebSocket
-function connect() {
-    stompClient.activate();
-}
-
-
-stompClient.onStompError = (frame) => {
-    console.error('Broker reported error: ' + frame.headers['message']);
-    console.error('Additional details: ' + frame.body);
-};
-
-stompClient.debug = function (msg) {
-    console.log('STOMP DEBUG: ' + msg);
-};
 
 // Funzione di connessione al server Stomp
-stompClient.onConnect = function(frame) {
+stompClient.onConnect = (frame) => {
+    setConnected(true);
     console.log('Connected: ' + frame);
-    stompClient.subscribe('/topic/notify', function(message) {
-        console.log('Received notification: ' + message.body);
-        // Visualizza la notifica nella sezione "Notifications"
-        let notificationList = document.getElementById('notification-list');
-        let notification = document.createElement('div');
-        notification.textContent = message.body;
-        notificationList.appendChild(notification);
+    stompClient.subscribe('/topic/notify', (notify) => {
+        showNotify(JSON.parse(notify.body).message);
     });
 };
 
+
+// Funzione di connessione al server Stomp
 function setConnected(connected) {
     $("#connect").prop("disabled", connected);
     $("#disconnect").prop("disabled", !connected);
@@ -54,44 +38,50 @@ function setConnected(connected) {
     else {
         $("#conversation").hide();
     }
-    $("#notifications").html("");
+    $("#notify").html("");
 }
 
+
+// Funzione di connessione WebSocket
+function connect() {
+    stompClient.activate();
+    console.log("Connected");
+}
+
+// Funzione di disconnessione WebSocket
 function disconnect() {
     stompClient.deactivate();
     setConnected(false);
     console.log("Disconnected");
 }
 
-function sendMessage() {
-    if (stompClient.connected) {
-        stompClient.publish({
-            destination: "api/v1/examination-outcome/ums/notify",
-            body: JSON.stringify({'message': $("#message").val()})
-        });
-    } else {
-        console.log("Non connesso al server");
-    }
+
+function sendName() {
+    stompClient.publish({
+        destination: "/ums/news",
+        body: JSON.stringify({'name': $("#name").val()})
+    });
 }
 
-function showMessage(message) {
-    $("#notifications-list").append("<tr><td>" + message + "</td></tr>");
+function showNotify(message) {
+    $("#notify").append("<tr><td>" + message + "</td></tr>");
 }
+
 
 $(function () {
-    connect();
+    $("form").on('submit', (e) => e.preventDefault());
+    $( "#connect" ).click(() => connect());
     $( "#disconnect" ).click(() => disconnect());
-    $( "#send" ).click(() => sendMessage());
+    $( "#send" ).click(() => sendName());
 });
 
 
-// Funzioni di errore WebSocket
+
+
+
+// Funzioni di errore
 stompClient.onWebSocketError = (error) => {
     console.error('Error with websocket', error);
-};
-
-stompClient.debug = function (msg) {
-    console.log('STOMP DEBUG: ' + msg);
 };
 
 stompClient.onStompError = (frame) => {

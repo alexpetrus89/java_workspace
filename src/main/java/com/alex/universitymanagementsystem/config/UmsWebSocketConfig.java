@@ -25,7 +25,7 @@ public class UmsWebSocketConfig implements WebSocketMessageBrokerConfigurer {
     // estremità STOMP (Simple Text-Oriented Messaging Protocol) in un'applicazione Spring
     @Override
     public void registerStompEndpoints(@NonNull StompEndpointRegistry registry) {
-        registry.addEndpoint("/ums-ws").withSockJS();
+        registry.addEndpoint("/ums-ws");
     }
 
 }

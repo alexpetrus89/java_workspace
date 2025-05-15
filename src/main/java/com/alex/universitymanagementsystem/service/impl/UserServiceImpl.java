@@ -25,6 +25,7 @@ import com.alex.universitymanagementsystem.service.UserDetailsService;
 import com.alex.universitymanagementsystem.utils.RegistrationForm;
 
 import jakarta.transaction.Transactional;
+import jakarta.validation.constraints.NotBlank;
 
 @Service
 public class UserServiceImpl implements UserDetailsService{
@@ -34,7 +35,6 @@ public class UserServiceImpl implements UserDetailsService{
 
 	// constants
 	private static final String DATA_ACCESS_ERROR = "data access error";
-    private static final String REDIRECT_LOGIN = "redirect:/login";
 
     // instance variable
     private final UserRepository userRepository;
@@ -63,12 +63,8 @@ public class UserServiceImpl implements UserDetailsService{
      * @throws IllegalArgumentException if the username is blank
      */
     @Override
-    public UserDetails loadUserByUsername(@NonNull String username)
-        throws NullPointerException, IllegalArgumentException
-    {
-        // sanity check
-        if(username.isBlank())
-            throw new IllegalArgumentException("username cannot be blank");
+    public UserDetails loadUserByUsername(@NonNull @NotBlank String username)
+        throws NullPointerException, IllegalArgumentException {
         return userRepository.findByUsername(username);
     }
 
@@ -83,25 +79,29 @@ public class UserServiceImpl implements UserDetailsService{
      * @throws ObjectAlreadyExistsException if the user already exists.
 	 */
 	@Transactional
-    public String addNewUser(@NonNull User user)
+    public User addNewUser(@NonNull User user)
         throws NullPointerException, ObjectAlreadyExistsException {
         try {
+            // check if the user already exists
             if(userRepository.existsById(user.getId()))
                 throw new ObjectAlreadyExistsException(DomainType.USER);
 
-            if(userRepository.findByFullname(user.getFullname())
+            // check if the username is already used
+            if(userRepository
+                    .findByFullname(user.getFullname())
                     .stream()
                     .anyMatch(u -> u.getFullname().equals(user.getFullname())) &&
-                userRepository.findByDob(user.getDob())
+                userRepository
+                    .findByDob(user.getDob())
                     .stream()
                     .anyMatch(u -> u.getDob().isEqual(user.getDob())))
                 throw new ObjectAlreadyExistsException(DomainType.USER);
+
             // save the user
-            userRepository.saveAndFlush(user);
-            return REDIRECT_LOGIN;
+            return userRepository.saveAndFlush(user);
         } catch (DataAccessException e) {
             logger.error(DATA_ACCESS_ERROR, e);
-            return "redirect:error/error";
+            return null;
         }
     }
 

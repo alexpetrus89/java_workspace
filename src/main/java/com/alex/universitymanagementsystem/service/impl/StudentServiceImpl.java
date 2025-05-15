@@ -160,10 +160,12 @@ public class StudentServiceImpl implements StudentService {
 			if(!degreeCourseRepository.existsByName(student.getDegreeCourse().getName()))
 				throw new ObjectNotFoundException(student.getDegreeCourse().getName());
 
-			if(userRepository.findByFullname(student.getFullname())
+			if(userRepository
+					.findByFullname(student.getFullname())
                     .stream()
                     .anyMatch(u -> u.getFullname().equals(student.getFullname())) &&
-                userRepository.findByDob(student.getDob())
+                userRepository
+					.findByDob(student.getDob())
                     .stream()
                     .anyMatch(u -> u.getDob().equals(student.getDob())))
                 throw new ObjectAlreadyExistsException(DomainType.STUDENT);

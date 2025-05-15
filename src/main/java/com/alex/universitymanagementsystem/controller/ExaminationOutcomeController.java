@@ -2,8 +2,8 @@ package com.alex.universitymanagementsystem.controller;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 
+import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -18,13 +18,14 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.util.HtmlUtils;
 
-import com.alex.universitymanagementsystem.domain.Course;
 import com.alex.universitymanagementsystem.domain.ExaminationAppeal;
 import com.alex.universitymanagementsystem.domain.ExaminationOutcome;
 import com.alex.universitymanagementsystem.domain.Student;
 import com.alex.universitymanagementsystem.exception.ObjectAlreadyExistsException;
 import com.alex.universitymanagementsystem.service.impl.ExaminationAppealServiceImpl;
 import com.alex.universitymanagementsystem.service.impl.ExaminationOutcomeServiceImpl;
+import com.alex.universitymanagementsystem.utils.Notify;
+import com.alex.universitymanagementsystem.utils.NotifyMessage;
 
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -125,6 +126,11 @@ public class ExaminationOutcomeController {
     }
 
 
+    /**
+     * Delete an examination outcome
+     * @param outcome
+     * @return ModelAndView
+     */
     @DeleteMapping(path = "/delete/{outcome}")
     public ModelAndView deleteExaminationOutcome(@PathVariable ExaminationOutcome outcome) {
         try {
@@ -137,19 +143,12 @@ public class ExaminationOutcomeController {
 
 
 
+    @MessageMapping("/news")
     @SendTo("/topic/notify")
-    @PostMapping(value = "/notify")
-    public String notifyOutcome(@ModelAttribute ExaminationOutcome outcome) {
-        // Inviare il messaggio tramite WebSocket
-        outcome.setMessage(HtmlUtils.htmlEscape("New examination outcome for " +
-            Optional.ofNullable(outcome.getExaminationAppeal())
-                    .map(ExaminationAppeal::getCourse)
-                    .map(Course::getName)
-                    .orElse("Unknown course") + "!")
-        );
+    public Notify notifyOutcome(NotifyMessage message) throws InterruptedException {
         // Invia il messaggio tramite WebSocket
-        simpMessagingTemplate.convertAndSend("/topic/notify", "La tua valutazione è stata pubblicata!");
-        return "";
+        Thread.sleep(1000); // simulated delay
+        return new Notify(HtmlUtils.htmlEscape(message.getName()));
     }
 
 

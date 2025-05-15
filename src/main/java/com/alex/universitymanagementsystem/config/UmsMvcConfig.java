@@ -93,7 +93,7 @@ public class UmsMvcConfig implements WebMvcConfigurer, Serializable {
                   .addViewController("/degree_course/read/read-students")
                   .setViewName("degree_course/read/read-students");
 
-            //admin utilities
+            // admin utilities
             registry
                   .addViewController("/user_admin/admin-home")
                   .setViewName("/user_admin/admin-home");
@@ -151,6 +151,10 @@ public class UmsMvcConfig implements WebMvcConfigurer, Serializable {
             registry
                   .addViewController("/user_student/examinations/examination_outcome/student-absent")
                   .setViewName("/user_student/examinations/examination_outcome/student-absent");
+
+            registry
+                  .addViewController("/user_student/web-socket-page")
+                  .setViewName("/user_student/web-socket-page");
 
             // admin student utilities
             registry

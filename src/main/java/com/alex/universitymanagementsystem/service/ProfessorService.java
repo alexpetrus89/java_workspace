@@ -1,16 +1,18 @@
 package com.alex.universitymanagementsystem.service;
 
 import java.util.List;
-import java.util.regex.PatternSyntaxException;
 
-import org.springframework.lang.NonNull;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 
-import com.alex.universitymanagementsystem.domain.Professor;
 import com.alex.universitymanagementsystem.domain.immutable.UniqueCode;
 import com.alex.universitymanagementsystem.dto.ProfessorDto;
+import com.alex.universitymanagementsystem.exception.DataAccessServiceException;
 import com.alex.universitymanagementsystem.exception.ObjectAlreadyExistsException;
 import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
+import com.alex.universitymanagementsystem.utils.RegistrationForm;
 
+import jakarta.persistence.PersistenceException;
 import jakarta.transaction.Transactional;
 
 public interface ProfessorService {
@@ -18,80 +20,71 @@ public interface ProfessorService {
     /**
      * get all professors
      * @return List<ProfessorDto>
+     * @throws DataAccessServiceException if there is an error accessing the database
      */
-    List<ProfessorDto> getProfessors();
+    List<ProfessorDto> getProfessors() throws DataAccessServiceException;
 
 
     /**
      * Retrieves a professor by unique code
      * @param uniqueCode the unique code of the professor to retrieve
      * @return ProfessorDto object containing the professor's data
-     * @throws NullPointerException if the unique code is null
      * @throws IllegalArgumentException if the unique code is blank
-     * @throws UnsupportedOperationException if the unique code is not unique
+     * @throws DataAccessServiceException if there is an error accessing the database
      */
-    ProfessorDto getProfessorByUniqueCode(@NonNull UniqueCode uniqueCode)
-        throws NullPointerException, IllegalArgumentException, UnsupportedOperationException;
+    ProfessorDto getProfessorByUniqueCode(UniqueCode uniqueCode)
+        throws IllegalArgumentException, DataAccessServiceException;
 
 
     /**
      * Retrieves a professor by fiscal code.
      * @param fiscalCode the fiscal code of the professor to retrieve.
      * @return ProfessorDto object containing the professor's data.
-     * @throws NullPointerException if the fiscal code is null
      * @throws IllegalArgumentException if the fiscal code is blank
-     * @throws UnsupportedOperationException if the fiscal code is not unique
+     * @throws DataAccessServiceException if there is an error accessing the database
      */
-    ProfessorDto getProfessorByFiscalCode(@NonNull String fiscalCode)
-        throws NullPointerException, IllegalArgumentException, UnsupportedOperationException;
+    ProfessorDto getProfessorByFiscalCode(String fiscalCode)
+        throws IllegalArgumentException, DataAccessServiceException;
 
 
     /**
      * Retrieves a professor by name.
-     * @param name the name of the professor.
+     * @param fullname the name of the professor.
      * @return List<ProfessorDto> object containing the professor's data.
-     * @throws NullPointerException if the name is null
      * @throws IllegalArgumentException if the name is blank
-     * @throws UnsupportedOperationException if the name is not unique
+     * @throws DataAccessServiceException if there is an error accessing the database
+     * @see ProfessorDto
      */
-    List<ProfessorDto> getProfessorByName(@NonNull String name)
-        throws NullPointerException, IllegalArgumentException, UnsupportedOperationException;
+    List<ProfessorDto> getProfessorsByFullname(String fullname)
+        throws IllegalArgumentException, DataAccessServiceException;
 
 
     /**
      * Adds a new professor to the repository.
-     *
-     * @param professor the professor to add
-     * @throws NullPointerException if the professor is null
-     * @throws IllegalArgumentException if the unique code or fiscal
-     *         code is empty
+     * @param form with data of the professor to be added
+     * @return ProfessorDto
      * @throws ObjectAlreadyExistsException if a professor with the
-     *         same unique code already exists in the repository.
-     * @throws UnsupportedOperationException if the unique code or
-     *         fiscal code is not unique
+     *         same unique code or same fiscal code already exists in the repository.
+     * @throws DataAccessServiceException if there is an error accessing the database
      */
-    @Transactional
-    void addNewProfessor(@NonNull Professor professor)
-        throws NullPointerException, IllegalArgumentException, ObjectAlreadyExistsException, UnsupportedOperationException;
+    @Transactional(rollbackOn = ObjectAlreadyExistsException.class)
+    @Retryable(retryFor = PersistenceException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
+    ProfessorDto addNewProfessor(RegistrationForm form)
+        throws ObjectAlreadyExistsException, DataAccessServiceException;
 
 
     /**
      * Updates an existing professor's information.
-     * @param newProfessorDto the data transfer object containing the new details
-     *        of the professor to be updated.
-     * @throws NullPointerException if the ProfessorDto is null
+     * @param form with new data of the professor to be updated
+     * @return ProfessorDto
      * @throws ObjectNotFoundException if no professor with the given unique code
      *         exists in the repository.
-     * @throws IllegalArgumentException if the new username is blank
-     *         or if the new full name is null or if the fiscal code is blank or
-     *         not 16 alphanumeric characters or if the regular expression's syntax
-     *         is invalid
-     * @throws UnsupportedOperationException if the unique code is not unique
-     * @throws PatternSyntaxException if the regular expression's syntax is invalid
+     * @throws DataAccessServiceException if there is an error accessing the database
      */
-    @Transactional
-    void updateProfessor(@NonNull ProfessorDto newProfessorDto)
-        throws NullPointerException, ObjectNotFoundException, IllegalArgumentException, UnsupportedOperationException, PatternSyntaxException;
+    @Transactional(rollbackOn = ObjectNotFoundException.class)
+    @Retryable(retryFor = PersistenceException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
+    ProfessorDto updateProfessor(RegistrationForm form)
+        throws ObjectNotFoundException, DataAccessServiceException;
 
 
 }

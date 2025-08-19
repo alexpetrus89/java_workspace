@@ -22,7 +22,7 @@
             <select id="appeal" name="id" >
                 <option value="">Select appeal</option>
                 <option th:if="${appeals != null}"
-                    th:each="appeal : ${appeals}" th:value="${appeal.id}" th:with="text=${appeal.course.name + ' - ' + appeal.degreeCourse + ' - ' + appeal.date}" th:text="${text}">Appeal</option>
+                    th:each="appeal : ${appeals}" th:value="${appeal.id}" th:with="text=${appeal.course + ' - ' + appeal.degreeCourse + ' - ' + appeal.date}" th:text="${text}">Appeal</option>
             </select>
             </p>
 

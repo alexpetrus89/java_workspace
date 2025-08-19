@@ -3,7 +3,6 @@ package com.alex.universitymanagementsystem.domain;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
 
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -23,7 +22,7 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "study_plan")
+@Table(name = "STUDY_PLANS")
 @Access(AccessType.PROPERTY)
 public class StudyPlan implements Serializable {
 
@@ -37,13 +36,13 @@ public class StudyPlan implements Serializable {
     public StudyPlan() {}
 
     public StudyPlan(String ordering, Set<Course> courses) {
-        this.id = new StudyPlanId(UUID.randomUUID());
+        this.id = StudyPlanId.newId();
         this.ordering = ordering;
         this.courses = courses;
     }
 
     public StudyPlan(Student student, String ordering, Set<Course> courses) {
-        this.id = new StudyPlanId(UUID.randomUUID());
+        this.id = StudyPlanId.newId();
         this.student = student;
         this.ordering = ordering;
         this.courses = courses;

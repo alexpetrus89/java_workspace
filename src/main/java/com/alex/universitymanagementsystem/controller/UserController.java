@@ -1,12 +1,11 @@
 package com.alex.universitymanagementsystem.controller;
 
-import java.util.HashSet;
 import java.util.List;
 
-import org.springframework.lang.NonNull;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -18,11 +17,10 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.alex.universitymanagementsystem.domain.DegreeCourse;
-import com.alex.universitymanagementsystem.domain.Professor;
-import com.alex.universitymanagementsystem.domain.Student;
-import com.alex.universitymanagementsystem.domain.StudyPlan;
-import com.alex.universitymanagementsystem.domain.User;
-import com.alex.universitymanagementsystem.domain.immutable.FiscalCode;
+import com.alex.universitymanagementsystem.dto.ProfessorDto;
+import com.alex.universitymanagementsystem.dto.StudentDto;
+import com.alex.universitymanagementsystem.dto.UserDto;
+import com.alex.universitymanagementsystem.exception.DataAccessServiceException;
 import com.alex.universitymanagementsystem.exception.ObjectAlreadyExistsException;
 import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
 import com.alex.universitymanagementsystem.service.impl.ProfessorServiceImpl;
@@ -40,27 +38,36 @@ public class UserController {
     // constants
     private static final String BUILDER = "builder";
     private static final String REDIRECT_LOGIN = "redirect:/login";
-    private static final String EXCEPTION_PATH = "/exception/error";
+    private static final String FORWARD = "forward:";
     private static final String EXCEPTION_MESSAGE = "message";
+
+    @Value("#{genericExceptionUri}")
+    private String genericExceptionUri;
+    @Value("#{dataAccessExceptionUri}")
+    private String dataAccessExceptionUri;
+    @Value("#{accessDeniedExceptionUri}")
+    private String accessDeniedExceptionUri;
+    @Value("#{notFoundExceptionUri}")
+    private String notFoundExceptionUri;
+    @Value("#{alreadyExistsExceptionUri}")
+    private String alreadyExistsExceptionUri;
 
     // instance variables
     private final UserServiceImpl userServiceImpl;
     private final StudentServiceImpl studentServiceImpl;
     private final ProfessorServiceImpl professorServiceImpl;
-    private final PasswordEncoder passwordEncoder;
 
     /** Autowired - dependency injection - constructor */
     public UserController(
         UserServiceImpl userServiceImpl,
         StudentServiceImpl studentServiceImpl,
-        PasswordEncoder passwordEncoder,
         ProfessorServiceImpl professorServiceImpl
     ) {
         this.userServiceImpl = userServiceImpl;
         this.studentServiceImpl = studentServiceImpl;
-        this.passwordEncoder = passwordEncoder;
         this.professorServiceImpl = professorServiceImpl;
     }
+
 
     /**
      * Retrieves all users
@@ -68,8 +75,13 @@ public class UserController {
      */
     @GetMapping(path = "/view")
     public ModelAndView getAllUsers() {
-        List<User> users = userServiceImpl.getUsers();
-        return new ModelAndView("user_admin/read/user-list", "users", users);
+        try {
+            // retrieves all users
+            List<UserDto> users = userServiceImpl.getUsers();
+            return new ModelAndView("user_admin/read/user-list", "users", users);
+        } catch (DataAccessServiceException e) {
+            return new ModelAndView(dataAccessExceptionUri, EXCEPTION_MESSAGE, e.getMessage());
+        }
     }
 
 
@@ -112,11 +124,13 @@ public class UserController {
     public String createUser(HttpServletRequest request) {
         try {
             Builder builder = (Builder) request.getSession().getAttribute(BUILDER);
-            if(userServiceImpl.addNewUser(new RegistrationForm(builder).toUser(passwordEncoder)) != null)
+            if(userServiceImpl.addNewUser(new RegistrationForm(builder)) != null)
                 return REDIRECT_LOGIN;
-            else return "forward:" + EXCEPTION_PATH;
-        } catch (NullPointerException | ObjectAlreadyExistsException _) {
-            return "forward:" + EXCEPTION_PATH;
+            else return FORWARD + genericExceptionUri;
+        } catch (ObjectAlreadyExistsException _) {
+            return FORWARD + alreadyExistsExceptionUri + "object-already-exists";
+        } catch (DataAccessServiceException _) {
+            return FORWARD + dataAccessExceptionUri;
         }
     }
 
@@ -128,23 +142,17 @@ public class UserController {
      * @return ModelAndView
      */
     @PostMapping(path = "/create-student")
-    public ModelAndView createNewUserWithRoleStudent(HttpServletRequest request, @ModelAttribute DegreeCourse degreeCourse) {
+    public ModelAndView createNewUserWithRoleStudent(HttpServletRequest request, @ModelAttribute DegreeCourse degreeCourse, String ordering) {
         try{
             // recupera l'oggetto UserDto dalla sessione
             Builder builder = (Builder) request.getSession().getAttribute(BUILDER);
-            // create Student
-            Student student = new Student(builder, passwordEncoder);
-            // set the degree course
-            student.setDegreeCourse(degreeCourse);
-            // set the study plan
-            student.setStudyPlan(new StudyPlan(student, "ORD270", new HashSet<>(degreeCourse.getCourses())));
             // save
-            studentServiceImpl.addNewStudent(student);
+            StudentDto student = studentServiceImpl.addNewStudent(new RegistrationForm(builder), degreeCourse, ordering);
             return new ModelAndView("user_student/create/student-result", "student", student);
         } catch (ObjectAlreadyExistsException e) {
-            return new ModelAndView("exception/creation/student-already-exists", EXCEPTION_MESSAGE, e.getMessage());
-        } catch (ObjectNotFoundException e) {
-            return new ModelAndView("exception/creation/degree-course-not-found", EXCEPTION_MESSAGE, e.getMessage());
+            return new ModelAndView(alreadyExistsExceptionUri + "professor-already-exists", EXCEPTION_MESSAGE, e.getMessage());
+        } catch (DataAccessServiceException e) {
+            return new ModelAndView(dataAccessExceptionUri, EXCEPTION_MESSAGE, e.getMessage());
         }
     }
 
@@ -152,25 +160,20 @@ public class UserController {
     /**
      * Creates a new user with role PROFESSOR
      * @param request HTTP request
-     * @param String fiscal code
      * @return ModelAndView
      */
     @PostMapping(path = "/create-professor")
-    public ModelAndView createNewUserWithRoleProfessor(HttpServletRequest request, @RequestParam String fiscalCode) {
+    public ModelAndView createNewUserWithRoleProfessor(HttpServletRequest request) {
         try {
             // recupera l'oggetto UserDto dalla sessione
             Builder builder = (Builder) request.getSession().getAttribute(BUILDER);
-            // create Student
-            Professor professor = new Professor(builder, passwordEncoder);
-            // set the degree course
-            professor.setFiscalCode(new FiscalCode(fiscalCode));
-            // saves
-            professorServiceImpl.addNewProfessor(professor);
+            // save
+            ProfessorDto professor = professorServiceImpl.addNewProfessor(new RegistrationForm(builder));
             return new ModelAndView("user_professor/create/professor-result", "professor", professor);
         } catch (ObjectAlreadyExistsException e) {
-            return new ModelAndView("exception/creation/professor-already-exists", EXCEPTION_MESSAGE, e.getMessage());
-        } catch (IllegalArgumentException | UnsupportedOperationException | ObjectNotFoundException e) {
-            return new ModelAndView("exception/creation/fiscal-code-not-found", EXCEPTION_MESSAGE, e.getMessage());
+            return new ModelAndView(alreadyExistsExceptionUri + "professor-already-exists", EXCEPTION_MESSAGE, e.getMessage());
+        } catch (DataAccessServiceException e) {
+            return new ModelAndView(dataAccessExceptionUri, EXCEPTION_MESSAGE, e.getMessage());
         }
     }
 
@@ -189,8 +192,10 @@ public class UserController {
                 userServiceImpl.updateUser(new RegistrationForm(builder)) != null?
                     "User updated successfully" : "User not updated"
             );
-        } catch (IllegalArgumentException e) {
-            return new ModelAndView("exception/update/invalid-parameters", EXCEPTION_MESSAGE, e.getMessage());
+        } catch (ObjectNotFoundException e) {
+            return new ModelAndView(alreadyExistsExceptionUri + "object-not-found", EXCEPTION_MESSAGE, e.getMessage());
+        } catch (DataAccessServiceException e) {
+            return new ModelAndView(dataAccessExceptionUri, EXCEPTION_MESSAGE, e.getMessage());
         }
     }
 
@@ -202,7 +207,7 @@ public class UserController {
      */
     @DeleteMapping(path = "/delete")
     @PreAuthorize("hasRole('ADMIN')")
-    public ModelAndView deleteUser(@NonNull @RequestParam("id") String userId) {
+    public ModelAndView deleteUser(@RequestParam("id") String userId) {
         try {
             return new ModelAndView(
                 "user_admin/delete/delete-result",
@@ -211,9 +216,11 @@ public class UserController {
                     "User delete successfully" : "User not deleted"
             );
         } catch (UsernameNotFoundException e) {
-            return new ModelAndView("exception/object-not-found", EXCEPTION_MESSAGE, e.getMessage());
-        } catch (IllegalArgumentException e) {
-            return new ModelAndView("exception/update/invalid-parameters", EXCEPTION_MESSAGE, e.getMessage());
+            return new ModelAndView(notFoundExceptionUri + "username-not-found", EXCEPTION_MESSAGE, e.getMessage());
+        } catch (AccessDeniedException e) {
+            return new ModelAndView(accessDeniedExceptionUri + "access-denied", EXCEPTION_MESSAGE, e.getMessage());
+        } catch (DataAccessServiceException e) {
+            return new ModelAndView(dataAccessExceptionUri, EXCEPTION_MESSAGE, e.getMessage());
         }
     }
 

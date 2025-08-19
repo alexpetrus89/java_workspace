@@ -1,22 +1,21 @@
 package com.alex.universitymanagementsystem.service.impl;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.springframework.dao.DataAccessException;
-import org.springframework.lang.NonNull;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 
 import com.alex.universitymanagementsystem.domain.Course;
 import com.alex.universitymanagementsystem.domain.DegreeCourse;
 import com.alex.universitymanagementsystem.domain.Professor;
-import com.alex.universitymanagementsystem.domain.immutable.CourseId;
 import com.alex.universitymanagementsystem.domain.immutable.UniqueCode;
 import com.alex.universitymanagementsystem.dto.CourseDto;
-import com.alex.universitymanagementsystem.enum_type.CourseType;
+import com.alex.universitymanagementsystem.dto.ProfessorDto;
 import com.alex.universitymanagementsystem.enum_type.DomainType;
+import com.alex.universitymanagementsystem.exception.DataAccessServiceException;
 import com.alex.universitymanagementsystem.exception.ObjectAlreadyExistsException;
 import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
 import com.alex.universitymanagementsystem.mapper.CourseMapper;
@@ -25,16 +24,11 @@ import com.alex.universitymanagementsystem.repository.DegreeCourseRepository;
 import com.alex.universitymanagementsystem.repository.ProfessorRepository;
 import com.alex.universitymanagementsystem.service.CourseService;
 
+import jakarta.persistence.PersistenceException;
 import jakarta.transaction.Transactional;
 
 @Service
 public class CourseServiceImpl implements CourseService {
-
-    // logger
-    private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(CourseServiceImpl.class);
-
-    // constants
-    private static final String DATA_ACCESS_ERROR = "An error occurred while accessing the database.";
 
     // instance variables
     private final CourseRepository courseRepository;
@@ -54,36 +48,20 @@ public class CourseServiceImpl implements CourseService {
 
 
     /**
-    * Retrieves all courses from the repository.
-    * @return List of CourseDto objects representing all courses.
-    */
-    @Override
-    public Set<CourseDto> getCourses() {
-        return courseRepository.findAll()
-            .stream()
-            .map(CourseMapper::mapToCourseDto)
-            .collect(Collectors.toSet());
-    }
-
-
-    /**
-     * Retrieves a course from the repository by its id.
-     * @param CourseId id
-     * @return CourseDto object representing the course with the given id.
-     * @throws NullPointerException if the id is null
-     * @throws IllegalArgumentException if the id is empty
-     * @throws UnsupportedOperationException if the id is not unique
+     * retrieve all courses
+     * @return Set<CourseDto>
+     * @throws DataAccessServiceException if there is an error accessing the database.
      */
     @Override
-    public CourseDto getCourseById(@NonNull CourseId id)
-        throws NullPointerException, IllegalArgumentException, UnsupportedOperationException
-    {
+    public Set<CourseDto> getCourses() throws DataAccessServiceException {
         try {
-            Course course = courseRepository.findById(id).orElse(null);
-            return CourseMapper.mapToCourseDto(course);
-        } catch (DataAccessException e) {
-            logger.error(DATA_ACCESS_ERROR, e);
-            return null;
+        return courseRepository
+            .findAll()
+            .stream()
+            .map(CourseMapper::toDto)
+            .collect(Collectors.toSet());
+        } catch (PersistenceException e) {
+            throw new DataAccessServiceException("Error accessing database for fetching courses: " + e.getMessage(), e);
         }
     }
 
@@ -93,203 +71,189 @@ public class CourseServiceImpl implements CourseService {
      * @param courseName the name of the course
      * @param degreeCourseName the name of the degree course
      * @return CourseDto object representing the course with the given name and degree course name.
-     * @throws NullPointerException if the course name or degree course name is null.
      * @throws IllegalArgumentException if the course name or degree course name is empty.
-     * @throws UnsupportedOperationException if the course name or degree course name is not unique
+     * @throws ObjectNotFoundException if no course with the given name and degree course name exists.
+     * @throws DataAccessServiceException if there's a database access issue
      */
     @Override
-    public CourseDto getCourseByNameAndDegreeCourseName(@NonNull String courseName, @NonNull String degreeCourseName) {
+    public CourseDto getCourseByNameAndDegreeCourseName(String courseName, String degreeCourseName)
+        throws IllegalArgumentException, ObjectNotFoundException, DataAccessServiceException
+    {
 
         try {
-            // check parameters
+            // sanity checks
             if(courseName.isBlank() || degreeCourseName.isBlank())
                 throw new IllegalArgumentException("Course name or degree course name cannot be empty.");
-            // retrieve degree course
-            DegreeCourse degreeCourse = degreeCourseRepository.findByName(degreeCourseName.toUpperCase());
+
+            if(!degreeCourseRepository.existsByName(degreeCourseName.toUpperCase()))
+                throw new ObjectNotFoundException(DomainType.DEGREE_COURSE);
+
             // find course
-            return CourseMapper.mapToCourseDto(courseRepository.findByNameAndDegreeCourse(courseName, degreeCourse));
-        } catch (DataAccessException e) {
-            logger.error(DATA_ACCESS_ERROR, e);
-            return null;
+            return courseRepository
+                .findByNameAndDegreeCourseName(courseName, degreeCourseName)
+                .map(CourseMapper::toDto)
+                .orElse(null);
+        } catch (PersistenceException e) {
+            throw new DataAccessServiceException(
+                "Database access error while retrieving course with name " + courseName + " and degree course name " + degreeCourseName + ": " + e.getMessage(), e
+            );
         }
     }
 
+
     /**
      * Retrieves all courses from the repository by a given professor.
-     * @param professor
+     * @param professor the professor whose courses are to be retrieved
      * @return List of CourseDto objects representing all courses by
      *         the given professor
-     * @throws NullPointerException if the professor is null
-     * @throws UnsupportedOperationException if the professor is not unique
+     * @throws DataAccessServiceException if there is an error accessing the database
      */
     @Override
-    public List<CourseDto> getCoursesByProfessor(@NonNull Professor professor)
-        throws  NullPointerException, UnsupportedOperationException
+    public List<CourseDto> getCoursesByProfessor(ProfessorDto professor)
+        throws DataAccessServiceException
     {
         try {
             return courseRepository
-                .findByProfessor(professor.getUniqueCode())
+                .findByProfessor(new UniqueCode(professor.getUniqueCode()))
                 .stream()
-                .map(CourseMapper::mapToCourseDto)
+                .map(CourseMapper::toDto)
                 .toList();
-        } catch (DataAccessException e) {
-            logger.error(DATA_ACCESS_ERROR, e);
-            return Collections.emptyList();
+        } catch (PersistenceException e) {
+            throw new DataAccessServiceException(
+                "Database access error while retrieving courses for professor " + professor.getFirstName() + " " + professor.getLastName() + ": " + e.getMessage(), e
+            );
         }
     }
 
 
     /**
      * Adds a new course to the repository.
-     * @param name the name of the course
-     * @param type the type of the course
-     * @param cfu the cfu of the course
-     * @param uniqueCode the unique code of the professor
-     * @param degreeCourseName the name of the degree course
-     * @return Course object representing the newly added course.
-     * @throws NullPointerException if any of the parameters is null.
-     * @throws ObjectAlreadyExistsException if a course with the same name already exists.
+     * @param course the course data transfer object containing the course details
+     * @return Course
+     * @throws ObjectAlreadyExistsException if a course with the same name already exists
      * @throws ObjectNotFoundException if no professor with the given unique code exists
      *         or no degree course with the given name exists.
-     * @throws IllegalArgumentException if any of the parameters is invalid.
-     * @throws UnsupportedOperationException if any of the parameters is not unique.
+     * @throws DataAccessServiceException if there is an error accessing the database
      */
     @Override
-    @Transactional
-    public CourseDto addNewCourse(
-        @NonNull String name,
-        @NonNull CourseType type,
-        @NonNull Integer cfu,
-        @NonNull String uniqueCode,
-        @NonNull String degreeCourseName
-    ) throws NullPointerException,
-        ObjectAlreadyExistsException,
-        ObjectNotFoundException,
-        IllegalArgumentException,
-        UnsupportedOperationException
+    @Transactional(rollbackOn = {ObjectAlreadyExistsException.class, ObjectNotFoundException.class, IllegalArgumentException.class})
+    @Retryable(retryFor = PersistenceException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
+    public CourseDto addNewCourse(CourseDto courseDto)
+        throws ObjectAlreadyExistsException, ObjectNotFoundException, DataAccessServiceException
     {
-
-        // sanity checks
-        if(name.isBlank() || uniqueCode.isBlank() || degreeCourseName.isBlank())
-            throw new IllegalArgumentException("Course name, unique code or degree course name cannot be empty.");
-
-        if(courseRepository.existsByName(name))
-            throw new ObjectAlreadyExistsException(DomainType.COURSE);
-
         try {
-            // retrieve all data
-            Professor professor = professorRepository.findByUniqueCode(new UniqueCode(uniqueCode));
-            DegreeCourse degreeCourse = degreeCourseRepository.findByName(degreeCourseName.toUpperCase());
 
-            // sanity checks
-            if(professor == null)
-                throw new ObjectNotFoundException(DomainType.PROFESSOR);
-            if(degreeCourse == null)
-                throw new ObjectNotFoundException(DomainType.DEGREE_COURSE);
-            if(cfu < 0)
-                throw new IllegalArgumentException("cfu must be a positive number");
+            // Check for duplicate course name in the same degree course
+            if(courseRepository.existsByNameAndDegreeCourse(courseDto.getName(), courseDto.getDegreeCourse().toString()))
+                throw new ObjectAlreadyExistsException(DomainType.COURSE);
+
+            // Validate professor existence
+            Professor professor = professorRepository
+                .findByUniqueCode(new UniqueCode(courseDto.getProfessor().getUniqueCode()))
+                .orElseThrow(() -> new ObjectNotFoundException(DomainType.PROFESSOR));
+
+            // Validate degree course existence
+            DegreeCourse degreeCourse = degreeCourseRepository
+                .findByName(courseDto.getDegreeCourse().getName())
+                .orElseThrow(() -> new ObjectNotFoundException(DomainType.DEGREE_COURSE));
 
             // create course
-            Course course = new Course(name, type, cfu, professor, degreeCourse);
+            Course course = new Course(courseDto.getName(), courseDto.getType(), courseDto.getCfu(), professor, degreeCourse);
             // save
             courseRepository.saveAndFlush(course);
-            return CourseMapper.mapToCourseDto(course);
-        } catch (DataAccessException e) {
-            logger.error(DATA_ACCESS_ERROR, e);
-            return null;
+            return CourseMapper.toDto(course);
+        } catch (PersistenceException e) {
+            throw new DataAccessServiceException("Error accessing database for course " + courseDto.getName() + ": " + e.getMessage(), e);
         }
     }
 
 
     /**
-     * Updates a course in the repository.
-     * @param oldCourseName the name of the course to be updated
-     * @param oldDegreeCourseName the old the degree course
-     * @param newName the new name of the course
-     * @param newDegreeCourseName the new the degree course
-     * @param newType the new type of the course
-     * @param newCfu the new cfu of the course
-     * @param newUniqueCode the new unique code of the professor
-     * @return Course object representing the updated course.
-     * @throws NullPointerException if any of the parameters is null.
-     * @throws ObjectNotFoundException if no course with the given name exists.
-     * @throws IllegalArgumentException if any of the parameters is invalid.
-     * @throws UnsupportedOperationException if any of the parameters is not unique.
+     * Updates an existing course using data from the provided CourseDto.
+     * @param oldCourseName the current name of the course to be updated
+     * @param oldDegreeCourseName the current degree course name associated with the course
+     * @param updatedCourseDto the DTO containing new course information
+     * @return the updated Course
+     * @throws IllegalArgumentException if old course name or degree course name are null or blank
+     * or if the DTO contains invalid data
+     * @throws ObjectNotFoundException if the course, professor, or degree course cannot be found
+     * @throws DataAccessServiceException if there is an error accessing the database
      */
     @Override
-    @Transactional
-    public Course updateCourse(
-        @NonNull String oldCourseName,
-        @NonNull String oldDegreeCourseName,
-        @NonNull String newCourseName,
-        @NonNull String newDegreeCourseName,
-        @NonNull CourseType newType,
-        @NonNull Integer newCfu,
-        @NonNull String newUniqueCode
-    ) throws NullPointerException, ObjectNotFoundException, IllegalArgumentException, UnsupportedOperationException
+    @Transactional(rollbackOn = {IllegalArgumentException.class, ObjectNotFoundException.class})
+    @Retryable(retryFor = PersistenceException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
+    public CourseDto updateCourse(String oldCourseName, String oldDegreeCourseName, CourseDto updatedCourseDto)
+        throws IllegalArgumentException, ObjectNotFoundException, DataAccessServiceException
     {
-        if(oldCourseName.isBlank() || oldDegreeCourseName.isBlank() || newCourseName.isBlank() || newDegreeCourseName.isBlank() || newUniqueCode.isBlank())
-            throw new IllegalArgumentException("Course name, unique code or degree course name cannot be empty.");
+
+        if (oldCourseName == null || oldCourseName.isBlank() ||
+            oldDegreeCourseName == null || oldDegreeCourseName.isBlank())
+            throw new IllegalArgumentException("Old course name and degree course name must not be null or blank");
 
         try {
-            // retrieve data
-            DegreeCourse oldDegreeCourse = degreeCourseRepository.findByName(oldDegreeCourseName);
-            Course updatableCourse = courseRepository.findByNameAndDegreeCourse(oldCourseName, oldDegreeCourse);
-            DegreeCourse newDegreeCourse = degreeCourseRepository.findByName(newDegreeCourseName);
-            Professor professor = professorRepository.findByUniqueCode(new UniqueCode(newUniqueCode));
+            // Retrieve existing course
+            Course course = courseRepository
+                .findByNameAndDegreeCourseName(oldCourseName, oldDegreeCourseName)
+                .orElseThrow(() -> new ObjectNotFoundException(DomainType.COURSE));
 
-            // sanity checks
-            if(updatableCourse == null)
-                throw new ObjectNotFoundException(DomainType.COURSE);
-            if(newDegreeCourse == null)
-                throw new ObjectNotFoundException(DomainType.DEGREE_COURSE);
-            if(professor == null)
-                throw new ObjectNotFoundException(DomainType.PROFESSOR);
-            if(newCourseName.isEmpty())
-                throw new IllegalArgumentException("name must not be null or empty");
-            if(newCfu < 0)
-                throw new IllegalArgumentException("cfu must be a positive number");
+            // Validate new degree course and professor
+            DegreeCourse newDegreeCourse = degreeCourseRepository
+                .findByName(updatedCourseDto.getDegreeCourse().getName())
+                .orElseThrow(() -> new ObjectNotFoundException(DomainType.DEGREE_COURSE));
 
-            // update
-            updatableCourse.setName(newCourseName);
-            updatableCourse.setType(newType);
-            updatableCourse.setCfu(newCfu);
-            updatableCourse.setProfessor(professor);
-            updatableCourse.setDegreeCourse(newDegreeCourse);
+            Professor professor = professorRepository
+                .findByUniqueCode(new UniqueCode(updatedCourseDto.getProfessor().getUniqueCode()))
+                .orElseThrow(() -> new ObjectNotFoundException(DomainType.PROFESSOR));
 
-            // save
-            courseRepository.save(updatableCourse);
-            return updatableCourse;
-        } catch (DataAccessException e) {
-            logger.error(DATA_ACCESS_ERROR + " while updating course with name " + oldCourseName, e);
-            return null;
+            // Update course fields
+            course.setName(updatedCourseDto.getName());
+            course.setType(updatedCourseDto.getType());
+            course.setCfu(updatedCourseDto.getCfu());
+            course.setProfessor(professor);
+            course.setDegreeCourse(newDegreeCourse);
+
+            // Save changes
+            courseRepository.saveAndFlush(course);
+            return CourseMapper.toDto(course);
+
+        } catch (PersistenceException e) {
+            throw new DataAccessServiceException("Error accessing database for course " + updatedCourseDto.getName() + ": " + e.getMessage(), e);
         }
     }
 
 
     /**
-     * Deletes a course from the repository by its id.
-     * @param id id of the course to be deleted
-     * @throws NullPointerException if the id is null.
-     * @throws ObjectNotFoundException if no course with the given id exists.
-     * @throws IllegalArgumentException if the id is empty.
-     * @throws UnsupportedOperationException if the id is not unique.
+     * Deletes a course by its name and degree course name.
+     * @param courseName the name of the course to be deleted
+     * @param degreeCourseName the name of the degree course associated with the course
+     * @return CourseDto object representing the deleted course
+     * @throws IllegalArgumentException if course name or degree course name is null or blank
+     * @throws ObjectNotFoundException if no course with the given name and degree course name exists
+     * @throws DataAccessServiceException if there is an error accessing the database
      */
     @Override
-    @Transactional
-    public void deleteCourse(@NonNull CourseId id)
-        throws NullPointerException, ObjectNotFoundException, IllegalArgumentException, UnsupportedOperationException
+    @Transactional(rollbackOn = {IllegalArgumentException.class, ObjectNotFoundException.class})
+    @Retryable(retryFor = PersistenceException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
+    public CourseDto deleteByNameAndDegreeCourse(String courseName, String degreeCourseName)
+        throws IllegalArgumentException, ObjectNotFoundException, DataAccessServiceException
     {
-        if(id.toString().isBlank())
-            throw new IllegalArgumentException("id cannot be null or empty");
 
-        if(!courseRepository.existsById(id))
-                throw new ObjectNotFoundException(DomainType.COURSE);
+        if (courseName == null || courseName.isBlank() ||
+            degreeCourseName == null || degreeCourseName.isBlank())
+            throw new IllegalArgumentException("Course name and degree course name must not be null or blank");
+
         try {
-            courseRepository.deleteById(id);
-        } catch (DataAccessException e) {
-            logger.error(DATA_ACCESS_ERROR + " while deleting course with id " + id, e);
+            Course course = courseRepository
+                .findByNameAndDegreeCourseName(courseName, degreeCourseName)
+                .orElseThrow(() -> new ObjectNotFoundException(DomainType.COURSE));
+
+            // delete
+            courseRepository.delete(course);
+            return CourseMapper.toDto(course);
+        } catch (PersistenceException e) {
+            throw new DataAccessServiceException("Error accessing database for course " + courseName + ": " + e.getMessage(), e);
         }
     }
+
 
 }

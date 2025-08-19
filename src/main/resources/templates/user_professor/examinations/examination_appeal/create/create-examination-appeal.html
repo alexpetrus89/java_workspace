@@ -7,6 +7,7 @@
     <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1">
     <title>Uni Journey</title>
     <link rel="stylesheet" type="text/css" href="/static/css/create-examination-appeal.css">
+    <script src="/static/js/ums-create-examination-appeal.js" defer></script>
 </head>
 <body>
     <header class="main-header">
@@ -17,13 +18,16 @@
         <form action="#" th:action="@{/api/v1/examination-appeal/create}" method="post" class="appeal-form">
 
             <div class="form-group">
-                <label for="courseId">Select course</label>
-                <select name="courseId" id="courseId" placeholder="courses" required>
+                <label for="courseName">Select course</label>
+                <select name="courseName" id="courseName" placeholder="courses" required>
                     <option value="" disabled selected>courses</option>
                     <option th:each="course : ${courses}"
-                            th:value="${course.courseId.id}"
+                            th:value="${course.name}"
+                            th:data-degree="${course.degreeCourse.name}"
                             th:text="${course.name + ' - ' + course.degreeCourse.name}">Course</option>
                 </select>
+
+                <input type="hidden" id="degreeCourseName" name="degreeCourseName">
             </div>
 
             <div class="form-group">

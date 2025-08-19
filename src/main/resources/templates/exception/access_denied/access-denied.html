@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta name="viewport" charset="UTF-8" content="width=device-width, initial-scale=1.0">
+    <title>Access Denied</title>
+    <link rel="stylesheet" href="/css/access-denied.css">
+</head>
+<body>
+<div class="container">
+    <h1>Access denied</h1>
+    <p>You do not have permission to access this resource.</p>
+    <p>If you believe this is a mistake, please contact an administrator.</p>
+    <p><a th:href="@{/}">Return to home page</a></p>
+</div>
+</body>
+</html>

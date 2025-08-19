@@ -5,10 +5,12 @@ import java.io.Serializable;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.LogoutConfigurer;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -45,16 +47,26 @@ public class UmsWebSecurityConfig implements Serializable {
      */
     @Bean
     UserDetailsService userDetailsService(UserRepository userRepository) {
-
-        return username -> {
-			UserDetails userDetails = userRepository.findByUsername(username);
-
-			if (userDetails == null)
-				throw new UsernameNotFoundException("User '" + username + "' not found");
-
-			return userDetails;
-        };
+        return username -> userRepository
+			.findByUsername(username)
+			.orElseThrow(() -> new UsernameNotFoundException("User '" + username + "' not found"));
     }
+
+
+	/**
+	 * Provides an AuthenticationManager bean for managing authentication.
+	 * @param userDetailsService the UserDetailsService to retrieve user details
+	 * @return AuthenticationManager that uses the provided UserDetailsService
+	 */
+	@Bean
+	AuthenticationManager authenticationManager(
+        UserDetailsService userDetailsService,
+        PasswordEncoder passwordEncoder
+	) {
+		DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider(userDetailsService);
+		authProvider.setPasswordEncoder(passwordEncoder);
+		return new ProviderManager(authProvider);
+	}
 
 
 	/**
@@ -69,7 +81,7 @@ public class UmsWebSecurityConfig implements Serializable {
 			http.authorizeHttpRequests(requests ->
 				requests.requestMatchers(
 					// URL accessibili a tutti gli utenti
-				"/",
+					"/",
 					"/shutdown",
 					"/login",
 					"/logout",

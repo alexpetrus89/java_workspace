@@ -12,6 +12,9 @@ import com.alex.universitymanagementsystem.enum_type.DomainType;
 @ResponseStatus(value = HttpStatus.CONFLICT)
 public class ObjectAlreadyExistsException extends RuntimeException {
 
+    private static final long serialVersionUID = 1L;
+
+    // instance variables
     private final String message;
 
     // Constructors

@@ -24,7 +24,7 @@ public class UmsCustomAuthenticationSuccessHandler implements AuthenticationSucc
             .stream()
             .filter(authority -> authority.getAuthority().startsWith("ROLE_"))
             .findFirst()
-            .orElseThrow(() -> new RuntimeException("Ruolo non trovato"))
+            .orElseThrow(() -> new RuntimeException("Role not found"))
             .getAuthority();
 
         String redirectUrl;

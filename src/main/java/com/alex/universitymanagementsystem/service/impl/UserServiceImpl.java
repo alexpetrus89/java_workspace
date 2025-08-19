@@ -1,40 +1,37 @@
 package com.alex.universitymanagementsystem.service.impl;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.dao.DataAccessException;
-import org.springframework.lang.NonNull;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.alex.universitymanagementsystem.domain.Address;
 import com.alex.universitymanagementsystem.domain.User;
+import com.alex.universitymanagementsystem.domain.immutable.FiscalCode;
 import com.alex.universitymanagementsystem.domain.immutable.UserId;
+import com.alex.universitymanagementsystem.dto.UserDto;
 import com.alex.universitymanagementsystem.enum_type.DomainType;
 import com.alex.universitymanagementsystem.enum_type.RoleType;
+import com.alex.universitymanagementsystem.exception.DataAccessServiceException;
 import com.alex.universitymanagementsystem.exception.ObjectAlreadyExistsException;
 import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
+import com.alex.universitymanagementsystem.mapper.UserMapper;
 import com.alex.universitymanagementsystem.repository.UserRepository;
-import com.alex.universitymanagementsystem.service.UserDetailsService;
+import com.alex.universitymanagementsystem.service.UserService;
 import com.alex.universitymanagementsystem.utils.RegistrationForm;
 
+import jakarta.persistence.PersistenceException;
 import jakarta.transaction.Transactional;
-import jakarta.validation.constraints.NotBlank;
 
 @Service
-public class UserServiceImpl implements UserDetailsService{
-
-    // logger
-	private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
-
-	// constants
-	private static final String DATA_ACCESS_ERROR = "data access error";
+public class UserServiceImpl implements UserService{
 
     // instance variable
     private final UserRepository userRepository;
@@ -47,61 +44,77 @@ public class UserServiceImpl implements UserDetailsService{
 
 
     /**
-	 * Retrieves all users from the repository.
+	 * Retrieves all users.
 	 * @return List of Users.
+     * @throws DataAccessServiceException if there is an error accessing the database.
 	 */
     @Override
-    public List<User> getUsers() {
-		return userRepository.findAll();
+    public List<UserDto> getUsers() throws DataAccessServiceException {
+        try {
+            // fetch all users from the repository
+            return userRepository
+                .findAll()
+                .stream()
+                .map(UserMapper::toDto)
+                .toList();
+        } catch (PersistenceException e) {
+            throw new DataAccessServiceException("Error accessing database for fetching users: " + e.getMessage(), e);
+        }
 	}
+
 
     /**
      * Return user details
      * @param username username
      * @return UserDetails
-     * @throws NullPointerException if the user is null
-     * @throws IllegalArgumentException if the username is blank
+     * @throws UsernameNotFoundException if the user could not be found or the user has no
+	 * GrantedAuthority
      */
     @Override
-    public UserDetails loadUserByUsername(@NonNull @NotBlank String username)
-        throws NullPointerException, IllegalArgumentException {
-        return userRepository.findByUsername(username);
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return userRepository.findByUsername(username)
+            .map(UserMapper::toUserDetails)
+            .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
     }
 
 
     /**
-     * Updates the current authenticated user's information and saves it to the
-     * repository.
-     * This method is transactional and mapped to the HTTP PUT request for "/update".
-     * @param form RegistrationForm containing updated user details.
-     * @return String representing the redirect URL after the update process.
-     * @throws NullPointerException if the user is null.
-     * @throws ObjectAlreadyExistsException if the user already exists.
-	 */
-	@Transactional
-    public User addNewUser(@NonNull User user)
-        throws NullPointerException, ObjectAlreadyExistsException {
+     * Add new user
+     * @param form with data of the user to be added
+     * @return UserDto
+     * @throws ObjectAlreadyExistsException if user to add already exists
+     * @throws DataAccessServiceException if there are trouble accessing the database
+     */
+    @Override
+	@Transactional(rollbackOn = ObjectAlreadyExistsException.class)
+    @Retryable(retryFor = PersistenceException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
+    public UserDto addNewUser(RegistrationForm form) throws ObjectAlreadyExistsException, DataAccessServiceException {
         try {
             // check if the user already exists
-            if(userRepository.existsById(user.getId()))
+            if(userRepository.existsByUsername(form.getUsername()))
                 throw new ObjectAlreadyExistsException(DomainType.USER);
 
-            // check if the username is already used
+            // check if user with same fiscal code already exists
+            if(userRepository.existsByFiscalCode_FiscalCode(form.getFiscalCode()))
+                throw new ObjectAlreadyExistsException(DomainType.USER);
+
+            // check if exists username with same fullname and dob
             if(userRepository
-                    .findByFullname(user.getFullname())
+                    .findByFullname(form.getFirstName(), form.getLastName())
                     .stream()
-                    .anyMatch(u -> u.getFullname().equals(user.getFullname())) &&
+                    .anyMatch(u -> (u.getFirstName() + " " + u.getLastName()).equals(form.getFirstName() + " " + form.getLastName()) &&
                 userRepository
-                    .findByDob(user.getDob())
+                    .findByDob(form.getDob())
                     .stream()
-                    .anyMatch(u -> u.getDob().isEqual(user.getDob())))
+                    .anyMatch(uDob -> uDob.getDob().isEqual(form.getDob()))))
                 throw new ObjectAlreadyExistsException(DomainType.USER);
 
             // save the user
-            return userRepository.saveAndFlush(user);
-        } catch (DataAccessException e) {
-            logger.error(DATA_ACCESS_ERROR, e);
-            return null;
+            User user = userRepository.saveAndFlush((form.toUser(passwordEncoder)));
+            return UserMapper.toDto(user);
+
+        } catch (PersistenceException e) {
+            throw new DataAccessServiceException("Error accessing database for user " + form.getUsername() + ": " + e.getMessage(), e);
         }
     }
 
@@ -110,16 +123,20 @@ public class UserServiceImpl implements UserDetailsService{
      * Updates the current authenticated user's information and saves it to the
      * repository.
      * This method is transactional and mapped to the HTTP PUT request for "/update".
-     * @param form RegistrationForm containing updated user details.
-     * @throws NullPointerException if the form is null.
-     * @throws IllegalArgumentException if the username is blank.
+     * @param form with new data of the user to be updated
+     * @return UserDto
      * @throws ObjectNotFoundException if the authenticated user is not found.
+     * @throws DataAccessServiceException if there are trouble accessing the database
      */
-    @Transactional(rollbackOn = {NullPointerException.class, IllegalArgumentException.class, ObjectNotFoundException.class})
-    public User updateUser(@NonNull RegistrationForm form)
-        throws NullPointerException, IllegalArgumentException, ObjectNotFoundException
+    @Override
+    @Transactional(rollbackOn = ObjectNotFoundException.class)
+    @Retryable(retryFor = PersistenceException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
+    public UserDto updateUser(RegistrationForm form)
+        throws ObjectNotFoundException, DataAccessServiceException
     {
-        // get the authenticated user
+        // SecurityContextHolder.getContext()	Recupera il contesto di sicurezza
+        // getAuthentication()	Ottiene info sull’utente loggato
+        // getPrincipal()	Ritorna l’oggetto utente (tipicamente UserDetails)
         User user =  (User) SecurityContextHolder
             .getContext()
             .getAuthentication()
@@ -129,36 +146,22 @@ public class UserServiceImpl implements UserDetailsService{
         if(user == null)
             throw new ObjectNotFoundException(DomainType.USER);
 
-        // check if the username is blank
-        if(form.getUsername().isBlank())
-            throw new IllegalArgumentException("Username cannot be blank");
-
-        // check if the password match with confirm
-        if(!form.getPassword().equals(form.getConfirm()))
-            throw new IllegalArgumentException("password cannot match");
-
-        // check if the date of birth is valid (not in the future or today)
-        if(form.getDob() == null || form.getDob().isEqual(LocalDate.now()) || form.getDob().isAfter(LocalDate.now()))
-            throw new IllegalArgumentException("invalid date of birth");
-
         try {
             user.setUsername(form.getUsername());
             user.setPassword(passwordEncoder.encode(form.getPassword()));
-            user.setFullname(form.getFullname());
+            user.setFirstName(form.getFirstName());
+            user.setLastName(form.getLastName());
             user.setDob(form.getDob());
-            user.setStreet(form.getStreet());
-            user.setCity(form.getCity());
-            user.setState(form.getState());
-            user.setZip(form.getZip());
+            user.setFiscalCode(new FiscalCode(form.getFiscalCode()));
             user.setPhoneNumber(form.getPhone());
+            user.setAddress(new Address(form.getStreet(), form.getCity(), form.getState(), form.getZip()));
             if(form.getRole() != null)
                 user.setRole(form.getRole());
 
             // save the user
-            return userRepository.saveAndFlush(user);
-        } catch (DataAccessException e) {
-            logger.error(DATA_ACCESS_ERROR, e);
-            return null;
+            return UserMapper.toDto(userRepository.saveAndFlush(user));
+        } catch (PersistenceException e) {
+            throw new DataAccessServiceException("Error accessing database for user " + user.getId() + ": " + e.getMessage(), e);
         }
     }
 
@@ -166,16 +169,17 @@ public class UserServiceImpl implements UserDetailsService{
     /**
      * Deletes a user from the repository.
      * @param userId user id of the user to be deleted
-     * @throws NullPointerException if the username is null
-     * @throws IllegalArgumentException if the authenticated user is not an admin
+     * @return boolean
+     * @throws AccessDeniedException if the authenticated user is not an admin
      * @throws UsernameNotFoundException if the user to be deleted is not found
+     * @throws DataAccessServiceException if there are trouble accessing the database
      */
-    @Transactional(rollbackOn = {NullPointerException.class, IllegalArgumentException.class, UsernameNotFoundException.class})
-    public boolean deleteUser(@NonNull String userId)
-        throws NullPointerException, IllegalArgumentException, UsernameNotFoundException
+    @Override
+    @Transactional(rollbackOn = {AccessDeniedException.class, UsernameNotFoundException.class})
+    @Retryable(retryFor = PersistenceException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
+    public boolean deleteUser(String userId)
+        throws AccessDeniedException, UsernameNotFoundException, DataAccessServiceException
     {
-        if(userId.isBlank())
-            throw new IllegalArgumentException("User id cannot be blank");
 
         try {
             // get the authenticated user
@@ -185,7 +189,7 @@ public class UserServiceImpl implements UserDetailsService{
                 .getPrincipal();
 
             if(!admin.getRole().equals(RoleType.ADMIN))
-                throw new IllegalArgumentException("Only admin can delete users");
+                throw new AccessDeniedException("Only admin can delete users");
 
             User userToDelete = userRepository
                 .findById(new UserId(UUID.fromString(userId)))
@@ -194,9 +198,8 @@ public class UserServiceImpl implements UserDetailsService{
             // delete the user
             userRepository.delete(userToDelete);
             return true;
-        } catch (DataAccessException e) {
-            logger.error(DATA_ACCESS_ERROR, e);
-            return false;
+        } catch (PersistenceException e) {
+            throw new DataAccessServiceException("Error accessing database for user " + userId + ": " + e.getMessage(), e);
         }
     }
 

@@ -3,6 +3,7 @@ package com.alex.universitymanagementsystem.controller;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,28 +15,41 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.alex.universitymanagementsystem.domain.Examination;
-import com.alex.universitymanagementsystem.domain.ExaminationOutcome;
 import com.alex.universitymanagementsystem.domain.Student;
 import com.alex.universitymanagementsystem.domain.immutable.Register;
 import com.alex.universitymanagementsystem.domain.immutable.UniqueCode;
 import com.alex.universitymanagementsystem.dto.ExaminationDto;
+import com.alex.universitymanagementsystem.dto.ExaminationOutcomeDto;
+import com.alex.universitymanagementsystem.dto.UpdateExaminationDto;
+import com.alex.universitymanagementsystem.exception.DataAccessServiceException;
 import com.alex.universitymanagementsystem.exception.ObjectAlreadyExistsException;
 import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
 import com.alex.universitymanagementsystem.service.impl.ExaminationOutcomeServiceImpl;
 import com.alex.universitymanagementsystem.service.impl.ExaminationServiceImpl;
 
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping(path = "api/v1/examination")
 public class ExaminationController {
 
     // constants
-    private static final String ATTRIBUTE_EXAMINATION = "examination";
-    private static final String ATTRIBUTE_EXAMINATIONS = "examinations";
-    private static final String VIEW_PATH = "examination/examination-list";
-    private static final String EXCEPTION_VIEW_NAME = "exception/read/error";
+    private static final String EXAMINATION = "examination";
+    private static final String EXAMINATIONS = "examinations";
+    private static final String EXAMINATIONS_LIST = "examination/examination-list";
     private static final String EXCEPTION_MESSAGE = "message";
+    private static final String OBJECT_NOT_FOUND = "/object-not-found";
+    private static final String ILLEGAL_PARAMETERS = "/illegal-parameters";
+
+    @Value("#{dataAccessExceptionUri}")
+    private String dataAccessExceptionUri;
+    @Value("#{notFoundExceptionUri}")
+    private String notFoundExceptionUri;
+    @Value("#{alreadyExistsExceptionUri}")
+    private String alreadyExistsExceptionUri;
+    @Value("#{illegalArgumentExceptionUri}")
+    private String illegalArgumentExceptionUri;
 
     // instance variable
     private final ExaminationServiceImpl examinationServiceImpl;
@@ -58,24 +72,33 @@ public class ExaminationController {
      */
     @GetMapping(path = "/view")
     public ModelAndView getExaminations() {
-        List<ExaminationDto> examinations = examinationServiceImpl.getExaminations();
-        return new ModelAndView(VIEW_PATH, ATTRIBUTE_EXAMINATIONS, examinations);
+        try {
+            List<ExaminationDto> examinations = examinationServiceImpl.getExaminations();
+            return new ModelAndView(EXAMINATIONS_LIST, EXAMINATIONS, examinations);
+        } catch (DataAccessServiceException e) {
+            return new ModelAndView(dataAccessExceptionUri, EXCEPTION_MESSAGE, e.getMessage());
+        }
     }
 
 
     /**
      * Returns a list of examinations by course name
-     * @param name name of the course
+     * @param courseName name of the course
+     * @param degreeCourseName name of the degree course
      * @return ModelAndView
      */
     @GetMapping(path = "/course-name")
-    public ModelAndView getExaminationsByCourseName(@RequestParam String name) {
+    public ModelAndView getExaminationsByCourseAndDegreeCourse(@RequestParam String courseName, @RequestParam String degreeCourseName) {
 
         try {
-            List<ExaminationDto> examinations = examinationServiceImpl.getExaminationsByCourseName(name);
-            return new ModelAndView(VIEW_PATH, ATTRIBUTE_EXAMINATIONS, examinations);
-        } catch (NullPointerException | IllegalArgumentException | ObjectNotFoundException | UnsupportedOperationException  e) {
-            return new ModelAndView(EXCEPTION_VIEW_NAME, EXCEPTION_MESSAGE, e.getMessage());
+            List<ExaminationDto> examinations = examinationServiceImpl.getExaminationsByCourseNameAndDegreeCourseName(courseName, degreeCourseName);
+            return new ModelAndView(EXAMINATIONS_LIST, EXAMINATIONS, examinations);
+        } catch (IllegalArgumentException e) {
+            return new ModelAndView(illegalArgumentExceptionUri + ILLEGAL_PARAMETERS, EXCEPTION_MESSAGE, e.getMessage());
+        } catch (ObjectNotFoundException e) {
+            return new ModelAndView(notFoundExceptionUri + OBJECT_NOT_FOUND, EXCEPTION_MESSAGE, e.getMessage());
+        } catch (DataAccessServiceException e) {
+            return new ModelAndView(dataAccessExceptionUri, EXCEPTION_MESSAGE, e.getMessage());
         }
     }
 
@@ -88,16 +111,20 @@ public class ExaminationController {
     @GetMapping(path = "/student-register")
     public ModelAndView getExaminationsByStudentRegister(
         @AuthenticationPrincipal Student student,
-        @RequestParam(required = false) String register
+        @Valid @RequestParam(required = false) String register
     ) {
 
         try {
             Register studRegister = student != null ? student.getRegister() : new Register(register);
 
             List<ExaminationDto> examinations = examinationServiceImpl.getExaminationsByStudentRegister(studRegister);
-            return new ModelAndView("user_student/examinations/examinations", ATTRIBUTE_EXAMINATIONS, examinations);
-        } catch (NullPointerException | IllegalArgumentException | ObjectNotFoundException | UnsupportedOperationException  e) {
-            return new ModelAndView(EXCEPTION_VIEW_NAME, EXCEPTION_MESSAGE, e.getMessage());
+            return new ModelAndView("user_student/examinations/examinations", EXAMINATIONS, examinations);
+        } catch (IllegalArgumentException e) {
+            return new ModelAndView(illegalArgumentExceptionUri + ILLEGAL_PARAMETERS, EXCEPTION_MESSAGE, e.getMessage());
+        } catch (ObjectNotFoundException e) {
+            return new ModelAndView(notFoundExceptionUri + OBJECT_NOT_FOUND, EXCEPTION_MESSAGE, e.getMessage());
+        } catch (DataAccessServiceException e) {
+            return new ModelAndView(dataAccessExceptionUri, EXCEPTION_MESSAGE, e.getMessage());
         }
     }
 
@@ -112,9 +139,13 @@ public class ExaminationController {
 
         try {
             List<ExaminationDto> examinations = examinationServiceImpl.getExaminationsByProfessorUniqueCode(new UniqueCode(uniqueCode));
-            return new ModelAndView(VIEW_PATH, ATTRIBUTE_EXAMINATIONS, examinations);
-        } catch (NullPointerException | IllegalArgumentException | ObjectNotFoundException | UnsupportedOperationException  e) {
-            return new ModelAndView(EXCEPTION_VIEW_NAME, EXCEPTION_MESSAGE, e.getMessage());
+            return new ModelAndView(EXAMINATIONS_LIST, EXAMINATIONS, examinations);
+        } catch (IllegalArgumentException e) {
+            return new ModelAndView(illegalArgumentExceptionUri + ILLEGAL_PARAMETERS, EXCEPTION_MESSAGE, e.getMessage());
+        } catch (ObjectNotFoundException e) {
+            return new ModelAndView(notFoundExceptionUri + OBJECT_NOT_FOUND, EXCEPTION_MESSAGE, e.getMessage());
+        } catch (DataAccessServiceException e) {
+            return new ModelAndView(dataAccessExceptionUri, EXCEPTION_MESSAGE, e.getMessage());
         }
     }
 
@@ -125,7 +156,7 @@ public class ExaminationController {
      */
     @GetMapping("/create")
     public ModelAndView createNewExaminationAndReturnView() {
-        return new ModelAndView("examination/create/create", ATTRIBUTE_EXAMINATION, new Examination());
+        return new ModelAndView("examination/create/create", EXAMINATION, new Examination());
     }
 
 
@@ -135,7 +166,7 @@ public class ExaminationController {
      */
     @GetMapping("/update")
     public ModelAndView updateExaminationAndReturnView() {
-        return new ModelAndView("examination/update/update", ATTRIBUTE_EXAMINATION, new Examination());
+        return new ModelAndView("examination/update/update", EXAMINATION, new Examination());
     }
 
 
@@ -151,7 +182,7 @@ public class ExaminationController {
      */
     @PostMapping(path = "/create")
     public ModelAndView createNewExaminationByAdmin(
-        @RequestParam String register,
+        @Valid @RequestParam String register,
         @RequestParam String courseName,
         @RequestParam String degreeCourseName,
         @RequestParam String grade,
@@ -160,19 +191,18 @@ public class ExaminationController {
     ) {
 
         try {
-            Examination examination = examinationServiceImpl.addNewExamination(
-                new Register(register),
-                courseName,
-                degreeCourseName.toUpperCase(),
-                grade,
-                withHonors,
-                date
-            );
-            ExaminationOutcome outcome = examinationOutcomeServiceImpl.getOutcomeByCourseAndStudent(courseName, register);
+            ExaminationDto examination = new ExaminationDto(register, courseName, degreeCourseName, grade, withHonors, date);
+            ExaminationOutcomeDto outcome = examinationOutcomeServiceImpl.getOutcomeByCourseAndStudent(courseName, register);
             examinationOutcomeServiceImpl.deleteExaminationOutcome(outcome);
-            return new ModelAndView( "examination/create/create-result", ATTRIBUTE_EXAMINATION, examination);
-        } catch (NullPointerException | IllegalArgumentException | IllegalStateException | ObjectNotFoundException | ObjectAlreadyExistsException | UnsupportedOperationException e) {
-            return new ModelAndView(EXCEPTION_VIEW_NAME, EXCEPTION_MESSAGE, e.getMessage());
+            return new ModelAndView("examination/create/create-result", EXAMINATION, examination);
+        } catch (IllegalArgumentException e) {
+            return new ModelAndView(illegalArgumentExceptionUri + ILLEGAL_PARAMETERS, EXCEPTION_MESSAGE, e.getMessage());
+        } catch (ObjectNotFoundException e) {
+            return new ModelAndView(notFoundExceptionUri + OBJECT_NOT_FOUND, EXCEPTION_MESSAGE, e.getMessage());
+        } catch (ObjectAlreadyExistsException e) {
+            return new ModelAndView(alreadyExistsExceptionUri + "object-already-exists", EXCEPTION_MESSAGE, e.getMessage());
+        } catch (DataAccessServiceException e) {
+            return new ModelAndView(dataAccessExceptionUri, EXCEPTION_MESSAGE, e.getMessage());
         }
     }
 
@@ -206,20 +236,24 @@ public class ExaminationController {
 
 
         try {
-            Examination examination = examinationServiceImpl.updateExamination(
-                new Register(oldRegister.toLowerCase()),
-                oldCourseName.toLowerCase(),
-                oldDegreeCourseName.toUpperCase(),
-                new Register(newRegister.toLowerCase()),
-                newCourseName.toLowerCase(),
-                newDegreeCourseName.toUpperCase(),
-                grade,
-                withHonors,
-                date
-            );
-            return new ModelAndView("examination/create/create-result", ATTRIBUTE_EXAMINATION, examination);
-        } catch (NullPointerException | IllegalArgumentException | ObjectNotFoundException | UnsupportedOperationException  e) {
-            return new ModelAndView(EXCEPTION_VIEW_NAME, EXCEPTION_MESSAGE, e.getMessage());
+            UpdateExaminationDto dto = new UpdateExaminationDto();
+            dto.setOldRegister(oldRegister);
+            dto.setOldCourseName(oldCourseName);
+            dto.setOldDegreeCourseName(oldDegreeCourseName);
+            dto.setNewRegister(newRegister);
+            dto.setNewCourseName(newCourseName);
+            dto.setNewDegreeCourseName(newDegreeCourseName);
+            dto.setGrade(grade);
+            dto.setWithHonors(withHonors);
+            dto.setDate(date);
+            ExaminationDto examination = examinationServiceImpl.updateExamination(dto);
+            return new ModelAndView("examination/create/create-result", EXAMINATION, examination);
+        } catch (IllegalArgumentException | IllegalStateException e) {
+            return new ModelAndView(illegalArgumentExceptionUri + ILLEGAL_PARAMETERS, EXCEPTION_MESSAGE, e.getMessage());
+        } catch (ObjectNotFoundException e) {
+            return new ModelAndView(notFoundExceptionUri + OBJECT_NOT_FOUND, EXCEPTION_MESSAGE, e.getMessage());
+        } catch (DataAccessServiceException e) {
+            return new ModelAndView(dataAccessExceptionUri, EXCEPTION_MESSAGE, e.getMessage());
         }
     }
 
@@ -233,17 +267,23 @@ public class ExaminationController {
     @DeleteMapping(path = "/delete")
     public ModelAndView deleteExamination(
         @RequestParam String register,
-        @RequestParam String courseName
+        @RequestParam String courseName,
+        @RequestParam String degreeCourseName
     ) {
 
         try {
             examinationServiceImpl.deleteExamination(
-                new Register(register.toLowerCase()),
-                courseName.toLowerCase()
+                register.toLowerCase(),
+                courseName.toLowerCase(),
+                degreeCourseName.toUpperCase()
             );
             return new ModelAndView("examination/delete/delete-result");
-        } catch (NullPointerException | IllegalArgumentException | ObjectNotFoundException | UnsupportedOperationException  e) {
-            return new ModelAndView(EXCEPTION_VIEW_NAME, EXCEPTION_MESSAGE, e.getMessage());
+        } catch (IllegalArgumentException e) {
+            return new ModelAndView(illegalArgumentExceptionUri + ILLEGAL_PARAMETERS, EXCEPTION_MESSAGE, e.getMessage());
+        } catch (ObjectNotFoundException e) {
+            return new ModelAndView(notFoundExceptionUri + OBJECT_NOT_FOUND, EXCEPTION_MESSAGE, e.getMessage());
+        } catch (DataAccessServiceException e) {
+            return new ModelAndView(dataAccessExceptionUri, EXCEPTION_MESSAGE, e.getMessage());
         }
     }
 

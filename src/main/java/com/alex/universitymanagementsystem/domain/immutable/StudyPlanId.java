@@ -15,7 +15,24 @@ public record StudyPlanId(UUID id) implements Serializable {
     }
 
     public StudyPlanId() {
-        this(UUID.randomUUID());
+        this((UUID) null);
+    }
+
+    public static StudyPlanId newId() {
+        return new StudyPlanId(UUID.randomUUID());
+    }
+
+    public StudyPlanId(String id) {
+        this(UUID.fromString(id));
+    }
+
+    @Override
+    public String toString() {
+        return id.toString();
+    }
+
+    public UUID getId() {
+        return id;
     }
 
 }

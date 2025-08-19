@@ -30,13 +30,17 @@ public class UmsMvcConfig implements WebMvcConfigurer, Serializable {
       @Override
       public void addViewControllers(@NonNull ViewControllerRegistry registry) {
             // home page
-		registry.addViewController("/")
+		registry
+                  .addViewController("/")
                   .setViewName("home");
-            registry.addViewController("/home")
+            registry
+                  .addViewController("/home")
                   .setViewName("home");
-		registry.addViewController("/logout")
+		registry
+                  .addViewController("/logout")
                   .setViewName("logout");
-		registry.addViewController("/login")
+		registry
+                  .addViewController("/login")
                   .setViewName("login");
 
             // examination utilities
@@ -151,10 +155,6 @@ public class UmsMvcConfig implements WebMvcConfigurer, Serializable {
             registry
                   .addViewController("/user_student/examinations/examination_outcome/student-absent")
                   .setViewName("/user_student/examinations/examination_outcome/student-absent");
-
-            registry
-                  .addViewController("/user_student/web-socket-page")
-                  .setViewName("/user_student/web-socket-page");
 
             // admin student utilities
             registry

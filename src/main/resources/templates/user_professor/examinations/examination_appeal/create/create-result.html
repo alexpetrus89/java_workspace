@@ -10,9 +10,9 @@
 </head>
 <body>
 	<h1>Examination appeal created</h1>
+    <p th:text="'Course: ' + ${examinationAppeal?.course}"></p>
     <p th:text="'Degree course: ' + ${examinationAppeal?.degreeCourse}"></p>
-    <p th:text="'Course: ' + ${examinationAppeal.course?.name}"></p>
-    <p th:text="'Professor: ' + ${examinationAppeal.course.professor?.fullname}"></p>
+    <p th:text="'Professor: ' + ${examinationAppeal.professorCode}"></p>
     <p th:text="'Date: ' + ${examinationAppeal?.date}"></p>
     <p th:text="'Description: ' + ${examinationAppeal?.description}"></p>
     <br>

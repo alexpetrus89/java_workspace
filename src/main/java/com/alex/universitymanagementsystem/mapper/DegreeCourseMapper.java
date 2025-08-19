@@ -8,16 +8,18 @@ public class DegreeCourseMapper {
     private DegreeCourseMapper() {} // private constructor to prevent instantiation
 
 
-    public static DegreeCourse mapToDegreeCourse(DegreeCourseDto degreeCourseDto) {
+    public static DegreeCourse toEntity(DegreeCourseDto dto) {
+        if(dto == null) return null;
         return new DegreeCourse(
-            degreeCourseDto.getName(),
-            degreeCourseDto.getGraduationClass(),
-            degreeCourseDto.getDuration()
+            dto.getName(),
+            dto.getGraduationClass(),
+            dto.getDuration()
         );
     }
 
 
-    public static DegreeCourseDto mapToDegreeCourseDto(DegreeCourse degreeCourse) {
+    public static DegreeCourseDto toDto(DegreeCourse degreeCourse) {
+        if(degreeCourse == null) return null;
         return new DegreeCourseDto(
             degreeCourse.getId(),
             degreeCourse.getName(),

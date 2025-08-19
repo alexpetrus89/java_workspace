@@ -29,19 +29,19 @@ package com.alex.universitymanagementsystem.utils;
 public class NotifyMessage {
 
     // instance variables
-    private String name;
+    private String message;
 
     // constructors
-    public NotifyMessage(String name) {
-        this.name = name;
+    public NotifyMessage(String message) {
+        this.message = message;
     }
 
     // getters and setters
-    public String getName() {
-        return name;
+    public String getMessage() {
+        return message;
     }
-    public void setName(String name) {
-        this.name = name;
+    public void setMessage(String message) {
+        this.message = message;
     }
 
 }

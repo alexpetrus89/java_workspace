@@ -7,16 +7,15 @@
     <meta name="viewport" charset="UTF-8" content="width=device-width, initial-scale=1.0">
     <title>Uni Journey</title>
     <link rel="stylesheet" type="text/css" href="/static/css/student-home.css">
-    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@stomp/stompjs@7.0.0/bundles/stomp.umd.min.js"></script>
-    <script src="/static/js/ums-notify.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="/static/js/ums-notify-outcome.js" type="module"></script>
 </head>
+
 <body>
 
     <h1>Welcome student <span sec:authentication="name"></span>!</h1>
 
     <div class="card-container">
-
         <div class="card">
             <h2>Study plan</h2>
             <p>Click <a th:href="@{/api/v1/study_plan/view}">here</a> to view your booklet</p>
@@ -32,22 +31,19 @@
             <p>Click <a th:href="@{/api/v1/user/update/student}">here</a> to update your data</p>
         </div>
 
-        <div class="card">
-            <h2>web socket</h2>
-            <p>Click <a th:href="@{/user_student/web-socket-page}">here</a> to see web socket</p>
-        </div>
-
         <div class="card logout-card">
             <h2>Logout</h2>
             <p>Click <a th:href="@{/logout}">here</a> to log out</p>
         </div>
-
     </div>
 
     <div id="notifications">
         <h2>Notifications</h2>
-        <div id="notification-list"></div>
+        <table id="conversation" class="table table-striped">
+                <tbody id="notify"></tbody>
+        </table>
     </div>
+
     <div class="form-actions">
         <a href="/" class="home-link">Home</a>
     </div>

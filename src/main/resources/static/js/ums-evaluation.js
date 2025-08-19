@@ -1,12 +1,7 @@
 function showHideFields(checkbox) {
     const fields = document.getElementById("fields");
-    if (checkbox.checked) {
-        fields.style.display = "block";
-    } else {
-        fields.style.display = "none";
-    }
+    fields.style.display = checkbox.checked ? "block" : "none";
 }
-
 
 function checkGrade() {
     const grade = document.getElementsByName("grade")[0].value;

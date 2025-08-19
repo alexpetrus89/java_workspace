@@ -25,12 +25,12 @@
             </thead>
             <tbody>
                 <tr th:each="student : ${appeal.students}">
-                    <td th:text="${student.fullname}">Nome</td>
-                    <td th:text="${student.register.register}">Register</td>
+                    <td th:text="${student.firstName} + ' ' + ${student.lastName}">Name</td>
+                    <td th:text="${student.register}">Register</td>
                     <td th:text="${student.username}">Email</td>
                     <td th:text="${student.degreeCourse.name}">Degree Course</td>
                     <td>
-                        <a th:href="@{/api/v1/examination-outcome/make/{register}/{id}(register=${student.register.register}, id=${appeal.appealId})}"
+                        <a th:href="@{/api/v1/examination-outcome/make/{register}/{id}(register=${student.register}, id=${appeal.id})}"
                             th:if="${appeal.date lt T(java.time.LocalDate).now()}">Evaluation</a>
                     </td>
                 </tr>

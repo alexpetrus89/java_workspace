@@ -14,10 +14,10 @@
         Unable to read student information. Please check your input.
     </div>
 
-    <h1 class="main-title">Student Information</h1>
+    <h1 class="main-title">Student information</h1>
 
     <div class="form-container">
-        <h2>Search by Registration Number</h2>
+        <h2>Search by registration number</h2>
         <form th:action="@{/api/v1/student/read/register}" method="get">
             <input type="text" name="register" placeholder="Enter student registration number" required />
             <button type="submit">Search</button>
@@ -26,7 +26,7 @@
     </div>
 
     <div class="form-container">
-        <h2>Search by Student Name</h2>
+        <h2>Search by student name</h2>
         <form th:action="@{/api/v1/student/read/name}" method="get">
             <input type="text" name="name" placeholder="Enter student name" required />
             <button type="submit">Search</button>

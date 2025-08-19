@@ -20,7 +20,7 @@ function getDegreeCourses() {
 
         // error
         error: function(xhr, status, error) {
-            console.log("Errore: " + error);
+            console.log("Error: " + error + " - Status: " + status + " - Response: " + xhr.responseText);
         }
     });
 }

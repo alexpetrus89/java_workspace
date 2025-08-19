@@ -3,9 +3,12 @@ package com.alex.universitymanagementsystem.controller;
 import java.util.List;
 import java.util.Set;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,11 +18,12 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.alex.universitymanagementsystem.domain.Course;
 import com.alex.universitymanagementsystem.domain.Professor;
-import com.alex.universitymanagementsystem.domain.immutable.CourseId;
 import com.alex.universitymanagementsystem.dto.CourseDto;
-import com.alex.universitymanagementsystem.enum_type.CourseType;
+import com.alex.universitymanagementsystem.dto.ProfessorDto;
+import com.alex.universitymanagementsystem.exception.DataAccessServiceException;
 import com.alex.universitymanagementsystem.exception.ObjectAlreadyExistsException;
 import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
+import com.alex.universitymanagementsystem.mapper.ProfessorMapper;
 import com.alex.universitymanagementsystem.service.impl.CourseServiceImpl;
 
 import jakarta.transaction.Transactional;
@@ -29,10 +33,18 @@ import jakarta.transaction.Transactional;
 public class CourseController {
 
     // constants
-    private static final String EXCEPTION_VIEW_NAME = "exception/read/error";
+    private static final String COURSE = "course";
     private static final String EXCEPTION_MESSAGE = "message";
 
-    private static final String COURSE = "course";
+    @Value("#{dataAccessExceptionUri}")
+    private String dataAccessExceptionUri;
+    @Value("#{notFoundExceptionUri}")
+    private String notFoundExceptionUri;
+    @Value("#{alreadyExistsExceptionUri}")
+    private String alreadyExistsExceptionUri;
+    @Value("#{illegalArgumentExceptionUri}")
+    private String illegalArgumentExceptionUri;
+
     private final CourseServiceImpl courseServiceImpl;
 
     public CourseController(CourseServiceImpl courseServiceImpl) {
@@ -46,25 +58,13 @@ public class CourseController {
      */
     @GetMapping(path = "/view")
     public ModelAndView getCourses() {
-        Set<CourseDto> courses = courseServiceImpl.getCourses();
-        return new ModelAndView("course/course-list", "courses", courses);
-    }
-
-
-    /**
-     * retrieves a course by its id
-     * @param courseId
-     * @return CourseDto
-     */
-    @GetMapping(path = "/read/courseId")
-    public CourseDto getCourse(@RequestParam String courseId) {
         try {
-            return courseServiceImpl.getCourseById(new CourseId(courseId));
-        } catch (NullPointerException | IllegalArgumentException | UnsupportedOperationException e) {
-            return null;
+            Set<CourseDto> courses = courseServiceImpl.getCourses();
+            return new ModelAndView("course/course-list", "courses", courses);
+        } catch (DataAccessServiceException e) {
+            return new ModelAndView(dataAccessExceptionUri, EXCEPTION_MESSAGE, e.getMessage());
         }
     }
-
 
 
     /**
@@ -78,8 +78,12 @@ public class CourseController {
         try {
             CourseDto course = courseServiceImpl.getCourseByNameAndDegreeCourseName(courseName, degreeCourseName);
             return new ModelAndView("course/read/read-result", COURSE, course);
-        } catch (NullPointerException | UnsupportedOperationException e) {
-            return new ModelAndView(EXCEPTION_VIEW_NAME, EXCEPTION_MESSAGE, e.getMessage());
+        } catch (IllegalArgumentException e) {
+            return new ModelAndView(illegalArgumentExceptionUri, EXCEPTION_MESSAGE, e.getMessage());
+        } catch (ObjectNotFoundException e) {
+            return new ModelAndView(notFoundExceptionUri, EXCEPTION_MESSAGE, e.getMessage());
+        } catch (DataAccessServiceException e) {
+            return new ModelAndView(dataAccessExceptionUri, EXCEPTION_MESSAGE, e.getMessage());
         }
     }
 
@@ -91,10 +95,11 @@ public class CourseController {
     @GetMapping(path = "/view/professor")
     public ModelAndView getCoursesByProfessor(@AuthenticationPrincipal Professor professor) {
         try {
-            List<CourseDto> courses = courseServiceImpl.getCoursesByProfessor(professor);
+            ProfessorDto professorDto = ProfessorMapper.toDto(professor); // Ensure the professor is converted to DTO if needed
+            List<CourseDto> courses = courseServiceImpl.getCoursesByProfessor(professorDto);
             return new ModelAndView("user_professor/courses/courses", "courses", courses);
-        } catch (NullPointerException | UnsupportedOperationException e) {
-            return new ModelAndView(EXCEPTION_VIEW_NAME, EXCEPTION_MESSAGE, e.getMessage());
+        } catch (DataAccessServiceException e) {
+            return new ModelAndView(dataAccessExceptionUri, EXCEPTION_MESSAGE, e.getMessage());
         }
     }
 
@@ -120,30 +125,23 @@ public class CourseController {
 
     /**
      * create a new course
-     * @param name name of the course
-     * @param type type of the course
-     * @param cfu cfu of the course
-     * @param uniqueCode unique code of the professor
-     * @param degreeCourseName degree course name
+     * @param course CourseDto object containing course details
      * @return ModelAndView
      */
     @PostMapping(path = "/create")
     @Transactional // con l'annotazione transactional effettua una gestione propria degli errori
-    public ModelAndView createNewCourse(
-        @RequestParam String name,
-        @RequestParam CourseType type,
-        @RequestParam Integer cfu,
-        @RequestParam String uniqueCode,
-        @RequestParam String degreeCourseName
-    ) {
+    public ModelAndView createNewCourse(@ModelAttribute CourseDto course) {
 
         try{
-            CourseDto course = courseServiceImpl.addNewCourse(name, type, cfu, uniqueCode, degreeCourseName);
-            return new ModelAndView("course/create/create-result", COURSE, course);
-        } catch (NullPointerException | IllegalArgumentException | ObjectNotFoundException | ObjectAlreadyExistsException | UnsupportedOperationException  e) {
-            return new ModelAndView(EXCEPTION_VIEW_NAME, EXCEPTION_MESSAGE, e.getMessage());
+            CourseDto courseDto = courseServiceImpl.addNewCourse(course);
+            return new ModelAndView("course/create/create-result", COURSE, courseDto);
+        } catch (ObjectNotFoundException e) {
+            return new ModelAndView(notFoundExceptionUri, EXCEPTION_MESSAGE, e.getMessage());
+        } catch (ObjectAlreadyExistsException e) {
+            return new ModelAndView(alreadyExistsExceptionUri + "professor-already-exists", EXCEPTION_MESSAGE, e.getMessage());
+        } catch (DataAccessServiceException e) {
+            return new ModelAndView(dataAccessExceptionUri, EXCEPTION_MESSAGE, e.getMessage());
         }
-
     }
 
 
@@ -151,38 +149,25 @@ public class CourseController {
      * update a course
      * @param oldCourseName old name of the course
      * @param oldDegreeCourseName old degree course name
-     * @param newCourseName new name of the course
-     * @param newDegreeCourseName new degree course name
-     * @param newType new type of the course
-     * @param newCfu new cfu of the course
-     * @param newUniqueCode new unique code of the course
+     * @param courseDto CourseDto object containing updated course details
      * @return ModelAndView
      */
     @PutMapping(path = "/update")
     public ModelAndView updateCourse(
         @RequestParam("old_name") String oldCourseName,
         @RequestParam("old_degree_course_name") String oldDegreeCourseName,
-        @RequestParam("new_name") String newCourseName,
-        @RequestParam("new_degree_course_name") String newDegreeCourseName,
-        @RequestParam("new_type") CourseType newType,
-        @RequestParam("new_cfu") Integer newCfu,
-        @RequestParam("new_unique_code") String newUniqueCode
-    ) {
-
+        @ModelAttribute CourseDto courseDto
+    ){
         try {
 
-            Course course = courseServiceImpl.updateCourse(
-                    oldCourseName.toLowerCase(),
-                    oldDegreeCourseName.toUpperCase(),
-                    newCourseName.toLowerCase(),
-                    newDegreeCourseName.toUpperCase(),
-                    newType,
-                    newCfu,
-                    newUniqueCode.toLowerCase()
-            );
-            return new ModelAndView("course/update/update-result", COURSE,course);
-        } catch (NullPointerException | IllegalArgumentException | ObjectNotFoundException | ObjectAlreadyExistsException | UnsupportedOperationException  e) {
-            return new ModelAndView(EXCEPTION_VIEW_NAME, EXCEPTION_MESSAGE, e.getMessage());
+            CourseDto course = courseServiceImpl.updateCourse(oldCourseName, oldDegreeCourseName, courseDto);
+            return new ModelAndView("course/update/update-result", COURSE, course);
+        } catch (IllegalArgumentException e) {
+            return new ModelAndView(illegalArgumentExceptionUri, EXCEPTION_MESSAGE, e.getMessage());
+        } catch (ObjectNotFoundException e) {
+            return new ModelAndView(notFoundExceptionUri, EXCEPTION_MESSAGE, e.getMessage());
+        } catch (DataAccessServiceException e) {
+            return new ModelAndView(dataAccessExceptionUri, EXCEPTION_MESSAGE, e.getMessage());
         }
     }
 
@@ -192,23 +177,21 @@ public class CourseController {
      * @param courseName name of the course
      * @param degreeCourseName degree course name
      * @return ModelAndView
-     * @throws ObjectNotFoundException if no course with the given name exists
-     * @throws IllegalArgumentException if the name is null or empty
-     * @throws UnsupportedOperationException if the name is not unique
-     * @throws NullPointerException if the name is null
      */
-    @DeleteMapping(path = "/delete/name")
-    public ModelAndView deleteCourseByName(@RequestParam String courseName, @RequestParam String degreeCourseName) {
+    @DeleteMapping("/courses/delete/{degreeCourseName}/{courseName}")
+    public ModelAndView deleteCourseByName(@PathVariable String courseName, @PathVariable String degreeCourseName) {
 
         try{
             // retrieve course
-            CourseDto courseDto = courseServiceImpl
-                .getCourseByNameAndDegreeCourseName(courseName, degreeCourseName);
-            // delete
-            courseServiceImpl.deleteCourse(courseDto.getCourseId());
+            CourseDto courseDto = courseServiceImpl.getCourseByNameAndDegreeCourseName(courseName, degreeCourseName);
+            courseServiceImpl.deleteByNameAndDegreeCourse(courseName, degreeCourseName);
             return new ModelAndView("course/delete/delete-result", COURSE, courseDto);
-        } catch (NullPointerException | IllegalArgumentException | ObjectNotFoundException | UnsupportedOperationException e) {
-            return new ModelAndView(EXCEPTION_VIEW_NAME, EXCEPTION_MESSAGE, e.getMessage());
+        } catch (IllegalArgumentException e) {
+            return new ModelAndView(illegalArgumentExceptionUri, EXCEPTION_MESSAGE, e.getMessage());
+        } catch (ObjectNotFoundException e) {
+            return new ModelAndView(notFoundExceptionUri, EXCEPTION_MESSAGE, e.getMessage());
+        } catch (DataAccessServiceException e) {
+            return new ModelAndView(dataAccessExceptionUri, EXCEPTION_MESSAGE, e.getMessage());
         }
     }
 

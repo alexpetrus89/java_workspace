@@ -14,56 +14,65 @@
         Unable to register. Please check your data.
     </div>
 
-    <h1>UNI-JOURNEY - Registration</h1>
+    <h1>UNI JOURNEY - Registration</h1>
 
     <p>Already registered? Click&nbsp;
         <a th:href="@{/login}">here</a>&nbsp; to login.
     </p>
 
-    <h1>Registration to University Management Website</h1>
-    <form method="POST" th:action="@{/register}" id="registerForm">
+    <h1>Registration to Uni Journey website</h1>
+    <form th:action="@{/register}" th:object="${form}" method="post">
+
         <label for="username">Username: </label>
-        <input type="text" name="username"
+        <input type="text" th:field="*{username}"
             required title="Please enter your username"><br/>
 
         <label for="password">Password: </label>
-        <input type="password" name="password"
+        <input type="password" th:field="*{password}"
             required title="Please enter your password"/><br/>
 
         <label for="confirm">Confirm password: </label>
-        <input type="password" name="confirm"
+        <input type="password" th:field="*{confirm}"
             required title="Please confirm your password"/><br/>
 
-        <label for="fullname">Full name: </label>
-        <input type="text" name="fullname"
-            required title="Please enter your full name"/><br/>
+        <label for="firstName">First name: </label>
+        <input type="text" th:field="*{firstName}"
+            required title="Please enter your first name"/><br/>
+
+        <label for="lastName">Last name: </label>
+        <input type="text" th:field="*{lastName}"
+            required title="Please enter your last name"/><br/>
 
         <label for="dob">Date of Birth:</label>
-        <input type="date" name="dob" title="Enter date of birth"
+        <input type="date" th:field="*{dob}" title="Enter date of birth"
             required placeholder="Your date of birth"></p>
 
+        <label for="fiscalCode">Fiscal code: </label>
+        <input type="text" th:field="*{fiscalCode}"
+            required title="Please enter your fiscal code"/><br/>
+
         <label for="street">Street: </label>
-        <input type="text" name="street"
+        <input type="text" th:field="*{street}"
             required title="Please enter your street name"/><br/>
 
         <label for="city">City: </label>
-        <input type="text" name="city"
+        <input type="text" th:field="*{city}"
             required title="Please enter your city"/><br/>
 
         <label for="state">State: </label>
-        <input type="text" name="state"
+        <input type="text" th:field="*{state}"
             required title="Please enter your state"/><br/>
 
         <label for="zip">Zip: </label>
-        <input type="text" name="zip"
+        <input type="text" th:field="*{zip}"
             required title="Please enter your zip code"/><br/>
 
         <label for="phone">Phone: </label>
-        <input type="text" name="phone"
+        <input type="text" th:field="*{phone}"
             required title="Please enter your phone number"/><br/>
 
         <label for="role">Role: </label>
-        <select name="role" id="role">
+        <select th:field="*{role}" id="role">
             <option value="STUDENT">Student</option>
             <option value="PROFESSOR">Professor</option>
             <option value="ADMIN">Admin</option>

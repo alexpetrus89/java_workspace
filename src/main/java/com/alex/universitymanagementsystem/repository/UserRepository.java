@@ -2,90 +2,76 @@ package com.alex.universitymanagementsystem.repository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
-import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
 
 import com.alex.universitymanagementsystem.domain.User;
 import com.alex.universitymanagementsystem.domain.immutable.UserId;
-import com.alex.universitymanagementsystem.enum_type.RoleType;
 
-import jakarta.persistence.PersistenceException;
+/**
+| Caso                                              | Azione consigliata                               |
+| ------------------------------------------------- | ------------------------------------------------ |
+| Form di ricerca                                   | Ritorna `Optional` o `null`, mostra un messaggio |
+| Operazione su entità esistente (modifica/elimina) | Lancia un'eccezione se non trovata               |
+| API REST                                          | Usa `404 Not Found` se l’oggetto non esiste      |
+| Interfaccia utente (MVC)                          | Mostra pagina “nessun risultato”                 |
+ */
 
 @Repository
-public interface UserRepository
-    extends JpaRepository<User, UserId>
-{
+public interface UserRepository extends JpaRepository<User, UserId> {
+
+
     /**
      * Find user by username
      * @param username
-     * @return User
-     * @throws NullPointerException if the username is null
-     * @throws PersistenceException persistence error
+     * @return an optional user
      */
-    User findByUsername(@NonNull String username) throws NullPointerException, PersistenceException;
+    Optional<User> findByUsername(String username);
+
 
     /**
      * Find user by fullname
-     * @param fullname
+     * @param firstName
+     * @param lastName
      * @return List<User>
-     * @throws NullPointerException if the fullname is null
-     * @throws PersistenceException persistence error
      */
-    List<User> findByFullname(@NonNull String fullname) throws NullPointerException, PersistenceException;
+    @Query(value = "SELECT s FROM User s WHERE s.firstName = ?1 AND s.lastName = ?2")
+    List<User> findByFullname(String firstName, String lastName);
+
 
     /**
      * Find user by dob
      * @param dob
      * @return List<User>
-     * @throws NullPointerException if the dob is null
-     * @throws PersistenceException persistence error
      */
-    List<User> findByDob(@NonNull LocalDate dob) throws NullPointerException, PersistenceException;
+    List<User> findByDob(LocalDate dob);
 
 
     /**
-     * Update user
-     * @param username
-     * @param fullname
-     * @param password
-     * @param dob
-     * @param city
-     * @param state
-     * @param zip
-     * @param phone
-     * @param role
-     * @return int number of rows updated
-     * @throws NullPointerException if the parameters are null
-     * @throws PersistenceException persistence error
+     * Find user by fiscal code
+     * @param fiscalCode
+     * @return User
      */
-    @Modifying
-    @Query("""
-            UPDATE User u SET
-            u.fullname = :fullname,
-            u.password = :password,
-            u.dob = :dob,
-            u.city = :city,
-            u.state = :state,
-            u.zip = :zip,
-            u.phone = :phone,
-            u.role = :role
-            WHERE u.username = :username
-    """)
-    public int updateUser(
-        @NonNull @Param("username") String username,
-        @NonNull @Param("fullname") String fullname,
-        @NonNull @Param("password") String password,
-        @Param("dob") LocalDate dob,
-        @Param("city") String city,
-        @Param("state") String state,
-        @Param("zip") String zip,
-        @Param("phone") String phone,
-        @NonNull @Param("role") RoleType role
-    ) throws NullPointerException, PersistenceException;
+    Optional<User> findByFiscalCode_FiscalCode(String fiscalCode);
+
+
+    /**
+     * Check if a user with the given username exists
+     * @param username the username to check
+     * @return true if the user exists, false otherwise
+     */
+    boolean existsByUsername(String username);
+
+
+    /**
+     * Check if a user with the given fiscal code exists
+     * @param fiscalCode the fiscal code to check
+     * @return true if the user exists, false otherwise
+     */
+    boolean existsByFiscalCode_FiscalCode(String fiscalCode);
+
 
 }

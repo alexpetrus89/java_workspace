@@ -26,10 +26,10 @@
             </thead>
             <tbody>
                 <tr th:each="examination : ${examinations}">
-                    <td th:text="${examination.course.name}">Course</td>
+                    <td th:text="${examination.courseName}">Course</td>
                     <td th:text="${examination.course.cfu}">Cfu</td>
                     <td th:text="${examination.student.register.register}">Student register</td>
-                    <td th:text="${examination.student.fullname}">Student name</td>
+                    <td th:text="${examination.student.firstName} + ' ' + ${examination.student.lastName}">Student name</td>
                     <td>
                         <span th:text="${examination.grade}">Grade</span>
                         <span th:if="${examination.withHonors}"> with honors</span>

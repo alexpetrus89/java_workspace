@@ -42,25 +42,15 @@ public class CourseSerializer extends JsonSerializer<CourseDto> {
 
 
             // Serializzazione del corso di laurea
-            if (courseDto.getDegreeCourse() != null) {
-                // Specifica il nome del campo JSON per il corso di laurea
-                generator.writeObjectFieldStart( "degreeCourse");
-                generator.writeStringField("name", courseDto.getDegreeCourse().getName());
-                this.jsonDegreeCourseName = objectMapper.writeValueAsString("name");
-            } else {
+            if (courseDto.getDegreeCourse() == null)
                 generator.writeNullField("degreeCourse");
-            }
+
+            // Specifica il nome del campo JSON per il corso di laurea
+            generator.writeObjectFieldStart( "degreeCourse");
+            generator.writeStringField("name", courseDto.getDegreeCourse().getName());
+            this.jsonDegreeCourseName = objectMapper.writeValueAsString("name");
 
         }
-    }
-
-    public void serialize(CourseDto courseDto,  JsonGenerator generator) {
-        try {
-            this.serialize(courseDto, generator, this.provider);
-        } catch (IOException e) {
-            throw new JsonProcessingException("parsing error", e);
-        }
-
     }
 
 
@@ -98,6 +88,15 @@ public class CourseSerializer extends JsonSerializer<CourseDto> {
         this.jsonDegreeCourseName = jsonDegreeCourseName;
     }
 
+
+    public void serialize(CourseDto courseDto,  JsonGenerator generator) {
+        try {
+            this.serialize(courseDto, generator, this.provider);
+        } catch (IOException e) {
+            throw new JsonProcessingException("parsing error", e);
+        }
+
+    }
 
 
 }

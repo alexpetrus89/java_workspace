@@ -15,12 +15,24 @@ public record UserId(UUID id) implements Serializable {
     }
 
     public UserId() {
-        this(UUID.randomUUID());
+        this((UUID) null);
+    }
+
+    public static UserId newId() {
+        return new UserId(UUID.randomUUID());
+    }
+
+    public UserId(String id) {
+        this(UUID.fromString(id));
     }
 
     @Override
     public String toString() {
         return id.toString();
+    }
+
+    public UUID getId() {
+        return id;
     }
 
 }

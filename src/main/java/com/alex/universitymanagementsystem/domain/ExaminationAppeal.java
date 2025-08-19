@@ -26,37 +26,34 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "examination_appeal")
+@Table(name = "EXAMINATION_APPEALS")
 @Access(AccessType.PROPERTY)
 public class ExaminationAppeal implements Serializable {
 
     // instance variables
     private Long id;
     private Course course;
-    private String degreeCourse;
     private UniqueCode professor;
     private String description;
     private LocalDate date;
-    private Set<Register> students = new HashSet<>();
+    private Set<Register> registers = new HashSet<>();
 
     // constructor
     public ExaminationAppeal() {}
 
     public ExaminationAppeal(Course course, String description, LocalDate date) {
         this.course = course;
-        this.degreeCourse = course.getDegreeCourse().getName();
         this.professor = course.getProfessor().getUniqueCode();
         this.description = description;
         this.date = date;
     }
 
-    public ExaminationAppeal(Course course, String description, LocalDate date, Set<Register> students) {
+    public ExaminationAppeal(Course course, String description, LocalDate date, Set<Register> registers) {
         this.course = course;
-        this.degreeCourse = course.getDegreeCourse().getName();
         this.professor = course.getProfessor().getUniqueCode();
         this.description = description;
         this.date = date;
-        this.students = students;
+        this.registers = registers;
     }
 
     // getters
@@ -70,9 +67,6 @@ public class ExaminationAppeal implements Serializable {
     @OnDelete(action = OnDeleteAction.CASCADE)
     public Course getCourse() { return course; }
 
-    @Column(name = "degreeCourse")
-    public String getDegreeCourse() { return degreeCourse; }
-
     @Column(name = "professor_unique_code")
     public UniqueCode getProfessor() { return professor; }
 
@@ -82,18 +76,17 @@ public class ExaminationAppeal implements Serializable {
     @Column(name = "date")
     public LocalDate getDate() { return date; }
 
-    @Column(name = "students")
+    @Column(name = "registers")
     @ElementCollection(targetClass = Register.class)
-    public Set<Register> getStudents() { return students; }
+    public Set<Register> getRegisters() { return registers; }
 
     // setters
     public void setId(Long id) { this.id = id; }
     public void setCourse(Course course) { this.course = course; }
-    public void setDegreeCourse(String degreeCourse) { this.degreeCourse = degreeCourse; }
     public void setProfessor(UniqueCode professor) { this.professor = professor; }
     public void setDescription(String description) { this.description = description; }
     public void setDate(LocalDate date) { this.date = date; }
-    public void setStudents(Set<Register> students) { this.students = students; }
+    public void setRegisters(Set<Register> registers) { this.registers = registers; }
 
     @Override
     public String toString() {
@@ -102,40 +95,36 @@ public class ExaminationAppeal implements Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(course, degreeCourse, professor, description, date);
+            return Objects.hash(id);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
-        ExaminationAppeal other = (ExaminationAppeal) obj;
-        return Objects.equals(course, other.getCourse()) &&
-            Objects.equals(degreeCourse, other.getDegreeCourse()) &&
-            Objects.equals(professor, other.getProfessor()) &&
-            Objects.equals(description, other.getDescription()) &&
-            Objects.equals(date, other.getDate());
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ExaminationAppeal)) return false;
+        ExaminationAppeal other = (ExaminationAppeal) o;
+        return Objects.equals(id, other.id);
     }
 
     // other methods
-    public boolean addStudent(Register student) {
+    public boolean addRegister(Register register) {
         // check if register is null
-        if (student == null)
+        if (register == null)
             throw new IllegalArgumentException("Register cannot be null");
 
-        return this.students.add(student);
+        return this.registers.add(register);
     }
 
-    public boolean removeStudent(Register student) {
-        if (student == null)
+    public boolean removeRegister(Register register) {
+        if (register == null)
             throw new IllegalArgumentException("Register cannot be null");
 
-        return this.students.remove(student);
+        return this.registers.remove(register);
     }
 
-    public boolean deleteIfExpiredAndNoStudents() {
+    public boolean deleteIfExpiredAndNoRegisters() {
         LocalDate today = LocalDate.now();
-        return today.isAfter(getDate()) && getStudents().isEmpty();
+        return today.isAfter(getDate()) && getRegisters().isEmpty();
     }
 
 

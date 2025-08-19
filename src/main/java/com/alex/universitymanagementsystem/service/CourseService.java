@@ -3,16 +3,17 @@ package com.alex.universitymanagementsystem.service;
 import java.util.List;
 import java.util.Set;
 
-import org.springframework.lang.NonNull;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 
-import com.alex.universitymanagementsystem.domain.Course;
-import com.alex.universitymanagementsystem.domain.Professor;
-import com.alex.universitymanagementsystem.domain.immutable.CourseId;
 import com.alex.universitymanagementsystem.dto.CourseDto;
-import com.alex.universitymanagementsystem.enum_type.CourseType;
+import com.alex.universitymanagementsystem.dto.ProfessorDto;
+import com.alex.universitymanagementsystem.exception.DataAccessServiceException;
 import com.alex.universitymanagementsystem.exception.ObjectAlreadyExistsException;
 import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
+
+import jakarta.persistence.PersistenceException;
+import jakarta.transaction.Transactional;
 
 
 
@@ -23,110 +24,81 @@ public interface CourseService {
     /**
      * retrieve all courses
      * @return Set<CourseDto>
+     * @throws DataAccessServiceException if there is an error accessing the database.
      */
-    Set<CourseDto> getCourses();
+    Set<CourseDto> getCourses() throws DataAccessServiceException;
 
 
     /**
-     * retrieve a course by id
-     * @param CourseId id
-     * @return CourseDto object representing the course with the given id
-     * @throws NullPointerException if the id is null
-     * @throws IllegalArgumentException if the id is empty
-     * @throws UnsupportedOperationException if the id is not unique
-     */
-    CourseDto getCourseById(@NonNull CourseId id)
-        throws NullPointerException, IllegalArgumentException, UnsupportedOperationException;
-
-
-    /**
-     * retrieve a course by name and degree course name
+     * Retrieves a course from the repository by its name and degree course name.
      * @param courseName the name of the course
      * @param degreeCourseName the name of the degree course
-     * @return CourseDto object representing the course with the given name and degree course name
-     * @throws NullPointerException if the course name or degree course name is null
-     * @throws IllegalArgumentException if the course name or degree course name is empty
-     * @throws UnsupportedOperationException if the course name or degree course name is not unique
+     * @return CourseDto object representing the course with the given name and degree course name.
+     * @throws IllegalArgumentException if the course name or degree course name is empty.
+     * @throws ObjectNotFoundException if no course with the given name and degree course name exists.
+     * @throws DataAccessServiceException if there's a database access issue
      */
-    CourseDto getCourseByNameAndDegreeCourseName(@NonNull String courseName, @NonNull String degreeCourseName)
-        throws NullPointerException, IllegalArgumentException, UnsupportedOperationException;
+    CourseDto getCourseByNameAndDegreeCourseName(String courseName, String degreeCourseName)
+        throws IllegalArgumentException, ObjectNotFoundException, DataAccessServiceException;
+
 
     /**
      * retrieve all courses by professor
      * @param professor
      * @return List<CourseDto>
-     * @throws NullPointerException if the professor is null
-     * @throws UnsupportedOperationException if the professor is not unique
+     * @throws DataAccessServiceException if there is an error accessing the database
      */
-    public List<CourseDto> getCoursesByProfessor(@NonNull Professor professor)
-        throws NullPointerException, UnsupportedOperationException;
+    public List<CourseDto> getCoursesByProfessor(ProfessorDto professor)
+        throws DataAccessServiceException;
+
 
     /**
-     * add a new course
-     * @param name of the course
-     * @param type of the course
-     * @param cfu of the course
-     * @param uniqueCode of the course
-     * @param degreeCourseName of the course
+     * Adds a new course to the repository.
+     * @param course the course data transfer object containing the course details
      * @return Course
-     * @throws NullPointerException if any of the parameters is null
      * @throws ObjectAlreadyExistsException if a course with the same name already exists
      * @throws ObjectNotFoundException if no professor with the given unique code exists
      *         or no degree course with the given name exists.
-     * @throws IllegalArgumentException if any of the parameters is empty
-     * @throws UnsupportedOperationException if any of the parameters is not unique
+     * @throws DataAccessServiceException if there is an error accessing the database
      */
-    @Transactional
-    CourseDto addNewCourse(
-        @NonNull String name,
-        @NonNull CourseType type,
-        @NonNull Integer cfu,
-        @NonNull String uniqueCode,
-        @NonNull String degreeCourseName
-    ) throws NullPointerException,
-        ObjectAlreadyExistsException,
-        ObjectNotFoundException,
-        IllegalArgumentException,
-        UnsupportedOperationException;
+    @Transactional(rollbackOn = {ObjectAlreadyExistsException.class, ObjectNotFoundException.class, DataAccessServiceException.class})
+    @Retryable(retryFor = PersistenceException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
+    CourseDto addNewCourse(CourseDto course)
+        throws ObjectAlreadyExistsException, ObjectNotFoundException, DataAccessServiceException;
 
 
     /**
-     * update a course
-     * @param oldCourseName the name of the course to be updated
-     * @param oldDegreeCourseName the old degree course
-     * @param newCourseName the new name of the course
-     * @param newDegreeCourseName the new degree course
-     * @param newType the new type of the course
-     * @param newCfu the new cfu of the course
-     * @param newUniqueCode the new unique code of the course
-     * @return Course
-     * @throws ObjectNotFoundException if no course with the given name exists
-     * @throws IllegalArgumentException if any of the parameters is empty
-     * @throws NullPointerException if any of the parameters is null
-     * @throws UnsupportedOperationException if any of the parameters is not unique
+     * Updates an existing course using data from the provided CourseDto.
+     * @param oldCourseName the current name of the course to be updated
+     * @param oldDegreeCourseName the current degree course name associated with the course
+     * @param updatedCourseDto the DTO containing new course information
+     * @return the updated Course
+     * @throws IllegalArgumentException if old course name or degree course name are null or blank
+     * or if the DTO contains invalid data
+     * @throws ObjectNotFoundException if the course, professor, or degree course cannot be found
+     * @throws DataAccessServiceException if there is an error accessing the database
      */
-    @Transactional
-    Course updateCourse(
-        @NonNull String oldCourseName,
-        @NonNull String oldDegreeCourseName,
-        @NonNull String newCourseName,
-        @NonNull String newDegreeCourseName,
-        @NonNull CourseType newType,
-        @NonNull Integer newCfu,
-        @NonNull String newUniqueCode
-    ) throws NullPointerException,ObjectNotFoundException, IllegalArgumentException, UnsupportedOperationException;
+    @Transactional(rollbackOn = {IllegalArgumentException.class, ObjectNotFoundException.class})
+    @Retryable(retryFor = PersistenceException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
+    CourseDto updateCourse(
+        String oldCourseName,
+        String oldDegreeCourseName,
+        CourseDto updatedCourseDto
+    ) throws IllegalArgumentException, ObjectNotFoundException, DataAccessServiceException;
 
 
     /**
-     * Deletes a course from the repository by its id.
-     * @param id id of the course to be deleted
-     * @throws NullPointerException if the id is null.
-     * @throws ObjectNotFoundException if no course with the given id exists.
-     * @throws IllegalArgumentException if the id is empty.
-     * @throws UnsupportedOperationException if the id is not unique.
+     * Deletes a course by its name and degree course name.
+     * @param courseName the name of the course to be deleted
+     * @param degreeCourseName the name of the degree course associated with the course
+     * @return CourseDto object representing the deleted course
+     * @throws IllegalArgumentException if course name or degree course name is null or blank
+     * @throws ObjectNotFoundException if no course with the given name and degree course name exists
+     * @throws DataAccessServiceException if there is an error accessing the database
      */
-    @Transactional
-    void deleteCourse(@NonNull CourseId id)
-        throws NullPointerException, ObjectNotFoundException, IllegalArgumentException, UnsupportedOperationException;
+    @Transactional(rollbackOn = {IllegalArgumentException.class, ObjectNotFoundException.class})
+    @Retryable(retryFor = PersistenceException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
+    CourseDto deleteByNameAndDegreeCourse(String courseName, String degreeCourseName)
+        throws IllegalArgumentException, ObjectNotFoundException, DataAccessServiceException;
 
 }

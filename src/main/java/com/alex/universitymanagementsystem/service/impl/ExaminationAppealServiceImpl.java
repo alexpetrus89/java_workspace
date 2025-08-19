@@ -1,30 +1,33 @@
 package com.alex.universitymanagementsystem.service.impl;
 
 import java.time.LocalDate;
-import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.dao.DataAccessException;
-import org.springframework.lang.NonNull;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import com.alex.universitymanagementsystem.domain.Course;
+import com.alex.universitymanagementsystem.domain.Examination;
 import com.alex.universitymanagementsystem.domain.ExaminationAppeal;
 import com.alex.universitymanagementsystem.domain.ExaminationOutcome;
 import com.alex.universitymanagementsystem.domain.Professor;
 import com.alex.universitymanagementsystem.domain.immutable.CourseId;
 import com.alex.universitymanagementsystem.domain.immutable.Register;
 import com.alex.universitymanagementsystem.domain.immutable.UniqueCode;
-import com.alex.universitymanagementsystem.dto.ExaminationDto;
+import com.alex.universitymanagementsystem.dto.ExaminationAppealDto;
+import com.alex.universitymanagementsystem.dto.ProfessorDto;
+import com.alex.universitymanagementsystem.dto.StudentDto;
 import com.alex.universitymanagementsystem.enum_type.DomainType;
+import com.alex.universitymanagementsystem.exception.DataAccessServiceException;
 import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
-import com.alex.universitymanagementsystem.mapper.ExaminationMapper;
+import com.alex.universitymanagementsystem.mapper.ExaminationAppealMapper;
+import com.alex.universitymanagementsystem.mapper.StudentMapper;
 import com.alex.universitymanagementsystem.repository.CourseRepository;
 import com.alex.universitymanagementsystem.repository.ExaminationAppealRepository;
 import com.alex.universitymanagementsystem.repository.ExaminationOutcomeRepository;
@@ -33,18 +36,21 @@ import com.alex.universitymanagementsystem.repository.ProfessorRepository;
 import com.alex.universitymanagementsystem.repository.StudentRepository;
 import com.alex.universitymanagementsystem.service.ExaminationAppealService;
 
+import jakarta.persistence.PersistenceException;
+import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
+
 
 
 @Service
 public class ExaminationAppealServiceImpl implements ExaminationAppealService {
 
-    // logger
-	private static final Logger logger = LoggerFactory.getLogger(ExaminationAppealServiceImpl.class);
-
 	// constants
     private static final String REGISTER_BLANK_ERROR = "Register cannot be empty";
-	private static final String DATA_ACCESS_ERROR = "data access error";
-    private static final String STUDENT_NOT_EXIST = "Student does not exist";
+    private static final String STUDENT_NOT_EXISTS = "Student does not exist";
+    private static final String PROFESSOR_NOT_EXISTS = "Professor does not exist";
+    private static final String EXAMINATION_APPEAL_NOT_EXISTS = "Examination Appeal does not exist";
+    private static final String DATA_ACCESS_ERROR = "data access error";
 
     // instance variables
     private final ExaminationAppealRepository examinationAppealRepository;
@@ -75,61 +81,88 @@ public class ExaminationAppealServiceImpl implements ExaminationAppealService {
     /**
      * Retrieves all examination appeals
      * @return a list of examination appeals
+     * @throws DataAccessServiceException if there is an error accessing the database
      */
     @Override
-    public List<ExaminationAppeal> getExaminationAppeals() {
-        return examinationAppealRepository.findAll();
+    public List<ExaminationAppealDto> getExaminationAppeals() throws DataAccessServiceException {
+        try {
+            List<ExaminationAppeal> appeals = examinationAppealRepository.findAll();
+            return appeals
+                .stream()
+                .map(appeal -> {
+                    Set<StudentDto> students = studentRepository
+                        .findByRegisterIn(appeal.getRegisters())
+                        .stream()
+                        .map(StudentMapper::toDto)
+                        .collect(Collectors.toSet());
+                    return ExaminationAppealMapper.toDto(appeal, students);
+                })
+                .toList();
+        } catch (PersistenceException e) {
+            throw new DataAccessServiceException(DATA_ACCESS_ERROR, e);
+        }
     }
 
 
     /**
      * Retrieves an examination appeal
-     * @param id
-     * @return examination appeal
-     * @throws NullPointerException if id is null
+     * @param id the ID of the examination appeal
+     * @return examination appeal dto
+     * @throws IllegalArgumentException if there is an error with id
      * @throws NoSuchElementException if the examination appeal does not exist
+     * @throws DataAccessServiceException if there is an error accessing the database
      */
     @Override
-    public ExaminationAppeal getExaminationAppealById(@NonNull Long id) {
-        return examinationAppealRepository
-            .findById(id)
-            .orElseThrow(() -> new NoSuchElementException("Examination Appeal does not exist"));
+    public ExaminationAppealDto getExaminationAppealById(Long id)
+        throws IllegalArgumentException, NoSuchElementException, DataAccessServiceException
+    {
+
+        if (id == null) throw new IllegalArgumentException("Id cannot be null");
+
+        try {
+            // Retrieve appeal
+            ExaminationAppeal appeal = examinationAppealRepository
+                .findById(id)
+                .orElseThrow(() -> new NoSuchElementException(EXAMINATION_APPEAL_NOT_EXISTS));
+
+            return mapToDto(appeal);
+        } catch (PersistenceException e) {
+            throw new DataAccessServiceException(DATA_ACCESS_ERROR, e);
+        }
+
     }
 
 
     /**
      * Retrieves all examination appeals for a student
      * @param register student register
-     * @return a list of examination appeals available
-     * @throws NullPointerException if any of the parameters is null
+     * @return a list of dto's of examination appeals available
      * @throws IllegalArgumentException if the register is blank
-     * @throws UnsupportedOperationException if the register is not unique
+     * @throws NoSuchElementException if the student does not exist
+     * @throws DataAccessServiceException if there is an error accessing the database
      */
     @Override
-    public List<ExaminationAppeal> getExaminationAppealsAvailable(@NonNull Register register)
-        throws NullPointerException, IllegalArgumentException, UnsupportedOperationException
+    public List<ExaminationAppealDto> getExaminationAppealsAvailable(Register register)
+        throws IllegalArgumentException, NoSuchElementException, DataAccessServiceException
     {
 
-        if(register.toString().isBlank())
+        if (register.toString().isBlank())
             throw new IllegalArgumentException(REGISTER_BLANK_ERROR);
-
-        if(!studentRepository.existsByRegister(register))
-            throw new IllegalArgumentException(STUDENT_NOT_EXIST);
 
         try {
             List<UUID> courseIds = studentRepository
                 .findByRegister(register)
+                .orElseThrow(() -> new NoSuchElementException(STUDENT_NOT_EXISTS))
                 .getStudyPlan()
                 .getCourses()
                 .stream()
-                .map(Course::getCourseId)
+                .map(Course::getId)
                 .map(CourseId::id)
                 .filter(courseId -> !examinationRepository
-                    .findExaminationsByStudent(register)
+                    .findByStudent_Register(register)
                     .stream()
-                    .map(ExaminationMapper::mapToExaminationDto)
-                    .map(ExaminationDto::getCourse)
-                    .map(Course::getCourseId)
+                    .map(Examination::getCourse)
+                    .map(Course::getId)
                     .map(CourseId::id)
                     .collect(Collectors.toSet())
                     .contains(courseId))
@@ -137,18 +170,18 @@ public class ExaminationAppealServiceImpl implements ExaminationAppealService {
 
 
             return examinationAppealRepository
-                .findByIdIn(courseIds)
+                .findByCourse_Id_IdIn(courseIds)
                 .stream()
-                .filter(examAppeal -> examAppeal
-                    .getStudents()
+                .filter(appeal -> appeal
+                    .getRegisters()
                     .stream()
                     .noneMatch(studentRegister -> studentRegister.equals(register)))
-                .filter(examAppeal -> examAppeal.getDate().isAfter(LocalDate.now()))
+                .filter(appeal -> appeal.getDate().isAfter(LocalDate.now()))
+                .map(this::mapToDto)
                 .toList();
 
-        } catch (DataAccessException e) {
-            logger.error(DATA_ACCESS_ERROR, e);
-            return Collections.emptyList();
+        } catch (PersistenceException e) {
+            throw new DataAccessServiceException(DATA_ACCESS_ERROR, e);
         }
     }
 
@@ -156,43 +189,41 @@ public class ExaminationAppealServiceImpl implements ExaminationAppealService {
     /**
      * Retrieves all examination appeals booked by a student
      * @param register student register
-     * @return a list of examination appeals booked
-     * @throws NullPointerException if any of the parameters is null
+     * @return a list of dto's of examination appeals booked
      * @throws IllegalArgumentException if the register is blank
-     * @throws UnsupportedOperationException if the register is not unique
+     * @throws NoSuchElementException if the student does not exists
+     * @throws DataAccessServiceException if there is an error accessing the database
      */
     @Override
-    public List<ExaminationAppeal> getExaminationAppealsBooked(@NonNull Register register)
-        throws NullPointerException, IllegalArgumentException, UnsupportedOperationException
+    public List<ExaminationAppealDto> getExaminationAppealsBookedByStudent(Register register)
+        throws IllegalArgumentException, NoSuchElementException, DataAccessServiceException
     {
 
-        if(register.toString().isBlank())
+        if (register.toString().isBlank())
             throw new IllegalArgumentException(REGISTER_BLANK_ERROR);
-
-        if(!studentRepository.existsByRegister(register))
-            throw new IllegalArgumentException(STUDENT_NOT_EXIST);
 
         try {
             List<UUID> courseIds = studentRepository
                 .findByRegister(register)
+                .orElseThrow(() -> new NoSuchElementException(STUDENT_NOT_EXISTS))
                 .getStudyPlan()
                 .getCourses()
                 .stream()
-                .map(Course::getCourseId)
+                .map(Course::getId)
                 .map(CourseId::id)
                 .toList();
 
             return examinationAppealRepository
-                .findByIdIn(courseIds)
+                .findByCourse_Id_IdIn(courseIds)
                 .stream()
                 .filter(exam -> exam
-                    .getStudents()
+                    .getRegisters()
                     .stream()
                     .anyMatch(studentRegister -> studentRegister.equals(register)))
+                    .map(this::mapToDto)
                     .toList();
-        } catch (DataAccessException e) {
-            logger.error(DATA_ACCESS_ERROR, e);
-            return Collections.emptyList();
+        } catch (PersistenceException e) {
+            throw new DataAccessServiceException(DATA_ACCESS_ERROR, e);
         }
     }
 
@@ -200,111 +231,110 @@ public class ExaminationAppealServiceImpl implements ExaminationAppealService {
     /**
      * Retrieves all examination appeals made by professor
      * @param uniqueCode professor unique code
-     * @return a list of examination appeals
-     * @throws NullPointerException if any of the parameters is null
+     * @return a list of examination appeals data transfer objects
      * @throws IllegalArgumentException if the unique code is blank
-     * @throws UnsupportedOperationException if the register is not unique
+     * @throws NoSuchElementException if the professor does not exist
+     * @throws DataAccessServiceException if there is an error accessing the database
      */
     @Override
-    public List<ExaminationAppeal> getExaminationAppealsByProfessor(@NonNull UniqueCode uniqueCode)
-        throws NullPointerException, IllegalArgumentException, UnsupportedOperationException
+    public List<ExaminationAppealDto> getExaminationAppealsMadeByProfessor(UniqueCode uniqueCode)
+        throws IllegalArgumentException, NoSuchElementException, DataAccessServiceException
     {
 
-        if(uniqueCode.toString().isBlank())
+        if (uniqueCode.toString().isBlank())
             throw new IllegalArgumentException(REGISTER_BLANK_ERROR);
 
-        if(!professorRepository.existsByUniqueCode(uniqueCode))
-            throw new IllegalArgumentException("Professor does not exist");
+        if (!professorRepository.existsByUniqueCode(uniqueCode))
+            throw new NoSuchElementException(PROFESSOR_NOT_EXISTS);
 
         try {
             List<UUID> courseIds = courseRepository
                 .findByProfessor(uniqueCode)
                 .stream()
-                .map(Course::getCourseId)
+                .map(Course::getId)
                 .map(CourseId::id)
                 .toList();
 
-            return examinationAppealRepository.findByIdIn(courseIds);
-        } catch (DataAccessException e) {
-            logger.error(DATA_ACCESS_ERROR, e);
-            return Collections.emptyList();
+            return examinationAppealRepository
+                .findByCourse_Id_IdIn(courseIds)
+                .stream()
+                .map(this::mapToDto)
+                .toList();
+        } catch (PersistenceException e) {
+            throw new DataAccessServiceException(DATA_ACCESS_ERROR, e);
         }
     }
 
 
     /**
      * Adds a new examination appeal
-     * @param courseName
-     * @param degreeCourseName
-     * @param professor
-     * @param description
-     * @param date
-     * @return examinationAppeal
-     * @throws NullPointerException if any of the parameters is null
-     * @throws IllegalArgumentException if any of the parameters is invalid
-     * @throws ObjectNotFoundException if the degree course or professor
-     *         does not exist
-     * @throws UnsupportedOperationException if the register is not unique
+     * @param dto examination appeal data transfer object
+     * @return examinationAppeal data transfer object
+     * @throws IllegalArgumentException if the course name or register is invalid
+     * @throws NoSuchElementException if the degree course or professor does not exist
+     * @throws IllegalStateException if the professor does not teach the course
+     * @throws DataAccessServiceException if there is an error accessing the database
      */
     @Override
-    public ExaminationAppeal addNewExaminationAppeal(
-        @NonNull CourseId courseId,
-        @NonNull Professor professor,
-        @NonNull String description,
-        @NonNull LocalDate date
-    ) throws NullPointerException, IllegalArgumentException, ObjectNotFoundException
+    @Transactional(rollbackOn = {IllegalArgumentException.class, NoSuchElementException.class, IllegalStateException.class})
+    @Retryable(retryFor = PersistenceException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
+    public ExaminationAppealDto addNewExaminationAppeal(@Valid ExaminationAppealDto dto)
+        throws IllegalArgumentException, NoSuchElementException, IllegalStateException, DataAccessServiceException
     {
-        // sanity checks
-        if(date.isBefore(LocalDate.now()))
-            throw new IllegalArgumentException("Date cannot be in the past");
-
-        if(!professorRepository.existsByUniqueCode(professor.getUniqueCode()))
-            throw new ObjectNotFoundException(DomainType.PROFESSOR);
-
         try {
             // retrieve degreeCourse and course
-            Course course = courseRepository.findById(courseId).orElseThrow(() -> new IllegalArgumentException("Course name cannot be empty"));
+            Course course = courseRepository
+                .findByNameAndDegreeCourseName(dto.getCourse(), dto.getDegreeCourse())
+                .orElseThrow(() -> new IllegalArgumentException("Course name cannot be empty"));
+
+            Professor professor = professorRepository
+                .findByUniqueCode(new UniqueCode(dto.getProfessorCode()))
+                .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_EXISTS));
 
             if(!professor.getUniqueCode().toString().equals(course.getProfessor().getUniqueCode().toString()))
-                throw new IllegalArgumentException("Professor does not teach this course");
+                throw new IllegalStateException("Professor does not teach this course");
 
-            ExaminationAppeal exam = new ExaminationAppeal(course, description, date);
-            return examinationAppealRepository.saveAndFlush(exam);
-        } catch (DataAccessException e) {
-            logger.error(DATA_ACCESS_ERROR, e);
-            return null;
+            ExaminationAppeal exam = new ExaminationAppeal(course, dto.getDescription(), dto.getDate());
+            ExaminationAppeal savedExam = examinationAppealRepository.saveAndFlush(exam);
+            if(savedExam.getId() != null)
+                return dto;
+            else return null;
+        } catch (PersistenceException e) {
+            throw new DataAccessServiceException(DATA_ACCESS_ERROR, e);
         }
     }
 
 
     /**
      * deletes an examination appeal
-     * @param professor
-     * @param id
+     * @param dto professor data transfer object
+     * @param id examination appeal id
      * @return boolean
-     * @throws NullPointerException
-     * @throws IllegalArgumentException
-     * @throws ObjectNotFoundException
+     * @throws ObjectNotFoundException if the professor does not exists
+     * @throws NoSuchElementException if the examination appeal does not exists
+     * @throws DataAccessServiceException if there is an error accessing the database
      */
     @Override
-    public boolean deleteExaminationAppeal(@NonNull Professor professor, @NonNull Long id)
-        throws NullPointerException, IllegalArgumentException, ObjectNotFoundException
+    @Transactional(rollbackOn = {ObjectNotFoundException.class, NoSuchElementException.class})
+    @Retryable(retryFor = PersistenceException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
+    public boolean deleteExaminationAppeal(ProfessorDto professorDto, Long id)
+        throws ObjectNotFoundException, NoSuchElementException, DataAccessServiceException
     {
-        if(!professorRepository.existsByUniqueCode(professor.getUniqueCode()))
+        if (!professorRepository.existsByUniqueCode(new UniqueCode(professorDto.getUniqueCode())))
             throw new ObjectNotFoundException(DomainType.PROFESSOR);
 
         try {
-            ExaminationAppeal examAppeal = examinationAppealRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Examination Appeal does not exist"));
+            ExaminationAppeal examAppeal = examinationAppealRepository
+                .findById(id)
+                .orElseThrow(() -> new NoSuchElementException(EXAMINATION_APPEAL_NOT_EXISTS));
 
-            if(examAppeal == null || !examinationAppealRepository.existsById(examAppeal.getId()))
+            if(!examinationAppealRepository.existsById(examAppeal.getId()))
                 return false;
 
             examinationAppealRepository.delete(examAppeal);
             return true;
-        } catch (DataAccessException e) {
-            logger.error(DATA_ACCESS_ERROR, e);
-            return false;
+        } catch (PersistenceException e) {
+            throw new DataAccessServiceException(DATA_ACCESS_ERROR, e);
         }
     }
 
@@ -313,32 +343,34 @@ public class ExaminationAppealServiceImpl implements ExaminationAppealService {
      * Adds a student to an examination appeal
      * @param id examination appeal ids
      * @param register student register
-     * @return examinationAppeal
-     * @throws NullPointerException if any of the parameters is null
+     * @return examinationAppeal data transfer object
      * @throws IllegalArgumentException if any of the parameters is invalid
-     * @throws UnsupportedOperationException if the register is not unique
+     * @throws NoSuchElementException if the student or examination appeal does not exist
+     * @throws DataAccessServiceException if there is an error accessing the database
      */
     @Override
-    public ExaminationAppeal addStudentToAppeal(@NonNull Long id, @NonNull Register register)
-        throws NullPointerException, IllegalArgumentException, UnsupportedOperationException
+    @Transactional(rollbackOn = {IllegalArgumentException.class, NoSuchElementException.class})
+    @Retryable(retryFor = PersistenceException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
+    public ExaminationAppealDto addStudentToAppeal(Long id, Register register)
+        throws IllegalArgumentException, NoSuchElementException, DataAccessServiceException
     {
-        if(id.toString().isBlank())
-            throw new IllegalArgumentException("Id cannot be empty");
+        // sanity checks
+        if (id == null) throw new IllegalArgumentException("Id cannot be null");
 
-        if(register.toString().isBlank())
-            throw new IllegalArgumentException(REGISTER_BLANK_ERROR);
+        if (register == null) throw new IllegalArgumentException(REGISTER_BLANK_ERROR);
 
-        if(!studentRepository.existsByRegister(register))
-            throw new IllegalArgumentException(STUDENT_NOT_EXIST);
+        if (!studentRepository.existsByRegister(register))
+            throw new NoSuchElementException(STUDENT_NOT_EXISTS);
 
         try {
-            ExaminationAppeal exam = examinationAppealRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Examination Appeal does not exist"));
-            exam.addStudent(register);
-            return examinationAppealRepository.saveAndFlush(exam);
-        } catch (DataAccessException e) {
-            logger.error(DATA_ACCESS_ERROR, e);
-            return null;
+            ExaminationAppeal appeal = examinationAppealRepository
+                .findById(id)
+                .orElseThrow(() -> new NoSuchElementException(EXAMINATION_APPEAL_NOT_EXISTS));
+            appeal.addRegister(register);
+            ExaminationAppeal updateAppeal = examinationAppealRepository.saveAndFlush(appeal);
+            return mapToDto(updateAppeal);
+        } catch (PersistenceException e) {
+            throw new DataAccessServiceException(DATA_ACCESS_ERROR, e);
         }
     }
 
@@ -347,31 +379,33 @@ public class ExaminationAppealServiceImpl implements ExaminationAppealService {
      * Removes a student from an examination appeal
      * @param id examination appeal ids
      * @param register student register
-     * @throws NullPointerException if any of the parameters is null
+     * @return examinationAppeal data transfer object
      * @throws IllegalArgumentException if any of the parameters is invalid
-     * @throws UnsupportedOperationException if the register is not unique
-     * @throws IllegalStateException if the student is not in the examination appeal
+     * @throws NoSuchElementException if the student or examination appeal does not exist
+     * @throws DataAccessServiceException if there is an error accessing the database
      */
     @Override
-    public void removeStudentFromAppeal(@NonNull Long id, @NonNull Register register)
-        throws NullPointerException, IllegalArgumentException, UnsupportedOperationException, IllegalStateException
+    @Transactional(rollbackOn = {IllegalArgumentException.class, NoSuchElementException.class})
+    @Retryable(retryFor = PersistenceException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
+    public ExaminationAppealDto removeStudentFromAppeal(Long id, Register register)
+        throws IllegalArgumentException, NoSuchElementException, DataAccessServiceException
     {
-        if(id.toString().isBlank())
-            throw new IllegalArgumentException("Id cannot be empty");
+        // sanity checks
+        if (id == null) throw new IllegalArgumentException("Id cannot be null");
 
-        if(register.toString().isBlank())
-            throw new IllegalArgumentException(REGISTER_BLANK_ERROR);
+        if (register == null) throw new IllegalArgumentException(REGISTER_BLANK_ERROR);
 
-        if(!studentRepository.existsByRegister(register))
-            throw new IllegalArgumentException(STUDENT_NOT_EXIST);
+        if (!studentRepository.existsByRegister(register))
+            throw new NoSuchElementException(STUDENT_NOT_EXISTS);
 
         try {
-            ExaminationAppeal exam = examinationAppealRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Examination Appeal does not exist"));
-            exam.removeStudent(register);
-            examinationAppealRepository.saveAndFlush(exam);
-        } catch (DataAccessException e) {
-            logger.error(DATA_ACCESS_ERROR, e);
+            ExaminationAppeal appeal = examinationAppealRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException(EXAMINATION_APPEAL_NOT_EXISTS));
+            appeal.removeRegister(register);
+            ExaminationAppeal updateAppeal = examinationAppealRepository.save(appeal);
+            return mapToDto(updateAppeal);
+        } catch (PersistenceException e) {
+            throw new DataAccessServiceException(DATA_ACCESS_ERROR, e);
         }
     }
 
@@ -379,16 +413,14 @@ public class ExaminationAppealServiceImpl implements ExaminationAppealService {
     /**
      * Adds an examination outcome to an examination appeal
      * @param outcome examination outcome
-     * @throws NullPointerException if any of the parameters is null
-     * @throws IllegalArgumentException if any of the parameters is invalid
-     * @throws UnsupportedOperationException if the register is not unique
-     * @throws ObjectNotFoundException if the examination appeal does not exist
+     * @throws DataAccessServiceException if there is an error accessing the database
      */
-    public void addExaminationOutcome(@NonNull ExaminationOutcome outcome) {
+    public void addExaminationOutcome(ExaminationOutcome outcome) throws DataAccessServiceException {
+
         try {
             examinationOutcomeRepository.saveAndFlush(outcome);
-        } catch (DataAccessException e) {
-            logger.error(DATA_ACCESS_ERROR, e);
+        } catch (PersistenceException e) {
+            throw new DataAccessServiceException(DATA_ACCESS_ERROR, e);
         }
     }
 
@@ -398,23 +430,34 @@ public class ExaminationAppealServiceImpl implements ExaminationAppealService {
      * Deletes expired examination appeals
      */
     @Scheduled(fixedDelay = 86400000) // ogni giorno
-    private void cleanExpiredAppeals() {
+    private void cleanExpiredAppeals() throws DataAccessServiceException {
         LocalDate today = LocalDate.now();
-        // clean instance every mouth
+        // clean instance every month
         LocalDate expirationDateOneMonth = today.minusMonths(1);
 
         try {
             List<ExaminationAppeal> expiredExaminationAppealsOneMonth = examinationAppealRepository
-                .findByDateLessThan(expirationDateOneMonth);
+                .findByDateBefore(expirationDateOneMonth);
 
             expiredExaminationAppealsOneMonth
                 .stream()
-                .filter(ExaminationAppeal::deleteIfExpiredAndNoStudents)
+                .filter(ExaminationAppeal::deleteIfExpiredAndNoRegisters)
                 .forEach(examinationAppealRepository::delete);
-        } catch (DataAccessException e) {
-            logger.error(DATA_ACCESS_ERROR, e);
+        } catch (PersistenceException e) {
+            throw new DataAccessServiceException(DATA_ACCESS_ERROR, e);
         }
     }
+
+
+    private ExaminationAppealDto mapToDto(ExaminationAppeal appeal) {
+        Set<StudentDto> students = studentRepository
+            .findByRegisterIn(appeal.getRegisters())
+            .stream()
+            .map(StudentMapper::toDto)
+            .collect(Collectors.toSet());
+        return ExaminationAppealMapper.toDto(appeal, students);
+    }
+
 
 
 }

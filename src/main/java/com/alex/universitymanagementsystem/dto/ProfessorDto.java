@@ -1,19 +1,36 @@
 package com.alex.universitymanagementsystem.dto;
 
-import java.util.Objects;
+import com.alex.universitymanagementsystem.annotation.ValidFiscalCode;
 
-import com.alex.universitymanagementsystem.domain.immutable.FiscalCode;
-import com.alex.universitymanagementsystem.domain.immutable.UniqueCode;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 
 
 
 public class ProfessorDto {
 
     // instance variables
-    private UniqueCode uniqueCode;
-    private FiscalCode fiscalCode;
-    private String fullname;
+    @NotBlank(message = "Username is mandatory")
+    @Size(min = 4, max = 20, message = "Username must be between 4 and 20 characters")
     private String username;
+
+    @NotBlank(message = "First name is mandatory")
+    @Size(min = 2, max = 50, message = "First name must be between 2 and 50 characters")
+    private String firstName;
+
+    @NotBlank(message = "Last name is mandatory")
+    @Size(min = 2, max = 50, message = "Last name must be between 2 and 50 characters")
+    private String lastName;
+
+    @NotBlank(message = "Fiscal code is mandatory")
+    @ValidFiscalCode
+    private String fiscalCode;
+
+    @NotBlank(message = "Unique code is mandatory")
+    @Pattern(regexp = "^[a-zA-Z0-9]{1,8}$")
+    @Size(min = 8, max = 8, message = "Unique code must be exactly 8 characters")
+    private String uniqueCode;
 
 
     // default constructor
@@ -21,72 +38,65 @@ public class ProfessorDto {
 
     // constructor
     public ProfessorDto(
-        UniqueCode uniqueCode,
-        FiscalCode fiscalCode,
-        String fullname,
-        String username
+        String username,
+        String firstName,
+        String lastName,
+        String fiscalCode,
+        String uniqueCode
     ) {
-        this.uniqueCode = uniqueCode;
-        this.fiscalCode = fiscalCode;
-        this.fullname = fullname;
         this.username = username;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.fiscalCode = fiscalCode;
+        this.uniqueCode = uniqueCode;
     }
 
 
     // getters
-    public String getFiscalCode() {
-        return fiscalCode.toString();
-    }
-
-    public UniqueCode getUniqueCode() {
-        return uniqueCode;
-    }
-
-    public String getFullname() {
-        return fullname;
-    }
-
     public String getUsername() {
         return username;
     }
 
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public String getFiscalCode() {
+        return fiscalCode;
+    }
+
+    public String getUniqueCode() {
+        return uniqueCode;
+    }
+
 
     // setters
-    public void setFiscalCode(String fiscalCode) {
-        this.fiscalCode = new FiscalCode(fiscalCode);
-    }
-
-    public void setUniqueCode(UniqueCode uniqueCode) {
-        this.uniqueCode = uniqueCode;
-    }
-
-    public void setFullname(String name) {
-        this.fullname = name;
-    }
-
     public void setUsername(String username) {
         this.username = username;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(uniqueCode, fiscalCode, fullname, username);
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-
-        if (obj == null || getClass() != obj.getClass())
-            return false;
-
-        ProfessorDto other = (ProfessorDto) obj;
-        return Objects.equals(uniqueCode, other.getUniqueCode()) &&
-            Objects.equals(fiscalCode.toString(), other.getFiscalCode()) &&
-            Objects.equals(fullname, other.getFullname()) &&
-            Objects.equals(username, other.getUsername());
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
+
+    public void setFiscalCode(String fiscalCode) {
+        this.fiscalCode = fiscalCode;
+    }
+
+    public void setUniqueCode(String uniqueCode) {
+        this.uniqueCode = uniqueCode;
+    }
+
+
+
 
 
 

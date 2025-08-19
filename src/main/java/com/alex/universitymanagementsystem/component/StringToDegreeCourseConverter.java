@@ -41,13 +41,13 @@ public class StringToDegreeCourseConverter implements Converter<String, DegreeCo
         if (source.trim().isEmpty()) return null;
         try {
             return degreeCourseRepository.findById(new DegreeCourseId(source.trim())).orElse(null);
-        } catch (Exception e) {
+        } catch (Exception _) {
             // Ignora e prova con nome
         }
 
         try {
-            return degreeCourseRepository.findByName(source.trim().toUpperCase());
-        } catch (DataAccessException e) {
+            return degreeCourseRepository.findByName(source.trim().toUpperCase()).orElse(null);
+        } catch (DataAccessException _) {
             return null;
         }
     }

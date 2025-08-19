@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(value = HttpStatus.CONFLICT)
 public class JsonProcessingException extends RuntimeException {
 
+    private static final long serialVersionUID = 1L;
+
     // instance variables
     private final String message;
 

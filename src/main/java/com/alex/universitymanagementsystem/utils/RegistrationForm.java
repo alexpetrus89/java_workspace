@@ -3,23 +3,70 @@ import java.time.LocalDate;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import com.alex.universitymanagementsystem.annotation.PasswordMatches;
+import com.alex.universitymanagementsystem.annotation.ValidBirthDate;
+import com.alex.universitymanagementsystem.annotation.ValidFiscalCode;
+import com.alex.universitymanagementsystem.domain.Professor;
+import com.alex.universitymanagementsystem.domain.Student;
 import com.alex.universitymanagementsystem.domain.User;
 import com.alex.universitymanagementsystem.enum_type.RoleType;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Past;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
+
+@PasswordMatches
 public class RegistrationForm {
 
     // instance variables
+    @NotBlank(message = "username is required")
+    @Size(min = 4, max = 30, message = "username must be between 4 and 30 characters")
     private String username;
+
+    @NotBlank(message = "Password is required")
+    @Size(min = 8, message = "Password must be at least 8 characters long")
     private String password;
+
+    @NotBlank(message = "Password confirmation is required")
     private String confirm;
-    private String fullname;
+
+    @NotBlank(message = "First name is required")
+    private String firstName;
+
+    @NotBlank(message = "Last name is required")
+    private String lastName;
+
+    @NotNull(message = "Date of birth is required")
+    @Past(message = "Date of birth must be in the past")
+    @ValidBirthDate
     private LocalDate dob;
+
+    @NotBlank(message = "Fiscal code is required")
+    @ValidFiscalCode
+    private String fiscalCode;
+
+    @NotBlank(message = "Street is required")
     private String street;
+
+    @NotBlank(message = "City is required")
     private String city;
+
+    @NotBlank(message = "State is required")
     private String state;
+
+    @NotBlank(message = "ZIP code is required")
+    @Pattern(regexp = "\\d{5}", message = "ZIP code must be 5 digits")
     private String zip;
+
+    @NotBlank(message = "Phone number is required")
+    @Pattern(regexp = "\\+?\\d{9,15}", message = "Phone number is invalid")
     private String phone;
+
+    @NotNull(message = "Role is required")
     private RoleType role;
+
 
     // constructors
     public RegistrationForm() {}
@@ -28,8 +75,10 @@ public class RegistrationForm {
         this.username = formBuilder.getUsername();
         this.password = formBuilder.getPassword();
         this.confirm = formBuilder.getConfirm();
-        this.fullname = formBuilder.getFullname();
+        this.firstName = formBuilder.getFirstName();
+        this.lastName = formBuilder.getLastName();
         this.dob = formBuilder.getDob();
+        this.fiscalCode = formBuilder.getFiscalCode();
         this.street = formBuilder.getStreet();
         this.city = formBuilder.getCity();
         this.state = formBuilder.getState();
@@ -51,12 +100,20 @@ public class RegistrationForm {
         return confirm;
     }
 
-    public String getFullname() {
-        return fullname;
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
     }
 
     public LocalDate getDob() {
         return dob;
+    }
+
+    public String getFiscalCode() {
+        return fiscalCode;
     }
 
     public String getStreet() {
@@ -97,12 +154,20 @@ public class RegistrationForm {
         this.confirm = confirm;
     }
 
-    public void setFullname(String fullname) {
-        this.fullname = fullname;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public void setDob(LocalDate dob) {
         this.dob = dob;
+    }
+
+    public void setFiscalCode(String fiscalCode) {
+        this.fiscalCode = fiscalCode;
     }
 
     public void setStreet(String street) {
@@ -131,24 +196,36 @@ public class RegistrationForm {
 
 
     // methods
-    public User toUser(PasswordEncoder passwordEncoder) {
-        // create a new user builder
-        Builder userBuilder = new Builder();
-        // set the values
-        userBuilder.withUsername(username);
-        userBuilder.withPassword(password);
-        userBuilder.withConfirm(confirm);
-        userBuilder.withFullname(fullname);
-        userBuilder.withDob(dob);
-        userBuilder.withStreet(street);
-        userBuilder.withCity(city);
-        userBuilder.withState(state);
-        userBuilder.withZip(zip);
-        userBuilder.withPhone(phone);
-        userBuilder.withRole(role);
-        // create the user
-        return new User(userBuilder, passwordEncoder);
+    private Builder toBuilder() {
+        Builder builder = new Builder();
+        builder.withUsername(username);
+        builder.withPassword(password);
+        builder.withConfirm(confirm);
+        builder.withFirstName(firstName);
+        builder.withLastName(lastName);
+        builder.withDob(dob);
+        builder.withFiscalCode(fiscalCode);
+        builder.withStreet(street);
+        builder.withCity(city);
+        builder.withState(state);
+        builder.withZip(zip);
+        builder.withPhone(phone);
+        builder.withRole(role);
+        return builder;
     }
+
+    public User toUser(PasswordEncoder passwordEncoder) {
+        return new User(toBuilder(), passwordEncoder);
+    }
+
+    public Student toStudent(PasswordEncoder passwordEncoder) {
+        return new Student(toBuilder(), passwordEncoder);
+    }
+
+    public Professor toProfessor(PasswordEncoder passwordEncoder) {
+        return new Professor(toBuilder(), passwordEncoder);
+    }
+
 
 
 }

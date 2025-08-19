@@ -1,19 +1,25 @@
 package com.alex.universitymanagementsystem.controller;
 
-import java.time.LocalDate;
-
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.support.SessionStatus;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.alex.universitymanagementsystem.enum_type.RoleType;
+import com.alex.universitymanagementsystem.exception.DataAccessServiceException;
 import com.alex.universitymanagementsystem.service.impl.RegistrationServiceImpl;
 import com.alex.universitymanagementsystem.utils.Builder;
+import com.alex.universitymanagementsystem.utils.RegistrationForm;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 
 
 
@@ -25,6 +31,10 @@ import jakarta.servlet.http.HttpServletRequest;
 @RequestMapping(path = "/register")
 public class RegistrationController {
 
+    // constants
+    @Value("#{dataAccessExceptionUri}")
+    private String dataAccessExceptionUri;
+
     // instance variables
     private final RegistrationServiceImpl registrationServiceImpl;
 
@@ -33,91 +43,85 @@ public class RegistrationController {
         this.registrationServiceImpl = registrationServiceImpl;
     }
 
+
     // methods
     /** GET request */
     /**
      * @return String
      */
     @GetMapping
-    public String registerForm() {
-        return "registration";
+    public ModelAndView registration() {
+        return new ModelAndView("registration", "form", new RegistrationForm());
     }
+
 
     /** POST request */
     /**
      * Process registration
-     * @param username
-     * @param password
-     * @param fullname
-     * @param dob
-     * @param street
-     * @param city
-     * @param state
-     * @param zip
-     * @param phone
-     * @param role
+     * @param request - HttpServletRequest
+     * @param sessionStatus - SessionStatus
+     * @param bindingResult - BindingResult
+     * @param form - RegistrationForm
      * @return String - redirect
      */
     @PostMapping
     public String processRegistration (
+        @Valid @ModelAttribute("form") RegistrationForm form,
+        BindingResult bindingResult,
         HttpServletRequest request,
-        SessionStatus sessionStatus,
-        @RequestParam("username") String username,
-        @RequestParam("password") String password,
-        @RequestParam("confirm") String confirm,
-        @RequestParam("fullname") String fullname,
-        @RequestParam("dob") LocalDate dob,
-        @RequestParam("street") String street,
-        @RequestParam("city") String city,
-        @RequestParam("state") String state,
-        @RequestParam("zip") String zip,
-        @RequestParam("phone") String phone,
-        @RequestParam("role") RoleType role
+        SessionStatus sessionStatus
     ) {
         // username already in use check
-        if(registrationServiceImpl.isUsernameAlreadyTaken(username))
-            return "redirect:/validation/registration/username-already-taken";
+        try {
+            if(registrationServiceImpl.isUsernameAlreadyTaken(form.getUsername()))
+                return "redirect:/validation/registration/username-already-taken";
 
-        // check if
-        if(password.isBlank() || password.isEmpty())
-            return "redirect:/validation/registration/password-is-blank";
+            if (bindingResult.hasErrors()) {
+                FieldError passwordError = bindingResult.getFieldError("password");
+                if (passwordError != null && "NotBlank".equals(passwordError.getCode()))
+                    return "redirect:/validation/registration/password-is-blank";
 
-         // check if the password and confirm password are the same
-        if (!password.equals(confirm))
-            return "redirect:/validation/registration/password-not-match";
+                ObjectError globalError = bindingResult.getGlobalError();
+                if (globalError != null && "PasswordMatches".equals(globalError.getCode()))
+                    return "redirect:/validation/registration/password-not-match";
 
-        // check if the date of birth is valid (not in the future or today)
-        if(dob.isEqual(LocalDate.now()) || dob.isAfter(LocalDate.now()))
-            return "redirect:/validation/registration/invalid-dob";
+                FieldError dobError = bindingResult.getFieldError("dob");
+                if (dobError != null && "ValidBirthDate".equals(dobError.getCode()))
+                    return "redirect:/validation/registration/invalid-dob";
+            }
 
+            // create a new form builder
+            Builder builder = new Builder();
+            // set the values
+            builder.withUsername(form.getUsername());
+            builder.withPassword(form.getPassword());
+            builder.withFirstName(form.getFirstName().toLowerCase());
+            builder.withLastName(form.getLastName().toLowerCase());
+            builder.withDob(form.getDob());
+            builder.withFiscalCode(form.getFiscalCode());
+            builder.withStreet(form.getStreet());
+            builder.withCity(form.getCity());
+            builder.withState(form.getState());
+            builder.withZip(form.getZip());
+            builder.withPhone(form.getPhone());
+            builder.withRole(form.getRole());
 
-        // create a new form builder
-        Builder builder = new Builder();
-        // set the values
-        builder.withUsername(username);
-        builder.withPassword(password);
-        builder.withFullname(fullname.toLowerCase());
-        builder.withDob(dob);
-        builder.withStreet(street);
-        builder.withCity(city);
-        builder.withState(state);
-        builder.withZip(zip);
-        builder.withPhone(phone);
-        builder.withRole(role);
+            // memorizza l'oggetto builder nella sessione
+            request.getSession().setAttribute("builder", builder);
 
-        // memorizza l'oggetto builder nella sessione
-        request.getSession().setAttribute("builder", builder);
-
-        return switch (role) {
-            // Reindirizza l'utente al metodo createNewStudent
-            case RoleType.STUDENT -> "redirect:user_student/create/create-student-from-user";
-            // Reindirizza l'utente al metodo createProfessor (non mostrato nel codice)
-            case RoleType.PROFESSOR -> "redirect:user_professor/create/create-professor-from-user";
-            // Reindirizza l'utente admin al login
-            case RoleType.ADMIN -> "forward:api/v1/user/create-admin";
-            // Reindirizza all'utente alla pagina di login
-            default -> "redirect:/login";
-        };
+            return switch (form.getRole()) {
+                // Reindirizza l'utente al metodo createNewStudent
+                case RoleType.STUDENT -> "redirect:user_student/create/create-student-from-user";
+                // Reindirizza l'utente al metodo createProfessor (non mostrato nel codice)
+                case RoleType.PROFESSOR -> "redirect:user_professor/create/create-professor-from-user";
+                // Reindirizza l'utente admin al login
+                case RoleType.ADMIN -> "forward:api/v1/user/create-admin";
+                // Reindirizza all'utente alla pagina di login
+                default -> "redirect:/login";
+            };
+        } catch (DataAccessServiceException _) {
+            return "redirect:" + dataAccessExceptionUri;
+        }
     }
 
 }

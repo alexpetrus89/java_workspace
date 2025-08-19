@@ -7,24 +7,25 @@ public class CourseMapper {
 
     private CourseMapper() {} // private constructor to prevent instantiation
 
-    public static Course mapToCourse(CourseDto courseDto) {
+    public static Course toEntity(CourseDto dto) {
+        if(dto == null) return null;
         return new Course(
-            courseDto.getName(),
-            courseDto.getType(),
-            courseDto.getCfu(),
-            courseDto.getProfessor(),
-            courseDto.getDegreeCourse()
+            dto.getName(),
+            dto.getType(),
+            dto.getCfu(),
+            ProfessorMapper.toEntity(dto.getProfessor()),
+            DegreeCourseMapper.toEntity(dto.getDegreeCourse())
         );
     }
 
-    public static CourseDto mapToCourseDto(Course course) {
+    public static CourseDto toDto(Course course) {
+        if(course == null) return null;
         return new CourseDto(
-            course.getCourseId(),
             course.getName(),
             course.getType(),
             course.getCfu(),
-            course.getProfessor(),
-            course.getDegreeCourse()
+            ProfessorMapper.toDto(course.getProfessor()),
+            DegreeCourseMapper.toDto(course.getDegreeCourse())
         );
     }
 

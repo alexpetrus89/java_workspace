@@ -7,6 +7,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import com.alex.universitymanagementsystem.domain.immutable.FiscalCode;
 import com.alex.universitymanagementsystem.domain.immutable.Register;
 import com.alex.universitymanagementsystem.utils.Builder;
 
@@ -23,7 +24,7 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
 
 @Entity
-@Table(name = "student")
+@Table(name = "STUDENTS")
 @Access(AccessType.PROPERTY)
 @PrimaryKeyJoinColumn(name = "id")
 public class Student extends User {
@@ -44,13 +45,8 @@ public class Student extends User {
         this.age = calculateAge();
     }
 
-    public Student(
-        Builder builder,
-        PasswordEncoder passwordEncoder,
-        Register register,
-        DegreeCourse degreeCourse
-    ) {
-        super(builder, passwordEncoder);
+    public Student(Builder builder, PasswordEncoder encoder, Register register, DegreeCourse degreeCourse) {
+        super(builder, encoder);
         this.register = register;
         this.degreeCourse = degreeCourse;
         this.age = calculateAge();
@@ -71,18 +67,21 @@ public class Student extends User {
     }
 
     public Student(
-        Register register,
         String username,
-        String fullname,
+        String firstName,
+        String lastName,
         LocalDate dob,
+        FiscalCode fiscalCode,
+        Register register,
         DegreeCourse degreeCourse,
         StudyPlan studyPlan
     ) {
-        this.register = register;
         this.username = username;
-        this.fullname = fullname;
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.dob = dob;
-        this.age = calculateAge();
+        this.fiscalCode = fiscalCode;
+        this.register = register;
         this.degreeCourse = degreeCourse;
         this.studyPlan = studyPlan;
         this.age = calculateAge();
@@ -123,9 +122,6 @@ public class Student extends User {
         this.degreeCourse = degreeCourse;
     }
 
-    public void setAge(Integer age) {
-        this.age = age;
-    }
 
     public void setStudyPlan(StudyPlan studyPlan) {
         this.studyPlan = studyPlan;
@@ -134,33 +130,25 @@ public class Student extends User {
     // other methods
     @Override
     public String toString() {
-        return "Student [id= " + id + ", register= " + register + ", name= " + fullname +
-            ", email= " + username + ", dob= " + dob + "]";
+        return "Student [id= " + id + ", name= " + firstName + " " + lastName +
+            ", age= " + age + ", dob= " + dob + ", fiscal code= " + fiscalCode + ", register= " + register + ", email= " + username + "]";
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(register, username, fullname, dob);
+        return Objects.hash(id);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        // self check
-        if (this == obj) return true;
-
-        // null check
-        if (obj == null || getClass() != obj.getClass()) return false;
-
-        // cast
-        Student other = (Student) obj;
-
-        // check the fields
-        return Objects.equals(register, other.getRegister()) &&
-            Objects.equals(username, other.getUsername()) &&
-            Objects.equals(fullname, other.getFullname()) &&
-            Objects.equals(dob, other.getDob());
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Student)) return false;
+        Student other = (Student) o;
+        return Objects.equals(id, other.id);
     }
 
+
+    // private methods
     private int calculateAge() {
         return Period.between(dob, LocalDate.now()).getYears();
     }

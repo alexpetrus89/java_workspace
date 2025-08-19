@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Objects;
-import java.util.UUID;
 
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -24,7 +23,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "degreeCourse")
+@Table(name = "DEGREE_COURSES")
 @Access(AccessType.PROPERTY)
 public class DegreeCourse implements Serializable {
 
@@ -40,25 +39,15 @@ public class DegreeCourse implements Serializable {
     // constructors
     public DegreeCourse() {}
 
-    public DegreeCourse(
-        String name,
-        DegreeType graduationClass,
-        int duration
-    ) {
-        this.id = new DegreeCourseId(UUID.randomUUID());
+    public DegreeCourse(String name, DegreeType graduationClass, int duration) {
+        this.id = DegreeCourseId.newId();
         this.name = name;
         this.graduationClass = graduationClass;
         this.duration = duration;
     }
 
-    public DegreeCourse(
-        String name,
-        DegreeType graduationClass,
-        int duration,
-        Collection<Course> courses,
-        Collection<Student> students
-    ) {
-        this.id = new DegreeCourseId(UUID.randomUUID());
+    public DegreeCourse(String name, DegreeType graduationClass, int duration, Collection<Course> courses, Collection<Student> students) {
+        this.id = DegreeCourseId.newId();
         this.name = name;
         this.graduationClass = graduationClass;
         this.duration = duration;
@@ -134,11 +123,17 @@ public class DegreeCourse implements Serializable {
 
     // methods
     public void addCourse(Course course) {
-        this.courses.add(course);
+        if (!courses.contains(course)) {
+            courses.add(course);
+            course.setDegreeCourse(this);
+        }
     }
 
     public void addStudent(Student student) {
+        if (students.contains(student))
+            return; // already added
         this.students.add(student);
+        student.setDegreeCourse(this);
     }
 
     @Override
@@ -149,17 +144,15 @@ public class DegreeCourse implements Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, graduationClass, duration);
+        return Objects.hash(id);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
-        DegreeCourse other = (DegreeCourse) obj;
-        return Objects.equals(name, other.getName()) &&
-            Objects.equals(graduationClass, other.getGraduationClass()) &&
-            Objects.equals(duration, other.getDuration());
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof DegreeCourse)) return false;
+        DegreeCourse other = (DegreeCourse) o;
+        return Objects.equals(id, other.id);
     }
 
 }

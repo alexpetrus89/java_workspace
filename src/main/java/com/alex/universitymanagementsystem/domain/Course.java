@@ -2,7 +2,6 @@ package com.alex.universitymanagementsystem.domain;
 
 import java.io.Serializable;
 import java.util.Objects;
-import java.util.UUID;
 
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -20,12 +19,12 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "course")
+@Table(name = "COURSES")
 @Access(value = AccessType.PROPERTY)
 public class Course implements Serializable {
 
     // instance variables
-    private CourseId courseId;
+    private CourseId id;
     private String name;
     private CourseType type;
     private Integer cfu;
@@ -35,25 +34,15 @@ public class Course implements Serializable {
     // default constructor
     public Course() {}
 
-    public Course(
-        String name,
-        CourseType type,
-        Integer cfu
-    ) {
-        this.courseId = new CourseId(UUID.randomUUID());
+    public Course(String name, CourseType type, Integer cfu) {
+        this.id = CourseId.newId();
         this.name = name;
         this.type = type;
         this.cfu = cfu;
     }
 
-    public Course(
-        String name,
-        CourseType type,
-        Integer cfu,
-        Professor professor,
-        DegreeCourse degreeCourse
-    ) {
-        this.courseId = new CourseId(UUID.randomUUID());
+    public Course(String name, CourseType type, Integer cfu, Professor professor, DegreeCourse degreeCourse) {
+        this.id = CourseId.newId();
         this.name = name;
         this.type = type;
         this.cfu = cfu;
@@ -65,8 +54,8 @@ public class Course implements Serializable {
     // getters
     @EmbeddedId
     @Column(name = "course_id")
-    public CourseId getCourseId() {
-        return courseId;
+    public CourseId getId() {
+        return id;
     }
 
     @Column(name = "name")
@@ -99,8 +88,8 @@ public class Course implements Serializable {
 
 
     // setters
-    public void setCourseId(CourseId courseId) {
-        this.courseId = courseId;
+    public void setId(CourseId id) {
+        this.id = id;
     }
 
     public void setName(String name) {
@@ -126,7 +115,7 @@ public class Course implements Serializable {
     @Override
     public String toString() {
         return "Course{" +
-            "courseId=" + courseId +
+            "id=" + id +
             ", name='" + name + '\'' +
             ", type='" + type.name() + '\'' +
             ", cfu=" + cfu +
@@ -137,19 +126,15 @@ public class Course implements Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, type, cfu, professor, degreeCourse);
+        return Objects.hash(id);
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Course course = (Course) o;
-        return Objects.equals(name, course.name) &&
-            Objects.equals(type, course.type) &&
-            Objects.equals(cfu, course.cfu) &&
-            Objects.equals(professor, course.professor) &&
-            Objects.equals(degreeCourse, course.degreeCourse);
+        if (!(o instanceof Course)) return false;
+        Course other = (Course) o;
+        return Objects.equals(id, other.id);
     }
 
 

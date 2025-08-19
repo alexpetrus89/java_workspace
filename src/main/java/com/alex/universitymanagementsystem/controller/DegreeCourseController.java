@@ -2,9 +2,12 @@ package com.alex.universitymanagementsystem.controller;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,6 +19,7 @@ import com.alex.universitymanagementsystem.dto.CourseDto;
 import com.alex.universitymanagementsystem.dto.DegreeCourseDto;
 import com.alex.universitymanagementsystem.dto.ProfessorDto;
 import com.alex.universitymanagementsystem.dto.StudentDto;
+import com.alex.universitymanagementsystem.exception.DataAccessServiceException;
 import com.alex.universitymanagementsystem.exception.JsonProcessingException;
 import com.alex.universitymanagementsystem.service.impl.DegreeCourseServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -28,8 +32,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class DegreeCourseController {
 
     // constants
-    private static final String EXCEPTION_VIEW_NAME = "exception/read/error";
     private static final String EXCEPTION_MESSAGE = "message";
+    private static final String OBJECT_NOT_FOUND = "/object-not-found";
+    private static final String ILLEGAL_PARAMETERS = "/illegal-parameters";
+
+    @Value("#{dataAccessExceptionUri}")
+    private String dataAccessExceptionUri;
+    @Value("#{notFoundExceptionUri}")
+    private String notFoundExceptionUri;
+    @Value("#{illegalArgumentExceptionUri}")
+    private String illegalArgumentExceptionUri;
 
     // instance variables
     private final DegreeCourseServiceImpl degreeCourseServiceImpl;
@@ -47,8 +59,12 @@ public class DegreeCourseController {
      */
     @GetMapping(path = "/view")
     public ModelAndView getDegreeCourses() {
-        Set<DegreeCourseDto> degreeCourses = degreeCourseServiceImpl.getDegreeCourses();
-        return new ModelAndView("degree_course/degree-course-list", "degreeCourses", degreeCourses);
+        try {
+            Set<DegreeCourseDto> degreeCourses = degreeCourseServiceImpl.getDegreeCourses();
+            return new ModelAndView("degree_course/degree-course-list", "degreeCourses", degreeCourses);
+        } catch (DataAccessServiceException e) {
+            return new ModelAndView(dataAccessExceptionUri, EXCEPTION_MESSAGE, e.getMessage());
+        }
     }
 
 
@@ -62,8 +78,12 @@ public class DegreeCourseController {
         try {
             List<CourseDto> courses = degreeCourseServiceImpl.getCourses(name.toUpperCase());
             return new ModelAndView("degree_course/course-list", "courses",courses);
-        } catch (NullPointerException | IllegalArgumentException | UnsupportedOperationException | ClassCastException e) {
-            return new ModelAndView(EXCEPTION_VIEW_NAME, EXCEPTION_MESSAGE, e.getMessage());
+        } catch (IllegalArgumentException e) {
+            return new ModelAndView(illegalArgumentExceptionUri + ILLEGAL_PARAMETERS, EXCEPTION_MESSAGE, e.getMessage());
+        } catch (NoSuchElementException e) {
+            return new ModelAndView(notFoundExceptionUri + OBJECT_NOT_FOUND, EXCEPTION_MESSAGE, e.getMessage());
+        } catch (DataAccessServiceException e) {
+            return new ModelAndView(dataAccessExceptionUri, EXCEPTION_MESSAGE, e.getMessage());
         }
     }
 
@@ -78,8 +98,12 @@ public class DegreeCourseController {
         try {
             List<ProfessorDto> professors = degreeCourseServiceImpl.getProfessors(name.toUpperCase());
             return new ModelAndView("degree_course/professor-with-course-list","professors", professors);
-        } catch (NullPointerException | IllegalArgumentException | UnsupportedOperationException  e) {
-            return new ModelAndView(EXCEPTION_VIEW_NAME, EXCEPTION_MESSAGE, e.getMessage());
+        } catch (IllegalArgumentException e) {
+            return new ModelAndView(illegalArgumentExceptionUri + ILLEGAL_PARAMETERS, EXCEPTION_MESSAGE, e.getMessage());
+        } catch (NoSuchElementException e) {
+            return new ModelAndView(notFoundExceptionUri + OBJECT_NOT_FOUND, EXCEPTION_MESSAGE, e.getMessage());
+        } catch (DataAccessServiceException e) {
+            return new ModelAndView(dataAccessExceptionUri, EXCEPTION_MESSAGE, e.getMessage());
         }
 
     }
@@ -95,8 +119,12 @@ public class DegreeCourseController {
         try {
             List<StudentDto> students = degreeCourseServiceImpl.getStudents(name.toUpperCase());
             return new ModelAndView("degree_course/student-list","students", students);
-        } catch (NullPointerException | IllegalArgumentException | UnsupportedOperationException e) {
-            return new ModelAndView(EXCEPTION_VIEW_NAME, EXCEPTION_MESSAGE, e.getMessage());
+        } catch (IllegalArgumentException e) {
+            return new ModelAndView(illegalArgumentExceptionUri + ILLEGAL_PARAMETERS, EXCEPTION_MESSAGE, e.getMessage());
+        } catch (NoSuchElementException e) {
+            return new ModelAndView(notFoundExceptionUri + OBJECT_NOT_FOUND, EXCEPTION_MESSAGE, e.getMessage());
+        } catch (DataAccessServiceException e) {
+            return new ModelAndView(dataAccessExceptionUri, EXCEPTION_MESSAGE, e.getMessage());
         }
     }
 
@@ -106,8 +134,14 @@ public class DegreeCourseController {
      * @return http response entity
      */
     @GetMapping(path = "/ajax")
-    public ResponseEntity<Set<DegreeCourseDto>> getDegreeCoursesForAjaxRequest() {
-        return ResponseEntity.ok(degreeCourseServiceImpl.getDegreeCourses());
+    public ResponseEntity<Set<DegreeCourseDto>> getJsonOfDegreeCourses() {
+        try {
+            return ResponseEntity.ok(degreeCourseServiceImpl.getDegreeCourses());
+        } catch (DataAccessServiceException e) {
+            return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(Set.of(new DegreeCourseDto(null, e.getMessage(), null, 0)));
+        }
     }
 
 
@@ -126,7 +160,7 @@ public class DegreeCourseController {
                 .stream()
                 .map(this::serializeCourseDto)
                 .collect(Collectors.joining(",")) + "]}";
-        } catch (NullPointerException | IllegalArgumentException | UnsupportedOperationException | ClassCastException e) {
+        } catch (IllegalArgumentException | NoSuchElementException | DataAccessServiceException | ClassCastException e) {
             return "{\"message\": \"" + e.getMessage() + "\"}";
         }
     }

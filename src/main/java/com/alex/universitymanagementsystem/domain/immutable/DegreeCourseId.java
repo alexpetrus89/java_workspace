@@ -15,11 +15,24 @@ public record DegreeCourseId(UUID id) implements Serializable {
     }
 
     public DegreeCourseId() {
-        this(UUID.randomUUID());
+        this((UUID) null);
+    }
+
+    public static DegreeCourseId newId() {
+        return new DegreeCourseId(UUID.randomUUID());
     }
 
     public DegreeCourseId(String id) {
         this(UUID.fromString(id));
+    }
+
+    @Override
+    public String toString() {
+        return id.toString();
+    }
+
+    public UUID getId() {
+        return id;
     }
 
 }

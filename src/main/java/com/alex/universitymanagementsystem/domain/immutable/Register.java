@@ -11,7 +11,6 @@ public record Register(String register) implements Serializable {
 
     public Register {
         Assert.notNull(register, "register must not be null");
-        Assert.isTrue(register.length() == 6, "register must be a string of exactly 6 digits");
         Assert.isTrue(register.matches("\\d{6}"), "register must be a string of exactly 6 digits");
     }
 
@@ -20,8 +19,5 @@ public record Register(String register) implements Serializable {
         return String.format(register);
     }
 
-    public String getRegister() {
-        return register;
-    }
 
 }

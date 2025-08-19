@@ -1,19 +1,21 @@
 package com.alex.universitymanagementsystem.service;
 
-import java.time.LocalDate;
 import java.util.List;
 
-import org.springframework.lang.NonNull;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 
-import com.alex.universitymanagementsystem.domain.Examination;
-import com.alex.universitymanagementsystem.domain.immutable.CourseId;
 import com.alex.universitymanagementsystem.domain.immutable.Register;
 import com.alex.universitymanagementsystem.domain.immutable.UniqueCode;
 import com.alex.universitymanagementsystem.dto.ExaminationDto;
+import com.alex.universitymanagementsystem.dto.UpdateExaminationDto;
+import com.alex.universitymanagementsystem.exception.DataAccessServiceException;
 import com.alex.universitymanagementsystem.exception.ObjectAlreadyExistsException;
 import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
 
+import jakarta.persistence.PersistenceException;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 
 
 
@@ -23,138 +25,94 @@ public interface ExaminationService {
     /**
      * Get all examinations
      * @return List<ExaminationDto>
+     * @throws DataAccessServiceException if there is an error accessing the database.
      */
-    List<ExaminationDto> getExaminations();
+    List<ExaminationDto> getExaminations() throws DataAccessServiceException;
 
 
     /**
-     * Get all examinations by course id
-     * @param courseId course id of the course
+     * Get all examinations by course
+     * @param courseName course name of the course
+     * @param degreeCourseName degree course name of the course
      * @return List<ExaminationDto>
-     * @throws NullPointerException if the courseId is null
+     * @throws IllegalArgumentException if the course name or degree course name is Blank
      * @throws ObjectNotFoundException if the course does not exist
-     * @throws IllegalArgumentException if the courseId is Blank
-     * @throws UnsupportedOperationException if the courseId is not unique
+     * @throws DataAccessServiceException if there is an error accessing the database.
      */
-    List<ExaminationDto> getExaminationsByCourseId(@NonNull CourseId courseId)
-        throws NullPointerException, ObjectNotFoundException, IllegalArgumentException, UnsupportedOperationException;
+    List<ExaminationDto> getExaminationsByCourseNameAndDegreeCourseName(String courseName, String degreeCourseName)
+        throws IllegalArgumentException, ObjectNotFoundException, DataAccessServiceException;
 
 
     /**
      * Get all examinations by student register
      * @param register of the student
      * @return List<ExaminationDto>
-     * @throws NullPointerException if the register is null
      * @throws IllegalArgumentException if the register is blank
      * @throws ObjectNotFoundException if the student does not exist
-     * @throws UnsupportedOperationException if the register is not unique
+     * @throws DataAccessServiceException if there is an error accessing the database.
      */
-    List<ExaminationDto> getExaminationsByStudentRegister(@NonNull Register register)
-        throws NullPointerException, IllegalArgumentException, ObjectNotFoundException, UnsupportedOperationException;
+    List<ExaminationDto> getExaminationsByStudentRegister(Register register)
+        throws IllegalArgumentException, ObjectNotFoundException, DataAccessServiceException;
 
 
     /**
      * Get all examinations by professor unique code
      * @param uniqueCode of the professor
      * @return List<ExaminationDto>
-     * @throws NullPointerException if the unique code is null
      * @throws IllegalArgumentException if the unique code is blank
      * @throws ObjectNotFoundException if the professor does not exist
-     * @throws UnsupportedOperationException if the unique code is not unique
+     * @throws DataAccessServiceException if there is an error accessing the database.
      */
-    List<ExaminationDto> getExaminationsByProfessorUniqueCode(@NonNull UniqueCode uniqueCode)
-        throws NullPointerException, IllegalArgumentException, ObjectNotFoundException, UnsupportedOperationException;
-
-
-    /**
-     * Get all examinations by course name
-     * @param name name of the course
-     * @return List<ExaminationDto>
-     * @throws NullPointerException if the name is null
-     * @throws IllegalArgumentException if the name is blank
-     * @throws ObjectNotFoundException if the course does not exist
-     * @throws UnsupportedOperationException if the unique code is not unique
-     */
-    List<ExaminationDto> getExaminationsByCourseName(@NonNull String name)
-        throws NullPointerException, IllegalArgumentException, ObjectNotFoundException, UnsupportedOperationException;
+    List<ExaminationDto> getExaminationsByProfessorUniqueCode(UniqueCode uniqueCode)
+        throws IllegalArgumentException, ObjectNotFoundException, DataAccessServiceException;
 
 
     /**
      * Add new examination
-     * @param register of the student
-     * @param name of the course
-     * @param name of the degree course
-     * @param grade of the examination
-     * @param withHonors whether the examination was passed with honors
-     * @param date of the examination
-     * @return Examination
-     * @throws NullPointerException if the unique code is null or the course name is null
-     * @throws IllegalArgumentException if the unique code is blank or the course name is
-     *         blank or the degree course name is blank or if grade is not between 0 and 30
-     *         or if the date is in the past or if the student or course does not exist
-     * @throws ObjectAlreadyExistsException if the examination already exists.
-     * @throws ObjectNotFoundException if the student or course does not exist.
-     * @throws UnsupportedOperationException if the unique code is not unique
-     *         or if the course name is not unique
+     *
+     * @param request the examination data transfer object containing the details of the examination to be added
+     * @return Examination data transfer object
+     * @throws IllegalArgumentException for many kind of errors
+     * @throws ObjectNotFoundException if any referenced entity is not found
+     * @throws ObjectAlreadyExistsException if the examination already exists
+     * @throws DataAccessServiceException if there is an error accessing the database
      */
-	@Transactional
-    Examination addNewExamination(
-        @NonNull Register register,
-        @NonNull String courseName,
-        @NonNull String degreeCourseName,
-        @NonNull String grade,
-        boolean withHonors,
-        @NonNull LocalDate date
-    ) throws NullPointerException, IllegalArgumentException, IllegalStateException, ObjectAlreadyExistsException, ObjectNotFoundException;
+    @Transactional(rollbackOn = {IllegalArgumentException.class, ObjectNotFoundException.class, ObjectAlreadyExistsException.class})
+    @Retryable(retryFor = PersistenceException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
+    ExaminationDto addNewExamination(@Valid ExaminationDto request)
+        throws IllegalArgumentException, ObjectNotFoundException, ObjectAlreadyExistsException, DataAccessServiceException;
 
 
     /**
      * Update existing examination
-     * @param oldRegister the old student's register
-     * @param oldCourseName the old course name
-     * @param oldDegreeCourseName the old degree course name
-     * @param newRegister the new student's register
-     * @param newCourseName the new course name
-     * @param newDegreeCourseName the new degree course name
-     * @param grade the new grade
-     * @param withHonors whether the examination was passed with honors
-     * @param date the new date
-     * @return Examination
-     * @throws NullPointerException if any of the parameters is null
-     * @throws ObjectNotFoundException if the student or course or degree course
-     *         or examination to update does not exist.
-     * @throws IllegalArgumentException if any of the parameters is blank or
-     *         if the grade is not between 0 and 30 or if the date is in the
-     *         past
+     *
+     * @param request the examination data transfer object containing the details of the examination to be updated
+     * @return Examination data transfer object
+     * @throws IllegalArgumentException for many kind of errors
+     * @throws ObjectNotFoundException if any referenced entity is not found
      * @throws IllegalStateException if the student is not part of the degree course
-     * @throws UnsupportedOperationException if the unique code is not unique
-     */
-	@Transactional
-    Examination updateExamination(
-        @NonNull Register oldRegister,
-        @NonNull String oldCourseName,
-        @NonNull String oldDegreeCourseName,
-        @NonNull Register newRegister,
-        @NonNull String newCourseName,
-        @NonNull String newDegreeCourseName,
-        @NonNull String grade,
-        boolean withHonors,
-        @NonNull LocalDate date
-    ) throws NullPointerException, IllegalArgumentException, IllegalStateException, ObjectNotFoundException, UnsupportedOperationException;
+     * @throws DataAccessServiceException if there is an error accessing the database
+    */
+    @Transactional(rollbackOn = {IllegalArgumentException.class, ObjectNotFoundException.class, IllegalStateException.class})
+    @Retryable(retryFor = PersistenceException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
+    ExaminationDto updateExamination(@Valid UpdateExaminationDto request)
+        throws IllegalArgumentException, ObjectNotFoundException, IllegalStateException, DataAccessServiceException;
 
 
     /**
      * Delete existing examination
      * @param register register of the student
-     * @param name name of the course
-     * @throws NullPointerException if any of the parameters is null
+     * @param courseName name of the course
+     * @param degreeCourseName name of the degree course
+     * @return Examination data transfer object
      * @throws IllegalArgumentException if the course name is null or empty
      *         or the register is null or empty
      * @throws ObjectNotFoundException if the examination does not exist
-     * @throws UnsupportedOperationException if the register is not unique
-     *         or if the course name is not unique
+     * @throws DataAccessServiceException if there is an error accessing the database
      */
-	@Transactional
-	void deleteExamination(@NonNull Register register, @NonNull String name)
-		throws NullPointerException, IllegalArgumentException, ObjectNotFoundException, UnsupportedOperationException;
+	@Transactional(rollbackOn = {IllegalArgumentException.class, ObjectNotFoundException.class})
+    @Retryable(retryFor = PersistenceException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
+	ExaminationDto deleteExamination(String register, String courseName, String degreeCourseName)
+		throws IllegalArgumentException, ObjectNotFoundException, DataAccessServiceException;
+
 }

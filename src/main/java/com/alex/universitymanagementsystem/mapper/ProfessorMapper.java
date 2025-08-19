@@ -7,21 +7,26 @@ public class ProfessorMapper {
 
     private ProfessorMapper() {} // private constructor to prevent instantiation
 
-    public static Professor mapToProfessor(ProfessorDto professorDto) {
+    public static Professor toEntity(ProfessorDto dto) {
+        if(dto == null) return null;
         return new Professor(
-            professorDto.getUniqueCode(),
-            professorDto.getFiscalCode(),
-            professorDto.getFullname(),
-            professorDto.getUsername()
+            dto.getUsername(),
+            dto.getFirstName(),
+            dto.getLastName(),
+            dto.getFiscalCode(),
+            dto.getUniqueCode()
+
         );
     }
 
-    public static ProfessorDto mapToProfessorDto(Professor professor) {
+    public static ProfessorDto toDto(Professor professor) {
+        if(professor == null) return null;
         return new ProfessorDto(
-            professor.getUniqueCode(),
-            professor.getFiscalCode(),
-            professor.getFullname(),
-            professor.getUsername()
+            professor.getUsername(),
+            professor.getFirstName(),
+            professor.getLastName(),
+            professor.getFiscalCode().toString(),
+            professor.getUniqueCode().toString()
         );
     }
 

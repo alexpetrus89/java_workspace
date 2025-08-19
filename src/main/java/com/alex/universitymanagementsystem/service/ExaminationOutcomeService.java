@@ -1,14 +1,19 @@
 package com.alex.universitymanagementsystem.service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
-import org.springframework.lang.NonNull;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 
-import com.alex.universitymanagementsystem.domain.ExaminationOutcome;
+import com.alex.universitymanagementsystem.dto.ExaminationOutcomeDto;
+import com.alex.universitymanagementsystem.exception.DataAccessServiceException;
 import com.alex.universitymanagementsystem.exception.ObjectAlreadyExistsException;
 import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
 
+import jakarta.persistence.PersistenceException;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 
 public interface ExaminationOutcomeService {
 
@@ -17,11 +22,11 @@ public interface ExaminationOutcomeService {
      * retrive outcome by id
      * @param id
      * @return ExaminationOutcome
-     * @throws NullPointerException if the id is null
-     * @throws IllegalArgumentException if the id is invalid
+     * @throws ObjectNotFoundException if the outcome does not exist
+     * @throws DataAccessServiceException if there is an error accessing the database.
      */
-    public ExaminationOutcome getOutcomeById(@NonNull Long id)
-        throws NullPointerException, IllegalArgumentException;
+    ExaminationOutcomeDto getOutcomeById(Long id)
+        throws ObjectNotFoundException, DataAccessServiceException;
 
 
     /**
@@ -30,50 +35,50 @@ public interface ExaminationOutcomeService {
      * @param register of the student
      * @param LocalDate date of the examination
      * @return ExaminationOutcome outcome
-     * @throws NullPointerException if any of the parameters is null
-     * @throws IllegalArgumentException if any of the parameters is invalid
-     * @throws UnsupportedOperationException if the register is not unique
+     * @throws IllegalArgumentException if the course name or register is invalid
+     * @throws ObjectNotFoundException if the outcome does not exist
+     * @throws DataAccessServiceException if there is an error accessing the database.
      */
-    public ExaminationOutcome getOutcomeByCourseAndStudent(@NonNull String name, @NonNull String register)
-        throws NullPointerException, IllegalArgumentException, UnsupportedOperationException;
+    ExaminationOutcomeDto getOutcomeByCourseAndStudent(String courseName, String register)
+        throws IllegalArgumentException, ObjectNotFoundException, DataAccessServiceException;
 
 
     /**
      * Get an examination outcomes by student register
      * @param register of the student
      * @return List of examination outcomes
-     * @throws NullPointerException if any of the parameters is null
-     * @throws IllegalArgumentException if the register is invalid or the student does not exist
-     * @throws UnsupportedOperationException if the register is not unique
+     * @throws NoSuchElementException if the student does not exist
+     * @throws DataAccessServiceException if there is an error accessing the database.  
      */
-    public List<ExaminationOutcome> getStudentOutcomes(@NonNull String register)
-        throws NullPointerException, IllegalArgumentException, UnsupportedOperationException;
+    List<ExaminationOutcomeDto> getStudentOutcomes(String register)
+        throws NoSuchElementException, DataAccessServiceException;
 
 
     /**
      * Save an examination outcome
-     * @param outcome examination outcome of the student
+     * @param ExaminationOutcomeDto data transfer object
      * @return ExaminationOutcome outcome
-     * @throws NullPointerException if any of the parameters is null
-     * @throws IllegalArgumentException if any of the parameters is invalid
-     * @throws ObjectAlreadyExistsException if the outcome already exists
+     * @throws NoSuchElementException if the student does not exist
+     * @throws ObjectNotFoundException if the appeal does not exist
+     * @throws ObjectAlreadyExistsException if
+     * @throws DataAccessServiceException if there is an error accessing the database.
      */
-    @Transactional(rollbackOn = {NullPointerException.class, IllegalArgumentException.class, ObjectAlreadyExistsException.class})
-    ExaminationOutcome addNewExaminationOutcome(@NonNull ExaminationOutcome outcome)
-        throws NullPointerException, IllegalArgumentException, ObjectAlreadyExistsException;
+    @Transactional(rollbackOn = {NoSuchElementException.class, ObjectNotFoundException.class, ObjectAlreadyExistsException.class})
+    @Retryable(retryFor = PersistenceException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
+    ExaminationOutcomeDto addNewExaminationOutcome(@Valid ExaminationOutcomeDto dto)
+        throws NoSuchElementException, ObjectNotFoundException, ObjectAlreadyExistsException, DataAccessServiceException;
 
 
     /**
      * Delete an examination outcome
      * @param outcome examination outcome of the student
      * @return ExaminationOutcome outcome
-     * @throws NullPointerException if any of the parameters is null
-     * @throws IllegalArgumentException if any of the parameters is invalid
      * @throws ObjectNotFoundException if the outcome does not exist
-     * @throws UnsupportedOperationException if the outcome is not unique
+     * @throws DataAccessServiceException if there is an error accessing the database.
      */
-    @Transactional
-    ExaminationOutcome deleteExaminationOutcome(@NonNull ExaminationOutcome outcome)
-        throws NullPointerException, IllegalArgumentException, ObjectNotFoundException, UnsupportedOperationException;
+    @Transactional(rollbackOn = ObjectNotFoundException.class)
+    @Retryable(retryFor = PersistenceException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
+    ExaminationOutcomeDto deleteExaminationOutcome(@Valid ExaminationOutcomeDto dto)
+        throws ObjectNotFoundException, DataAccessServiceException;
 
 }

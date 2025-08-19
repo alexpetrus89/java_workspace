@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,18 +18,19 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.alex.universitymanagementsystem.domain.Course;
 import com.alex.universitymanagementsystem.domain.DegreeCourse;
+import com.alex.universitymanagementsystem.domain.Examination;
 import com.alex.universitymanagementsystem.domain.ExaminationAppeal;
 import com.alex.universitymanagementsystem.domain.Professor;
 import com.alex.universitymanagementsystem.domain.Student;
+import com.alex.universitymanagementsystem.domain.StudyPlan;
 import com.alex.universitymanagementsystem.domain.User;
 import com.alex.universitymanagementsystem.domain.immutable.Register;
 import com.alex.universitymanagementsystem.domain.immutable.UniqueCode;
-import com.alex.universitymanagementsystem.dto.ExaminationDto;
 import com.alex.universitymanagementsystem.dto.StudyPlanDto;
 import com.alex.universitymanagementsystem.enum_type.CourseType;
 import com.alex.universitymanagementsystem.enum_type.DegreeType;
 import com.alex.universitymanagementsystem.enum_type.RoleType;
-import com.alex.universitymanagementsystem.mapper.ExaminationMapper;
+import com.alex.universitymanagementsystem.mapper.CourseMapper;
 import com.alex.universitymanagementsystem.mapper.StudyPlanMapper;
 import com.alex.universitymanagementsystem.repository.CourseRepository;
 import com.alex.universitymanagementsystem.repository.DegreeCourseRepository;
@@ -39,6 +42,7 @@ import com.alex.universitymanagementsystem.repository.StudyPlanRepository;
 import com.alex.universitymanagementsystem.repository.UserRepository;
 import com.alex.universitymanagementsystem.utils.Builder;
 import com.alex.universitymanagementsystem.utils.RegistrationForm;
+
 
 @Configuration
 public class UmsDBInitConfig implements Serializable {
@@ -58,6 +62,11 @@ public class UmsDBInitConfig implements Serializable {
     private static final String UC_GENESIO = "wer123er";
     private static final String UC_GIACOMO = "wer321er";
     private static final String UC_GIOELE = "wer111er";
+
+    private static final String DEGREE_COURSE_NOT_FOUND_ERROR = "Degree course not found";
+    private static final String COURSE_NOT_FOUND_ERROR = "Course not found";
+    private static final String PROFESSOR_NOT_FOUND_ERROR = "Professor not found";
+    private static final String STUDENT_NOT_FOUND_ERROR = "Student not found";
 
     private final transient Logger logger =
         org.slf4j.LoggerFactory.getLogger(UmsDBInitConfig.class);
@@ -106,10 +115,10 @@ public class UmsDBInitConfig implements Serializable {
             initializeStudyPlan(studyPlanRepository, degreeCourseRepository, studentRepository);
 
             // examination initializer
-            initializeExaminations(studentRepository, courseRepository, degreeCourseRepository, examinationRepository);
+            initializeExaminations(studentRepository, courseRepository, examinationRepository);
 
             // examination appeal initializer
-            initializeExaminationAppeals(examinationAppealRepository, courseRepository, degreeCourseRepository, studentRepository);
+            initializeExaminationAppeals(examinationAppealRepository, courseRepository, studentRepository);
 
         };
     }
@@ -125,13 +134,16 @@ public class UmsDBInitConfig implements Serializable {
 
     // initialize user
     private void initializeUsers(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+        System.out.println("\n\n\n--- INIZIALIZZA ADMIN ---\n\n\n");
 
         // create user  - 2 admin + 18 students + 9 professors
         Builder builderAdminOne = new Builder();
         builderAdminOne.withUsername("rico@gmail.com");
         builderAdminOne.withPassword("rico");
-        builderAdminOne.withFullname("damiano ruggieri");
+        builderAdminOne.withFirstName("damiano");
+        builderAdminOne.withLastName("ruggieri");
         builderAdminOne.withDob(LocalDate.of(1993, 1, 1));
+        builderAdminOne.withFiscalCode("abc678rde217we56");
         builderAdminOne.withStreet("via della nazione");
         builderAdminOne.withCity("fasano");
         builderAdminOne.withState("italia");
@@ -142,8 +154,10 @@ public class UmsDBInitConfig implements Serializable {
         Builder builderAdminTwo = new Builder();
         builderAdminTwo.withUsername("fido@gmail.com");
         builderAdminTwo.withPassword("fido");
-        builderAdminTwo.withFullname("enrico ruggieri");
+        builderAdminTwo.withFirstName("enrico");
+        builderAdminTwo.withLastName("ruggieri");
         builderAdminTwo.withDob(LocalDate.of(1993, 4, 1));
+        builderAdminTwo.withFiscalCode("abc678rde217we47");
         builderAdminTwo.withStreet("via del calvario");
         builderAdminTwo.withCity("pezze di greco");
         builderAdminTwo.withState("italia");
@@ -179,7 +193,7 @@ public class UmsDBInitConfig implements Serializable {
 
     // INITIALIZE DEGREE COURSE
     private void initializeDegreeCourse(DegreeCourseRepository degreeCourseRepository) {
-
+        System.out.println("\n\n\n--- INIZIALIZZA CORSI DI LAUREA ---\n\n\n");
         // degree courses list
         List<DegreeCourse> degreeCourses = new ArrayList<>();
 
@@ -280,13 +294,15 @@ public class UmsDBInitConfig implements Serializable {
         DegreeCourseRepository degreeCourseRepository,
         PasswordEncoder passwordEncoder
     ) {
-
+        System.out.println("\n\n\n--- INIZIALIZZA STUDENTI ---\n\n\n");
         // 1
         Builder builderStudentOne = new Builder();
         builderStudentOne.withUsername("nino@gmail.com");
         builderStudentOne.withPassword("nino");
-        builderStudentOne.withFullname("bob dylamie");
+        builderStudentOne.withFirstName("bob");
+        builderStudentOne.withLastName("dylamie");
         builderStudentOne.withDob(LocalDate.of(1991, 4, 6));
+        builderStudentOne.withFiscalCode("abc678rde217we12");
         builderStudentOne.withStreet("via delle lamie di olimpia");
         builderStudentOne.withCity("laureto");
         builderStudentOne.withState("italia");
@@ -298,8 +314,10 @@ public class UmsDBInitConfig implements Serializable {
         Builder builderStudentTwo = new Builder();
         builderStudentTwo.withUsername("luca@gmail.com");
         builderStudentTwo.withPassword("luca");
-        builderStudentTwo.withFullname("pelaccio");
+        builderStudentTwo.withFirstName("pelaccio");
+        builderStudentTwo.withLastName("pelaccio");
         builderStudentTwo.withDob(LocalDate.of(1991, 11, 12));
+        builderStudentTwo.withFiscalCode("abc678rde217we71");
         builderStudentTwo.withStreet("via delle lamie di olimpia");
         builderStudentTwo.withCity("laureto");
         builderStudentTwo.withState("italia");
@@ -311,8 +329,10 @@ public class UmsDBInitConfig implements Serializable {
         Builder builderStudentThree = new Builder();
         builderStudentThree.withUsername("ennio@gmail.com");
         builderStudentThree.withPassword("ennio");
-        builderStudentThree.withFullname("ennio");
+        builderStudentThree.withFirstName("ennio");
+        builderStudentThree.withLastName("morricone");
         builderStudentThree.withDob(LocalDate.of(1991, 11, 12));
+        builderStudentThree.withFiscalCode("abc678rde217we43");
         builderStudentThree.withStreet("via delle lamie di olimpia");
         builderStudentThree.withCity("laureto");
         builderStudentThree.withState("italia");
@@ -324,8 +344,10 @@ public class UmsDBInitConfig implements Serializable {
         Builder builderStudentFour = new Builder();
         builderStudentFour.withUsername("gino@gmail.com");
         builderStudentFour.withPassword("gino");
-        builderStudentFour.withFullname("gino");
+        builderStudentFour.withFirstName("gino");
+        builderStudentFour.withLastName("bramieri");
         builderStudentFour.withDob(LocalDate.of(1991, 11, 12));
+        builderStudentFour.withFiscalCode("abc678rde217we34");
         builderStudentFour.withStreet("via delle lamie di olimpia");
         builderStudentFour.withCity("laureto");
         builderStudentFour.withState("italia");
@@ -337,8 +359,10 @@ public class UmsDBInitConfig implements Serializable {
         Builder builderStudentFive = new Builder();
         builderStudentFive.withUsername("pino@gmail.com");
         builderStudentFive.withPassword("pino");
-        builderStudentFive.withFullname("pino");
+        builderStudentFive.withFirstName("pino");
+        builderStudentFive.withLastName("pino");
         builderStudentFive.withDob(LocalDate.of(1991, 11, 12));
+        builderStudentFive.withFiscalCode("abc678rde217we18");
         builderStudentFive.withStreet("via delle lamie di olimpia");
         builderStudentFive.withCity("laureto");
         builderStudentFive.withState("italia");
@@ -350,8 +374,10 @@ public class UmsDBInitConfig implements Serializable {
         Builder builderStudentSix = new Builder();
         builderStudentSix.withUsername("tino@gmail.com");
         builderStudentSix.withPassword("tino");
-        builderStudentSix.withFullname("tino");
+        builderStudentSix.withFirstName("tino");
+        builderStudentSix.withLastName("filipp");
         builderStudentSix.withDob(LocalDate.of(1991, 11, 12));
+        builderStudentSix.withFiscalCode("abc678rde217we19");
         builderStudentSix.withStreet("via delle lamie di olimpia");
         builderStudentSix.withCity("laureto");
         builderStudentSix.withState("italia");
@@ -363,8 +389,10 @@ public class UmsDBInitConfig implements Serializable {
         Builder builderStudentSeven = new Builder();
         builderStudentSeven.withUsername("solo@gmail.com");
         builderStudentSeven.withPassword("tino");
-        builderStudentSeven.withFullname("tino");
+        builderStudentSeven.withFirstName("tino");
+        builderStudentSeven.withLastName("laghezza");
         builderStudentSeven.withDob(LocalDate.of(1991, 11, 12));
+        builderStudentSeven.withFiscalCode("abc678rde217we20");
         builderStudentSeven.withStreet("via delle lamie di olimpia");
         builderStudentSeven.withCity("laureto");
         builderStudentSeven.withState("italia");
@@ -376,8 +404,10 @@ public class UmsDBInitConfig implements Serializable {
         Builder builderStudentEight = new Builder();
         builderStudentEight.withUsername("otto@gmail.com");
         builderStudentEight.withPassword("otto");
-        builderStudentEight.withFullname("otto");
+        builderStudentEight.withFirstName("otto");
+        builderStudentEight.withLastName("von bismarck");
         builderStudentEight.withDob(LocalDate.of(1991, 11, 12));
+        builderStudentEight.withFiscalCode("abc678rde217we21");
         builderStudentEight.withStreet("via delle lamie di olimpia");
         builderStudentEight.withCity("laureto");
         builderStudentEight.withState("italia");
@@ -389,8 +419,10 @@ public class UmsDBInitConfig implements Serializable {
         Builder builderStudentNine = new Builder();
         builderStudentNine.withUsername("raffo@gmail.com");
         builderStudentNine.withPassword("raffo");
-        builderStudentNine.withFullname("raffaele macina leone");
+        builderStudentNine.withFirstName("raffaele");
+        builderStudentNine.withLastName("macina leone");
         builderStudentNine.withDob(LocalDate.of(1991, 11, 12));
+        builderStudentNine.withFiscalCode("abc678rde217we22");
         builderStudentNine.withStreet("via les claypool 71");
         builderStudentNine.withCity("Bari");
         builderStudentNine.withState("italia");
@@ -407,7 +439,9 @@ public class UmsDBInitConfig implements Serializable {
                 builderStudentOne,
                 passwordEncoder,
                 new Register("123456"),
-                degreeCourseRepository.findByName(INGEGNERIA_GESTIONALE)
+                degreeCourseRepository
+                    .findByName(INGEGNERIA_GESTIONALE)
+                    .orElseThrow(() -> new NoSuchElementException(DEGREE_COURSE_NOT_FOUND_ERROR))
             )
         );
 
@@ -417,7 +451,9 @@ public class UmsDBInitConfig implements Serializable {
                 builderStudentTwo,
                 passwordEncoder,
                 new Register("123457"),
-                degreeCourseRepository.findByName(INGEGNERIA_GESTIONALE_MAGISTRALE)
+                degreeCourseRepository
+                    .findByName(INGEGNERIA_GESTIONALE_MAGISTRALE)
+                    .orElseThrow(() -> new NoSuchElementException(DEGREE_COURSE_NOT_FOUND_ERROR))
             )
         );
 
@@ -427,7 +463,9 @@ public class UmsDBInitConfig implements Serializable {
                 builderStudentThree,
                 passwordEncoder,
                 new Register("123458"),
-                degreeCourseRepository.findByName(INGEGNERIA_INFORMATICA)
+                degreeCourseRepository
+                    .findByName(INGEGNERIA_INFORMATICA)
+                    .orElseThrow(() -> new NoSuchElementException(DEGREE_COURSE_NOT_FOUND_ERROR))
             )
         );
 
@@ -437,7 +475,9 @@ public class UmsDBInitConfig implements Serializable {
                 builderStudentFour,
                 passwordEncoder,
                 new Register("123459"),
-                degreeCourseRepository.findByName(INGEGNERIA_INFORMATICA_MAGISTRALE)
+                degreeCourseRepository
+                    .findByName(INGEGNERIA_INFORMATICA_MAGISTRALE)
+                    .orElseThrow(() -> new NoSuchElementException(DEGREE_COURSE_NOT_FOUND_ERROR))
             )
         );
 
@@ -447,7 +487,9 @@ public class UmsDBInitConfig implements Serializable {
                 builderStudentFive,
                 passwordEncoder,
                 new Register("123460"),
-                degreeCourseRepository.findByName(INGEGNERIA_MECCANICA)
+                degreeCourseRepository
+                    .findByName(INGEGNERIA_MECCANICA)
+                    .orElseThrow(() -> new NoSuchElementException(DEGREE_COURSE_NOT_FOUND_ERROR))
             )
         );
 
@@ -457,7 +499,9 @@ public class UmsDBInitConfig implements Serializable {
                 builderStudentSix,
                 passwordEncoder,
                 new Register("123461"),
-                degreeCourseRepository.findByName(INGEGNERIA_MECCANICA_MAGISTRALE)
+                degreeCourseRepository
+                    .findByName(INGEGNERIA_MECCANICA_MAGISTRALE)
+                    .orElseThrow(() -> new NoSuchElementException(DEGREE_COURSE_NOT_FOUND_ERROR))
             )
         );
 
@@ -467,7 +511,9 @@ public class UmsDBInitConfig implements Serializable {
                 builderStudentSeven,
                 passwordEncoder,
                 new Register("123462"),
-                degreeCourseRepository.findByName(INGEGNERIA_ELETTRICA)
+                degreeCourseRepository
+                    .findByName(INGEGNERIA_ELETTRICA)
+                    .orElseThrow(() -> new NoSuchElementException(DEGREE_COURSE_NOT_FOUND_ERROR))
             )
         );
 
@@ -477,7 +523,9 @@ public class UmsDBInitConfig implements Serializable {
                 builderStudentEight,
                 passwordEncoder,
                 new Register("169841"),
-                degreeCourseRepository.findByName(INGEGNERIA_MECCANICA)
+                degreeCourseRepository
+                    .findByName(INGEGNERIA_MECCANICA)
+                    .orElseThrow(() -> new NoSuchElementException(DEGREE_COURSE_NOT_FOUND_ERROR))
             )
         );
 
@@ -487,7 +535,9 @@ public class UmsDBInitConfig implements Serializable {
                 builderStudentNine,
                 passwordEncoder,
                 new Register("555555"),
-                degreeCourseRepository.findByName(INGEGNERIA_GESTIONALE)
+                degreeCourseRepository
+                    .findByName(INGEGNERIA_GESTIONALE)
+                    .orElseThrow(() -> new NoSuchElementException(DEGREE_COURSE_NOT_FOUND_ERROR))
             )
         );
 
@@ -500,7 +550,9 @@ public class UmsDBInitConfig implements Serializable {
         students.stream().forEach(studentRepository::saveAndFlush);
 
         // save students for GESTIONALE degree course
-        DegreeCourse ingGest = degreeCourseRepository.findByName(INGEGNERIA_GESTIONALE);
+        DegreeCourse ingGest = degreeCourseRepository
+            .findByName(INGEGNERIA_GESTIONALE)
+            .orElseThrow(() -> new NoSuchElementException(DEGREE_COURSE_NOT_FOUND_ERROR));
 
         // set students of ING. GESTIONALE in degreeCourse object
         ingGest.setStudents(
@@ -516,7 +568,9 @@ public class UmsDBInitConfig implements Serializable {
 
 
         // save students for GESTIONALE MAGISTRALE degree course
-        DegreeCourse ingGestMag = degreeCourseRepository.findByName(INGEGNERIA_GESTIONALE_MAGISTRALE);
+        DegreeCourse ingGestMag = degreeCourseRepository
+            .findByName(INGEGNERIA_GESTIONALE_MAGISTRALE)
+            .orElseThrow(() -> new NoSuchElementException(DEGREE_COURSE_NOT_FOUND_ERROR));
 
         // set students of ING. GESTIONALE MAGISTRALE in degreeCourse object
         ingGestMag.setStudents(
@@ -532,7 +586,9 @@ public class UmsDBInitConfig implements Serializable {
 
 
         // save students for INFORMATICA degree course
-        DegreeCourse ingInf = degreeCourseRepository.findByName(INGEGNERIA_INFORMATICA);
+        DegreeCourse ingInf = degreeCourseRepository
+            .findByName(INGEGNERIA_INFORMATICA)
+            .orElseThrow(() -> new NoSuchElementException(DEGREE_COURSE_NOT_FOUND_ERROR));
 
         ingInf.setStudents(
             studentRepository
@@ -545,7 +601,9 @@ public class UmsDBInitConfig implements Serializable {
         degreeCourseRepository.saveAndFlush(ingInf);
 
 
-        DegreeCourse ingInfMag = degreeCourseRepository.findByName(INGEGNERIA_INFORMATICA_MAGISTRALE);
+        DegreeCourse ingInfMag = degreeCourseRepository
+            .findByName(INGEGNERIA_INFORMATICA_MAGISTRALE)
+            .orElseThrow(() -> new NoSuchElementException(DEGREE_COURSE_NOT_FOUND_ERROR));
 
         ingInf.setStudents(
             studentRepository
@@ -558,7 +616,9 @@ public class UmsDBInitConfig implements Serializable {
         degreeCourseRepository.saveAndFlush(ingInfMag);
 
 
-        DegreeCourse ingMecc = degreeCourseRepository.findByName(INGEGNERIA_MECCANICA);
+        DegreeCourse ingMecc = degreeCourseRepository
+            .findByName(INGEGNERIA_MECCANICA)
+            .orElseThrow(() -> new NoSuchElementException(DEGREE_COURSE_NOT_FOUND_ERROR));
 
         ingMecc.setStudents(
             studentRepository
@@ -570,7 +630,9 @@ public class UmsDBInitConfig implements Serializable {
 
         degreeCourseRepository.saveAndFlush(ingMecc);
 
-        DegreeCourse ingMeccMag = degreeCourseRepository.findByName(INGEGNERIA_MECCANICA_MAGISTRALE);
+        DegreeCourse ingMeccMag = degreeCourseRepository
+            .findByName(INGEGNERIA_MECCANICA_MAGISTRALE)
+            .orElseThrow(() -> new NoSuchElementException(DEGREE_COURSE_NOT_FOUND_ERROR));
 
         ingMeccMag.setStudents(
             studentRepository
@@ -582,7 +644,9 @@ public class UmsDBInitConfig implements Serializable {
 
         degreeCourseRepository.saveAndFlush(ingMeccMag);
 
-        DegreeCourse ingEle = degreeCourseRepository.findByName(INGEGNERIA_ELETTRICA);
+        DegreeCourse ingEle = degreeCourseRepository
+            .findByName(INGEGNERIA_ELETTRICA)
+            .orElseThrow(() -> new NoSuchElementException(DEGREE_COURSE_NOT_FOUND_ERROR));
 
         ingEle.setStudents(
             studentRepository
@@ -607,12 +671,15 @@ public class UmsDBInitConfig implements Serializable {
 
     // INITIALIZE PROFESSORS
     void initializeProfessors(ProfessorRepository professorRepository, PasswordEncoder passwordEncoder) {
+        System.out.println("\n\n\n--- INIZIALIZZA PROFESSORI ---\n\n\n");
 
         Builder fbProfOne = new Builder();
         fbProfOne.withUsername("professore.giacinto@dominio.it");
         fbProfOne.withPassword("dino");
-        fbProfOne.withFullname("gilles villeneuve");
+        fbProfOne.withFirstName("gilles");
+        fbProfOne.withLastName("villeneuve");
         fbProfOne.withDob(LocalDate.of(1993, 4, 6));
+        fbProfOne.withFiscalCode("abc678rde217we11");
         fbProfOne.withStreet("via di vancouver");
         fbProfOne.withCity("vancouver");
         fbProfOne.withState("canada");
@@ -626,8 +693,7 @@ public class UmsDBInitConfig implements Serializable {
             new Professor(
                 fbProfOne,
                 passwordEncoder,
-                new UniqueCode(UC_GIACINTO),
-                "abc678rde217we56"
+                new UniqueCode(UC_GIACINTO)
             )
         );
 
@@ -636,8 +702,10 @@ public class UmsDBInitConfig implements Serializable {
         Builder fbProfTwo = new Builder();
         fbProfTwo.withUsername("professore.genesio@dominio.it");
         fbProfTwo.withPassword("gene");
-        fbProfTwo.withFullname("tazio nuvolari");
+        fbProfTwo.withFirstName("tazio");
+        fbProfTwo.withLastName("nuvolari");
         fbProfTwo.withDob(LocalDate.of(1968, 4, 6));
+        fbProfTwo.withFiscalCode("abc999rde217we48");
         fbProfTwo.withStreet("via di babel");
         fbProfTwo.withCity("firenze");
         fbProfTwo.withState("italia");
@@ -650,8 +718,7 @@ public class UmsDBInitConfig implements Serializable {
             new Professor(
                 fbProfTwo,
                 passwordEncoder,
-                new UniqueCode(UC_GENESIO),
-                "abc784rde217we56"
+                new UniqueCode(UC_GENESIO)
             )
         );
 
@@ -660,8 +727,10 @@ public class UmsDBInitConfig implements Serializable {
         Builder fbProfThree = new Builder();
         fbProfThree.withUsername("professore.giacomo@dominio.it");
         fbProfThree.withPassword("giaco");
-        fbProfThree.withFullname("giacomo agostini");
+        fbProfThree.withFirstName("giacomo");
+        fbProfThree.withLastName("agostini");
         fbProfThree.withDob(LocalDate.of(1984, 8, 7));
+        fbProfThree.withFiscalCode("abc568rde217we76");
         fbProfThree.withStreet("via di florio");
         fbProfThree.withCity("palermo");
         fbProfThree.withState("italia");
@@ -674,8 +743,7 @@ public class UmsDBInitConfig implements Serializable {
             new Professor(
                 fbProfThree,
                 passwordEncoder,
-                new UniqueCode(UC_GIACOMO),
-                "xxx965rde217we56"
+                new UniqueCode(UC_GIACOMO)
             )
         );
 
@@ -684,8 +752,10 @@ public class UmsDBInitConfig implements Serializable {
         Builder fbProfFour = new Builder();
         fbProfFour.withUsername("professore.gioele@dominio.it");
         fbProfFour.withPassword("gioele");
-        fbProfFour.withFullname("john surtees");
+        fbProfFour.withFirstName("john");
+        fbProfFour.withLastName("surtees");
         fbProfFour.withDob(LocalDate.of(1993, 4, 6));
+        fbProfFour.withFiscalCode("zzz665rde217we56");
         fbProfFour.withStreet("via di vancouver");
         fbProfFour.withCity("vancouver");
         fbProfFour.withState("canada");
@@ -698,8 +768,7 @@ public class UmsDBInitConfig implements Serializable {
             new Professor(
                 fbProfFour,
                 passwordEncoder,
-                new UniqueCode(UC_GIOELE),
-                "zzz665rde217we56"
+                new UniqueCode(UC_GIOELE)
             )
         );
 
@@ -728,22 +797,37 @@ public class UmsDBInitConfig implements Serializable {
         ProfessorRepository professorRepository,
         DegreeCourseRepository degreeCourseRepository
     ) {
-
+        System.out.println("\n\n\n--- INIZIALIZZA CORSI ---\n\n\n");
         // retrieve degreeCourses
-        DegreeCourse ingGest = degreeCourseRepository.findByName(INGEGNERIA_GESTIONALE);
+        DegreeCourse ingGest = degreeCourseRepository
+            .findByName(INGEGNERIA_GESTIONALE)
+            .orElseThrow(() -> new NoSuchElementException(DEGREE_COURSE_NOT_FOUND_ERROR));
 
-        DegreeCourse ingGestMag = degreeCourseRepository.findByName(INGEGNERIA_GESTIONALE_MAGISTRALE);
+        DegreeCourse ingGestMag = degreeCourseRepository
+            .findByName(INGEGNERIA_GESTIONALE_MAGISTRALE)
+            .orElseThrow(() -> new NoSuchElementException(DEGREE_COURSE_NOT_FOUND_ERROR));
 
-        DegreeCourse ingInf = degreeCourseRepository.findByName(INGEGNERIA_INFORMATICA);
+        DegreeCourse ingInf = degreeCourseRepository
+            .findByName(INGEGNERIA_INFORMATICA)
+            .orElseThrow(() -> new NoSuchElementException(DEGREE_COURSE_NOT_FOUND_ERROR));
 
-        DegreeCourse ingInfMag = degreeCourseRepository.findByName(INGEGNERIA_INFORMATICA_MAGISTRALE);
+        DegreeCourse ingInfMag = degreeCourseRepository
+            .findByName(INGEGNERIA_INFORMATICA_MAGISTRALE)
+            .orElseThrow(() -> new NoSuchElementException(DEGREE_COURSE_NOT_FOUND_ERROR));
 
-        DegreeCourse ingMecc = degreeCourseRepository.findByName(INGEGNERIA_MECCANICA);
+        DegreeCourse ingMecc = degreeCourseRepository
+            .findByName(INGEGNERIA_MECCANICA)
+            .orElseThrow(() -> new NoSuchElementException(DEGREE_COURSE_NOT_FOUND_ERROR));
 
-        DegreeCourse ingMeccMag = degreeCourseRepository.findByName(INGEGNERIA_MECCANICA_MAGISTRALE);
+        DegreeCourse ingMeccMag = degreeCourseRepository
+            .findByName(INGEGNERIA_MECCANICA_MAGISTRALE)
+            .orElseThrow(() -> new NoSuchElementException(DEGREE_COURSE_NOT_FOUND_ERROR));
 
-        DegreeCourse ingEle = degreeCourseRepository.findByName(INGEGNERIA_ELETTRICA);
+        DegreeCourse ingEle = degreeCourseRepository
+            .findByName(INGEGNERIA_ELETTRICA)
+            .orElseThrow(() -> new NoSuchElementException(DEGREE_COURSE_NOT_FOUND_ERROR));
 
+        List<DegreeCourse> degreeCourses = Arrays.asList(ingGest,ingGestMag, ingInf, ingInfMag, ingMecc, ingMeccMag, ingEle);
         List<Course> courses = new ArrayList<>();
 
         // create courses
@@ -752,7 +836,9 @@ public class UmsDBInitConfig implements Serializable {
                 "analisi matematica",
                 CourseType.MATEMATICA,
                 12,
-                professorRepository.findByUniqueCode(new UniqueCode(UC_GIACINTO)),
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_GIACINTO))
+                    .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
                 ingGest
             )
         );
@@ -762,7 +848,9 @@ public class UmsDBInitConfig implements Serializable {
                 "analisi matematica",
                 CourseType.MATEMATICA,
                 12,
-                professorRepository.findByUniqueCode(new UniqueCode(UC_GENESIO)),
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_GENESIO))
+                    .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
                 ingInf
             )
         );
@@ -772,7 +860,9 @@ public class UmsDBInitConfig implements Serializable {
                 "analisi matematica",
                 CourseType.MATEMATICA,
                 12,
-                professorRepository.findByUniqueCode(new UniqueCode(UC_GENESIO)),
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_GENESIO))
+                    .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
                 ingMecc
             )
         );
@@ -782,7 +872,9 @@ public class UmsDBInitConfig implements Serializable {
                 "analisi matematica",
                 CourseType.MATEMATICA,
                 12,
-                professorRepository.findByUniqueCode(new UniqueCode(UC_GENESIO)),
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_GENESIO))
+                    .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
                 ingEle
             )
         );
@@ -792,7 +884,9 @@ public class UmsDBInitConfig implements Serializable {
                 "elementi di economia",
                 CourseType.ECONOMIA,
                 6,
-                professorRepository.findByUniqueCode(new UniqueCode(UC_GIACINTO)),
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_GIACINTO))
+                    .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
                 ingGest
             )
         );
@@ -802,7 +896,9 @@ public class UmsDBInitConfig implements Serializable {
                 "elementi di economia",
                 CourseType.ECONOMIA,
                 6,
-                professorRepository.findByUniqueCode(new UniqueCode(UC_GENESIO)),
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_GENESIO))
+                    .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
                 ingInf
             )
         );
@@ -812,7 +908,9 @@ public class UmsDBInitConfig implements Serializable {
                 "elementi di economia",
                 CourseType.ECONOMIA,
                 6,
-                professorRepository.findByUniqueCode(new UniqueCode(UC_GENESIO)),
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_GENESIO))
+                    .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
                 ingMecc
             )
         );
@@ -822,7 +920,9 @@ public class UmsDBInitConfig implements Serializable {
                 "geometria e algebra",
                 CourseType.MATEMATICA,
                 6,
-                professorRepository.findByUniqueCode(new UniqueCode(UC_GIACINTO)),
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_GIACINTO))
+                    .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
                 ingGest
             )
         );
@@ -832,7 +932,9 @@ public class UmsDBInitConfig implements Serializable {
                 "geometria e algebra",
                 CourseType.MATEMATICA,
                 6,
-                professorRepository.findByUniqueCode(new UniqueCode(UC_GIACINTO)),
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_GIACINTO))
+                    .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
                 ingInf
             )
         );
@@ -842,7 +944,9 @@ public class UmsDBInitConfig implements Serializable {
                 "geometria e algebra",
                 CourseType.MATEMATICA,
                 6,
-                professorRepository.findByUniqueCode(new UniqueCode(UC_GIACINTO)),
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_GIACINTO))
+                    .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
                 ingMecc
             )
         );
@@ -852,7 +956,9 @@ public class UmsDBInitConfig implements Serializable {
                 "analisi dei sistemi dinamici",
                 CourseType.MATEMATICA,
                 6,
-                professorRepository.findByUniqueCode(new UniqueCode(UC_GIACINTO)),
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_GIACINTO))
+                    .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
                 ingGestMag
             )
         );
@@ -862,7 +968,9 @@ public class UmsDBInitConfig implements Serializable {
                 "analisi dei sistemi dinamici",
                 CourseType.MATEMATICA,
                 6,
-                professorRepository.findByUniqueCode(new UniqueCode(UC_GIOELE)),
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_GIOELE))
+                    .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
                 ingInfMag
             )
         );
@@ -872,7 +980,9 @@ public class UmsDBInitConfig implements Serializable {
                 "fisica generale",
                 CourseType.FISICA,
                 12,
-                professorRepository.findByUniqueCode(new UniqueCode(UC_GIACOMO)),
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_GIACOMO))
+                    .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
                 ingGest
             )
         );
@@ -882,7 +992,9 @@ public class UmsDBInitConfig implements Serializable {
                 "fisica generale",
                 CourseType.FISICA,
                 12,
-                professorRepository.findByUniqueCode(new UniqueCode(UC_GIACOMO)),
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_GIACOMO))
+                    .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
                 ingInf
             )
         );
@@ -892,7 +1004,9 @@ public class UmsDBInitConfig implements Serializable {
                 "fisica generale",
                 CourseType.FISICA,
                 12,
-                professorRepository.findByUniqueCode(new UniqueCode(UC_GIACOMO)),
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_GIACOMO))
+                    .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
                 ingMecc
             )
         );
@@ -902,7 +1016,9 @@ public class UmsDBInitConfig implements Serializable {
                 "fisica generale",
                 CourseType.FISICA,
                 12,
-                professorRepository.findByUniqueCode(new UniqueCode(UC_GIACOMO)),
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_GIACOMO))
+                    .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
                 ingEle
             )
         );
@@ -912,7 +1028,9 @@ public class UmsDBInitConfig implements Serializable {
                 "fondamenti di informatica",
                 CourseType.INFORMATICA,
                 6,
-                professorRepository.findByUniqueCode(new UniqueCode(UC_GIACINTO)),
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_GIACINTO))
+                    .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
                 ingGest
             )
         );
@@ -922,7 +1040,9 @@ public class UmsDBInitConfig implements Serializable {
                 "fondamenti di informatica",
                 CourseType.INFORMATICA,
                 6,
-                professorRepository.findByUniqueCode(new UniqueCode(UC_GENESIO)),
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_GENESIO))
+                    .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
                 ingInf
             )
         );
@@ -932,7 +1052,9 @@ public class UmsDBInitConfig implements Serializable {
                 "fondamenti di informatica",
                 CourseType.INFORMATICA,
                 6,
-                professorRepository.findByUniqueCode(new UniqueCode(UC_GENESIO)),
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_GENESIO))
+                    .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
                 ingMecc
             )
         );
@@ -942,7 +1064,9 @@ public class UmsDBInitConfig implements Serializable {
                 "fondamenti di informatica",
                 CourseType.INFORMATICA,
                 6,
-                professorRepository.findByUniqueCode(new UniqueCode(UC_GENESIO)),
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_GENESIO))
+                    .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
                 ingEle
             )
         );
@@ -952,7 +1076,9 @@ public class UmsDBInitConfig implements Serializable {
                 "chimica generale",
                 CourseType.CHIMICA,
                 6,
-                professorRepository.findByUniqueCode(new UniqueCode(UC_GIOELE)),
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_GIOELE))
+                    .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
                 ingGest
             )
         );
@@ -962,7 +1088,9 @@ public class UmsDBInitConfig implements Serializable {
                 "chimica generale",
                 CourseType.CHIMICA,
                 6,
-                professorRepository.findByUniqueCode(new UniqueCode(UC_GIOELE)),
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_GIOELE))
+                    .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
                 ingInf
             )
         );
@@ -972,7 +1100,9 @@ public class UmsDBInitConfig implements Serializable {
                 "chimica generale",
                 CourseType.CHIMICA,
                 9,
-                professorRepository.findByUniqueCode(new UniqueCode(UC_GIOELE)),
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_GIOELE))
+                    .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
                 ingMecc
             )
         );
@@ -982,7 +1112,9 @@ public class UmsDBInitConfig implements Serializable {
                 "chimica generale",
                 CourseType.CHIMICA,
                 9,
-                professorRepository.findByUniqueCode(new UniqueCode(UC_GIOELE)),
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_GIOELE))
+                    .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
                 ingEle
             )
         );
@@ -992,7 +1124,9 @@ public class UmsDBInitConfig implements Serializable {
                 "scienza delle costruzioni",
                 CourseType.ING_MECCANICA,
                 6,
-                professorRepository.findByUniqueCode(new UniqueCode(UC_GIACOMO)),
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_GIACOMO))
+                    .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
                 ingGest
             )
         );
@@ -1002,7 +1136,9 @@ public class UmsDBInitConfig implements Serializable {
                 "scienza delle costruzioni",
                 CourseType.ING_MECCANICA,
                 12,
-                professorRepository.findByUniqueCode(new UniqueCode(UC_GIACOMO)),
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_GIACOMO))
+                    .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
                 ingMecc
             )
         );
@@ -1012,7 +1148,9 @@ public class UmsDBInitConfig implements Serializable {
                 "metodi di ottimizzazione",
                 CourseType.MATEMATICA,
                 6,
-                professorRepository.findByUniqueCode(new UniqueCode(UC_GIACINTO)),
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_GIACINTO))
+                    .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
                 ingGest
             )
         );
@@ -1022,7 +1160,9 @@ public class UmsDBInitConfig implements Serializable {
                 "metodi di rappresentazione tecnica",
                 CourseType.DISEGNO,
                 6,
-                professorRepository.findByUniqueCode(new UniqueCode(UC_GIACINTO)),
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_GIACINTO))
+                    .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
                 ingGest
             )
         );
@@ -1032,7 +1172,9 @@ public class UmsDBInitConfig implements Serializable {
                 "elementi di meccanica delle macchine e progettazione meccanica",
                 CourseType.ING_MECCANICA,
                 12,
-                professorRepository.findByUniqueCode(new UniqueCode(UC_GIACOMO)),
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_GIACOMO))
+                    .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
                 ingGest
             )
         );
@@ -1043,7 +1185,8 @@ public class UmsDBInitConfig implements Serializable {
                 CourseType.FISICA,
                 12,
                 professorRepository
-                    .findByUniqueCode(new UniqueCode(UC_GIACOMO)),
+                    .findByUniqueCode(new UniqueCode(UC_GIACOMO))
+                    .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
                 ingGest
             )
         );
@@ -1054,7 +1197,8 @@ public class UmsDBInitConfig implements Serializable {
                 CourseType.ECONOMIA,
                 6,
                 professorRepository
-                    .findByUniqueCode(new UniqueCode(UC_GIACOMO)),
+                    .findByUniqueCode(new UniqueCode(UC_GIACOMO))
+                    .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
                 ingGest
             )
         );
@@ -1064,7 +1208,9 @@ public class UmsDBInitConfig implements Serializable {
                 "meccanica dei fluidi",
                 CourseType.IDRAULICA,
                 6,
-                professorRepository.findByUniqueCode(new UniqueCode(UC_GIOELE)),
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_GIOELE))
+                    .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
                 ingGest
             )
         );
@@ -1074,7 +1220,9 @@ public class UmsDBInitConfig implements Serializable {
                 "principi di ingegneria elettrica",
                 CourseType.ING_ELETTRICA,
                 6,
-                professorRepository.findByUniqueCode(new UniqueCode(UC_GIACOMO)),
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_GIACOMO))
+                    .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
                 ingGest
             )
         );
@@ -1085,7 +1233,8 @@ public class UmsDBInitConfig implements Serializable {
                 CourseType.ING_MECCANICA,
                 12,
                 professorRepository
-                    .findByUniqueCode(new UniqueCode(UC_GIACOMO)),
+                    .findByUniqueCode(new UniqueCode(UC_GIACOMO))
+                    .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
                 ingGest
             )
         );
@@ -1095,7 +1244,9 @@ public class UmsDBInitConfig implements Serializable {
                 "calcolo numerico",
                 CourseType.MATEMATICA,
                 6,
-                professorRepository.findByUniqueCode(new UniqueCode(UC_GIACINTO)),
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_GIACINTO))
+                    .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
                 ingGest
             )
         );
@@ -1105,7 +1256,9 @@ public class UmsDBInitConfig implements Serializable {
                 "gestione dei progetti",
                 CourseType.ING_GESTIONALE,
                 9,
-                professorRepository.findByUniqueCode(new UniqueCode(UC_GIACINTO)),
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_GIACINTO))
+                    .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
                 ingGest
             )
         );
@@ -1115,7 +1268,9 @@ public class UmsDBInitConfig implements Serializable {
                 "impianti industriali",
                 CourseType.ING_MECCANICA,
                 9,
-                professorRepository.findByUniqueCode(new UniqueCode(UC_GIACOMO)),
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_GIACOMO))
+                    .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
                 ingGest
             )
         );
@@ -1125,7 +1280,9 @@ public class UmsDBInitConfig implements Serializable {
                 "inglese",
                 CourseType.LINGUA_STRANIERA,
                 3,
-                professorRepository.findByUniqueCode(new UniqueCode(UC_GIOELE)),
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_GIOELE))
+                    .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
                 ingGest
             )
         );
@@ -1135,7 +1292,9 @@ public class UmsDBInitConfig implements Serializable {
                 "progettazione dei processi produttivi e qualità dei processi produttivi",
                 CourseType.ING_GESTIONALE,
                 12,
-                professorRepository.findByUniqueCode(new UniqueCode(UC_GENESIO)),
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_GENESIO))
+                    .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
                 ingGest
             )
         );
@@ -1145,7 +1304,9 @@ public class UmsDBInitConfig implements Serializable {
                 "sicurezza degli impianti industriali",
                 CourseType.ING_GESTIONALE,
                 6,
-                professorRepository.findByUniqueCode(new UniqueCode(UC_GIACINTO)),
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_GIACINTO))
+                    .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
                 ingGest
             )
         );
@@ -1155,7 +1316,9 @@ public class UmsDBInitConfig implements Serializable {
                 "materiali innovativi per l'ingegneria elettrica",
                 CourseType.ING_ELETTRICA,
                 6,
-                professorRepository.findByUniqueCode(new UniqueCode(UC_GIACINTO)),
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_GIACINTO))
+                    .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
                 ingGest
             )
         );
@@ -1165,7 +1328,9 @@ public class UmsDBInitConfig implements Serializable {
                 "tirocinio",
                 CourseType.ING_GESTIONALE,
                 6,
-                professorRepository.findByUniqueCode(new UniqueCode(UC_GIOELE)),
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_GIOELE))
+                    .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
                 ingGest
             )
         );
@@ -1175,7 +1340,9 @@ public class UmsDBInitConfig implements Serializable {
                 "prova finale",
                 CourseType.ING_GESTIONALE,
                 3,
-                professorRepository.findByUniqueCode(new UniqueCode(UC_GIACINTO)),
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_GIACINTO))
+                    .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
                 ingGest
             )
         );
@@ -1185,7 +1352,9 @@ public class UmsDBInitConfig implements Serializable {
                 "sistemi informativi",
                 CourseType.ING_INFORMATICA,
                 12,
-                professorRepository.findByUniqueCode(new UniqueCode(UC_GENESIO)),
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_GENESIO))
+                    .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
                 ingGestMag
             )
         );
@@ -1195,7 +1364,9 @@ public class UmsDBInitConfig implements Serializable {
                 "sistemi informativi",
                 CourseType.ING_INFORMATICA,
                 12,
-                professorRepository.findByUniqueCode(new UniqueCode(UC_GENESIO)),
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_GENESIO))
+                    .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
                 ingInfMag
             )
         );
@@ -1205,7 +1376,9 @@ public class UmsDBInitConfig implements Serializable {
                 "big data analytics",
                 CourseType.ING_INFORMATICA,
                 6,
-                professorRepository.findByUniqueCode(new UniqueCode(UC_GIACINTO)),
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_GIACINTO))
+                    .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
                 ingGestMag
             )
         );
@@ -1215,7 +1388,9 @@ public class UmsDBInitConfig implements Serializable {
                 "internet of things",
                 CourseType.ING_INFORMATICA,
                 6,
-                professorRepository.findByUniqueCode(new UniqueCode(UC_GIOELE)),
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_GIOELE))
+                    .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
                 ingGestMag
             )
         );
@@ -1225,7 +1400,9 @@ public class UmsDBInitConfig implements Serializable {
                 "internet of things",
                 CourseType.ING_INFORMATICA,
                 6,
-                professorRepository.findByUniqueCode(new UniqueCode(UC_GIOELE)),
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_GIOELE))
+                    .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
                 ingInfMag
             )
         );
@@ -1235,7 +1412,9 @@ public class UmsDBInitConfig implements Serializable {
                 "fondamenti di cybersecurity",
                 CourseType.ING_INFORMATICA,
                 6,
-                professorRepository.findByUniqueCode(new UniqueCode(UC_GIOELE)),
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_GIOELE))
+                    .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
                 ingGestMag
             )
         );
@@ -1245,7 +1424,9 @@ public class UmsDBInitConfig implements Serializable {
                 "basi di dati",
                 CourseType.ING_INFORMATICA,
                 6,
-                professorRepository.findByUniqueCode(new UniqueCode(UC_GIACINTO)),
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_GIACINTO))
+                    .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
                 ingGestMag
             )
         );
@@ -1255,7 +1436,9 @@ public class UmsDBInitConfig implements Serializable {
                 "basi di dati",
                 CourseType.ING_INFORMATICA,
                 6,
-                professorRepository.findByUniqueCode(new UniqueCode(UC_GIACINTO)),
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_GIACINTO))
+                    .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
                 ingInfMag
             )
         );
@@ -1265,7 +1448,9 @@ public class UmsDBInitConfig implements Serializable {
                 "produzione avanzata nella fabbrica digitale",
                 CourseType.ING_MECCANICA,
                 6,
-                professorRepository.findByUniqueCode(new UniqueCode(UC_GENESIO)),
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_GENESIO))
+                    .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
                 ingGestMag
             )
         );
@@ -1275,7 +1460,9 @@ public class UmsDBInitConfig implements Serializable {
                 "analisi dei sistemi dinamici",
                 CourseType.MATEMATICA,
                 6,
-                professorRepository.findByUniqueCode(new UniqueCode(UC_GENESIO)),
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_GENESIO))
+                    .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
                 ingMeccMag
             )
         );
@@ -1285,7 +1472,9 @@ public class UmsDBInitConfig implements Serializable {
                 "algoritmi e strutture dati in java",
                 CourseType.ING_INFORMATICA,
                 6,
-                professorRepository.findByUniqueCode(new UniqueCode(UC_GENESIO)),
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_GENESIO))
+                    .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
                 ingInf
             )
         );
@@ -1295,7 +1484,9 @@ public class UmsDBInitConfig implements Serializable {
                 "fondamenti di telecomunicazioni",
                 CourseType.ING_INFORMATICA,
                 6,
-                professorRepository.findByUniqueCode(new UniqueCode(UC_GIACOMO)),
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_GIACOMO))
+                    .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
                 ingInf
             )
         );
@@ -1305,7 +1496,9 @@ public class UmsDBInitConfig implements Serializable {
                 "fondamenti di elettronica",
                 CourseType.ING_INFORMATICA,
                 6,
-                professorRepository.findByUniqueCode(new UniqueCode(UC_GIACOMO)),
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_GIACOMO))
+                    .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
                 ingInf
             )
         );
@@ -1315,7 +1508,9 @@ public class UmsDBInitConfig implements Serializable {
                 "compilatori",
                 CourseType.ING_INFORMATICA,
                 12,
-                professorRepository.findByUniqueCode(new UniqueCode(UC_GIACOMO)),
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_GIACOMO))
+                    .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
                 ingInfMag
             )
         );
@@ -1325,7 +1520,9 @@ public class UmsDBInitConfig implements Serializable {
                 "big data",
                 CourseType.ING_INFORMATICA,
                 6,
-                professorRepository.findByUniqueCode(new UniqueCode(UC_GIOELE)),
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_GIOELE))
+                    .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
                 ingInfMag
             )
         );
@@ -1335,7 +1532,9 @@ public class UmsDBInitConfig implements Serializable {
                 "impianti meccanici",
                 CourseType.ING_MECCANICA,
                 3,
-                professorRepository.findByUniqueCode(new UniqueCode(UC_GENESIO)),
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_GENESIO))
+                    .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
                 ingMecc
             )
         );
@@ -1345,7 +1544,9 @@ public class UmsDBInitConfig implements Serializable {
                 "energetica e macchine a fluido",
                 CourseType.ING_MECCANICA,
                 6,
-                professorRepository.findByUniqueCode(new UniqueCode(UC_GIACINTO)),
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_GIACINTO))
+                    .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
                 ingMecc
             )
         );
@@ -1355,7 +1556,9 @@ public class UmsDBInitConfig implements Serializable {
                 "misure meccaniche e termiche",
                 CourseType.ING_MECCANICA,
                 12,
-                professorRepository.findByUniqueCode(new UniqueCode(UC_GIACINTO)),
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_GIACINTO))
+                    .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
                 ingMecc
             )
         );
@@ -1365,7 +1568,9 @@ public class UmsDBInitConfig implements Serializable {
                 "turbomacchine",
                 CourseType.ING_MECCANICA,
                 12,
-                professorRepository.findByUniqueCode(new UniqueCode(UC_GIACINTO)),
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_GIACINTO))
+                    .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
                 ingMeccMag
             )
         );
@@ -1375,7 +1580,9 @@ public class UmsDBInitConfig implements Serializable {
                 "gasdinamica e fluidodinamica",
                 CourseType.ING_MECCANICA,
                 12,
-                professorRepository.findByUniqueCode(new UniqueCode(UC_GIACINTO)),
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_GIACINTO))
+                    .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
                 ingMeccMag
             )
         );
@@ -1385,7 +1592,9 @@ public class UmsDBInitConfig implements Serializable {
                 "macchine elettriche",
                 CourseType.ING_ELETTRICA,
                 12,
-                professorRepository.findByUniqueCode(new UniqueCode(UC_GIACINTO)),
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_GIACINTO))
+                    .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
                 ingEle
             )
         );
@@ -1395,7 +1604,9 @@ public class UmsDBInitConfig implements Serializable {
                 "elettrica di potenza",
                 CourseType.ING_ELETTRICA,
                 12,
-                professorRepository.findByUniqueCode(new UniqueCode(UC_GIOELE)),
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_GIOELE))
+                    .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
                 ingEle
             )
         );
@@ -1405,33 +1616,29 @@ public class UmsDBInitConfig implements Serializable {
                 "impianti elettrici civili e industriali",
                 CourseType.ING_MECCANICA,
                 12,
-                professorRepository.findByUniqueCode(new UniqueCode(UC_GIOELE)),
+                professorRepository
+                    .findByUniqueCode(new UniqueCode(UC_GIOELE))
+                    .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
                 ingEle
             )
         );
 
 
-         // save courses
+        // save courses
         courses.forEach(courseRepository::saveAndFlush);
 
         // associate the respective courses to each degree course
-        courseRepository
-            .findAll()
+        courses
             .stream()
-            .forEach(course -> Arrays.asList(ingGest,ingGestMag, ingInf, ingInfMag, ingMecc, ingMeccMag, ingEle)
+            .forEach(course -> degreeCourses
                 .stream()
                 .filter(degreeCourse -> degreeCourse.equals(course.getDegreeCourse()))
                 .forEach(degreeCourse -> degreeCourse.addCourse(course))
             );
 
 
-        // set courses in degreeCourse object
-        degreeCourseRepository.saveAndFlush(ingGest);
-        degreeCourseRepository.saveAndFlush(ingGestMag);
-        degreeCourseRepository.saveAndFlush(ingInf);
-        degreeCourseRepository.saveAndFlush(ingInfMag);
-        degreeCourseRepository.saveAndFlush(ingMecc);
-        degreeCourseRepository.saveAndFlush(ingMeccMag);
+        // save updated degree courses
+        degreeCourses.forEach(degreeCourseRepository::saveAndFlush);
 
     }
 
@@ -1448,43 +1655,57 @@ public class UmsDBInitConfig implements Serializable {
     private void initializeExaminations(
         StudentRepository studentRepository,
         CourseRepository courseRepository,
-        DegreeCourseRepository degreeCourseRepository,
         ExaminationRepository examinationRepository
     ) {
 
+        System.out.println("\n\n\n--- INIZIALIZZA ESAMI ---\n\n\n");
+
         // Retrieve existing Student entity from the database
-        Student nino = studentRepository.findByRegister(new Register("123456"));
-        Student raffo = studentRepository.findByRegister(new Register("555555"));
-        Student luca = studentRepository.findByRegister(new Register("123457"));
+        Student nino = studentRepository
+            .findByRegister(new Register("123456"))
+            .orElseThrow(() -> new NoSuchElementException(STUDENT_NOT_FOUND_ERROR));
+        Student raffo = studentRepository
+            .findByRegister(new Register("555555"))
+            .orElseThrow(() -> new NoSuchElementException(STUDENT_NOT_FOUND_ERROR));;
+        Student luca = studentRepository
+            .findByRegister(new Register("123457"))
+            .orElseThrow(() -> new NoSuchElementException(STUDENT_NOT_FOUND_ERROR));;
 
 
         // Retrieve existing Course entity from the database
         Course analisiMatematica = courseRepository
-            .findByNameAndDegreeCourse("analisi matematica", degreeCourseRepository.findByName(INGEGNERIA_GESTIONALE));
+            .findByNameAndDegreeCourseName("analisi matematica", INGEGNERIA_GESTIONALE)
+            .orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND_ERROR));
 
         Course geometria = courseRepository
-            .findByNameAndDegreeCourse("geometria e algebra", degreeCourseRepository.findByName(INGEGNERIA_GESTIONALE));
+            .findByNameAndDegreeCourseName("geometria e algebra", INGEGNERIA_GESTIONALE)
+            .orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND_ERROR));
 
         Course scienzaCostr = courseRepository
-            .findByNameAndDegreeCourse("scienza delle costruzioni", degreeCourseRepository.findByName(INGEGNERIA_GESTIONALE));
+            .findByNameAndDegreeCourseName("scienza delle costruzioni", INGEGNERIA_GESTIONALE)
+            .orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND_ERROR));
 
         Course impInd = courseRepository
-            .findByNameAndDegreeCourse("impianti industriali", degreeCourseRepository.findByName(INGEGNERIA_GESTIONALE));
+            .findByNameAndDegreeCourseName("impianti industriali", INGEGNERIA_GESTIONALE)
+            .orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND_ERROR));
 
         Course metodiOttimizzazione = courseRepository
-            .findByNameAndDegreeCourse("metodi di ottimizzazione", degreeCourseRepository.findByName(INGEGNERIA_GESTIONALE));
+            .findByNameAndDegreeCourseName("metodi di ottimizzazione", INGEGNERIA_GESTIONALE)
+            .orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND_ERROR));
 
         Course anSisDin = courseRepository
-            .findByNameAndDegreeCourse("analisi dei sistemi dinamici", degreeCourseRepository.findByName(INGEGNERIA_GESTIONALE_MAGISTRALE));
+            .findByNameAndDegreeCourseName("analisi dei sistemi dinamici", INGEGNERIA_GESTIONALE_MAGISTRALE)
+            .orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND_ERROR));
 
         Course basiDiDati = courseRepository
-            .findByNameAndDegreeCourse("basi di dati", degreeCourseRepository.findByName(INGEGNERIA_GESTIONALE_MAGISTRALE));
+            .findByNameAndDegreeCourseName("basi di dati", INGEGNERIA_GESTIONALE_MAGISTRALE)
+            .orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND_ERROR));
 
-        List<ExaminationDto> examinations = new ArrayList<>();
+        List<Examination> examinations = new ArrayList<>();
 
         // create examinations
         examinations.add(
-            new ExaminationDto(
+            new Examination(
                 analisiMatematica,
                 nino,
                 30,
@@ -1494,7 +1715,7 @@ public class UmsDBInitConfig implements Serializable {
         );
 
         examinations.add(
-            new ExaminationDto(
+            new Examination(
                 geometria,
                 nino,
                 30,
@@ -1504,7 +1725,7 @@ public class UmsDBInitConfig implements Serializable {
         );
 
         examinations.add(
-            new ExaminationDto(
+            new Examination(
                 scienzaCostr,
                 nino,
                 18,
@@ -1514,7 +1735,7 @@ public class UmsDBInitConfig implements Serializable {
         );
 
         examinations.add(
-            new ExaminationDto(
+            new Examination(
                 impInd,
                 nino,
                 24,
@@ -1524,7 +1745,7 @@ public class UmsDBInitConfig implements Serializable {
         );
 
         examinations.add(
-            new ExaminationDto(
+            new Examination(
                 metodiOttimizzazione,
                 nino,
                 27,
@@ -1534,7 +1755,7 @@ public class UmsDBInitConfig implements Serializable {
         );
 
         examinations.add(
-            new ExaminationDto(
+            new Examination(
                 analisiMatematica,
                 raffo,
                 30,
@@ -1544,7 +1765,7 @@ public class UmsDBInitConfig implements Serializable {
         );
 
         examinations.add(
-            new ExaminationDto(
+            new Examination(
                 geometria,
                 raffo,
                 30,
@@ -1554,7 +1775,7 @@ public class UmsDBInitConfig implements Serializable {
         );
 
         examinations.add(
-            new ExaminationDto(
+            new Examination(
                 scienzaCostr,
                 raffo,
                 30,
@@ -1564,7 +1785,7 @@ public class UmsDBInitConfig implements Serializable {
         );
 
         examinations.add(
-            new ExaminationDto(
+            new Examination(
                 impInd,
                 raffo,
                 30,
@@ -1574,7 +1795,7 @@ public class UmsDBInitConfig implements Serializable {
         );
 
         examinations.add(
-            new ExaminationDto(
+            new Examination(
                 metodiOttimizzazione,
                 raffo,
                 21,
@@ -1584,7 +1805,7 @@ public class UmsDBInitConfig implements Serializable {
         );
 
         examinations.add(
-            new ExaminationDto(
+            new Examination(
                 anSisDin,
                 luca,
                 28,
@@ -1594,7 +1815,7 @@ public class UmsDBInitConfig implements Serializable {
         );
 
         examinations.add(
-            new ExaminationDto(
+            new Examination(
                 basiDiDati,
                 luca,
                 25,
@@ -1609,7 +1830,6 @@ public class UmsDBInitConfig implements Serializable {
         // save examination
         examinations
             .stream()
-            .map(ExaminationMapper::mapToExamination)
             .forEach(examination -> {
                 try {
                     examinationRepository.saveAndFlush(examination);
@@ -1628,33 +1848,54 @@ public class UmsDBInitConfig implements Serializable {
         StudentRepository studentRepository
     ) {
 
-        DegreeCourse ingGest = degreeCourseRepository.findByName(INGEGNERIA_GESTIONALE);
+        DegreeCourse ingGest = degreeCourseRepository
+            .findByName(INGEGNERIA_GESTIONALE)
+            .orElseThrow(() -> new NoSuchElementException(DEGREE_COURSE_NOT_FOUND_ERROR));
 
-        DegreeCourse ingGestMag = degreeCourseRepository.findByName(INGEGNERIA_GESTIONALE_MAGISTRALE);
 
-        List<StudyPlanDto> studyPlans = new ArrayList<>();
+        DegreeCourse ingGestMag = degreeCourseRepository
+            .findByName(INGEGNERIA_GESTIONALE_MAGISTRALE)
+            .orElseThrow(() -> new NoSuchElementException(DEGREE_COURSE_NOT_FOUND_ERROR));
+
+
+        List<StudyPlan> studyPlans = new ArrayList<>();
 
         studyPlans.add(
-            new StudyPlanDto(
-                studentRepository.findByRegister(new Register("123456")),
+            new StudyPlan(
+                studentRepository
+                    .findByRegister(new Register("123456"))
+                    .orElseThrow(() -> new NoSuchElementException(STUDENT_NOT_FOUND_ERROR)),
                 "ORD509",
-                new HashSet<>(ingGest.getCourses())
+                new HashSet<>(ingGest.getCourses()
+                    .stream()
+                    .collect(Collectors.toSet())
+                )
             )
         );
 
         studyPlans.add(
-            new StudyPlanDto(
-                studentRepository.findByRegister(new Register("123457")),
+            new StudyPlan(
+                studentRepository
+                    .findByRegister(new Register("123457"))
+                    .orElseThrow(() -> new NoSuchElementException(STUDENT_NOT_FOUND_ERROR)),
                 "ORD270",
-                new HashSet<>(ingGestMag.getCourses())
+                new HashSet<>(ingGestMag.getCourses()
+                    .stream()
+                    .collect(Collectors.toSet())
+                )
             )
         );
 
         studyPlans.add(
-            new StudyPlanDto(
-                studentRepository.findByRegister(new Register("555555")),
+            new StudyPlan(
+                studentRepository
+                    .findByRegister(new Register("555555"))
+                    .orElseThrow(() -> new NoSuchElementException(STUDENT_NOT_FOUND_ERROR)),
                 "ORD509",
-                new HashSet<>(ingGest.getCourses())
+                new HashSet<>(ingGest.getCourses()
+                    .stream()
+                    .collect(Collectors.toSet())
+                )
             )
         );
 
@@ -1665,7 +1906,6 @@ public class UmsDBInitConfig implements Serializable {
         // save students
         studyPlans
             .stream()
-            .map(StudyPlanMapper::mapToStudyPlan)
             .forEach(studyPlanRepository::saveAndFlush);
 
     }
@@ -1683,39 +1923,48 @@ public class UmsDBInitConfig implements Serializable {
     private void initializeExaminationAppeals(
         ExaminationAppealRepository examinationAppealRepository,
         CourseRepository courseRepository,
-        DegreeCourseRepository degreeCourseRepository,
         StudentRepository studentRepository
     ) {
 
         Course analisiMat = courseRepository
-            .findByNameAndDegreeCourse("analisi matematica", degreeCourseRepository.findByName(INGEGNERIA_GESTIONALE));
+            .findByNameAndDegreeCourseName("analisi matematica", INGEGNERIA_GESTIONALE)
+            .orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND_ERROR));
 
         Course geometria = courseRepository
-            .findByNameAndDegreeCourse("geometria e algebra", degreeCourseRepository.findByName(INGEGNERIA_GESTIONALE));
+            .findByNameAndDegreeCourseName("geometria e algebra", INGEGNERIA_GESTIONALE)
+            .orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND_ERROR));
 
         Course fisicaGen = courseRepository
-            .findByNameAndDegreeCourse("fisica generale", degreeCourseRepository.findByName(INGEGNERIA_GESTIONALE));
+            .findByNameAndDegreeCourseName("fisica generale", INGEGNERIA_GESTIONALE)
+            .orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND_ERROR));
 
         Course informatica = courseRepository
-            .findByNameAndDegreeCourse("fondamenti di informatica", degreeCourseRepository.findByName(INGEGNERIA_GESTIONALE));
+            .findByNameAndDegreeCourseName("fondamenti di informatica", INGEGNERIA_GESTIONALE)
+            .orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND_ERROR));
 
         Course gp = courseRepository
-            .findByNameAndDegreeCourse("gestione dei progetti", degreeCourseRepository.findByName(INGEGNERIA_GESTIONALE));
+            .findByNameAndDegreeCourseName("gestione dei progetti", INGEGNERIA_GESTIONALE)
+            .orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND_ERROR));
 
         Course scienzaDelleCostr = courseRepository
-            .findByNameAndDegreeCourse("scienza delle costruzioni", degreeCourseRepository.findByName(INGEGNERIA_GESTIONALE));
+            .findByNameAndDegreeCourseName("scienza delle costruzioni", INGEGNERIA_GESTIONALE)
+            .orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND_ERROR));
 
         Course chimicaGen = courseRepository
-            .findByNameAndDegreeCourse("chimica generale", degreeCourseRepository.findByName(INGEGNERIA_GESTIONALE));
+            .findByNameAndDegreeCourseName("chimica generale", INGEGNERIA_GESTIONALE)
+            .orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND_ERROR));
 
         Course calcoloNum = courseRepository
-            .findByNameAndDegreeCourse("calcolo numerico", degreeCourseRepository.findByName(INGEGNERIA_GESTIONALE));
+            .findByNameAndDegreeCourseName("calcolo numerico", INGEGNERIA_GESTIONALE)
+            .orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND_ERROR));
 
         Course economia = courseRepository
-            .findByNameAndDegreeCourse("elementi di economia", degreeCourseRepository.findByName(INGEGNERIA_GESTIONALE));
+            .findByNameAndDegreeCourseName("elementi di economia", INGEGNERIA_GESTIONALE)
+            .orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND_ERROR));
 
         Course sicurezza = courseRepository
-            .findByNameAndDegreeCourse("sicurezza degli impianti industriali", degreeCourseRepository.findByName(INGEGNERIA_GESTIONALE));
+            .findByNameAndDegreeCourseName("sicurezza degli impianti industriali", INGEGNERIA_GESTIONALE)
+            .orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND_ERROR));
 
         List<ExaminationAppeal> examinationAppeals = new ArrayList<>();
 
@@ -1784,23 +2033,27 @@ public class UmsDBInitConfig implements Serializable {
         );
 
         // retrieve students
-        Student nino = studentRepository.findByRegister(new Register("123456"));
-        Student raffo = studentRepository.findByRegister(new Register("555555"));
+        Student nino = studentRepository
+            .findByRegister(new Register("123456"))
+            .orElseThrow(() -> new NoSuchElementException(STUDENT_NOT_FOUND_ERROR));
+        Student raffo = studentRepository
+            .findByRegister(new Register("555555"))
+            .orElseThrow(() -> new NoSuchElementException(STUDENT_NOT_FOUND_ERROR));
 
         // add students
         ExaminationAppeal gpAppeal = new ExaminationAppeal(gp, "crm, pert", LocalDate.of(2025, 04, 30));
-        gpAppeal.addStudent(nino.getRegister());
-        gpAppeal.addStudent(raffo.getRegister());
+        gpAppeal.addRegister(nino.getRegister());
+        gpAppeal.addRegister(raffo.getRegister());
         examinationAppeals.add(gpAppeal);
 
         ExaminationAppeal infAppeal = new ExaminationAppeal(informatica, "programmazione", LocalDate.of(2025, 10, 19));
-        infAppeal.addStudent(nino.getRegister());
-        infAppeal.addStudent(raffo.getRegister());
+        infAppeal.addRegister(nino.getRegister());
+        infAppeal.addRegister(raffo.getRegister());
         examinationAppeals.add(infAppeal);
 
         ExaminationAppeal sicurezzaAppeal = new ExaminationAppeal(sicurezza, "sicurezza degli impianti industriali", LocalDate.of(2025, 05, 07));
-        sicurezzaAppeal.addStudent(nino.getRegister());
-        sicurezzaAppeal.addStudent(raffo.getRegister());
+        sicurezzaAppeal.addRegister(nino.getRegister());
+        sicurezzaAppeal.addRegister(raffo.getRegister());
         examinationAppeals.add(sicurezzaAppeal);
 
         if(examinationAppeals.isEmpty())

@@ -3,7 +3,6 @@ package com.alex.universitymanagementsystem.domain;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Objects;
-import java.util.UUID;
 
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -39,14 +38,8 @@ public class Examination implements Serializable {
     // default constructor
     public Examination() {}
 
-    public Examination(
-        Course course,
-        Student student,
-        int grade,
-        boolean withHonors,
-        LocalDate date
-    ) {
-        this.id = new ExaminationId(UUID.randomUUID());
+    public Examination(Course course, Student student, int grade, boolean withHonors, LocalDate date) {
+        this.id = ExaminationId.newId();
         this.course = course;
         this.student = student;
         this.grade = grade;
@@ -141,20 +134,15 @@ public class Examination implements Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, course, student, grade, withHonors, date);
+        return Objects.hash(id);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null) return false;
-        if (getClass() != obj.getClass()) return false;
-        Examination other = (Examination) obj;
-        return Objects.equals(course, other.course) &&
-            Objects.equals(student, other.student) &&
-            grade == other.grade &&
-            withHonors == other.withHonors &&
-            Objects.equals(date, other.date);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Examination)) return false;
+        Examination other = (Examination) o;
+        return Objects.equals(id, other.id);
     }
 
 

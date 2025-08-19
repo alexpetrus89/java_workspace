@@ -13,12 +13,9 @@ $('#degreeCourseOfNewCourse').on('change', function() {
 });
 
 
-// Nascondi il campo degreeCourseOfOldCourse
-$('#degreeCourseOfOldCourse').hide();
-
-
-// Funzione per aggiornare i corsi disponibili in base al corso di laurea selezionato
-// e per gestire la richiesta AJAX.
+// Quando avviene l'evento "selezione degree course"questa funzione
+// aggiorna i corsi disponibili in base al corso di laurea selezionato
+// ricavandoli mediante richiesta AJAX.
 function updateCourses() {
     const degreeCourseName = $('#degreeCourseOfNewCourse').val();
 
@@ -37,7 +34,7 @@ function updateCourses() {
                 console.log(jsonData);
                 // Assicurati che jsonData sia un oggetto JSON con una proprietà "degreeCourseName"
                 if (!jsonData.degreeCourseName)
-                    throw new Error('La risposta non è un oggetto JSON valido.');
+                    throw new Error('Response is not a valid JSON object.');
                 // Svuota la select
                 $('#courseToAdd').empty();
                 // Aggiungi un'opzione vuota all'inizio
@@ -50,16 +47,20 @@ function updateCourses() {
                     $('#courseToAdd').append('<option value="' + courseName + '">' + courseName + '</option>');
                 });
             } catch (e) {
-                console.error('Errore durante il parsing della risposta JSON:', e);
+                console.error('Error parsing JSON response:', e);
             }
         },
         // Funzione eseguita in caso di errore della richiesta AJAX.
         error: function(xhr, status, error) {
-            console.error('Errore nella richiesta AJAX:', error);
+            console.log("Error: " + error + " - Status: " + status + " - Response: " + xhr.responseText);
         }
     });
     // end of ajax request
 }
+
+
+// Nascondi il campo degreeCourseOfOldCourse
+$('#degreeCourseOfOldCourse').hide();
 
 
 

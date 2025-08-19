@@ -1,102 +1,105 @@
 package com.alex.universitymanagementsystem.service.impl;
 
-import java.time.LocalDate;
-import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.dao.DataAccessException;
-import org.springframework.lang.NonNull;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
+import com.alex.universitymanagementsystem.domain.Address;
+import com.alex.universitymanagementsystem.domain.Course;
 import com.alex.universitymanagementsystem.domain.DegreeCourse;
 import com.alex.universitymanagementsystem.domain.Student;
+import com.alex.universitymanagementsystem.domain.StudyPlan;
+import com.alex.universitymanagementsystem.domain.immutable.FiscalCode;
 import com.alex.universitymanagementsystem.domain.immutable.Register;
 import com.alex.universitymanagementsystem.dto.StudentDto;
 import com.alex.universitymanagementsystem.enum_type.DomainType;
+import com.alex.universitymanagementsystem.exception.DataAccessServiceException;
 import com.alex.universitymanagementsystem.exception.ObjectAlreadyExistsException;
 import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
 import com.alex.universitymanagementsystem.mapper.StudentMapper;
 import com.alex.universitymanagementsystem.repository.DegreeCourseRepository;
 import com.alex.universitymanagementsystem.repository.StudentRepository;
 import com.alex.universitymanagementsystem.repository.StudyPlanRepository;
-import com.alex.universitymanagementsystem.repository.UserRepository;
 import com.alex.universitymanagementsystem.service.StudentService;
+import com.alex.universitymanagementsystem.utils.RegistrationForm;
+
+import jakarta.persistence.PersistenceException;
+import jakarta.transaction.Transactional;
+
 
 
 
 @Service
 public class StudentServiceImpl implements StudentService {
 
-	// logger
-	private static final Logger logger = LoggerFactory.getLogger(StudentServiceImpl.class);
-
-	// constants
-	private static final String DATA_ACCESS_ERROR = "data access error";
-
 	// inject repository - instance variable
 	private final StudentRepository studentRepository;
-	private final UserRepository userRepository;
 	private final DegreeCourseRepository degreeCourseRepository;
 	private final StudyPlanRepository studyPlanRepository;
+	private final PasswordEncoder passwordEncoder;
+
 
 	// autowired - dependency injection - constructor
 	public StudentServiceImpl(
 		StudentRepository studentRepository,
-		UserRepository userRepository,
 		DegreeCourseRepository degreeCourseRepository,
-		StudyPlanRepository studyPlanRepository
+		StudyPlanRepository studyPlanRepository,
+		PasswordEncoder passwordEncoder
 	) {
 		this.studentRepository = studentRepository;
-		this.userRepository = userRepository;
 		this.degreeCourseRepository = degreeCourseRepository;
 		this.studyPlanRepository = studyPlanRepository;
+		this.passwordEncoder = passwordEncoder;
 	}
 
 
 	/**
 	 * Retrieves all students.
 	 * @return List of StudentDto objects representing all students.
+	 * @throws DataAccessServiceException if there is an error accessing the database.
 	 */
 	@Override
-    public List<StudentDto> getStudents() {
+    public List<StudentDto> getStudents() throws DataAccessServiceException {
 		try {
 			return studentRepository
 				.findAll()
 				.stream()
-				.map(StudentMapper::mapToStudentDto)
+				.map(StudentMapper::toDto)
 				.toList();
-		} catch (DataAccessException e) {
-			logger.error(DATA_ACCESS_ERROR, e);
-			return Collections.emptyList();
-		}
+		} catch (PersistenceException e) {
+            throw new DataAccessServiceException("Error accessing database for fetching students: " + e.getMessage(), e);
+        }
 	}
+
 
 	/**
 	 * Retrieves a student by register.
 	 * @param register the register of the student.
 	 * @return StudentDto object containing the student's data.
-	 * @throws NullPointerException if the register is null
-	 * @throws IllegalArgumentException if the register is blank.
-	 * @throws UnsupportedOperationException if the register is not unique
+	 * @throws IllegalArgumentException if the register is null or blank.
+	 * @throws DataAccessServiceException if there is an error accessing the database.
 	 */
 	@Override
-	public StudentDto getStudentByRegister(@NonNull Register register)
-		throws NullPointerException, IllegalArgumentException, UnsupportedOperationException
+	public StudentDto getStudentByRegister(Register register)
+		throws IllegalArgumentException, DataAccessServiceException
 	{
 		// sanity check
 		if(register.toString().isBlank())
 			throw new IllegalArgumentException("Register cannot be null or empty.");
 
 		try {
-			return StudentMapper.mapToStudentDto(studentRepository.findByRegister(register));
-		} catch (DataAccessException e) {
-			logger.error(DATA_ACCESS_ERROR, e);
-			return null;
+			return studentRepository
+				.findByRegister(register)
+				.map(StudentMapper::toDto)
+				.orElse(null);
+		} catch (PersistenceException e) {
+			throw new DataAccessServiceException("Error accessing database for fetching student by register: " + e.getMessage(), e);
 		}
 	}
 
@@ -106,162 +109,133 @@ public class StudentServiceImpl implements StudentService {
 	 * @param fullname the name of the student.
 	 * @return List<StudentDto> List of StudentDto object containing the
 	 * 		   student's data.
-	 * @throws NullPointerException if the name is null
-	 * @throws IllegalArgumentException if the name is blank
-	 * @throws UnsupportedOperationException if the fullname is not unique
+	 * @throws IllegalArgumentException if the fullname is null or blank.
+	 * @throws DataAccessServiceException if there is an error accessing the database.
 	 */
 	@Override
-	public List<StudentDto> getStudentsByFullname(@NonNull String fullname)
-		throws NullPointerException, IllegalArgumentException, UnsupportedOperationException
+	public List<StudentDto> getStudentsByFullname(String fullname)
+		throws IllegalArgumentException, DataAccessServiceException
 	{
 		if(fullname.isBlank())
 			throw new IllegalArgumentException("Name cannot be null or empty.");
 
+		String[] nameParts = fullname.split(" ");
+        String firstName = nameParts[0];
+        String lastName = nameParts.length > 1 ? nameParts[1] : "";
+
 		try {
 			return studentRepository
-				.findByFullname(fullname)
+				.findByFullname(firstName, lastName)
 				.stream()
-				.map(StudentMapper::mapToStudentDto)
+				.map(StudentMapper::toDto)
 				.toList();
-		} catch (DataAccessException e) {
-			logger.error(DATA_ACCESS_ERROR, e);
-			return Collections.emptyList();
+		} catch (PersistenceException e) {
+			throw new DataAccessServiceException("Error accessing database for fetching students by fullname: " + e.getMessage(), e);
 		}
 	}
 
 
 	/**
 	 * Adds a new student to the repository.
-	 * @param student the student to be added
-	 * @throws NullPointerException if the student is null
-	 * @throws IllegalArgumentException if the given register is null or blank
+	 * @param form with data of the student to be added
+	 * @param degreeCourse degree course of the new student
+	 * @param ordering the ordering of the courses in the study plan
+	 * @return StudentDto object containing the added student's data.
+	 * @throws IllegalArgumentException if the form is invalid.
 	 * @throws ObjectAlreadyExistsException if a student with the same register
 	 * 		   already or with same name and dob exists in the repository.
 	 * @throws ObjectNotFoundException if the degree course does not exists
+	 * 		   in the repository.
+	 * @throws DataAccessServiceException if there is an error accessing the database
 	 */
 	@Override
-	@Transactional
-    public void addNewStudent(@NonNull Student student)
-		throws NullPointerException, IllegalArgumentException, ObjectAlreadyExistsException, ObjectNotFoundException
+	@Transactional(rollbackOn = ObjectAlreadyExistsException.class)
+    @Retryable(retryFor = PersistenceException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
+    public StudentDto addNewStudent(RegistrationForm form, DegreeCourse degreeCourse, String ordering)
+		throws IllegalArgumentException, ObjectAlreadyExistsException, ObjectNotFoundException, DataAccessServiceException
 	{
 		try {
 
+			Student student = form.toStudent(passwordEncoder);
+			FiscalCode fiscalCode = student.getFiscalCode();
 			Register register = student.getRegister();
 
-			// sanity check
-			if(register == null || register.toString().isBlank())
-				throw new IllegalArgumentException("Register cannot be null or empty.");
+			// sanity checks
+			if(studentRepository.existsByFiscalCode(fiscalCode))
+				throw new ObjectAlreadyExistsException(fiscalCode);
 
 			// check if register is unique
 			if(studentRepository.existsByRegister(register))
 				throw new ObjectAlreadyExistsException(register);
 
 			// check if degree course exists
-			if(!degreeCourseRepository.existsByName(student.getDegreeCourse().getName()))
-				throw new ObjectNotFoundException(student.getDegreeCourse().getName());
+			if(!degreeCourseRepository.existsByName(degreeCourse.getName()))
+				throw new ObjectNotFoundException(DomainType.DEGREE_COURSE);
 
-			if(userRepository
-					.findByFullname(student.getFullname())
-                    .stream()
-                    .anyMatch(u -> u.getFullname().equals(student.getFullname())) &&
-                userRepository
-					.findByDob(student.getDob())
-                    .stream()
-                    .anyMatch(u -> u.getDob().equals(student.getDob())))
-                throw new ObjectAlreadyExistsException(DomainType.STUDENT);
+			// check if ordering is valid
+			if(ordering == null || ordering.isBlank())
+				ordering = "ORD270";
+
+			// set the degree course
+            student.setDegreeCourse(degreeCourse);
+            // set the study plan
+			Set<Course> courses = degreeCourse.getCourses().isEmpty() ? new HashSet<>() : new HashSet<>(degreeCourse.getCourses());
+			student.setStudyPlan(new StudyPlan(student, ordering, courses));
+
 			// save the student
 			studentRepository.saveAndFlush(student);
 			// save the study plan
 			studyPlanRepository.saveAndFlush(student.getStudyPlan());
-		} catch (DataAccessException e) {
-			logger.error(DATA_ACCESS_ERROR + " while adding new student", e);
-		}
+			// return the student as DTO
+			return StudentMapper.toDto(student);
+		} catch (PersistenceException e) {
+            throw new DataAccessServiceException("Error accessing database for user " + form.getUsername() + ": " + e.getMessage(), e);
+        }
     }
 
 
 	/**
 	 * Updates an existing student's information.
-	 * @param studentDto the data transfer object containing the new
-	 * 		  details of the student to be updated.
-	 * @throws NullPointerException if the studentDto is null
-	 * @throws IllegalArgumentException if the newStudentDto is null.
+	 * @param form with new data of the student to be updated
+	 * @throws IllegalArgumentException if the form is invalid.
 	 * @throws ObjectNotFoundException if no student with the given register
 	 * 		   exists in the repository or if the specified degree course
 	 *         does not exist.
-	 * @throws UnsupportedOperationException if the register is not unique
-	 *         or if the degree course is not unique.
+	 * @throws DataAccessServiceException if there is an error accessing the database
 	 */
 	@Override
-	@Transactional
-    public void updateStudent(@NonNull StudentDto studentDto)
-		throws NullPointerException, IllegalArgumentException, ObjectNotFoundException
+	@Transactional(rollbackOn = ObjectNotFoundException.class)
+    @Retryable(retryFor = PersistenceException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
+    public StudentDto updateStudent(RegistrationForm form)
+		throws IllegalArgumentException, ObjectNotFoundException, DataAccessServiceException
 	{
 		try {
 			// retrieve data
-			Student updatableStudent = studentRepository.findByRegister(studentDto.getRegister());
-			DegreeCourse newDegreeCourse = degreeCourseRepository.findByName(studentDto.getDegreeCourse().getName());
+			Student updatableStudent = (Student) SecurityContextHolder
+				.getContext()
+				.getAuthentication()
+				.getPrincipal();
 
 			// sanity checks
 			if(updatableStudent == null)
-				throw new ObjectNotFoundException(studentDto.getRegister());
-
-			if(newDegreeCourse == null)
-				throw new ObjectNotFoundException(studentDto.getDegreeCourse().getName());
-
-			// retrieve new data
-			String newUsername = studentDto.getUsername();
-			String newFullname = studentDto.getFullname();
-			LocalDate newDob = studentDto.getDob();
-
-			// sanity checks
-			if(newUsername == null || newUsername.isBlank())
-				throw new IllegalArgumentException("Username cannot be null or empty.");
-			if(newFullname == null || newFullname.isBlank())
-				throw new IllegalArgumentException("Fullname cannot be null or empty.");
-			if(newDob == null || newDob == java.time.LocalDate.now())
-				throw new IllegalArgumentException("Dob cannot be null or empty.");
+				throw new ObjectNotFoundException(DomainType.STUDENT);
 
 			// update
-			updatableStudent.setUsername(newUsername);
-			updatableStudent.setFullname(newFullname);
-			updatableStudent.setDob(newDob);
-			updatableStudent.setDegreeCourse(newDegreeCourse);
+			updatableStudent.setUsername(form.getUsername());
+			updatableStudent.setFirstName(form.getFirstName());
+			updatableStudent.setLastName(form.getLastName());
+			updatableStudent.setDob(form.getDob());
+			updatableStudent.setFiscalCode(new FiscalCode(form.getFiscalCode()));
+			updatableStudent.setPhoneNumber(form.getPhone());
+			updatableStudent.setAddress(new Address(form.getStreet(), form.getCity(), form.getState(), form.getZip()));
 
 			// save
 			studentRepository.saveAndFlush(updatableStudent);
-		} catch (DataAccessException e) {
-			logger.error(DATA_ACCESS_ERROR + " while updating student with register " + studentDto.getRegister(), e);
-		}
+			return StudentMapper.toDto(updatableStudent);
+		} catch (PersistenceException e) {
+            throw new DataAccessServiceException("Error accessing database for user " + form.getUsername() + ": " + e.getMessage(), e);
+        }
     }
 
-
-	/**
-	 * Deletes a student from the repository.
-	 * @param register the register of the student to be deleted.
-	 * @throws ObjectNotFoundException if no student with the given register exists in
-	 * 								   the repository.
-	 * @throws NullPointerException if the register is null.
-	 * @throws IllegalArgumentException if the given register is empty.
-	 */
-	@Override
-	@Transactional
-	@Retryable(retryFor = DataAccessException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
-	public void deleteStudent(@NonNull Register register)
-		throws NullPointerException, IllegalArgumentException, ObjectNotFoundException
-	{
-		try {
-			// sanity checks
-			if(register.toString().isBlank())
-				throw new IllegalArgumentException("Register cannot be blank");
-
-			if(!studentRepository.existsByRegister(register))
-				throw new ObjectNotFoundException(register);
-
-			// delete
-			studentRepository.deleteByRegister(register);
-		} catch (DataAccessException e) {
-			logger.error(DATA_ACCESS_ERROR + " while deleting student with register " + register, e);
-		}
-	}
 
 }

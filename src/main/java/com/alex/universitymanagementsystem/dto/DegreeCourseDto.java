@@ -3,12 +3,21 @@ package com.alex.universitymanagementsystem.dto;
 import com.alex.universitymanagementsystem.domain.immutable.DegreeCourseId;
 import com.alex.universitymanagementsystem.enum_type.DegreeType;
 
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+
 public class DegreeCourseDto {
 
     // instance variables
     private DegreeCourseId id;
+
+    @NotNull
+    @Size(min = 3, max = 100)
     private String name;
+
+    @NotNull
     private DegreeType graduationClass;
+
     private int duration;
 
 

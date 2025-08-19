@@ -10,21 +10,21 @@
 </head>
 <body>
     <div class="container">
-        <h1 class="titolo">Dettagli Appello d'Esame</h1>
+        <h1 class="titolo">Appeal reservation details</h1>
 
         <div class="messaggio-errore" th:if="${errorMessage}">
             <p th:text="${errorMessage}"></p>
         </div>
 
         <div class="appello" th:if="${examinationAppeal}">
-            <p><strong>Corso di Laurea:</strong> <span th:text="${examinationAppeal.degreeCourse}"></span></p>
-            <p><strong>Corso:</strong> <span th:text="${examinationAppeal.course.name}"></span></p>
-            <p><strong>Descrizione:</strong> <span th:text="${examinationAppeal.description}"></span></p>
-            <p><strong>Data:</strong> <span th:text="${examinationAppeal.date}"></span></p>
+            <p><strong>Degree Course:</strong> <span th:text="${examinationAppeal.degreeCourse}"></span></p>
+            <p><strong>Course:</strong> <span th:text="${examinationAppeal.course.name}"></span></p>
+            <p><strong>Description:</strong> <span th:text="${examinationAppeal.description}"></span></p>
+            <p><strong>Date:</strong> <span th:text="${examinationAppeal.date}"></span></p>
         </div>
 
         <div class="azione">
-            <a href="#" th:href="@{/user_student/examinations/examination-menu}" class="btn">Torna al Menu</a>
+            <a href="#" th:href="@{/user_student/examinations/examination-menu}" class="btn">Back to Menu</a>
         </div>
     </div>
 </body>

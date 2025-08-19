@@ -11,8 +11,10 @@ public class Builder implements Serializable {
     private String username;
     private String password;
     private String confirm;
-    private String fullname;
+    private String firstName;
+    private String lastName;
     private LocalDate dob;
+    private String fiscalCode;
     private String street;
     private String city;
     private String state;
@@ -36,12 +38,20 @@ public class Builder implements Serializable {
         return confirm;
     }
 
-    public String getFullname() {
-        return fullname;
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
     }
 
     public LocalDate getDob() {
         return dob;
+    }
+
+    public String getFiscalCode() {
+        return fiscalCode;
     }
 
     public String getStreet() {
@@ -93,12 +103,20 @@ public class Builder implements Serializable {
         this.confirm = confirm;
     }
 
-    public void withFullname(String fullname) {
-        this.fullname = fullname;
+    public void withFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
-    public void setFullname(String fullname) {
-        this.fullname = fullname;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public void withLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public void withDob(LocalDate dob) {
@@ -107,6 +125,14 @@ public class Builder implements Serializable {
 
     public void setDob(LocalDate dob) {
         this.dob = dob;
+    }
+
+    public void withFiscalCode(String fiscalCode) {
+        this.fiscalCode = fiscalCode;
+    }
+
+    public void setFiscalCode(String fiscalCode) {
+        this.fiscalCode = fiscalCode;
     }
 
     public void withStreet(String street) {

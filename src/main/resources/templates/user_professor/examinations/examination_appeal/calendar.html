@@ -27,7 +27,7 @@
         <tbody>
             <tr th:each="examinationAppeal : ${examinationAppeals}">
                 <td th:text="${examinationAppeal.degreeCourse}">Degree course</td>
-                <td th:text="${examinationAppeal.course.name}">Course</td>
+                <td th:text="${examinationAppeal.course}">Course</td>
                 <td th:text="${examinationAppeal.description}">Description</td>
                 <td th:text="${examinationAppeal.date}">Date</td>
                 <td>

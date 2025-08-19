@@ -1,18 +1,19 @@
 package com.alex.universitymanagementsystem.repository;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
 
 import com.alex.universitymanagementsystem.domain.Student;
+import com.alex.universitymanagementsystem.domain.immutable.FiscalCode;
 import com.alex.universitymanagementsystem.domain.immutable.Register;
 import com.alex.universitymanagementsystem.domain.immutable.UserId;
 
-import jakarta.persistence.PersistenceException;
 
 
 
@@ -22,60 +23,72 @@ import jakarta.persistence.PersistenceException;
 public interface StudentRepository
     extends JpaRepository<Student, UserId>
 {
+
     /**
      * Retrieves a student by register
      * @param register the register of the student
-     * @return the student if found, null otherwise
-     * @throws NullPointerException if the register is null
-     * @throws PersistenceException persistence error
+     * @return Optional<Student> with the student if found, or an empty
+     *         Optional if no student is found
      * @see Register
      */
     @Query(value = "SELECT s FROM Student s WHERE s.register = ?1")
-    Student findByRegister(@NonNull Register register)
-        throws NullPointerException, PersistenceException;
+    Optional<Student> findByRegister(Register register);
+
 
     /**
-     * Retrieves a student by name
-     * @param name the name of the student
-     * @return List<Student> with the student if found, or an empty
-     *         List if no student is found
-     * @throws NullPointerException if the name is null
-     * @throws PersistenceException persistence error
+     * Retrieves a Set of students by his registers
+     * @param registers
+     * @return Set<Student>
+     * @see Register
      */
-    @Query("SELECT s FROM Student s WHERE s.fullname = ?1")
-    List<Student> findByFullname(@NonNull String name)
-        throws NullPointerException, PersistenceException;
+    @Query("SELECT s FROM Student s WHERE s.register IN ?1")
+    Set<Student> findByRegisterIn(Set<Register> registers);
+
 
     /**
      * Retrieves a student by email
-     * @param email the email of the student
+     * @param username of the student
      * @return List<Student> with the student if found, or an empty
      *         List if no student is found
-     * @throws NullPointerException if the username is null
-     * @throws PersistenceException persistence error
      */
     @Query("SELECT s FROM Student s WHERE s.username = ?1")
-    List<Student> findByUsername(@NonNull String username)
-        throws NullPointerException, PersistenceException;
+    List<Student> findByUsername(String username);
+
+
+    /**
+     * Retrieves a student by name
+     * @param firstName the first name of the student
+     * @param lastName the last name of the student
+     * @return a list if student with same fullname
+     */
+    @Query(value = "SELECT s FROM Student s WHERE s.firstName = ?1 AND s.lastName = ?2")
+    List<Student> findByFullname(String firstName, String lastName);
+
 
     /**
      * Checks if a student exists by register
      * @param register the register of the student
      * @return true if the student exists, false otherwise
-     * @throws NullPointerException if the register is null
-     * @throws PersistenceException persistence error
+     * @see Register
      */
-    boolean existsByRegister(@NonNull Register register)
-        throws NullPointerException, PersistenceException;
+    boolean existsByRegister(Register register);
+
+
+    /**
+     * Checks if a student exists by fiscal code
+     * @param fiscalCode the fiscal code of the student
+     * @return true if the student exists, false otherwise
+     * @see FiscalCode
+     */
+    boolean existsByFiscalCode(FiscalCode fiscalCode);
+
 
     /**
      * Deletes a student by register
      * @param register the register of the student
-     * @throws NullPointerException if the register is null
-     * @throws PersistenceException persistence error
+     * @see Register
      */
     @Modifying
-    void deleteByRegister(@NonNull Register register)
-        throws NullPointerException, PersistenceException;
+    void deleteByRegister(Register register);
 
 }

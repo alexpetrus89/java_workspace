@@ -10,11 +10,16 @@
 </head>
 <body>
     <div class="container">
-        <h1>Registration completed successfully</h1>
-        <p th:text="'Register: ' + ${student.register.register}"></p>
-        <p th:text="'Name: ' + ${student.fullname}"></p>
+        <h1 th:if="${student != null}">Registration completed successfully</h1>
+        <p th:text="'Name: ' + ${student.firstName} + ' ' + ${student.lastName}" ></p>
         <p th:text="'Email: ' + ${student.username}"></p>
+        <p th:text="'Fiscal Code: ' + ${student.fiscalCode}"></p>
+        <p th:text="'Register: ' + ${student.register.register}"></p>
         <p th:text="'Degree Course: ' + ${student.degreeCourse.name}"></p>
+        <a href="#" th:href="@{/login}">Login</a>
+    </div>
+    <div th:if="${student == null}">
+        <p>Error: profile not created.</p>
         <a href="#" th:href="@{/login}">Login</a>
     </div>
 </body>

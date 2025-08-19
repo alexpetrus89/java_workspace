@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 
 import com.alex.universitymanagementsystem.component.UmsExitCodeGenerator;
 
+
 @Configuration
 public class UmsConfig {
 
@@ -26,6 +27,37 @@ public class UmsConfig {
     public void shutDown(ExitCodeGenerator exitCodeGenerator) {
         SpringApplication.exit(applicationContext, exitCodeGenerator);
     }
+
+    @Bean
+    String genericExceptionUri() {
+        return "/exception/error";
+    }
+
+    @Bean
+    String dataAccessExceptionUri() {
+        return "/exception/data/data-access-error";
+    }
+
+    @Bean
+    String accessDeniedExceptionUri() {
+        return "/exception/access_denied";
+    }
+
+    @Bean
+    String notFoundExceptionUri() {
+        return "/exception/not_found";
+    }
+
+    @Bean
+    String alreadyExistsExceptionUri() {
+        return "/exception/already_exists";
+    }
+
+    @Bean
+    String illegalArgumentExceptionUri() {
+        return "/exception/illegal";
+    }
+
 
 
 }

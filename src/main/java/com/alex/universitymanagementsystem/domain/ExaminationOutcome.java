@@ -14,16 +14,19 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 
 // Oggetto Outcome
 @Entity
-@Table(name = "examination_outcome")
+@Table(name = "EXAMINATION_OUTCOMES")
 @Access(AccessType.PROPERTY)
 public class ExaminationOutcome implements Serializable {
 
     // instance variables
     private Long id;
-    private ExaminationAppeal examinationAppeal; // appello di riferimento
+    private ExaminationAppeal appeal; // appello di riferimento
     private String register; // matricola dello studente
     private boolean present; // flag per indicare se lo studente si è presentato all'esame
     private int grade; // voto dell'esame
@@ -35,13 +38,13 @@ public class ExaminationOutcome implements Serializable {
     // constructors
     public ExaminationOutcome() {}
 
-    public ExaminationOutcome(ExaminationAppeal examinationAppeal, String register) {
-        this.examinationAppeal = examinationAppeal;
+    public ExaminationOutcome(ExaminationAppeal appeal, String register) {
+        this.appeal = appeal;
         this.register = register;
     }
 
-    public ExaminationOutcome(ExaminationAppeal examinationAppeal, String register, boolean present, int grade, boolean withHonors) {
-        this.examinationAppeal = examinationAppeal;
+    public ExaminationOutcome(ExaminationAppeal appeal, String register, boolean present, int grade, boolean withHonors) {
+        this.appeal = appeal;
         this.register = register;
         this.present = present;
         this.grade = grade;
@@ -58,17 +61,19 @@ public class ExaminationOutcome implements Serializable {
 
 
     @ManyToOne
-    @JoinColumn(name = "examination_appeal_id")
-    public ExaminationAppeal getExaminationAppeal() {
-        return examinationAppeal;
+    @JoinColumn(name = "examination_appeal_id", nullable = false)
+    public ExaminationAppeal getAppeal() {
+        return appeal;
     }
 
-    @Column(name = "register")
+    @Column(name = "register", nullable = false, length = 6)
+    @NotBlank
+    @Pattern(regexp = "\\d{6}", message = "Register must be a 6-digit string")
     public String getRegister() {
         return register;
     }
 
-    @Column(name = "present")
+    @Column(name = "present", nullable = false)
     public boolean isPresent() {
         return present;
     }
@@ -91,6 +96,7 @@ public class ExaminationOutcome implements Serializable {
     }
 
     @Column(name = "message")
+    @Size(max = 255)
     public String getMessage() {
         return message;
     }
@@ -101,8 +107,8 @@ public class ExaminationOutcome implements Serializable {
         this.id = id;
     }
 
-    public void setExaminationAppeal(ExaminationAppeal examinationAppeal) {
-        this.examinationAppeal = examinationAppeal;
+    public void setAppeal(ExaminationAppeal appeal) {
+        this.appeal = appeal;
     }
 
     public void setRegister(String register) {
@@ -114,16 +120,14 @@ public class ExaminationOutcome implements Serializable {
     }
 
     public void setGrade(int grade) {
-        if (grade < 0 || grade > 30) {
+        if (grade < 0 || grade > 30)
             throw new IllegalArgumentException("Grade must be between 0 and 30");
-        }
         this.grade = grade;
     }
 
     public void setWithHonors(boolean withHonors) {
-        if(getGrade() != 30) {
+        if(getGrade() != 30)
             this.withHonors = false;
-        }
         this.withHonors = withHonors;
     }
 

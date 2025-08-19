@@ -52,6 +52,7 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ConstraintViolationException;
 
 @RestControllerAdvice
 public class GlobalControllerExceptionHandler {
@@ -61,7 +62,8 @@ public class GlobalControllerExceptionHandler {
         LoggerFactory.getLogger(GlobalControllerExceptionHandler.class);
 
     // constants
-    private static final String EXCEPTION_VIEW_NAME = "exception/read/error";
+    private static final String EXCEPTION_VIEW_NAME = "exception/error";
+    private static final String MESSAGE = "message";
 
     /**
      * Handles all uncaught exceptions and returns a ResponseEntity with a status of Internal Server Error (500)
@@ -72,7 +74,7 @@ public class GlobalControllerExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleException(Exception e) {
         // Handle the exception and generate a custom error response
-        logger.error("An error occurred", e);
+        logger.error("An exception occurred", e);
         String message = "A generic exception occurred: " + e.getMessage();
 
         return ResponseEntity
@@ -119,6 +121,13 @@ public class GlobalControllerExceptionHandler {
     }
 
 
+    /**
+     * Handles AccessDeniedException exceptions and returns a ResponseEntity with a status of Method Not Allowed (405).
+     * The exception is logged at the ERROR level, and the response body contains a custom error message.
+     * This exception is thrown when a user tries to access a resource they do not have permission to access.
+     * @param e the AccessDeniedException exception to be handled
+     * @return a ResponseEntity containing the error message
+     */
     @ExceptionHandler(value = AccessDeniedException.class)
     public ResponseEntity<String> handleAccessDeniedException(AccessDeniedException e) {
         // handle the specific exception and generate a custom error response
@@ -170,7 +179,12 @@ public class GlobalControllerExceptionHandler {
     }
 
 
+
+
+
+
     // Add more @ExceptionHandler methods for other specific exceptions
+
     /**
      * Handles exceptions that occur when a username is invalid or already taken.
      * Returns a ModelAndView with a view name of "error/error" and a model containing the error message.
@@ -201,9 +215,8 @@ public class GlobalControllerExceptionHandler {
     public ModelAndView handleAssertionError(AssertionError e) {
         // Handle the specific exception and generate a custom error response
         logger.error("Assertion error", e);
-        String message = "An error occurred: " + e.getMessage();
-
-        return new ModelAndView("exception/assertion/assertion", "message", message);
+        String message = "An assertion error occurred: " + e.getMessage();
+        return new ModelAndView(EXCEPTION_VIEW_NAME, MESSAGE, message);
     }
 
 
@@ -213,14 +226,12 @@ public class GlobalControllerExceptionHandler {
      * a model containing the error message.
      * The exception is logged at the ERROR level.
      */
-    @ExceptionHandler({MethodArgumentNotValidException.class, BindException.class})
+    @ExceptionHandler({MethodArgumentNotValidException.class, BindException.class, ConstraintViolationException.class})
     public ModelAndView handleValidationException(Exception e) {
         // Handle the specific exception and generate a custom error response
         logger.error("Validation error", e);
-        String message = "An error occurred: " + getErrorMessage(e);
-        // You can customize the view name and model attributes as needed
-
-        return new ModelAndView(EXCEPTION_VIEW_NAME, "message", message);
+        String message = "An validation error occurred: " + getErrorMessage(e);
+        return new ModelAndView(EXCEPTION_VIEW_NAME, MESSAGE, message);
     }
 
 
@@ -235,26 +246,42 @@ public class GlobalControllerExceptionHandler {
         // Handle the specific exception and generate a custom error response
         logger.error("Missing servlet request parameter", e);
         String message = "Parameter cannot be null: " + e.getMessage();
+        return new ModelAndView(EXCEPTION_VIEW_NAME, MESSAGE, message);
+    }
 
-        return new ModelAndView("exception/read/error", "message", message);
+
+    /**
+     * Handles IllegalArgumentException exceptions and returns a ModelAndView with a view name of "exception/assertion/assertion".
+     * The exception is logged at the ERROR level, and the response body contains the error message.
+     * @param e the IllegalArgumentException exception to be handled
+     * @return a ModelAndView containing the error message
+     */
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ModelAndView handleIllegalArgumentException(IllegalArgumentException e) {
+        logger.error("Illegal argument", e);
+        if (e.getMessage() != null && e.getMessage().contains("fiscal code"))
+            return new ModelAndView("validation/registration/invalid-fiscal-code");
+
+        // fallback for others IllegalArgumentException
+        ModelAndView modelAndView = new ModelAndView(EXCEPTION_VIEW_NAME, MESSAGE, e.getMessage());
+        modelAndView.addObject("title", "Error View");
+        modelAndView.addObject("errorMessage", e.getMessage());
+        modelAndView.addObject("status", "Error");
+        modelAndView.addObject("stackTrace", e.getStackTrace());
+        return modelAndView;
     }
 
 
 
-
     private String getErrorMessage(Exception e) {
-        if (e instanceof MethodArgumentNotValidException) {
-            MethodArgumentNotValidException ex = (MethodArgumentNotValidException) e;
-            BindingResult bindingResult = ex.getBindingResult();
-            return (bindingResult != null) ?
-                bindingResult.getAllErrors().get(0).getDefaultMessage() :
-                "An error occurred";
-        } else if (e instanceof BindException) {
-            BindException ex = (BindException) e;
-            return ex.getBindingResult().getAllErrors().get(0).getDefaultMessage();
-        } else {
-            return "An error occurred";
-        }
+        return switch (e) {
+            case MethodArgumentNotValidException ex -> {
+                BindingResult bindingResult = ex.getBindingResult();
+                yield bindingResult != null ? bindingResult.getAllErrors().get(0).getDefaultMessage() : "An error occurred";
+            }
+            case BindException ex -> ex.getBindingResult().getAllErrors().get(0).getDefaultMessage();
+            default -> "An error occurred";
+        };
     }
 
 }

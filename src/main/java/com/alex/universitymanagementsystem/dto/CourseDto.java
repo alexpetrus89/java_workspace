@@ -1,39 +1,42 @@
 package com.alex.universitymanagementsystem.dto;
 
 import com.alex.universitymanagementsystem.component.CourseSerializer;
-import com.alex.universitymanagementsystem.domain.DegreeCourse;
-import com.alex.universitymanagementsystem.domain.Professor;
-import com.alex.universitymanagementsystem.domain.immutable.CourseId;
 import com.alex.universitymanagementsystem.enum_type.CourseType;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Positive;
 
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "courseId")
 @JsonSerialize(using = CourseSerializer.class)
 public class CourseDto {
 
     // instance variables
-    private CourseId courseId;
+    @NotBlank(message = "Course name is mandatory")
     private String name;
+
     private CourseType type;
+
+    @Positive(message = "CFU must be a positive number")
     private Integer cfu;
-    private Professor professor;
-    private DegreeCourse degreeCourse;
+    private ProfessorDto professor;
+
+    @NotBlank(message = "Degree course name is mandatory")
+    private DegreeCourseDto degreeCourse;
 
     // constructors
     public CourseDto() {}
 
     public CourseDto(
-        CourseId courseId,
         String name,
         CourseType type,
         Integer cfu,
-        Professor professor,
-        DegreeCourse degreeCourse
+        ProfessorDto professor,
+        DegreeCourseDto degreeCourse
 
     ) {
-        this.courseId = courseId;
         this.name = name;
         this.type = type;
         this.cfu = cfu;
@@ -44,10 +47,6 @@ public class CourseDto {
 
 
     // getters
-    public CourseId getCourseId() {
-        return courseId;
-    }
-
     public String getName() {
         return name;
     }
@@ -60,21 +59,17 @@ public class CourseDto {
         return cfu;
     }
 
-    public Professor getProfessor() {
+    public ProfessorDto getProfessor() {
         return professor;
     }
 
-    public DegreeCourse getDegreeCourse() {
+    public DegreeCourseDto getDegreeCourse() {
         return degreeCourse;
     }
 
 
 
     // setters
-    public void setCourseId(CourseId courseId) {
-        this.courseId = courseId;
-    }
-
     public void setName(String name) {
         this.name = name;
     }
@@ -87,11 +82,11 @@ public class CourseDto {
         this.cfu = cfu;
     }
 
-    public void setProfessor(Professor professor) {
+    public void setProfessor(ProfessorDto professor) {
         this.professor = professor;
     }
 
-    public void setDegreeCourse(DegreeCourse degreeCourse) {
+    public void setDegreeCourse(DegreeCourseDto degreeCourse) {
         this.degreeCourse = degreeCourse;
     }
 

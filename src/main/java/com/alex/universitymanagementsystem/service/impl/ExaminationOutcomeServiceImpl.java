@@ -2,14 +2,15 @@ package com.alex.universitymanagementsystem.service.impl;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Set;
+import java.util.stream.Collectors;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.lang.NonNull;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
@@ -17,12 +18,20 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import com.alex.universitymanagementsystem.domain.Course;
+import com.alex.universitymanagementsystem.domain.ExaminationAppeal;
 import com.alex.universitymanagementsystem.domain.ExaminationOutcome;
 import com.alex.universitymanagementsystem.domain.Student;
 import com.alex.universitymanagementsystem.domain.immutable.Register;
+import com.alex.universitymanagementsystem.dto.ExaminationAppealDto;
+import com.alex.universitymanagementsystem.dto.ExaminationOutcomeDto;
+import com.alex.universitymanagementsystem.dto.StudentDto;
 import com.alex.universitymanagementsystem.enum_type.DomainType;
+import com.alex.universitymanagementsystem.exception.DataAccessServiceException;
 import com.alex.universitymanagementsystem.exception.ObjectAlreadyExistsException;
 import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
+import com.alex.universitymanagementsystem.mapper.ExaminationAppealMapper;
+import com.alex.universitymanagementsystem.mapper.ExaminationOutcomeMapper;
+import com.alex.universitymanagementsystem.mapper.StudentMapper;
 import com.alex.universitymanagementsystem.repository.CourseRepository;
 import com.alex.universitymanagementsystem.repository.ExaminationAppealRepository;
 import com.alex.universitymanagementsystem.repository.ExaminationOutcomeRepository;
@@ -31,17 +40,15 @@ import com.alex.universitymanagementsystem.service.ExaminationOutcomeService;
 
 import jakarta.persistence.PersistenceException;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 
 @Service
 public class ExaminationOutcomeServiceImpl implements ExaminationOutcomeService {
 
-    // logger
-	private static final Logger logger = LoggerFactory.getLogger(ExaminationOutcomeServiceImpl.class);
-
 	// constants
 	private static final String DATA_ACCESS_ERROR = "data access error";
 
-    // instance variable
+    // instance variables
     private final ExaminationOutcomeRepository examinationOutcomeRepository;
     private final ExaminationAppealRepository examinationAppealRepository;
     private final ExaminationAppealServiceImpl examinationAppealServiceImpl;
@@ -65,18 +72,22 @@ public class ExaminationOutcomeServiceImpl implements ExaminationOutcomeService 
 
     /**
      * retrive outcome by id
-     * @param id
-     * @return ExaminationOutcome
-     * @throws NullPointerException if the id is null
-     * @throws IllegalArgumentException if the id is invalid
+     * @param id of the examination outcome
+     * @return ExaminationOutcomeDto
+     * @throws ObjectNotFoundException if the outcome does not exist
+     * @throws DataAccessServiceException if there is a data access error
      */
     @Override
-    public ExaminationOutcome getOutcomeById(@NonNull Long id)
-        throws NullPointerException, IllegalArgumentException
-    {
-        return examinationOutcomeRepository
-            .findById(id)
-            .orElseThrow(null);
+    public ExaminationOutcomeDto getOutcomeById(Long id)
+        throws ObjectNotFoundException, DataAccessServiceException {
+        try {
+            ExaminationOutcome outcome =  examinationOutcomeRepository
+                .findById(id)
+                .orElseThrow(() -> new ObjectNotFoundException("ExaminationOutcome with id " + id + " not found"));
+            return mapToDto(outcome);
+        } catch (PersistenceException e) {
+            throw new DataAccessServiceException(DATA_ACCESS_ERROR, e);
+        }
     }
 
 
@@ -85,22 +96,38 @@ public class ExaminationOutcomeServiceImpl implements ExaminationOutcomeService 
      * @param course name of the course
      * @param register of the student
      * @param LocalDate date of the examination
-     * @return ExaminationOutcome outcome
-     * @throws NullPointerException if any of the parameters is null
-     * @throws IllegalArgumentException if any of the parameters is invalid
-     * @throws UnsupportedOperationException if the register is not unique
+     * @return ExaminationOutcomeDto outcome
+     * @throws IllegalArgumentException if the course name or register is invalid
+     * @throws ObjectNotFoundException if the outcome does not exist
+     * @throws DataAccessServiceException if there is a data access error
      */
     @Override
-    public ExaminationOutcome getOutcomeByCourseAndStudent(@NonNull String name, @NonNull String register)
-        throws NullPointerException, IllegalArgumentException, UnsupportedOperationException
+    public ExaminationOutcomeDto getOutcomeByCourseAndStudent(String courseName, String register)
+        throws IllegalArgumentException, ObjectNotFoundException, DataAccessServiceException
     {
+        // sanity checks
+        if (courseName == null || courseName.isBlank())
+            throw new IllegalArgumentException("Course name must not be blank");
+
+        if (register == null || register.isBlank())
+            throw new IllegalArgumentException("Student register must not be blank");
+
         try {
-            Student student = studentRepository.findByRegister(new Register(register));
-            Course course = courseRepository.findByNameAndDegreeCourse(name, student.getDegreeCourse());
-            return examinationOutcomeRepository.findByCourseAndRegister(course, register);
-        } catch (DataAccessException e) {
-            logger.error(DATA_ACCESS_ERROR, e);
-            return null;
+            Student student = studentRepository
+                .findByRegister(new Register(register))
+                .orElseThrow(() -> new ObjectNotFoundException("Student not found with register: " + register));
+
+            Course course = courseRepository
+                .findByNameAndDegreeCourseName(courseName, student.getDegreeCourse().getName())
+                .orElseThrow(() -> new ObjectNotFoundException("Course not found for student"));
+
+            ExaminationOutcome outcome =  examinationOutcomeRepository
+                .findByAppeal_CourseAndRegister(course, register)
+                .orElseThrow(() -> new ObjectNotFoundException("ExaminationOutcome not found"));
+
+            return mapToDto(outcome);
+        } catch (PersistenceException e) {
+            throw new DataAccessServiceException(DATA_ACCESS_ERROR, e);
         }
     }
 
@@ -109,63 +136,65 @@ public class ExaminationOutcomeServiceImpl implements ExaminationOutcomeService 
      * Get an examination outcomes by student register
      * @param register of the student
      * @return List of examination outcomes
-     * @throws NullPointerException if any of the parameters is null
-     * @throws IllegalArgumentException if the register is invalid or the student does not exist
-     * @throws UnsupportedOperationException if the register is not unique
+     * @throws NoSuchElementException if the student does not exist
+     * @throws DataAccessServiceException if there is a data access error
      */
     @Override
-    public List<ExaminationOutcome> getStudentOutcomes(@NonNull String register)
-        throws NullPointerException, IllegalArgumentException, UnsupportedOperationException
+    public List<ExaminationOutcomeDto> getStudentOutcomes(String register)
+        throws NoSuchElementException, DataAccessServiceException
     {
         try {
             // sanity checks
             if(!studentRepository.existsByRegister(new Register(register)))
-                throw new IllegalArgumentException("student does not exist");
+                throw new NoSuchElementException("student does not exist");
 
-            return examinationOutcomeRepository.findByRegister(register);
-        } catch (DataAccessException e) {
-            logger.error(DATA_ACCESS_ERROR, e);
-            return List.of();
+            List<ExaminationOutcome> outcomes =  examinationOutcomeRepository.findByRegister(register);
+            return outcomes
+                .stream()
+                .map(this::mapToDto)
+                .toList();
+        } catch (PersistenceException e) {
+            throw new DataAccessServiceException(DATA_ACCESS_ERROR, e);
         }
     }
 
 
     /**
      * Save an examination outcome
-     * @param ExaminationOutcome outcome
+     * @param ExaminationOutcomeDto data transfer object
      * @return ExaminationOutcome outcome
-     * @throws NullPointerException
-     * @throws IllegalArgumentException
-     * @throws ObjectAlreadyExistsException
+     * @throws NoSuchElementException if the student does not exist
+     * @throws ObjectNotFoundException if the appeal does not exist
+     * @throws ObjectAlreadyExistsException if the outcome already exists
+     * @throws DataAccessServiceException if there is a data access error
      */
     @Override
-    @Transactional(rollbackOn = {NullPointerException.class, IllegalArgumentException.class, ObjectAlreadyExistsException.class})
-    public ExaminationOutcome addNewExaminationOutcome(@NonNull ExaminationOutcome outcome)
-        throws NullPointerException, IllegalArgumentException, ObjectAlreadyExistsException
+    @Transactional(rollbackOn = {NoSuchElementException.class, ObjectNotFoundException.class, ObjectAlreadyExistsException.class})
+    @Retryable(retryFor = PersistenceException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
+    public ExaminationOutcomeDto addNewExaminationOutcome(@Valid ExaminationOutcomeDto dto)
+        throws NoSuchElementException, ObjectNotFoundException, ObjectAlreadyExistsException, DataAccessServiceException
     {
+        // sanity checks
+        if (!studentRepository.existsByRegister(new Register(dto.getRegister())))
+            throw new NoSuchElementException("Student does not exist");
+
+        if (examinationOutcomeRepository.existsByIdAndRegister(dto.getAppeal().getId(), dto.getRegister()))
+            throw new ObjectAlreadyExistsException(DomainType.EXAMINATION_OUTCOME);
+
         try {
+            ExaminationAppeal appeal = examinationAppealRepository.findById(dto.getAppeal().getId())
+                .orElseThrow(() -> new ObjectNotFoundException("Appeal not found"));
 
-            // sanity checks
-            if(!examinationAppealRepository.existsById(outcome.getExaminationAppeal().getId()))
-                throw new IllegalArgumentException("examination appeal does not exist");
+            ExaminationOutcome outcome = ExaminationOutcomeMapper.toEntity(dto, appeal);
 
-            if(!studentRepository.existsByRegister(new Register(outcome.getRegister())))
-                throw new IllegalArgumentException("student does not exist");
-
-            if(outcome.getId() != null && examinationOutcomeRepository.existsById(outcome.getId()))
-                throw new ObjectAlreadyExistsException(DomainType.EXAMINATION_OUTCOME);
-
-            if(outcome.getGrade() < 0 || outcome.getGrade() > 30)
-                throw new IllegalArgumentException("grade is not valid");
-
+            // check if the student is present
             if(outcome.isPresent())
                 examinationOutcomeRepository.saveAndFlush(outcome);
 
-            examinationAppealServiceImpl.removeStudentFromAppeal(outcome.getExaminationAppeal().getId(), new Register(outcome.getRegister()));
-            return outcome;
-        } catch (DataAccessException e) {
-            logger.error(DATA_ACCESS_ERROR, e);
-            return null;
+            examinationAppealServiceImpl.removeStudentFromAppeal(dto.getAppeal().getId(), new Register(dto.getRegister()));
+            return dto;
+        } catch (PersistenceException e) {
+            throw new DataAccessServiceException(DATA_ACCESS_ERROR, e);
         }
     }
 
@@ -174,34 +203,38 @@ public class ExaminationOutcomeServiceImpl implements ExaminationOutcomeService 
      * Delete an examination outcome
      * @param outcome examination outcome of the student
      * @return ExaminationOutcome outcome
-     * @throws NullPointerException if any of the parameters is null
-     * @throws IllegalArgumentException if any of the parameters is invalid
      * @throws ObjectNotFoundException if the outcome does not exist
-     * @throws UnsupportedOperationException if the outcome is not unique
+     * @throws DataAccessServiceException if there is a data access error
      */
     @Override
-    public ExaminationOutcome deleteExaminationOutcome(@NonNull ExaminationOutcome outcome)
-        throws NullPointerException, IllegalArgumentException, ObjectNotFoundException, UnsupportedOperationException
+    @Transactional(rollbackOn = ObjectNotFoundException.class)
+    @Retryable(retryFor = PersistenceException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
+    public ExaminationOutcomeDto deleteExaminationOutcome(@Valid ExaminationOutcomeDto dto)
+        throws ObjectNotFoundException, DataAccessServiceException
     {
         try {
+            ExaminationAppeal appeal = examinationAppealRepository.findById(dto.getAppeal().getId())
+                .orElseThrow(() -> new ObjectNotFoundException("Appeal not found"));
+
+            ExaminationOutcome outcome = ExaminationOutcomeMapper.toEntity(dto, appeal);
+
             examinationOutcomeRepository.delete(outcome);
-            return outcome;
-        } catch (DataAccessException e) {
-            logger.error(DATA_ACCESS_ERROR, e);
-            return null;
+            return dto;
+        } catch (PersistenceException e) {
+            throw new DataAccessServiceException(DATA_ACCESS_ERROR, e);
         }
     }
 
 
 
     @Scheduled(fixedDelay = 1209600000) // ogni due settimane
-    public void cleanExpiredOutcomes() {
+    public void cleanExpiredOutcomes() throws DataAccessServiceException {
         LocalDate today = LocalDate.now();
         LocalDate expirationDateTwoWeeks = today.minusWeeks(2);
 
         try {
             List<ExaminationOutcome> expiredExaminationOutcomes = examinationOutcomeRepository
-                .findByDateLessThan(expirationDateTwoWeeks);
+                .findByAppeal_DateBefore(expirationDateTwoWeeks);
 
             expiredExaminationOutcomes
                 .stream()
@@ -209,14 +242,14 @@ public class ExaminationOutcomeServiceImpl implements ExaminationOutcomeService 
                     if (outcome.getGrade() > 18) {
                         // Chiamata all'URL per creare l'esame
                         String register = outcome.getRegister();
-                        String courseName = outcome.getExaminationAppeal().getCourse().getName();
-                        String degreeCourseName = outcome.getExaminationAppeal().getDegreeCourse();
+                        String courseName = outcome.getAppeal().getCourse().getName();
+                        String degreeCourseName = outcome.getAppeal().getCourse().getDegreeCourse().getName();
                         String grade = String.valueOf(outcome.getGrade());
                         Boolean withHonors = outcome.isWithHonors();
-                        LocalDate date = outcome.getExaminationAppeal().getDate();
+                        LocalDate date = outcome.getAppeal().getDate();
 
                         RestTemplate restTemplate = new RestTemplate();
-                        String url = "http://localhost:8080/api/v1/examination/create";
+                        String url = "http://localhost:8081/api/v1/examination/create";
                         HttpHeaders headers = new HttpHeaders();
                         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
@@ -234,11 +267,21 @@ public class ExaminationOutcomeServiceImpl implements ExaminationOutcomeService 
 
                 examinationOutcomeRepository.delete(outcome);
             });
-        } catch (DataAccessException e) {
-            logger.error(DATA_ACCESS_ERROR, e);
-        } catch (NullPointerException | PersistenceException e) {
-            logger.error("null pointer or persistence error", e);
+        } catch (PersistenceException e) {
+            throw new DataAccessServiceException(DATA_ACCESS_ERROR, e);
         }
+    }
+
+
+    private ExaminationOutcomeDto mapToDto(ExaminationOutcome outcome) {
+        ExaminationAppeal appeal = outcome.getAppeal();
+        Set<StudentDto> students = studentRepository
+            .findByRegisterIn(appeal.getRegisters())
+            .stream()
+            .map(StudentMapper::toDto)
+            .collect(Collectors.toSet());
+        ExaminationAppealDto dto = ExaminationAppealMapper.toDto(appeal, students);
+        return ExaminationOutcomeMapper.toDto(outcome, dto);
     }
 
 

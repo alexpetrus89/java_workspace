@@ -15,7 +15,24 @@ public record ExaminationId(UUID id) implements Serializable {
     }
 
     public ExaminationId() {
-        this(UUID.randomUUID());
+        this((UUID) null);
+    }
+
+    public static ExaminationId newId() {
+        return new ExaminationId(UUID.randomUUID());
+    }
+
+    public ExaminationId(String id) {
+        this(UUID.fromString(id));
+    }
+
+    @Override
+    public String toString() {
+        return id.toString();
+    }
+
+    public UUID getId() {
+        return id;
     }
 
 }

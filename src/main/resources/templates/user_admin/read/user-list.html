@@ -16,9 +16,11 @@
         <table>
             <thead>
                 <tr>
-                    <th>User ID</th>
                     <th>Username</th>
-                    <th>Fullname</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Date of Birth</th>
+                    <th>Fiscal Code</th>
                     <th>Street</th>
                     <th>City</th>
                     <th>State</th>
@@ -29,13 +31,15 @@
             </thead>
             <tbody>
                 <tr th:each="user : ${users}">
-                    <td th:text="${user.id}">User ID</td>
                     <td th:text="${user.username}">Username</td>
-                    <td th:text="${user.fullname}">Fullname</td>
-                    <td th:text="${user.street}">Street</td>
-                    <td th:text="${user.city}">City</td>
-                    <td th:text="${user.state}">State</td>
-                    <td th:text="${user.zip}">Zip</td>
+                    <td th:text="${user.firstName}">First Name</td>
+                    <td th:text="${user.lastName}">Last Name</td>
+                    <td th:text="${user.dob}">Date of Birth</td>
+                    <td th:text="${user.fiscalCode}">Fiscal Code</td>
+                    <td th:text="${user.address.street}">Street</td>
+                    <td th:text="${user.address.city}">City</td>
+                    <td th:text="${user.address.state}">State</td>
+                    <td th:text="${user.address.zipCode}">Zip</td>
                     <td th:text="${user.phone}">Phone</td>
                     <td th:text="${user.role}">Role</td>
                 </tr>

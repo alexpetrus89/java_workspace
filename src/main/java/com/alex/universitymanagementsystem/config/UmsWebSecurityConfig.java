@@ -92,7 +92,6 @@ public class UmsWebSecurityConfig implements Serializable {
 					"/static/images/**",
 					"/favicon.ico",
 					"/exception/**",
-					"/validation/**",
 					"/user_student/create/create-student-from-user",
 					"/user_professor/create/create-professor-from-user",
 					"/user/update/update-result",

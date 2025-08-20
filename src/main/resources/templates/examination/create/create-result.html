@@ -11,8 +11,8 @@
 <body>
     <div class="container">
 	<h1>Result</h1>
-        <p th:text="'course: ' + ${examination.course.name}">
-        <p th:text="'registration: ' + ${examination.student.register}">
+        <p th:text="'course: ' + ${examination.courseName}">
+        <p th:text="'registration: ' + ${examination.register}">
         <p th:text="'grade: ' + ${examination.grade}">
         <p th:text="'date: ' + ${examination.date}">
         <p th:if="${examination.withHonors}" th:text="'With honors: true'">

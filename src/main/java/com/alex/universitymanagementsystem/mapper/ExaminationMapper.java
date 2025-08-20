@@ -9,22 +9,25 @@ public class ExaminationMapper {
 
     private ExaminationMapper() {} // private constructor to prevent instantiation
 
-    public static Examination toEntity(ExaminationDto examinationDto, Student student, Course course) {
+    public static Examination toEntity(ExaminationDto dto, Student student, Course course) {
+        if (dto == null || student == null || course == null) return null;
         return new Examination(
             course,
             student,
-            Integer.parseInt(examinationDto.getGrade()),
-            examinationDto.isWithHonors(),
-            examinationDto.getDate()
+            dto.getGrade(),
+            dto.isWithHonors(),
+            dto.getDate()
         );
     }
 
     public static ExaminationDto toDto(Examination examination) {
+        if (examination == null) return null;
         return new ExaminationDto(
             examination.getStudent().getRegister().toString(),
             examination.getCourse().getName(),
             examination.getCourse().getDegreeCourse().getName(),
-            String.valueOf(examination.getGrade()),
+            examination.getCourse().getCfu(),
+            examination.getGrade(),
             examination.isWithHonors(),
             examination.getDate()
         );

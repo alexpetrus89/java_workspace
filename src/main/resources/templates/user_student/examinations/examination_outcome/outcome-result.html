@@ -13,19 +13,19 @@
     <div class="container">
     <h1>Outcome</h1>
     <div th:if="${outcome}"></div>
-    <p th:text="'course: ' + ${outcome.examinationAppeal.course.name}"></p>
-    <p th:text="'date: ' + ${outcome.examinationAppeal.date}"></p>
+    <p th:text="'course: ' + ${outcome.appeal.course}"></p>
+    <p th:text="'date: ' + ${outcome.appeal.date}"></p>
     <p th:text="'grade: ' + ${outcome.grade}"></p>
     <p th:if="${outcome.withHonors}" th:text="'with honors'"></p>
     <br>
     <div th:if="${outcome.grade >= 18}">
         <form th:action="@{/api/v1/examination/create}" method="post">
             <input type="hidden" name="register" th:value="${outcome.register}">
-            <input type="hidden" name="courseName" th:value="${outcome.examinationAppeal.course.name}">
-            <input type="hidden" name="degreeCourseName" th:value="${outcome.examinationAppeal.course.degreeCourse.name}">
+            <input type="hidden" name="courseName" th:value="${outcome.appeal.course}">
+            <input type="hidden" name="degreeCourseName" th:value="${outcome.appeal.degreeCourse}">
             <input type="hidden" name="grade" th:value="${outcome.grade}">
             <input type="hidden" name="withHonors" th:value="${outcome.withHonors}">
-            <input type="hidden" name="date" th:value="${outcome.examinationAppeal.date}">
+            <input type="hidden" name="date" th:value="${outcome.appeal.date}">
             <button type="submit">Accept grade</button>
         </form>
         <button type="button" onclick="window.location.href='/user_student/examinations/examination_outcome/confirm-refusal';">Refuse grade</button>

@@ -10,6 +10,8 @@ import jakarta.validation.constraints.Size;
 public class ExaminationOutcomeDto {
 
     // instance variables
+    private Long id;
+
     @NotBlank(message = "Register cannot be blank")
     @Pattern(regexp = "\\d{6}", message = "Register must be a 6-digit number")
     private String register;
@@ -41,7 +43,22 @@ public class ExaminationOutcomeDto {
         this.message = ""; // Default message
     }
 
+    public ExaminationOutcomeDto(Long id, ExaminationAppealDto appeal, String register) {
+        this.id = id;
+        this.register = register;
+        this.appeal = appeal;
+        this.grade = 0; // Default grade
+        this.present = false; // Default present status
+        this.withHonors = false; // Default with honors status
+        this.accepted = false; // Default accepted status
+        this.message = ""; // Default message
+    }
+
     // Getters
+    public Long getId() {
+        return id;
+    }
+
     public String getRegister() {
         return register;
     }
@@ -71,6 +88,10 @@ public class ExaminationOutcomeDto {
     }
 
     // Setters
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public void setRegister(String register) {
         this.register = register;
     }

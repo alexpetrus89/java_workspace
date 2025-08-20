@@ -18,8 +18,8 @@
             <th>Degree Course</th>
         </tr>
         <tr th:each="student : ${students}">
-            <td th:text="${student.fullname}">Nome</td>
-            <td th:text="${student.register.register}">Register</td>
+            <td th:text="${student.firstName} + ' ' + ${student.lastName}">Name</td>
+            <td th:text="${student.register}">Register</td>
             <td th:text="${student.username}">Email</td>
             <td th:text="${student.degreeCourse.name}">Degree Course</td>
         </tr>

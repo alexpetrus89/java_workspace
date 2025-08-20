@@ -73,6 +73,9 @@ public class ProfessorDto {
         return uniqueCode;
     }
 
+    public String getFullName() {
+        return firstName + " " + lastName;
+    }
 
     // setters
     public void setUsername(String username) {

@@ -168,7 +168,6 @@ public class ExaminationAppealServiceImpl implements ExaminationAppealService {
                     .contains(courseId))
                 .toList();
 
-
             return examinationAppealRepository
                 .findByCourse_Id_IdIn(courseIds)
                 .stream()
@@ -177,7 +176,16 @@ public class ExaminationAppealServiceImpl implements ExaminationAppealService {
                     .stream()
                     .noneMatch(studentRegister -> studentRegister.equals(register)))
                 .filter(appeal -> appeal.getDate().isAfter(LocalDate.now()))
-                .map(this::mapToDto)
+                .map(appeal -> {
+                    ExaminationAppealDto dto = mapToDto(appeal);
+                        professorRepository
+                            .findByUniqueCode(new UniqueCode(dto.getProfessorCode()))
+                            .ifPresent(profDto -> {
+                                String fullName = profDto.getFirstName() + " " + profDto.getLastName();
+                                dto.setProfessorFullName(fullName);
+                            });
+                    return dto;
+                })
                 .toList();
 
         } catch (PersistenceException e) {
@@ -216,7 +224,7 @@ public class ExaminationAppealServiceImpl implements ExaminationAppealService {
             return examinationAppealRepository
                 .findByCourse_Id_IdIn(courseIds)
                 .stream()
-                .filter(exam -> exam
+                .filter(appeal -> appeal
                     .getRegisters()
                     .stream()
                     .anyMatch(studentRegister -> studentRegister.equals(register)))

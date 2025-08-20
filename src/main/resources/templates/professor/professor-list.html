@@ -24,9 +24,9 @@
             </thead>
             <tbody>
                 <tr th:each="professor : ${professors}">
-                    <td th:text="${professor.uniqueCode.code}">Unique Code</td>
+                    <td th:text="${professor.uniqueCode}">Unique Code</td>
                     <td th:text="${professor.fiscalCode}">Fiscal Code</td>
-                    <td th:text="${professor.fullname}">Nome</td>
+                    <td th:text="${professor.fullName}">Name</td>
                     <td th:text="${professor.username}">Email</td>
                 </tr>
             </tbody>

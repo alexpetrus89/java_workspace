@@ -2,18 +2,20 @@ package com.alex.universitymanagementsystem.dto;
 
 import java.time.LocalDate;
 
+import com.alex.universitymanagementsystem.annotation.ValidRegister;
+
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.Positive;
 
 public class ExaminationDto{
 
     // instance variables
-    @NotNull(message = "Register must not be null")
-    @Size(min = 6, max = 6, message = "Register must be exactly 6 digits")
-    @Pattern(regexp = "\\d{6}", message = "Register must contain only digits")
+    @NotBlank(message = "Register is mandatory")
+    @ValidRegister
     private String register;
 
     @NotBlank(message = "Course name must not be blank")
@@ -22,9 +24,13 @@ public class ExaminationDto{
     @NotBlank(message = "Degree course name must not be blank")
     private String degreeCourseName;
 
-    @NotBlank(message = "Grade must not be blank")
-    @Pattern(regexp = "\\d{1,2}", message = "Grade must be a number between 0 and 30")
-    private String grade;
+    @Positive(message = "CFU must be a positive number")
+    private Integer courseCfu;
+
+    @Min(value = 0, message = "Grade must be at least 0")
+    @Max(value = 30, message = "Grade must be at most 30")
+    @NotNull(message = "Grade must not be null")
+    private Integer grade;
 
     private boolean withHonors;
 
@@ -33,10 +39,11 @@ public class ExaminationDto{
     private LocalDate date;
 
     // constructors
-    public ExaminationDto(String register, String courseName, String degreeCourseName, String grade, boolean withHonors, LocalDate date) {
+    public ExaminationDto(String register, String courseName, String degreeCourseName, Integer courseCfu, Integer grade, boolean withHonors, LocalDate date) {
         this.register = register.toLowerCase();
         this.courseName = courseName.toLowerCase();
         this.degreeCourseName = degreeCourseName.toUpperCase();
+        this.courseCfu = courseCfu;
         this.grade = grade;
         this.withHonors = withHonors;
         this.date = date;
@@ -55,7 +62,11 @@ public class ExaminationDto{
         return degreeCourseName;
     }
 
-    public String getGrade() {
+    public Integer getCourseCfu() {
+        return courseCfu;
+    }
+
+    public Integer getGrade() {
         return grade;
     }
 
@@ -65,19 +76,23 @@ public class ExaminationDto{
 
     // setters
     public void setRegister(String register) {
-        this.register = register;
+        this.register = register.toLowerCase();
     }
 
 
     public void setCourseName(String courseName) {
-        this.courseName = courseName;
+        this.courseName = courseName.toLowerCase();
     }
 
     public void setDegreeCourseName(String degreeCourseName) {
-        this.degreeCourseName = degreeCourseName;
+        this.degreeCourseName = degreeCourseName.toUpperCase();
     }
 
-    public void setGrade(String grade) {
+    public void setCourseCfu(Integer courseCfu) {
+        this.courseCfu = courseCfu;
+    }
+
+    public void setGrade(Integer grade) {
         this.grade = grade;
     }
 

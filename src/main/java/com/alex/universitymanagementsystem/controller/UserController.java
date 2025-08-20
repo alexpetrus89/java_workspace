@@ -128,7 +128,7 @@ public class UserController {
                 return REDIRECT_LOGIN;
             else return FORWARD + genericExceptionUri;
         } catch (ObjectAlreadyExistsException _) {
-            return FORWARD + alreadyExistsExceptionUri + "object-already-exists";
+            return FORWARD + alreadyExistsExceptionUri + "/object-already-exists";
         } catch (DataAccessServiceException _) {
             return FORWARD + dataAccessExceptionUri;
         }
@@ -138,7 +138,8 @@ public class UserController {
     /**
      * Creates a new user with role STUDENT
      * @param request HTTP request
-     * @param DegreeCourse degree course object
+     * @param degreeCourse degree course object
+     * @param ordering ordering of the study plan
      * @return ModelAndView
      */
     @PostMapping(path = "/create-student")
@@ -150,7 +151,7 @@ public class UserController {
             StudentDto student = studentServiceImpl.addNewStudent(new RegistrationForm(builder), degreeCourse, ordering);
             return new ModelAndView("user_student/create/student-result", "student", student);
         } catch (ObjectAlreadyExistsException e) {
-            return new ModelAndView(alreadyExistsExceptionUri + "professor-already-exists", EXCEPTION_MESSAGE, e.getMessage());
+            return new ModelAndView(alreadyExistsExceptionUri + "/student-already-exists", EXCEPTION_MESSAGE, e.getMessage());
         } catch (DataAccessServiceException e) {
             return new ModelAndView(dataAccessExceptionUri, EXCEPTION_MESSAGE, e.getMessage());
         }
@@ -171,7 +172,7 @@ public class UserController {
             ProfessorDto professor = professorServiceImpl.addNewProfessor(new RegistrationForm(builder));
             return new ModelAndView("user_professor/create/professor-result", "professor", professor);
         } catch (ObjectAlreadyExistsException e) {
-            return new ModelAndView(alreadyExistsExceptionUri + "professor-already-exists", EXCEPTION_MESSAGE, e.getMessage());
+            return new ModelAndView(alreadyExistsExceptionUri + "/professor-already-exists", EXCEPTION_MESSAGE, e.getMessage());
         } catch (DataAccessServiceException e) {
             return new ModelAndView(dataAccessExceptionUri, EXCEPTION_MESSAGE, e.getMessage());
         }

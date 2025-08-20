@@ -21,6 +21,8 @@ public class ExaminationAppealDto {
     @NotBlank(message = "Professor unique code cannot be blank")
     private String professorCode;
 
+    private String professorFullName;
+
     @NotBlank(message = "Description cannot be blank")
     private String description;
 
@@ -39,6 +41,8 @@ public class ExaminationAppealDto {
 
     public String getProfessorCode() { return professorCode; }
 
+    public String getProfessorFullName() { return professorFullName; }
+
     public String getDescription() { return description; }
 
     public LocalDate getDate() { return date; }
@@ -53,6 +57,8 @@ public class ExaminationAppealDto {
     public void setDegreeCourse(String degreeCourse) { this.degreeCourse = degreeCourse; }
 
     public void setProfessorCode(String professorCode) { this.professorCode = professorCode; }
+
+    public void setProfessorFullName(String professorFullName) { this.professorFullName = professorFullName; }
 
     public void setDescription(String description) { this.description = description; }
 

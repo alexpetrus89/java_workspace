@@ -8,9 +8,11 @@
     <title>Uni Journey</title>
 </head>
 <body>
+	<h1>FISCAL CODE NOT FOUND</h1>
+    <p th:text="'exception: ' + ${message}"></p>
     <br>
-    <a href="#" th:href="@{/home}">Back to Menu</a>
-	<h1>OBJECT NOT FOUND</h1>
-    <p th:text="'exception: ' + ${error}">
+    <p><a href="javascript:history.back()">Go back</a></p>
+    <br>
+    <a href="#" th:href="@{/home}">Back to home</a>
 </body>
 </html>

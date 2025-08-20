@@ -159,19 +159,19 @@ public class UmsMvcConfig implements WebMvcConfigurer, Serializable {
             // admin student utilities
             registry
                   .addViewController("/student/student-menu")
-                  .setViewName("student/student-menu");
+                  .setViewName("/student/student-menu");
             registry
                   .addViewController("/student/read/read")
                   .setViewName("student/read/read");
             registry
                   .addViewController("/student/create/create")
-                  .setViewName("student/create/create");
+                  .setViewName("/student/create/create");
             registry
                   .addViewController("/student/update/update")
-                  .setViewName("student/update/update");
+                  .setViewName("/student/update/update");
             registry
                   .addViewController("/student/delete/delete")
-                  .setViewName("student/delete/delete");
+                  .setViewName("/student/delete/delete");
 
             // user professor
             registry
@@ -196,33 +196,33 @@ public class UmsMvcConfig implements WebMvcConfigurer, Serializable {
             // admin professor utilities
             registry
                   .addViewController("/professor/professor-menu")
-                  .setViewName("professor/professor-menu");
+                  .setViewName("/professor/professor-menu");
             registry
                   .addViewController("/professor/read/read")
-                  .setViewName("professor/read/read");
-            registry.
-                  addViewController("/professor/create/create")
-                  .setViewName("professor/create/create");
+                  .setViewName("/professor/read/read");
+            registry
+                  .addViewController("/professor/create/create")
+                  .setViewName("/professor/create/create");
             registry
                   .addViewController("/professor/update/update")
-                  .setViewName("professor/update/update");
+                  .setViewName("/professor/update/update");
             registry
                   .addViewController("/professor/delete/delete")
-                  .setViewName("professor/delete/delete");
+                  .setViewName("/professor/delete/delete");
 
-            //validation
+            // exception
             registry
-                  .addViewController("/validation/registration/username-already-taken")
-                  .setViewName("/validation/registration/username-already-taken");
+                  .addViewController("/exception/illegal/registration/username-already-taken")
+                  .setViewName("/exception/illegal/registration/username-already-taken");
             registry
-                  .addViewController("/validation/registration/password-not-match")
-                  .setViewName("/validation/registration/password-not-match");
+                  .addViewController("/exception/illegal/registration/username-already-taken/password-not-match")
+                  .setViewName("/exception/illegal/registration/username-already-taken/password-not-match");
             registry
-                  .addViewController("/validation/registration/invalid-dob")
-                  .setViewName("/validation/registration/invalid-dob");
+                  .addViewController("/exception/illegal/registration/invalid-dob")
+                  .setViewName("/exception/illegal/registration/invalid-dob");
             registry
-                  .addViewController("/validation/study_plan/invalid-choice")
-                  .setViewName("/validation/study_plan/invalid-choice");
+                  .addViewController("/exception/illegal/study_plan/invalid-choice")
+                  .setViewName("/exception/illegal/study_plan/invalid-choice");
       }
 
       @Override

@@ -9,8 +9,8 @@
 </head>
 <body>
     <div th:if="${student}">
-        <p th:text="'registration number: ' + ${student.register.register}"></p>
-        <p th:text="'name: ' + ${student.fullname}"></p>
+        <p th:text="'registration number: ' + ${student.register}"></p>
+        <p th:text="'name: ' + ${student.firstName} + ' ' + ${student.lastName}"></p>
         <p th:text="'email: ' + ${student.username}"></p>
         <p th:text="'dob: ' + ${student.dob}"></p>
         <p th:text="'age: ' + ${student.age}"></p>

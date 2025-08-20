@@ -74,20 +74,20 @@ public class RegistrationController {
         // username already in use check
         try {
             if(registrationServiceImpl.isUsernameAlreadyTaken(form.getUsername()))
-                return "redirect:/validation/registration/username-already-taken";
+                return "redirect:/exception/illegal/registration/username-already-taken";
 
             if (bindingResult.hasErrors()) {
                 FieldError passwordError = bindingResult.getFieldError("password");
                 if (passwordError != null && "NotBlank".equals(passwordError.getCode()))
-                    return "redirect:/validation/registration/password-is-blank";
+                    return "redirect:/exception/illegal/registration/password-is-blank";
 
                 ObjectError globalError = bindingResult.getGlobalError();
                 if (globalError != null && "PasswordMatches".equals(globalError.getCode()))
-                    return "redirect:/validation/registration/password-not-match";
+                    return "redirect:/exception/illegal/registration/password-not-match";
 
                 FieldError dobError = bindingResult.getFieldError("dob");
                 if (dobError != null && "ValidBirthDate".equals(dobError.getCode()))
-                    return "redirect:/validation/registration/invalid-dob";
+                    return "redirect:/exception/illegal/registration/invalid-dob";
             }
 
             // create a new form builder

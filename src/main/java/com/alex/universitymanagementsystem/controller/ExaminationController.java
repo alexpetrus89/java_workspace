@@ -24,6 +24,7 @@ import com.alex.universitymanagementsystem.dto.UpdateExaminationDto;
 import com.alex.universitymanagementsystem.exception.DataAccessServiceException;
 import com.alex.universitymanagementsystem.exception.ObjectAlreadyExistsException;
 import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
+import com.alex.universitymanagementsystem.service.impl.CourseServiceImpl;
 import com.alex.universitymanagementsystem.service.impl.ExaminationOutcomeServiceImpl;
 import com.alex.universitymanagementsystem.service.impl.ExaminationServiceImpl;
 
@@ -40,6 +41,7 @@ public class ExaminationController {
     private static final String EXAMINATIONS_LIST = "examination/examination-list";
     private static final String EXCEPTION_MESSAGE = "message";
     private static final String OBJECT_NOT_FOUND = "/object-not-found";
+    private static final String OBJECT_ALREADY_EXISTS = "/object-already-exists";
     private static final String ILLEGAL_PARAMETERS = "/illegal-parameters";
 
     @Value("#{dataAccessExceptionUri}")
@@ -54,14 +56,17 @@ public class ExaminationController {
     // instance variable
     private final ExaminationServiceImpl examinationServiceImpl;
     private final ExaminationOutcomeServiceImpl examinationOutcomeServiceImpl;
+    private final CourseServiceImpl courseServiceImpl;
 
     // autowired - dependency injection - constructor
     public ExaminationController(
         ExaminationServiceImpl examinationServiceImpl,
-        ExaminationOutcomeServiceImpl examinationOutcomeServiceImpl
+        ExaminationOutcomeServiceImpl examinationOutcomeServiceImpl,
+        CourseServiceImpl courseServiceImpl
     ) {
         this.examinationServiceImpl = examinationServiceImpl;
         this.examinationOutcomeServiceImpl = examinationOutcomeServiceImpl;
+        this.courseServiceImpl = courseServiceImpl;
     }
 
 
@@ -181,8 +186,8 @@ public class ExaminationController {
      * @return a ModelAndView containing the details of the newly added examination
      */
     @PostMapping(path = "/create")
-    public ModelAndView createNewExaminationByAdmin(
-        @Valid @RequestParam String register,
+    public ModelAndView createNewExamination(
+        @RequestParam String register,
         @RequestParam String courseName,
         @RequestParam String degreeCourseName,
         @RequestParam String grade,
@@ -191,7 +196,9 @@ public class ExaminationController {
     ) {
 
         try {
-            ExaminationDto examination = new ExaminationDto(register, courseName, degreeCourseName, grade, withHonors, date);
+            Integer courseCfu = courseServiceImpl.getCourseByNameAndDegreeCourseName(courseName, degreeCourseName).getCfu();
+            ExaminationDto examination = new ExaminationDto(register, courseName, degreeCourseName, courseCfu, Integer.valueOf(grade), withHonors, date);
+            examinationServiceImpl.addNewExamination(examination);
             ExaminationOutcomeDto outcome = examinationOutcomeServiceImpl.getOutcomeByCourseAndStudent(courseName, register);
             examinationOutcomeServiceImpl.deleteExaminationOutcome(outcome);
             return new ModelAndView("examination/create/create-result", EXAMINATION, examination);
@@ -200,7 +207,7 @@ public class ExaminationController {
         } catch (ObjectNotFoundException e) {
             return new ModelAndView(notFoundExceptionUri + OBJECT_NOT_FOUND, EXCEPTION_MESSAGE, e.getMessage());
         } catch (ObjectAlreadyExistsException e) {
-            return new ModelAndView(alreadyExistsExceptionUri + "object-already-exists", EXCEPTION_MESSAGE, e.getMessage());
+            return new ModelAndView(alreadyExistsExceptionUri + OBJECT_ALREADY_EXISTS, EXCEPTION_MESSAGE, e.getMessage());
         } catch (DataAccessServiceException e) {
             return new ModelAndView(dataAccessExceptionUri, EXCEPTION_MESSAGE, e.getMessage());
         }

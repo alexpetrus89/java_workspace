@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.alex.universitymanagementsystem.domain.Course;
 import com.alex.universitymanagementsystem.domain.Professor;
 import com.alex.universitymanagementsystem.dto.CourseDto;
 import com.alex.universitymanagementsystem.dto.ProfessorDto;
@@ -25,8 +24,6 @@ import com.alex.universitymanagementsystem.exception.ObjectAlreadyExistsExceptio
 import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
 import com.alex.universitymanagementsystem.mapper.ProfessorMapper;
 import com.alex.universitymanagementsystem.service.impl.CourseServiceImpl;
-
-import jakarta.transaction.Transactional;
 
 @RestController
 @RequestMapping(path = "api/v1/course")
@@ -110,7 +107,7 @@ public class CourseController {
      */
     @GetMapping(path = "/create")
     public ModelAndView createNewCourseAndReturnView() {
-        return new ModelAndView("course/create/create", COURSE, new Course());
+        return new ModelAndView("course/create/create", COURSE, new CourseDto());
     }
 
     /**
@@ -119,7 +116,7 @@ public class CourseController {
      */
     @GetMapping(path = "/update")
     public ModelAndView updateCourseAndReturnView() {
-        return new ModelAndView("course/update/update", COURSE, new Course());
+        return new ModelAndView("course/update/update", COURSE, new CourseDto());
     }
 
 
@@ -129,11 +126,9 @@ public class CourseController {
      * @return ModelAndView
      */
     @PostMapping(path = "/create")
-    @Transactional // con l'annotazione transactional effettua una gestione propria degli errori
-    public ModelAndView createNewCourse(@ModelAttribute CourseDto course) {
-
+    public ModelAndView createNewCourse(@ModelAttribute CourseDto dto) {
         try{
-            CourseDto courseDto = courseServiceImpl.addNewCourse(course);
+            CourseDto courseDto = courseServiceImpl.addNewCourse(dto);
             return new ModelAndView("course/create/create-result", COURSE, courseDto);
         } catch (ObjectNotFoundException e) {
             return new ModelAndView(notFoundExceptionUri, EXCEPTION_MESSAGE, e.getMessage());
@@ -156,11 +151,11 @@ public class CourseController {
     public ModelAndView updateCourse(
         @RequestParam("old_name") String oldCourseName,
         @RequestParam("old_degree_course_name") String oldDegreeCourseName,
-        @ModelAttribute CourseDto courseDto
+        @ModelAttribute CourseDto dto
     ){
         try {
 
-            CourseDto course = courseServiceImpl.updateCourse(oldCourseName, oldDegreeCourseName, courseDto);
+            CourseDto course = courseServiceImpl.updateCourse(oldCourseName, oldDegreeCourseName, dto);
             return new ModelAndView("course/update/update-result", COURSE, course);
         } catch (IllegalArgumentException e) {
             return new ModelAndView(illegalArgumentExceptionUri, EXCEPTION_MESSAGE, e.getMessage());

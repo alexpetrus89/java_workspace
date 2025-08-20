@@ -6,7 +6,9 @@
 <head>
     <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
     <title>Uni Journey</title>
-    <link rel="stylesheet" type="text/css" href="/static/css/create-appeal.css"> <!-- Assicurati che esista -->
+    <link rel="stylesheet" type="text/css" href="/static/css/create-appeal.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="/static/js/ums-degree-courses.js"></script>
 </head>
 <body>
 
@@ -42,10 +44,14 @@
                 <input type="text" name="uniqueCode" id="uniqueCode" placeholder="Enter professor's unique code" title="Enter unique code" required>
             </div>
 
-            <div class="form-group">
-                <label for="degreeCourseName">Degree Course</label>
-                <input type="text" name="degreeCourseName" id="degreeCourseName" placeholder="Enter degree course name" title="Enter degree course" required>
-            </div>
+            <label for="degreeCourse">Degree Course:</label>
+            <select id="degreeCourse" name="degreeCourse" required>
+                <option value="">-- Select a Course --</option>
+                <option th:each="degreeCourse : ${degreeCourses}"
+                        th:value="${degreeCourse.name}"
+                        th:text="${degreeCourse.name}">
+                </option>
+            </select>
 
             <div class="form-actions">
                 <button type="submit" class="btn btn-primary">Submit</button>

@@ -17,26 +17,22 @@ public class CourseDto {
     @NotBlank(message = "Course name is mandatory")
     private String name;
 
+    @NotBlank(message = "Course type is mandatory")
     private CourseType type;
 
     @Positive(message = "CFU must be a positive number")
     private Integer cfu;
+
+    @NotBlank(message = "Professor is mandatory")
     private ProfessorDto professor;
 
-    @NotBlank(message = "Degree course name is mandatory")
+    @NotBlank(message = "Degree course is mandatory")
     private DegreeCourseDto degreeCourse;
 
     // constructors
     public CourseDto() {}
 
-    public CourseDto(
-        String name,
-        CourseType type,
-        Integer cfu,
-        ProfessorDto professor,
-        DegreeCourseDto degreeCourse
-
-    ) {
+    public CourseDto(String name, CourseType type, Integer cfu, ProfessorDto professor, DegreeCourseDto degreeCourse) {
         this.name = name;
         this.type = type;
         this.cfu = cfu;

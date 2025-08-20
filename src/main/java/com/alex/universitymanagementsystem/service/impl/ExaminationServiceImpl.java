@@ -204,22 +204,8 @@ public class ExaminationServiceImpl implements ExaminationService {
         throws IllegalArgumentException, ObjectNotFoundException, ObjectAlreadyExistsException, DataAccessServiceException
     {
 
-        // --- Parse & validate grade ---
-        int parsedGrade;
-        try {
-            parsedGrade = Integer.parseInt(request.getGrade());
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("Grade must be a valid integer.", e);
-        }
-
-        if (parsedGrade < 0 || parsedGrade > 30)
-            throw new IllegalArgumentException("Grade must be between 0 and 30.");
-
-        if (request.isWithHonors() && parsedGrade != 30)
+        if (request.isWithHonors() && request.getGrade() != 30)
             throw new IllegalArgumentException("Honors can only be given if the grade is 30.");
-
-        if (request.getDate().isAfter(LocalDate.now()))
-            throw new IllegalArgumentException("Date cannot be in the future.");
 
         try {
             // --- Load domain entities ---
@@ -253,7 +239,7 @@ public class ExaminationServiceImpl implements ExaminationService {
                 throw new ObjectAlreadyExistsException("Examination already exists for this student and course.");
 
             // --- Create & persist ---
-            Examination examination = new Examination(course, student, parsedGrade, request.isWithHonors(), request.getDate());
+            Examination examination = new Examination(course, student, request.getGrade(), request.isWithHonors(), request.getDate());
             return ExaminationMapper.toDto(examinationRepository.saveAndFlush(examination));
 
         } catch (PersistenceException e) {

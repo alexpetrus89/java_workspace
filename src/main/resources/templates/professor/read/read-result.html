@@ -11,9 +11,9 @@
 <body>
     <div th:if="${professor}">
         <p th:text="'professor found:'"></p>
-        <p th:text="'unique code: ' + ${professor.uniqueCode.code}"></p>
+        <p th:text="'unique code: ' + ${professor.uniqueCode}"></p>
         <p th:text="'fiscal code: ' + ${professor.fiscalCode}"></p>
-        <p th:text="'name: ' + ${professor.fullname}"></p>
+        <p th:text="'name: ' + ${professor.fullName}"></p>
         <p th:text="'email: ' + ${professor.username}"></p>
     </div>
     <div th:if="${message}">

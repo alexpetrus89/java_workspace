@@ -37,8 +37,6 @@ import java.text.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.support.MethodArgumentNotValidException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.BindException;
@@ -62,121 +60,97 @@ public class GlobalControllerExceptionHandler {
         LoggerFactory.getLogger(GlobalControllerExceptionHandler.class);
 
     // constants
-    private static final String EXCEPTION_VIEW_NAME = "exception/error";
+    private static final String EXCEPTION_VIEW = "exception/error";
     private static final String MESSAGE = "message";
 
     /**
-     * Handles all uncaught exceptions and returns a ResponseEntity with a status of Internal Server Error (500)
-     * and a body containing the error message. The exception is logged at the ERROR level.
+     * Handles all uncaught exceptions and returns a ModelAndView with the error message.
      * @param e the exception to be handled
-     * @return a ResponseEntity containing the error message
+     * @return a ModelAndView containing the error message
      */
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<String> handleException(Exception e) {
-        // Handle the exception and generate a custom error response
-        logger.error("An exception occurred", e);
+    public ModelAndView handleException(Exception e) {
+        logger.error("Generic exception occurred", e);
         String message = "A generic exception occurred: " + e.getMessage();
+        return new ModelAndView(EXCEPTION_VIEW, MESSAGE, message);
+    }
 
-        return ResponseEntity
-            .status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .body(message);
+
+    /**
+     * Handles InternalServerError exceptions and returns a ModelAndView with a status of Internal Server Error (500).
+     * The exception is logged at the ERROR level, and the response body contains a custom error message.
+     * @param e the InternalServerError exception to be handled
+     * @return a ModelAndView containing the error message
+     */
+    @ExceptionHandler(InternalServerError.class)
+    public ModelAndView handleInternalServerError(InternalServerError e) {
+        logger.error("Internal server error", e);
+        String message = "Internal server error: " + e.getMessage();
+        return new ModelAndView(EXCEPTION_VIEW, MESSAGE, message);
     }
 
 
     /**
      * Handles exceptions that occur when a resource is not found, such as a 404 Not Found response.
-     * Returns a ResponseEntity with a status of Not Found (404) and a body containing a custom error message.
+     * Returns a ModelAndView object with a view name and a custom error message.
      * The exception is logged at the ERROR level.
      * @param e the exception to be handled
-     * @return a ResponseEntity containing the error message
+     * @return a ModelAndView object
      */
     @ExceptionHandler(value = {NotFoundException.class, NoResourceFoundException.class})
-    public ResponseEntity<String> handleNoResourceFoundException(NoResourceFoundException e) {
-        // Handle the specific exception and generate a custom error response
+    public ModelAndView handleNoResourceFoundException(Exception e) {
         logger.error("Resource not found", e);
-        String message = "Resource not found, NON TROVA LA RISORSA: " + e.getMessage();
-
-        return ResponseEntity
-            .status(HttpStatus.NOT_FOUND)
-            .body(message);
+        String message = "Resource not found: " + e.getMessage();
+        return new ModelAndView("exception/not_found/error-not-found", MESSAGE, message);
     }
 
 
     /**
      * Handles exceptions that occur when parsing a .html file, such as ParseErrors, SAXExceptions, and IOExceptions.
-     * Returns a ResponseEntity with a status of Internal Server Error (500) and a body containing a custom error message.
+     * Returns a ModelAndView with a status of Internal Server Error (500) and a body containing a custom error message.
      * The exception is logged at the ERROR level.
      * @param e the exception to be handled
-     * @return a ResponseEntity containing the error message
+     * @return a ModelAndView containing the error message
      */
     @ExceptionHandler(ParseException.class)
-    public ResponseEntity<String> handleHtmlParseException(Exception e) {
-        // Handle the specific exception and generate a custom error response
+    public ModelAndView handleHtmlParseException(Exception e) {
         logger.error("Error during HTML parsing", e);
         String message = "Error during HTML parsing, HAI FATTO QUALCHE ERRORE IN UN FILE .HTML: " + e.getMessage();
-
-        return ResponseEntity
-            .status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .body(message);
+        return new ModelAndView(EXCEPTION_VIEW, MESSAGE, message);
     }
 
 
     /**
-     * Handles AccessDeniedException exceptions and returns a ResponseEntity with a status of Method Not Allowed (405).
+     * Handles AccessDeniedException exceptions and returns a ModelAndView with a status of Forbidden (403).
      * The exception is logged at the ERROR level, and the response body contains a custom error message.
      * This exception is thrown when a user tries to access a resource they do not have permission to access.
      * @param e the AccessDeniedException exception to be handled
-     * @return a ResponseEntity containing the error message
+     * @return a ModelAndView containing the error message
      */
     @ExceptionHandler(value = AccessDeniedException.class)
-    public ResponseEntity<String> handleAccessDeniedException(AccessDeniedException e) {
-        // handle the specific exception and generate a custom error response
+    public ModelAndView handleAccessDeniedException(AccessDeniedException e) {
         logger.error("Access denied", e);
         String message = "Access denied, NON HAI I PERMESSI: " + e.getMessage();
-
-        return ResponseEntity
-            .status(HttpStatus.METHOD_NOT_ALLOWED)
-            .body(message);
+        return new ModelAndView("exception/access_denied/access-denied", MESSAGE, message);
     }
 
 
     /**
-     * Handles NoHandlerFoundException exceptions and returns a ResponseEntity with a status of Not Found (404).
+     * Handles NoHandlerFoundException exceptions and returns a ModelAndView with a status of Not Found (404).
      * The exception is logged at the ERROR level, and the response body contains a custom error message.
      * This exception is thrown when a request is made to a URL that does not have a handler method.
      * This can occur when a static resource (such as a .html file) is not found, as Spring MVC will not find a handler for the request.
      * @param e the NoHandlerFoundException exception to be handled
-     * @return a ResponseEntity containing the error message
+     * @return a ModelAndView containing the error message
      */
     @ExceptionHandler(NoHandlerFoundException.class)
-    public ResponseEntity<String> handleNoHandlerFoundException(NoHandlerFoundException e) {
-        // Handle the specific exception and generate a custom error response
+    public ModelAndView handleNoHandlerFoundException(NoHandlerFoundException e) {
         logger.error("No handler found for request", e);
         String message = "No controller/handler found for request: " + e.getMessage();
-
-        return ResponseEntity
-            .status(HttpStatus.NOT_FOUND)
-            .body(message);
+        return new ModelAndView(EXCEPTION_VIEW, MESSAGE, message);
     }
 
 
-    /**
-     * Handles InternalServerError exceptions and returns a ResponseEntity with a status of Internal Server Error (500).
-     * The exception is logged at the ERROR level, and the response body contains a custom error message.
-     *
-     * @param e the InternalServerError exception to be handled
-     * @return a ResponseEntity containing the error message
-     */
-    @ExceptionHandler(InternalServerError.class)
-    public ResponseEntity<String> handleInternalServerError(InternalServerError e) {
-        // Handle the specific exception and generate a custom error response
-        logger.error("Internal server error", e);
-        String message = "Internal server error: " + e.getMessage();
-
-        return ResponseEntity
-            .status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .body(message);
-    }
 
 
 
@@ -194,14 +168,9 @@ public class GlobalControllerExceptionHandler {
      */
     @ExceptionHandler(UsernameInvalidException.class)
     public ModelAndView handleUsernameInvalidException(UsernameInvalidException e, HttpServletRequest request) {
-        // Handle the specific exception and generate a custom error response
         logger.error("Username is invalid", e);
-        ModelAndView modelAndView = new ModelAndView("/exception/registration/invalid-username");
-        modelAndView.addObject("title", "Error View");
-        modelAndView.addObject("errorMessage", e.getMessage());
-        modelAndView.addObject("status", "Error");
-        modelAndView.addObject("stackTrace", e.getStackTrace());
-        return modelAndView;
+        String message = "Username is invalid: " + e.getMessage();
+        return new ModelAndView("/exception/illegal/registration/invalid-username", MESSAGE, message);
     }
 
 
@@ -213,45 +182,42 @@ public class GlobalControllerExceptionHandler {
      */
     @ExceptionHandler(AssertionError.class)
     public ModelAndView handleAssertionError(AssertionError e) {
-        // Handle the specific exception and generate a custom error response
         logger.error("Assertion error", e);
         String message = "An assertion error occurred: " + e.getMessage();
-        return new ModelAndView(EXCEPTION_VIEW_NAME, MESSAGE, message);
+        return new ModelAndView(EXCEPTION_VIEW, MESSAGE, message);
     }
 
 
     /**
      * Handles exceptions that occur when a method argument is not valid.
-     * Returns a ModelAndView with a view name of "exception/validation/validation" and
+     * Returns a ModelAndView with a view name of "exception/illegal/illegal-parameter" and
      * a model containing the error message.
      * The exception is logged at the ERROR level.
      */
     @ExceptionHandler({MethodArgumentNotValidException.class, BindException.class, ConstraintViolationException.class})
     public ModelAndView handleValidationException(Exception e) {
-        // Handle the specific exception and generate a custom error response
         logger.error("Validation error", e);
         String message = "An validation error occurred: " + getErrorMessage(e);
-        return new ModelAndView(EXCEPTION_VIEW_NAME, MESSAGE, message);
+        return new ModelAndView("exception/illegal/illegal-parameter", MESSAGE, message);
     }
 
 
     /**
      * Handles exceptions that occur when a servlet request parameter is missing.
-     * Returns a ModelAndView with a view name of "exception/read/error" and
+     * Returns a ModelAndView with a view of "exception/illegal/illegal-parameter" and
      * a model containing the error message.
      * The exception is logged at the ERROR level.
      */
     @ExceptionHandler(MissingServletRequestParameterException.class)
     public ModelAndView handlerMissingServletRequestParameter(MissingServletRequestParameterException e) {
-        // Handle the specific exception and generate a custom error response
         logger.error("Missing servlet request parameter", e);
         String message = "Parameter cannot be null: " + e.getMessage();
-        return new ModelAndView(EXCEPTION_VIEW_NAME, MESSAGE, message);
+        return new ModelAndView("exception/illegal/illegal-parameter", MESSAGE, message);
     }
 
 
     /**
-     * Handles IllegalArgumentException exceptions and returns a ModelAndView with a view name of "exception/assertion/assertion".
+     * Handles IllegalArgumentException exceptions and returns a ModelAndView with a view name of "exception/illegal/illegal-parameters".
      * The exception is logged at the ERROR level, and the response body contains the error message.
      * @param e the IllegalArgumentException exception to be handled
      * @return a ModelAndView containing the error message
@@ -260,19 +226,19 @@ public class GlobalControllerExceptionHandler {
     public ModelAndView handleIllegalArgumentException(IllegalArgumentException e) {
         logger.error("Illegal argument", e);
         if (e.getMessage() != null && e.getMessage().contains("fiscal code"))
-            return new ModelAndView("validation/registration/invalid-fiscal-code");
+            return new ModelAndView("exception/illegal/registration/invalid-fiscal-code");
 
         // fallback for others IllegalArgumentException
-        ModelAndView modelAndView = new ModelAndView(EXCEPTION_VIEW_NAME, MESSAGE, e.getMessage());
-        modelAndView.addObject("title", "Error View");
-        modelAndView.addObject("errorMessage", e.getMessage());
-        modelAndView.addObject("status", "Error");
-        modelAndView.addObject("stackTrace", e.getStackTrace());
-        return modelAndView;
+        return new ModelAndView("exception/illegal/illegal-parameters", MESSAGE, e.getMessage());
     }
 
 
 
+    /**
+     * Extracts the error message from the given exception.
+     * @param e the exception from which to extract the error message
+     * @return the extracted error message
+     */
     private String getErrorMessage(Exception e) {
         return switch (e) {
             case MethodArgumentNotValidException ex -> {

@@ -1,0 +1,91 @@
+/* Reset leggero */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Body principale */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f6f8;
+    color: #333;
+    line-height: 1.6;
+}
+
+/* Contenitore centrale */
+.container {
+    max-width: 700px;
+    margin: 80px auto;
+    padding: 30px;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    text-align: center;
+}
+
+/* Titoli */
+h1, h2 {
+    color: #c0392b;
+    margin-bottom: 20px;
+}
+
+/* Messaggi */
+.message, p {
+    font-size: 1.1em;
+    color: #555;
+    margin-bottom: 20px;
+}
+
+/* Link / bottoni */
+a {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #3498db;
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    transition: background 0.3s;
+}
+
+a:hover {
+    background-color: #2980b9;
+}
+
+/* Tabelle (se presenti nelle pagine) */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+table th, table td {
+    padding: 12px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+table th {
+    background-color: #f0f0f0;
+    color: #333;
+}
+
+/* Input / Form (se presenti) */
+input, select, textarea, button {
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 1em;
+}
+
+input:focus, select:focus, textarea:focus {
+    border-color: #3498db;
+    outline: none;
+}
+
+/* Messaggi di errore nei form */
+.error {
+    color: #c0392b;
+    font-weight: bold;
+    margin-top: 10px;
+}

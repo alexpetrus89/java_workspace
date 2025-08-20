@@ -27,22 +27,22 @@
             <tbody>
                 <tr th:each="examination : ${examinations}">
                     <td th:text="${examination.courseName}">Course</td>
-                    <td th:text="${examination.course.cfu}">Cfu</td>
-                    <td th:text="${examination.student.register.register}">Student register</td>
-                    <td th:text="${examination.student.firstName} + ' ' + ${examination.student.lastName}">Student name</td>
+                    <td th:text="${examination.courseCfu}">Cfu</td>
+                    <td th:text="${examination.register}">Student register</td>
+                    <td th:text="${examination.register} + ' ' + ${examination.register}">Student name</td>
                     <td>
                         <span th:text="${examination.grade}">Grade</span>
                         <span th:if="${examination.withHonors}"> with honors</span>
                     </td>
                     <td th:text="${examination.date}">Date</td>
-                    <td th:text="${examination.course.degreeCourse.name}">Degree course name</td>
+                    <td th:text="${examination.degreeCourseName}">Degree course name</td>
                 </tr>
             </tbody>
         </table>
     </div>
 
     <div class="summary">
-        <div>CREDITS ACQUIRED: <span th:text="${#aggregates.sum(examinations.![course.cfu])}">Total CFU</span></div>
+        <div>CREDITS ACQUIRED: <span th:text="${#aggregates.sum(examinations.![courseCfu])}">Total CFU</span></div>
         <div>AVERAGE RATING: <span th:text="${#aggregates.avg(examinations.![grade])}">Average Rating</span></div>
     </div>
 

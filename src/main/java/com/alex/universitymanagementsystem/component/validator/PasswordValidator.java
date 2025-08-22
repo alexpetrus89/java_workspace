@@ -3,11 +3,15 @@ package com.alex.universitymanagementsystem.component.validator;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import org.springframework.stereotype.Component;
+
 import com.alex.universitymanagementsystem.annotation.ValidPassword;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
+
+@Component
 public class PasswordValidator implements ConstraintValidator<ValidPassword, String> {
 
     // Configurazione delle regole

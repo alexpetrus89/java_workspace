@@ -13,6 +13,15 @@ public class UpdateCourseDto {
     @NotBlank(message = "Course name is mandatory")
     private String newName;
 
+    @NotBlank(message = "Degree course is mandatory")
+    private String newDegreeCourseName;
+
+    @NotBlank(message = "Old course name is mandatory")
+    private String oldName;
+
+    @NotBlank(message = "Old degree course name is mandatory")
+    private String oldDegreeCourseName;
+
     @NotNull(message = "Course type is mandatory")
     private CourseType type;
 
@@ -23,31 +32,10 @@ public class UpdateCourseDto {
     @ValidUniqueCode
     private String uniqueCode;
 
-    @NotBlank(message = "Degree course is mandatory")
-    private String newDegreeCourseName;
-
-    @NotBlank(message = "Old course name is mandatory")
-    private String oldName;
-
-    @NotBlank(message = "Old degree course name is mandatory")
-    private String oldDegreeCourseName;
 
     // getters
-
     public String getNewName() {
         return newName;
-    }
-
-    public CourseType getType() {
-        return type;
-    }
-
-    public Integer getCfu() {
-        return cfu;
-    }
-
-    public String getUniqueCode() {
-        return uniqueCode;
     }
 
     public String getNewDegreeCourseName() {
@@ -62,22 +50,21 @@ public class UpdateCourseDto {
         return oldDegreeCourseName;
     }
 
-    // setters
+    public CourseType getType() {
+        return type;
+    }
 
+    public Integer getCfu() {
+        return cfu;
+    }
+
+    public String getUniqueCode() {
+        return uniqueCode;
+    }
+
+    // setters
     public void setNewName(String newName) {
         this.newName = newName;
-    }
-
-    public void setType(CourseType type) {
-        this.type = type;
-    }
-
-    public void setCfu(Integer cfu) {
-        this.cfu = cfu;
-    }
-
-    public void setUniqueCode(String uniqueCode) {
-        this.uniqueCode = uniqueCode;
     }
 
     public void setNewDegreeCourseName(String newDegreeCourseName) {
@@ -91,4 +78,17 @@ public class UpdateCourseDto {
     public void setOldDegreeCourseName(String oldDegreeCourseName) {
         this.oldDegreeCourseName = oldDegreeCourseName;
     }
+
+      public void setType(CourseType type) {
+        this.type = type;
+    }
+
+    public void setCfu(Integer cfu) {
+        this.cfu = cfu;
+    }
+
+    public void setUniqueCode(String uniqueCode) {
+        this.uniqueCode = uniqueCode;
+    }
+
 }

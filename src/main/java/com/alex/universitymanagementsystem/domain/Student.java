@@ -7,9 +7,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import com.alex.universitymanagementsystem.domain.immutable.FiscalCode;
 import com.alex.universitymanagementsystem.domain.immutable.Register;
-import com.alex.universitymanagementsystem.utils.Builder;
+import com.alex.universitymanagementsystem.dto.Builder;
 
 import jakarta.persistence.Access;
 import jakarta.persistence.AccessType;
@@ -66,26 +65,6 @@ public class Student extends User {
         this.age = calculateAge();
     }
 
-    public Student(
-        String username,
-        String firstName,
-        String lastName,
-        LocalDate dob,
-        FiscalCode fiscalCode,
-        Register register,
-        DegreeCourse degreeCourse,
-        StudyPlan studyPlan
-    ) {
-        this.username = username;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.dob = dob;
-        this.fiscalCode = fiscalCode;
-        this.register = register;
-        this.degreeCourse = degreeCourse;
-        this.studyPlan = studyPlan;
-        this.age = calculateAge();
-    }
 
     // getters
     @Embedded

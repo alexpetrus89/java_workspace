@@ -13,8 +13,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.alex.universitymanagementsystem.domain.immutable.FiscalCode;
 import com.alex.universitymanagementsystem.domain.immutable.UserId;
+import com.alex.universitymanagementsystem.dto.Builder;
 import com.alex.universitymanagementsystem.enum_type.RoleType;
-import com.alex.universitymanagementsystem.utils.Builder;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;

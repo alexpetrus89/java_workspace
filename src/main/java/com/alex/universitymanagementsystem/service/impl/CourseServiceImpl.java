@@ -72,9 +72,9 @@ public class CourseServiceImpl implements CourseService {
      * @param courseName the name of the course
      * @param degreeCourseName the name of the degree course
      * @return CourseDto object representing the course with the given name and degree course name.
-     * @throws IllegalArgumentException if the course name or degree course name is empty.
-     * @throws ObjectNotFoundException if no course with the given name and degree course name exists.
-     * @throws DataAccessServiceException if there's a database access issue
+     * @throws IllegalArgumentException if if either course name or degree course name is blank.
+     * @throws ObjectNotFoundException if an object between course or degree course does not exist
+     * @throws DataAccessServiceException if there is an error accessing the database
      */
     @Override
     public CourseDto getCourseByNameAndDegreeCourseName(String courseName, String degreeCourseName)
@@ -91,9 +91,9 @@ public class CourseServiceImpl implements CourseService {
 
             // find course
             return courseRepository
-                .findByNameAndDegreeCourseName(courseName, degreeCourseName)
+                .findByNameAndDegreeCourseName(courseName, degreeCourseName.toUpperCase())
                 .map(CourseMapper::toDto)
-                .orElse(null);
+                .orElseThrow(() -> new ObjectNotFoundException(DomainType.COURSE));
         } catch (PersistenceException e) {
             throw new DataAccessServiceException(
                 "Database access error while retrieving course with name " + courseName + " and degree course name " + degreeCourseName + ": " + e.getMessage(), e
@@ -131,7 +131,7 @@ public class CourseServiceImpl implements CourseService {
      * Adds a new course to the repository.
      * @param dto the course data transfer object containing the course details
      * @return CourseDto object representing the new Course
-     * @throws ObjectAlreadyExistsException if a course with the same name already exists
+     * @throws ObjectAlreadyExistsException if a course with the same name and degree course already exists
      * @throws ObjectNotFoundException if no professor with the given unique code exists
      *         or no degree course with the given name exists.
      * @throws DataAccessServiceException if there is an error accessing the database
@@ -173,8 +173,6 @@ public class CourseServiceImpl implements CourseService {
      * Updates an existing course using data from the provided CourseDto.
      * @param dto the DTO containing new course information
      * @return CourseDto object representing the updated Course
-     * @throws IllegalArgumentException if old course name or degree course name are null or blank
-     * or if the DTO contains invalid data
      * @throws ObjectNotFoundException if the course, professor, or degree course cannot be found
      * @throws DataAccessServiceException if there is an error accessing the database
      */

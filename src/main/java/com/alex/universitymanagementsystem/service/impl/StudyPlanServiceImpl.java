@@ -157,7 +157,7 @@ public class StudyPlanServiceImpl implements StudyPlanService {
         try {
             // retrieve all data
             Student student = studentRepository
-                .findByRegister(dto.getRegister())
+                .findByRegister(new Register(dto.getRegister()))
                 .orElseThrow(() -> new ObjectNotFoundException(DomainType.STUDENT));
 
             // retrieve the courses to add and remove

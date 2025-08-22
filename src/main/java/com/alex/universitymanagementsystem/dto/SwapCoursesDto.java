@@ -3,7 +3,6 @@ package com.alex.universitymanagementsystem.dto;
 import java.util.Set;
 
 import com.alex.universitymanagementsystem.annotation.SwapCoursesConstraint;
-import com.alex.universitymanagementsystem.domain.immutable.Register;
 
 import jakarta.validation.constraints.NotBlank;
 
@@ -15,7 +14,7 @@ public class SwapCoursesDto {
     private final Set<CourseDto> studyPlan;
     private final String token;
 
-    private Register register;
+    private String register;
 
     @NotBlank(message = "New course name is mandatory")
     private String courseToAdd;
@@ -59,7 +58,7 @@ public class SwapCoursesDto {
         return token;
     }
 
-    public Register getRegister() {
+    public String getRegister() {
         return register;
     }
 
@@ -80,7 +79,7 @@ public class SwapCoursesDto {
     }
 
     // setters
-    public void setRegister(Register register) {
+    public void setRegister(String register) {
         this.register = register;
     }
 

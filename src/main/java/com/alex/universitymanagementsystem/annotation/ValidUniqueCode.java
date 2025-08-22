@@ -11,12 +11,13 @@ import com.alex.universitymanagementsystem.component.validator.UniqueCodeValidat
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 
+
 @Documented
 @Constraint(validatedBy = UniqueCodeValidator.class)
 @Target({ ElementType.FIELD, ElementType.PARAMETER })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidUniqueCode {
-    String message() default "Unique code is invalid, Unique code must be exactly 8 characters";
+    String message() default "Invalid Unique code, Unique code must be exactly 8 characters";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }

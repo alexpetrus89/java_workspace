@@ -7,11 +7,14 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import com.alex.universitymanagementsystem.domain.immutable.CourseId;
+import com.alex.universitymanagementsystem.domain.immutable.MiurCourseCode;
 import com.alex.universitymanagementsystem.enum_type.CourseType;
+import com.alex.universitymanagementsystem.enum_type.MiurAcronymType;
 
 import jakarta.persistence.Access;
 import jakarta.persistence.AccessType;
 import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
@@ -25,6 +28,7 @@ public class Course implements Serializable {
 
     // instance variables
     private CourseId id;
+    private MiurCourseCode code;
     private String name;
     private CourseType type;
     private Integer cfu;
@@ -50,12 +54,28 @@ public class Course implements Serializable {
         this.degreeCourse = degreeCourse;
     }
 
+    public Course(MiurAcronymType acronym, String name, CourseType type, Integer cfu, Professor professor, DegreeCourse degreeCourse) {
+        this.id = CourseId.newId();
+        this.code = MiurCourseCode.generate(acronym);
+        this.name = name;
+        this.type = type;
+        this.cfu = cfu;
+        this.professor = professor;
+        this.degreeCourse = degreeCourse;
+    }
+
 
     // getters
     @EmbeddedId
     @Column(name = "course_id")
     public CourseId getId() {
         return id;
+    }
+
+    @Embedded
+    @Column(name = "miur_course_code", unique = true, nullable = false)
+    public MiurCourseCode getCode() {
+        return code;
     }
 
     @Column(name = "name")
@@ -92,6 +112,10 @@ public class Course implements Serializable {
         this.id = id;
     }
 
+    public void setCode(MiurCourseCode code) {
+        this.code = code;
+    }
+
     public void setName(String name) {
         this.name = name;
     }
@@ -116,6 +140,7 @@ public class Course implements Serializable {
     public String toString() {
         return "Course{" +
             "id=" + id +
+            ", code=" + code +
             ", name='" + name + '\'' +
             ", type='" + type.name() + '\'' +
             ", cfu=" + cfu +

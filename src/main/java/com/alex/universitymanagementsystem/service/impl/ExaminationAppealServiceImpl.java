@@ -86,8 +86,8 @@ public class ExaminationAppealServiceImpl implements ExaminationAppealService {
     @Override
     public List<ExaminationAppealDto> getExaminationAppeals() throws DataAccessServiceException {
         try {
-            List<ExaminationAppeal> appeals = examinationAppealRepository.findAll();
-            return appeals
+            return examinationAppealRepository
+                .findAll()
                 .stream()
                 .map(appeal -> {
                     Set<StudentDto> students = studentRepository
@@ -457,6 +457,9 @@ public class ExaminationAppealServiceImpl implements ExaminationAppealService {
     }
 
 
+    /**
+     * Maps an examination appeal entity to a data transfer object.
+     */
     private ExaminationAppealDto mapToDto(ExaminationAppeal appeal) {
         Set<StudentDto> students = studentRepository
             .findByRegisterIn(appeal.getRegisters())

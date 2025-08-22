@@ -17,7 +17,7 @@ import jakarta.validation.Payload;
 @Target({ ElementType.FIELD, ElementType.PARAMETER })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidRegister {
-    String message() default "Invalid register number";
+    String message() default "Invalid register number, register number must be exactly 6 digits";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }

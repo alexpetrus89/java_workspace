@@ -35,7 +35,7 @@ public class ExaminationAppealController {
     private static final String EXAMINATION_APPEALS = "examinationAppeals";
     private static final String EXCEPTION_MESSAGE = "message";
     private static final String OBJECT_NOT_FOUND = "/object-not-found";
-    private static final String ILLEGAL_PARAMETERS = "/illegal-parameters";
+    private static final String ILLEGAL_PARAMETER = "/illegal-parameter";
 
     @Value("#{dataAccessExceptionUri}")
     private String dataAccessExceptionUri;
@@ -67,7 +67,7 @@ public class ExaminationAppealController {
             List<ExaminationAppealDto> appeals = examinationAppealServiceImpl.getExaminationAppealsAvailable(student.getRegister());
             return new ModelAndView("user_student/examinations/examination_appeal/available-calendar",EXAMINATION_APPEALS, appeals);
         } catch (IllegalArgumentException e) {
-            return new ModelAndView(illegalArgumentExceptionUri + ILLEGAL_PARAMETERS, EXCEPTION_MESSAGE, e.getMessage());
+            return new ModelAndView(illegalArgumentExceptionUri + ILLEGAL_PARAMETER, EXCEPTION_MESSAGE, e.getMessage());
         } catch (NoSuchElementException e) {
             return new ModelAndView(notFoundExceptionUri + OBJECT_NOT_FOUND, EXCEPTION_MESSAGE, e.getMessage());
         } catch (DataAccessServiceException e) {
@@ -86,7 +86,7 @@ public class ExaminationAppealController {
             List<ExaminationAppealDto> appeals = examinationAppealServiceImpl.getExaminationAppealsBookedByStudent(student.getRegister());
             return new ModelAndView("user_student/examinations/examination_appeal/booked-calendar", EXAMINATION_APPEALS, appeals);
         } catch (IllegalArgumentException e) {
-            return new ModelAndView(illegalArgumentExceptionUri + ILLEGAL_PARAMETERS, EXCEPTION_MESSAGE, e.getMessage());
+            return new ModelAndView(illegalArgumentExceptionUri + ILLEGAL_PARAMETER, EXCEPTION_MESSAGE, e.getMessage());
         } catch (NoSuchElementException e) {
             return new ModelAndView(notFoundExceptionUri + OBJECT_NOT_FOUND, EXCEPTION_MESSAGE, e.getMessage());
         } catch (DataAccessServiceException e) {
@@ -100,12 +100,12 @@ public class ExaminationAppealController {
      * @return ModelAndView
      */
     @GetMapping(path = "/view/professor")
-    public ModelAndView getExaminationAppealsMakeByProfessor(@AuthenticationPrincipal Professor professor) {
+    public ModelAndView getExaminationAppealsMadeByProfessor(@AuthenticationPrincipal Professor professor) {
         try {
             List<ExaminationAppealDto> appeals = examinationAppealServiceImpl.getExaminationAppealsMadeByProfessor(professor.getUniqueCode());
             return new ModelAndView("user_professor/examinations/examination_appeal/calendar", EXAMINATION_APPEALS, appeals);
         } catch (IllegalArgumentException e) {
-            return new ModelAndView(illegalArgumentExceptionUri + ILLEGAL_PARAMETERS, EXCEPTION_MESSAGE, e.getMessage());
+            return new ModelAndView(illegalArgumentExceptionUri + ILLEGAL_PARAMETER, EXCEPTION_MESSAGE, e.getMessage());
         } catch (NoSuchElementException e) {
             return new ModelAndView(notFoundExceptionUri + OBJECT_NOT_FOUND, EXCEPTION_MESSAGE, e.getMessage());
         } catch (DataAccessServiceException e) {
@@ -127,7 +127,7 @@ public class ExaminationAppealController {
             ExaminationAppealDto appeal = examinationAppealServiceImpl.getExaminationAppealById(id);
             return new ModelAndView("user_professor/examinations/examination_appeal/students-booked", "appeal", appeal);
         } catch (IllegalArgumentException e) {
-            return new ModelAndView(illegalArgumentExceptionUri + ILLEGAL_PARAMETERS, EXCEPTION_MESSAGE, e.getMessage());
+            return new ModelAndView(illegalArgumentExceptionUri + ILLEGAL_PARAMETER, EXCEPTION_MESSAGE, e.getMessage());
         } catch (NoSuchElementException e) {
             return new ModelAndView(notFoundExceptionUri + OBJECT_NOT_FOUND, EXCEPTION_MESSAGE, e.getMessage());
         } catch (DataAccessServiceException e) {
@@ -164,7 +164,7 @@ public class ExaminationAppealController {
             List<ExaminationAppealDto> appeals = examinationAppealServiceImpl.getExaminationAppealsMadeByProfessor(professor.getUniqueCode());
             return new ModelAndView("user_professor/examinations/examination_appeal/delete/delete-examination-appeal", "appeals", appeals);
         } catch (IllegalArgumentException e) {
-            return new ModelAndView(illegalArgumentExceptionUri + ILLEGAL_PARAMETERS, EXCEPTION_MESSAGE, e.getMessage());
+            return new ModelAndView(illegalArgumentExceptionUri + ILLEGAL_PARAMETER, EXCEPTION_MESSAGE, e.getMessage());
         } catch (NoSuchElementException e) {
             return new ModelAndView(notFoundExceptionUri + OBJECT_NOT_FOUND, EXCEPTION_MESSAGE, e.getMessage());
         } catch (DataAccessServiceException e) {
@@ -200,7 +200,7 @@ public class ExaminationAppealController {
             ExaminationAppealDto appeal = examinationAppealServiceImpl.addNewExaminationAppeal(dto);
             return new ModelAndView("user_professor/examinations/examination_appeal/create/create-result", EXAMINATION_APPEAL, appeal);
         } catch (IllegalArgumentException | IllegalStateException e) {
-            return new ModelAndView(illegalArgumentExceptionUri + ILLEGAL_PARAMETERS, EXCEPTION_MESSAGE, e.getMessage());
+            return new ModelAndView(illegalArgumentExceptionUri + ILLEGAL_PARAMETER, EXCEPTION_MESSAGE, e.getMessage());
         } catch (ObjectNotFoundException e) {
             return new ModelAndView(notFoundExceptionUri + OBJECT_NOT_FOUND, EXCEPTION_MESSAGE, e.getMessage());
         } catch (DataAccessServiceException e) {
@@ -249,7 +249,7 @@ public class ExaminationAppealController {
             ExaminationAppealDto appeal = examinationAppealServiceImpl.addStudentToAppeal(id, student.getRegister());
             return new ModelAndView("user_student/examinations/examination_appeal/booked-result", EXAMINATION_APPEAL, appeal);
         } catch (IllegalArgumentException e) {
-            return new ModelAndView(illegalArgumentExceptionUri + ILLEGAL_PARAMETERS, EXCEPTION_MESSAGE, e.getMessage());
+            return new ModelAndView(illegalArgumentExceptionUri + ILLEGAL_PARAMETER, EXCEPTION_MESSAGE, e.getMessage());
         } catch (NoSuchElementException e) {
             return new ModelAndView(notFoundExceptionUri + OBJECT_NOT_FOUND, EXCEPTION_MESSAGE, e.getMessage());
         } catch (DataAccessServiceException e) {
@@ -269,7 +269,7 @@ public class ExaminationAppealController {
             examinationAppealServiceImpl.removeStudentFromAppeal(id, student.getRegister());
             return new ModelAndView("user_student/examinations/examination_appeal/delete-booked-result");
         } catch (IllegalArgumentException e) {
-            return new ModelAndView(illegalArgumentExceptionUri + ILLEGAL_PARAMETERS, EXCEPTION_MESSAGE, e.getMessage());
+            return new ModelAndView(illegalArgumentExceptionUri + ILLEGAL_PARAMETER, EXCEPTION_MESSAGE, e.getMessage());
         } catch (NoSuchElementException e) {
             return new ModelAndView(notFoundExceptionUri + OBJECT_NOT_FOUND, EXCEPTION_MESSAGE, e.getMessage());
         } catch (DataAccessServiceException e) {

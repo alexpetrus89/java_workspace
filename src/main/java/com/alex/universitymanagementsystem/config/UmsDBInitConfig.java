@@ -27,9 +27,11 @@ import com.alex.universitymanagementsystem.domain.StudyPlan;
 import com.alex.universitymanagementsystem.domain.User;
 import com.alex.universitymanagementsystem.domain.immutable.Register;
 import com.alex.universitymanagementsystem.domain.immutable.UniqueCode;
+import com.alex.universitymanagementsystem.dto.Builder;
 import com.alex.universitymanagementsystem.dto.RegistrationForm;
 import com.alex.universitymanagementsystem.enum_type.CourseType;
 import com.alex.universitymanagementsystem.enum_type.DegreeType;
+import com.alex.universitymanagementsystem.enum_type.MiurAcronymType;
 import com.alex.universitymanagementsystem.enum_type.RoleType;
 import com.alex.universitymanagementsystem.repository.CourseRepository;
 import com.alex.universitymanagementsystem.repository.DegreeCourseRepository;
@@ -39,7 +41,6 @@ import com.alex.universitymanagementsystem.repository.ProfessorRepository;
 import com.alex.universitymanagementsystem.repository.StudentRepository;
 import com.alex.universitymanagementsystem.repository.StudyPlanRepository;
 import com.alex.universitymanagementsystem.repository.UserRepository;
-import com.alex.universitymanagementsystem.utils.Builder;
 
 
 @Configuration
@@ -830,6 +831,7 @@ public class UmsDBInitConfig implements Serializable {
         // create courses
         courses.add(
             new Course(
+                MiurAcronymType.MAT,
                 "analisi matematica",
                 CourseType.MATEMATICA,
                 12,
@@ -842,6 +844,7 @@ public class UmsDBInitConfig implements Serializable {
 
         courses.add(
             new Course(
+                MiurAcronymType.MAT,
                 "analisi matematica",
                 CourseType.MATEMATICA,
                 12,
@@ -854,6 +857,7 @@ public class UmsDBInitConfig implements Serializable {
 
         courses.add(
             new Course(
+                MiurAcronymType.MAT,
                 "analisi matematica",
                 CourseType.MATEMATICA,
                 12,
@@ -866,6 +870,7 @@ public class UmsDBInitConfig implements Serializable {
 
         courses.add(
             new Course(
+                MiurAcronymType.MAT,
                 "analisi matematica",
                 CourseType.MATEMATICA,
                 12,
@@ -878,6 +883,7 @@ public class UmsDBInitConfig implements Serializable {
 
         courses.add(
             new Course(
+                MiurAcronymType.ECO,
                 "elementi di economia",
                 CourseType.ECONOMIA,
                 6,
@@ -890,6 +896,7 @@ public class UmsDBInitConfig implements Serializable {
 
         courses.add(
             new Course(
+                MiurAcronymType.ECO,
                 "elementi di economia",
                 CourseType.ECONOMIA,
                 6,
@@ -902,6 +909,7 @@ public class UmsDBInitConfig implements Serializable {
 
         courses.add(
             new Course(
+                MiurAcronymType.ECO,
                 "elementi di economia",
                 CourseType.ECONOMIA,
                 6,
@@ -914,6 +922,7 @@ public class UmsDBInitConfig implements Serializable {
 
         courses.add(
             new Course(
+                MiurAcronymType.MAT,
                 "geometria e algebra",
                 CourseType.MATEMATICA,
                 6,
@@ -926,6 +935,7 @@ public class UmsDBInitConfig implements Serializable {
 
         courses.add(
             new Course(
+                MiurAcronymType.MAT,
                 "geometria e algebra",
                 CourseType.MATEMATICA,
                 6,
@@ -938,6 +948,7 @@ public class UmsDBInitConfig implements Serializable {
 
         courses.add(
             new Course(
+                MiurAcronymType.MAT,
                 "geometria e algebra",
                 CourseType.MATEMATICA,
                 6,
@@ -950,6 +961,7 @@ public class UmsDBInitConfig implements Serializable {
 
         courses.add(
             new Course(
+                MiurAcronymType.MAT,
                 "analisi dei sistemi dinamici",
                 CourseType.MATEMATICA,
                 6,
@@ -962,6 +974,7 @@ public class UmsDBInitConfig implements Serializable {
 
         courses.add(
             new Course(
+                MiurAcronymType.MAT,
                 "analisi dei sistemi dinamici",
                 CourseType.MATEMATICA,
                 6,
@@ -974,6 +987,7 @@ public class UmsDBInitConfig implements Serializable {
 
         courses.add(
             new Course(
+                MiurAcronymType.FIS,
                 "fisica generale",
                 CourseType.FISICA,
                 12,
@@ -986,6 +1000,7 @@ public class UmsDBInitConfig implements Serializable {
 
         courses.add(
             new Course(
+                MiurAcronymType.FIS,
                 "fisica generale",
                 CourseType.FISICA,
                 12,
@@ -998,6 +1013,7 @@ public class UmsDBInitConfig implements Serializable {
 
         courses.add(
             new Course(
+                MiurAcronymType.FIS,
                 "fisica generale",
                 CourseType.FISICA,
                 12,
@@ -1010,6 +1026,7 @@ public class UmsDBInitConfig implements Serializable {
 
         courses.add(
             new Course(
+                MiurAcronymType.FIS,
                 "fisica generale",
                 CourseType.FISICA,
                 12,
@@ -1022,6 +1039,7 @@ public class UmsDBInitConfig implements Serializable {
 
         courses.add(
             new Course(
+                MiurAcronymType.INF,
                 "fondamenti di informatica",
                 CourseType.INFORMATICA,
                 6,
@@ -1034,6 +1052,7 @@ public class UmsDBInitConfig implements Serializable {
 
         courses.add(
             new Course(
+                MiurAcronymType.INF,
                 "fondamenti di informatica",
                 CourseType.INFORMATICA,
                 6,
@@ -1046,6 +1065,7 @@ public class UmsDBInitConfig implements Serializable {
 
         courses.add(
             new Course(
+                MiurAcronymType.INF,
                 "fondamenti di informatica",
                 CourseType.INFORMATICA,
                 6,
@@ -1058,6 +1078,7 @@ public class UmsDBInitConfig implements Serializable {
 
         courses.add(
             new Course(
+                MiurAcronymType.INF,
                 "fondamenti di informatica",
                 CourseType.INFORMATICA,
                 6,
@@ -1070,6 +1091,7 @@ public class UmsDBInitConfig implements Serializable {
 
         courses.add(
             new Course(
+                MiurAcronymType.CHI,
                 "chimica generale",
                 CourseType.CHIMICA,
                 6,
@@ -1082,6 +1104,7 @@ public class UmsDBInitConfig implements Serializable {
 
         courses.add(
             new Course(
+                MiurAcronymType.CHI,
                 "chimica generale",
                 CourseType.CHIMICA,
                 6,
@@ -1094,6 +1117,7 @@ public class UmsDBInitConfig implements Serializable {
 
         courses.add(
             new Course(
+                MiurAcronymType.CHI,
                 "chimica generale",
                 CourseType.CHIMICA,
                 9,
@@ -1106,6 +1130,7 @@ public class UmsDBInitConfig implements Serializable {
 
         courses.add(
             new Course(
+                MiurAcronymType.CHI,
                 "chimica generale",
                 CourseType.CHIMICA,
                 9,
@@ -1118,6 +1143,7 @@ public class UmsDBInitConfig implements Serializable {
 
         courses.add(
             new Course(
+                MiurAcronymType.ING,
                 "scienza delle costruzioni",
                 CourseType.ING_MECCANICA,
                 6,
@@ -1130,6 +1156,7 @@ public class UmsDBInitConfig implements Serializable {
 
         courses.add(
             new Course(
+                MiurAcronymType.ING,
                 "scienza delle costruzioni",
                 CourseType.ING_MECCANICA,
                 12,
@@ -1142,6 +1169,7 @@ public class UmsDBInitConfig implements Serializable {
 
         courses.add(
             new Course(
+                MiurAcronymType.MAT,
                 "metodi di ottimizzazione",
                 CourseType.MATEMATICA,
                 6,
@@ -1154,6 +1182,7 @@ public class UmsDBInitConfig implements Serializable {
 
         courses.add(
             new Course(
+                MiurAcronymType.ING,
                 "metodi di rappresentazione tecnica",
                 CourseType.DISEGNO,
                 6,
@@ -1166,6 +1195,7 @@ public class UmsDBInitConfig implements Serializable {
 
         courses.add(
             new Course(
+                MiurAcronymType.ING,
                 "elementi di meccanica delle macchine e progettazione meccanica",
                 CourseType.ING_MECCANICA,
                 12,
@@ -1178,6 +1208,7 @@ public class UmsDBInitConfig implements Serializable {
 
         courses.add(
             new Course(
+                MiurAcronymType.ING,
                 "fisica tecnica e sistemi energetici",
                 CourseType.FISICA,
                 12,
@@ -1190,6 +1221,7 @@ public class UmsDBInitConfig implements Serializable {
 
         courses.add(
             new Course(
+                MiurAcronymType.ECO,
                 "gestione aziendale",
                 CourseType.ECONOMIA,
                 6,
@@ -1202,6 +1234,7 @@ public class UmsDBInitConfig implements Serializable {
 
         courses.add(
             new Course(
+                MiurAcronymType.FIS,
                 "meccanica dei fluidi",
                 CourseType.IDRAULICA,
                 6,
@@ -1214,6 +1247,7 @@ public class UmsDBInitConfig implements Serializable {
 
         courses.add(
             new Course(
+                MiurAcronymType.ING,
                 "principi di ingegneria elettrica",
                 CourseType.ING_ELETTRICA,
                 6,
@@ -1226,6 +1260,7 @@ public class UmsDBInitConfig implements Serializable {
 
         courses.add(
             new Course(
+                MiurAcronymType.ING,
                 "tecnologia meccaniche e dei materiali",
                 CourseType.ING_MECCANICA,
                 12,
@@ -1238,6 +1273,7 @@ public class UmsDBInitConfig implements Serializable {
 
         courses.add(
             new Course(
+                MiurAcronymType.MAT,
                 "calcolo numerico",
                 CourseType.MATEMATICA,
                 6,
@@ -1250,6 +1286,7 @@ public class UmsDBInitConfig implements Serializable {
 
         courses.add(
             new Course(
+                MiurAcronymType.ING,
                 "gestione dei progetti",
                 CourseType.ING_GESTIONALE,
                 9,
@@ -1262,6 +1299,7 @@ public class UmsDBInitConfig implements Serializable {
 
         courses.add(
             new Course(
+                MiurAcronymType.ING,
                 "impianti industriali",
                 CourseType.ING_MECCANICA,
                 9,
@@ -1274,6 +1312,7 @@ public class UmsDBInitConfig implements Serializable {
 
         courses.add(
             new Course(
+                MiurAcronymType.LET,
                 "inglese",
                 CourseType.LINGUA_STRANIERA,
                 3,
@@ -1286,6 +1325,7 @@ public class UmsDBInitConfig implements Serializable {
 
         courses.add(
             new Course(
+                MiurAcronymType.ING,
                 "progettazione dei processi produttivi e qualità dei processi produttivi",
                 CourseType.ING_GESTIONALE,
                 12,
@@ -1298,6 +1338,7 @@ public class UmsDBInitConfig implements Serializable {
 
         courses.add(
             new Course(
+                MiurAcronymType.ING,
                 "sicurezza degli impianti industriali",
                 CourseType.ING_GESTIONALE,
                 6,
@@ -1310,6 +1351,7 @@ public class UmsDBInitConfig implements Serializable {
 
         courses.add(
             new Course(
+                MiurAcronymType.ING,
                 "materiali innovativi per l'ingegneria elettrica",
                 CourseType.ING_ELETTRICA,
                 6,
@@ -1322,6 +1364,7 @@ public class UmsDBInitConfig implements Serializable {
 
         courses.add(
             new Course(
+                MiurAcronymType.ING,
                 "tirocinio",
                 CourseType.ING_GESTIONALE,
                 6,
@@ -1334,6 +1377,7 @@ public class UmsDBInitConfig implements Serializable {
 
         courses.add(
             new Course(
+                MiurAcronymType.ING,
                 "prova finale",
                 CourseType.ING_GESTIONALE,
                 3,
@@ -1346,6 +1390,7 @@ public class UmsDBInitConfig implements Serializable {
 
         courses.add(
             new Course(
+                MiurAcronymType.INF,
                 "sistemi informativi",
                 CourseType.ING_INFORMATICA,
                 12,
@@ -1358,6 +1403,7 @@ public class UmsDBInitConfig implements Serializable {
 
         courses.add(
             new Course(
+                MiurAcronymType.INF,
                 "sistemi informativi",
                 CourseType.ING_INFORMATICA,
                 12,
@@ -1370,6 +1416,7 @@ public class UmsDBInitConfig implements Serializable {
 
         courses.add(
             new Course(
+                MiurAcronymType.INF,
                 "big data analytics",
                 CourseType.ING_INFORMATICA,
                 6,
@@ -1382,6 +1429,7 @@ public class UmsDBInitConfig implements Serializable {
 
         courses.add(
             new Course(
+                MiurAcronymType.INF,
                 "internet of things",
                 CourseType.ING_INFORMATICA,
                 6,
@@ -1394,6 +1442,7 @@ public class UmsDBInitConfig implements Serializable {
 
         courses.add(
             new Course(
+                MiurAcronymType.INF,
                 "internet of things",
                 CourseType.ING_INFORMATICA,
                 6,
@@ -1406,6 +1455,7 @@ public class UmsDBInitConfig implements Serializable {
 
         courses.add(
             new Course(
+                MiurAcronymType.INF,
                 "fondamenti di cybersecurity",
                 CourseType.ING_INFORMATICA,
                 6,
@@ -1418,6 +1468,7 @@ public class UmsDBInitConfig implements Serializable {
 
         courses.add(
             new Course(
+                MiurAcronymType.INF,
                 "basi di dati",
                 CourseType.ING_INFORMATICA,
                 6,
@@ -1430,6 +1481,7 @@ public class UmsDBInitConfig implements Serializable {
 
         courses.add(
             new Course(
+                MiurAcronymType.INF,
                 "basi di dati",
                 CourseType.ING_INFORMATICA,
                 6,
@@ -1442,6 +1494,7 @@ public class UmsDBInitConfig implements Serializable {
 
         courses.add(
             new Course(
+                MiurAcronymType.ING,
                 "produzione avanzata nella fabbrica digitale",
                 CourseType.ING_MECCANICA,
                 6,
@@ -1454,6 +1507,7 @@ public class UmsDBInitConfig implements Serializable {
 
         courses.add(
             new Course(
+                MiurAcronymType.MAT,
                 "analisi dei sistemi dinamici",
                 CourseType.MATEMATICA,
                 6,
@@ -1466,6 +1520,7 @@ public class UmsDBInitConfig implements Serializable {
 
         courses.add(
             new Course(
+                MiurAcronymType.INF,
                 "algoritmi e strutture dati in java",
                 CourseType.ING_INFORMATICA,
                 6,
@@ -1478,6 +1533,7 @@ public class UmsDBInitConfig implements Serializable {
 
         courses.add(
             new Course(
+                MiurAcronymType.INF,
                 "fondamenti di telecomunicazioni",
                 CourseType.ING_INFORMATICA,
                 6,
@@ -1490,6 +1546,7 @@ public class UmsDBInitConfig implements Serializable {
 
         courses.add(
             new Course(
+                MiurAcronymType.FIS,
                 "fondamenti di elettronica",
                 CourseType.ING_INFORMATICA,
                 6,
@@ -1502,6 +1559,7 @@ public class UmsDBInitConfig implements Serializable {
 
         courses.add(
             new Course(
+                MiurAcronymType.INF,
                 "compilatori",
                 CourseType.ING_INFORMATICA,
                 12,
@@ -1514,6 +1572,7 @@ public class UmsDBInitConfig implements Serializable {
 
         courses.add(
             new Course(
+                MiurAcronymType.INF,
                 "big data",
                 CourseType.ING_INFORMATICA,
                 6,
@@ -1526,6 +1585,7 @@ public class UmsDBInitConfig implements Serializable {
 
         courses.add(
             new Course(
+                MiurAcronymType.ING,
                 "impianti meccanici",
                 CourseType.ING_MECCANICA,
                 3,
@@ -1538,6 +1598,7 @@ public class UmsDBInitConfig implements Serializable {
 
         courses.add(
             new Course(
+                MiurAcronymType.ING,
                 "energetica e macchine a fluido",
                 CourseType.ING_MECCANICA,
                 6,
@@ -1550,6 +1611,7 @@ public class UmsDBInitConfig implements Serializable {
 
         courses.add(
             new Course(
+                MiurAcronymType.ING,
                 "misure meccaniche e termiche",
                 CourseType.ING_MECCANICA,
                 12,
@@ -1562,6 +1624,7 @@ public class UmsDBInitConfig implements Serializable {
 
         courses.add(
             new Course(
+                MiurAcronymType.ING,
                 "turbomacchine",
                 CourseType.ING_MECCANICA,
                 12,
@@ -1574,6 +1637,7 @@ public class UmsDBInitConfig implements Serializable {
 
         courses.add(
             new Course(
+                MiurAcronymType.FIS,
                 "gasdinamica e fluidodinamica",
                 CourseType.ING_MECCANICA,
                 12,
@@ -1586,6 +1650,7 @@ public class UmsDBInitConfig implements Serializable {
 
         courses.add(
             new Course(
+                MiurAcronymType.ING,
                 "macchine elettriche",
                 CourseType.ING_ELETTRICA,
                 12,
@@ -1598,6 +1663,7 @@ public class UmsDBInitConfig implements Serializable {
 
         courses.add(
             new Course(
+                MiurAcronymType.ING,
                 "elettrica di potenza",
                 CourseType.ING_ELETTRICA,
                 12,
@@ -1610,6 +1676,7 @@ public class UmsDBInitConfig implements Serializable {
 
         courses.add(
             new Course(
+                MiurAcronymType.ING,
                 "impianti elettrici civili e industriali",
                 CourseType.ING_MECCANICA,
                 12,

@@ -4,8 +4,8 @@ package com.alex.universitymanagementsystem.mapper;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.alex.universitymanagementsystem.domain.User;
+import com.alex.universitymanagementsystem.dto.Builder;
 import com.alex.universitymanagementsystem.dto.UserDto;
-import com.alex.universitymanagementsystem.utils.Builder;
 
 public class UserMapper {
 

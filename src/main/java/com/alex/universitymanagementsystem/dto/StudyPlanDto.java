@@ -3,8 +3,6 @@ package com.alex.universitymanagementsystem.dto;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.alex.universitymanagementsystem.domain.Student;
-
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -14,9 +12,6 @@ import jakarta.validation.constraints.Size;
 public class StudyPlanDto {
 
     // instance variables
-    @NotNull(message = "Student must not be null")
-    private Student student;
-
     @NotBlank(message = "Ordering must not be blank")
     private String ordering;
 
@@ -32,17 +27,7 @@ public class StudyPlanDto {
         this.courses = courses;
     }
 
-    public StudyPlanDto(Student student, String ordering, Set<CourseDto> courses) {
-        this.student = student;
-        this.ordering = ordering;
-        this.courses = courses;
-    }
-
     // getters
-    public Student getStudent() {
-        return student;
-    }
-
     public String getOrdering() {
         return ordering;
     }
@@ -52,10 +37,6 @@ public class StudyPlanDto {
     }
 
     // setters
-    public void setStudent(Student student) {
-        this.student = student;
-    }
-
     public void setOrdering(String ordering) {
         this.ordering = ordering;
     }

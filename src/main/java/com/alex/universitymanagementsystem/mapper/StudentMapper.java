@@ -13,30 +13,30 @@ public class StudentMapper {
 
     public static Student toEntity(StudentDto dto) {
         if (dto == null) return null;
-        return new Student(
-            dto.getUsername(),
-            dto.getFirstName(),
-            dto.getLastName(),
-            dto.getDob(),
-            new FiscalCode(dto.getFiscalCode()),
-            new Register(dto.getRegister()),
-            DegreeCourseMapper.toEntity(dto.getDegreeCourse()),
-            StudyPlanMapper.toEntity(dto.getStudyPlan())
-        );
+        Student student = new Student();
+        student.setUsername(dto.getUsername());
+        student.setFirstName(dto.getFirstName());
+        student.setLastName(dto.getLastName());
+        student.setDob(dto.getDob());
+        student.setFiscalCode(new FiscalCode(dto.getFiscalCode()));
+        student.setRegister(new Register(dto.getRegister()));
+        student.setDegreeCourse(DegreeCourseMapper.toEntity(dto.getDegreeCourse()));
+        student.setStudyPlan(StudyPlanMapper.toEntity(dto.getStudyPlan()));
+        return student;
     }
 
     public static StudentDto toDto(Student student) {
         if(student == null) return null;
-        return new StudentDto(
-            student.getUsername(),
-            student.getFirstName(),
-            student.getLastName(),
-            student.getDob(),
-            student.getFiscalCode().toString(),
-            student.getRegister().toString(),
-            DegreeCourseMapper.toDto(student.getDegreeCourse()),
-            StudyPlanMapper.toDto(student.getStudyPlan())
-        );
+        StudentDto dto = new StudentDto();
+        dto.setUsername(student.getUsername());
+        dto.setFirstName(student.getFirstName());
+        dto.setLastName(student.getLastName());
+        dto.setDob(student.getDob());
+        dto.setFiscalCode(student.getFiscalCode().toString());
+        dto.setRegister(student.getRegister().toString());
+        dto.setDegreeCourse(DegreeCourseMapper.toDto(student.getDegreeCourse()));
+        dto.setStudyPlan(StudyPlanMapper.toDto(student.getStudyPlan()));
+        return dto;
     }
 
 }

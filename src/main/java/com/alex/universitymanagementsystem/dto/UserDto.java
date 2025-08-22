@@ -49,18 +49,7 @@ public class UserDto {
     private Address address;
 
     // constructors
-    public UserDto() {}
-
-    public UserDto(String username, String firstName, String lastName, LocalDate dob, String fiscalCode, String phone, RoleType role, Address address) {
-        this.username = username;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.dob = dob;
-        this.fiscalCode = fiscalCode;
-        this.phone = phone;
-        this.role = role;
-        this.address = address;
-    }
+    public UserDto() { /* no-args constructor */ }
 
     // Getters
     public String getUsername() {

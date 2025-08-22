@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.alex.universitymanagementsystem.domain.DegreeCourse;
+import com.alex.universitymanagementsystem.dto.Builder;
 import com.alex.universitymanagementsystem.dto.ProfessorDto;
 import com.alex.universitymanagementsystem.dto.RegistrationForm;
 import com.alex.universitymanagementsystem.dto.StudentDto;
@@ -27,9 +28,9 @@ import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
 import com.alex.universitymanagementsystem.service.impl.ProfessorServiceImpl;
 import com.alex.universitymanagementsystem.service.impl.StudentServiceImpl;
 import com.alex.universitymanagementsystem.service.impl.UserServiceImpl;
-import com.alex.universitymanagementsystem.utils.Builder;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping(path = "api/v1/user")
@@ -185,7 +186,7 @@ public class UserController {
      * @return ModelAndView
      */
     @PutMapping(path = "/update/build")
-    public ModelAndView updateUser(@ModelAttribute Builder builder) {
+    public ModelAndView updateUser(@Valid @ModelAttribute Builder builder) {
         try {
             return new ModelAndView(
                 "user_admin/update/update-result",

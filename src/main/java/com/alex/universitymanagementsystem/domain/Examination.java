@@ -30,6 +30,7 @@ public class Examination implements Serializable {
     // instance variables
     private ExaminationId id;
     private Course course;
+    private String courseNameSnapshot;
     private Student student;
     private int grade;
     private boolean withHonors;
@@ -41,6 +42,7 @@ public class Examination implements Serializable {
     public Examination(Course course, Student student, int grade, boolean withHonors, LocalDate date) {
         this.id = ExaminationId.newId();
         this.course = course;
+        this.courseNameSnapshot = course.getName();
         this.student = student;
         this.grade = grade;
         this.withHonors = withHonors;
@@ -60,10 +62,15 @@ public class Examination implements Serializable {
         name = "course_id",
         foreignKey = @ForeignKey(name = "fk_examination_course")
     )
-    @OnDelete(action = OnDeleteAction.SET_NULL)
+    @OnDelete(action = OnDeleteAction.NO_ACTION)
     @PrimaryKeyJoinColumn(name = "course_id")
     public Course getCourse() {
         return course;
+    }
+
+    @Column(name = "course_name_snapshot", nullable = false, length = 255)
+    public String getCourseNameSnapshot() {
+        return courseNameSnapshot;
     }
 
     @ManyToOne
@@ -101,6 +108,8 @@ public class Examination implements Serializable {
 
     public void setCourse(Course course) {
         this.course = course;
+        if (course != null)
+            this.courseNameSnapshot = course.getName(); // aggiorno anche lo snapshot
     }
 
     public void setStudent(Student student) {
@@ -108,9 +117,8 @@ public class Examination implements Serializable {
     }
 
     public void setGrade(int grade) {
-        if (grade < 18 || grade > 30) {
+        if (grade < 18 || grade > 30)
             throw new IllegalArgumentException("Grade must be between 18 and 30");
-        }
         this.grade = grade;
     }
 

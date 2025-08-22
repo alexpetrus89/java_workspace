@@ -1,9 +1,9 @@
 package com.alex.universitymanagementsystem.dto;
+import java.io.Serializable;
 import java.time.LocalDate;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import com.alex.universitymanagementsystem.annotation.PasswordMatches;
 import com.alex.universitymanagementsystem.annotation.UniqueUsername;
 import com.alex.universitymanagementsystem.annotation.ValidBirthDate;
 import com.alex.universitymanagementsystem.annotation.ValidFiscalCode;
@@ -12,15 +12,15 @@ import com.alex.universitymanagementsystem.domain.Professor;
 import com.alex.universitymanagementsystem.domain.Student;
 import com.alex.universitymanagementsystem.domain.User;
 import com.alex.universitymanagementsystem.enum_type.RoleType;
-import com.alex.universitymanagementsystem.utils.Builder;
+import com.alex.universitymanagementsystem.utils.PasswordCarrier;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
-@PasswordMatches
-public class RegistrationForm {
+
+public class RegistrationForm implements Serializable, PasswordCarrier {
 
     // instance variables
     @NotBlank(message = "username is required")
@@ -94,10 +94,12 @@ public class RegistrationForm {
         return username;
     }
 
+    @Override
     public String getPassword() {
         return password;
     }
 
+    @Override
     public String getConfirm() {
         return confirm;
     }
@@ -148,10 +150,12 @@ public class RegistrationForm {
         this.username = username;
     }
 
+    @Override
     public void setPassword(String password) {
         this.password = password;
     }
 
+    @Override
     public void setConfirm(String confirm) {
         this.confirm = confirm;
     }

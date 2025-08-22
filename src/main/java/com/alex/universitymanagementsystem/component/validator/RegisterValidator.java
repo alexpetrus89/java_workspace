@@ -16,8 +16,7 @@ public class RegisterValidator implements ConstraintValidator<ValidRegister, Str
 
     @Override
     public boolean isValid(String register, ConstraintValidatorContext context) {
-        if (register == null)
-            return false;
+        if (register == null) return false;
         return register.matches(REGISTER_REGEX);
     }
 

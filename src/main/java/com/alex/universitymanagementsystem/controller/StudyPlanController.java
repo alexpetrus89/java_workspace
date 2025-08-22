@@ -140,7 +140,7 @@ public class StudyPlanController {
         @AuthenticationPrincipal Student student,
         @Valid @ModelAttribute SwapCoursesDto dto
     ) {
-        dto.setRegister(student.getRegister());
+        dto.setRegister(student.getRegister().toString());
 
         try {
             studyPlanServiceImpl.swapCourses(dto);

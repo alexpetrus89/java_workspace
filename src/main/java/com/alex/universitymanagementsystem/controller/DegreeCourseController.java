@@ -33,7 +33,7 @@ public class DegreeCourseController {
     // constants
     private static final String EXCEPTION_MESSAGE = "message";
     private static final String OBJECT_NOT_FOUND = "/object-not-found";
-    private static final String ILLEGAL_PARAMETERS = "/illegal-parameters";
+    private static final String ILLEGAL_PARAMETER = "/illegal-parameter";
 
     @Value("#{dataAccessExceptionUri}")
     private String dataAccessExceptionUri;
@@ -78,7 +78,7 @@ public class DegreeCourseController {
             List<CourseDto> courses = degreeCourseServiceImpl.getCourses(name.toUpperCase());
             return new ModelAndView("degree_course/course-list", "courses",courses);
         } catch (IllegalArgumentException e) {
-            return new ModelAndView(illegalArgumentExceptionUri + ILLEGAL_PARAMETERS, EXCEPTION_MESSAGE, e.getMessage());
+            return new ModelAndView(illegalArgumentExceptionUri + ILLEGAL_PARAMETER, EXCEPTION_MESSAGE, e.getMessage());
         } catch (NoSuchElementException e) {
             return new ModelAndView(notFoundExceptionUri + OBJECT_NOT_FOUND, EXCEPTION_MESSAGE, e.getMessage());
         } catch (DataAccessServiceException e) {
@@ -98,7 +98,7 @@ public class DegreeCourseController {
             List<ProfessorDto> professors = degreeCourseServiceImpl.getProfessors(name.toUpperCase());
             return new ModelAndView("degree_course/professor-with-course-list","professors", professors);
         } catch (IllegalArgumentException e) {
-            return new ModelAndView(illegalArgumentExceptionUri + ILLEGAL_PARAMETERS, EXCEPTION_MESSAGE, e.getMessage());
+            return new ModelAndView(illegalArgumentExceptionUri + ILLEGAL_PARAMETER, EXCEPTION_MESSAGE, e.getMessage());
         } catch (NoSuchElementException e) {
             return new ModelAndView(notFoundExceptionUri + OBJECT_NOT_FOUND, EXCEPTION_MESSAGE, e.getMessage());
         } catch (DataAccessServiceException e) {
@@ -119,7 +119,7 @@ public class DegreeCourseController {
             List<StudentDto> students = degreeCourseServiceImpl.getStudents(name.toUpperCase());
             return new ModelAndView("degree_course/student-list","students", students);
         } catch (IllegalArgumentException e) {
-            return new ModelAndView(illegalArgumentExceptionUri + ILLEGAL_PARAMETERS, EXCEPTION_MESSAGE, e.getMessage());
+            return new ModelAndView(illegalArgumentExceptionUri + ILLEGAL_PARAMETER, EXCEPTION_MESSAGE, e.getMessage());
         } catch (NoSuchElementException e) {
             return new ModelAndView(notFoundExceptionUri + OBJECT_NOT_FOUND, EXCEPTION_MESSAGE, e.getMessage());
         } catch (DataAccessServiceException e) {
@@ -163,6 +163,9 @@ public class DegreeCourseController {
     }
 
 
+    /**
+     * Serializes a CourseDto object to a JSON string.
+     */
     private String serializeCourseDto(CourseDto courseDto) throws JsonProcessingException {
         try {
             return new ObjectMapper().writeValueAsString(courseDto);

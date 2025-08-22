@@ -12,7 +12,6 @@ public class StudyPlanMapper {
     public static StudyPlan toEntity(StudyPlanDto dto) {
         if(dto == null) return null;
         return new StudyPlan(
-            dto.getStudent(),
             dto.getOrdering(),
             dto.getCourses()
                 .stream()
@@ -24,7 +23,6 @@ public class StudyPlanMapper {
     public static StudyPlanDto toDto(StudyPlan studyPlan) {
         if(studyPlan == null) return null;
         return new StudyPlanDto(
-            studyPlan.getStudent(),
             studyPlan.getOrdering(),
             studyPlan.getCourses()
                 .stream()

@@ -67,27 +67,6 @@ public class StudentDto {
         this.degreeCourse = degreeCourse;
     }
 
-    public StudentDto(
-        String username,
-        String firstName,
-        String lastName,
-        LocalDate dob,
-        String fiscalCode,
-        String register,
-        DegreeCourseDto degreeCourse,
-        StudyPlanDto studyPlan
-    ) {
-        this.username = username;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.dob = dob;
-        this.fiscalCode = fiscalCode;
-        this.register = register;
-        this.age = calculateAge();
-        this.degreeCourse = degreeCourse;
-        this.studyPlan = studyPlan;
-    }
-
     // getters
     public String getUsername() {
         return username;

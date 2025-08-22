@@ -5,10 +5,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import com.alex.universitymanagementsystem.annotation.ValidUniqueCode;
 import com.alex.universitymanagementsystem.domain.immutable.FiscalCode;
 import com.alex.universitymanagementsystem.domain.immutable.UniqueCode;
-import com.alex.universitymanagementsystem.utils.Builder;
+import com.alex.universitymanagementsystem.dto.Builder;
 
 import jakarta.persistence.Access;
 import jakarta.persistence.AccessType;
@@ -24,7 +23,6 @@ import jakarta.persistence.Table;
 public class Professor extends User {
 
     //instance variables
-    @ValidUniqueCode
     private UniqueCode uniqueCode;
     private static AtomicInteger professorCounter = new AtomicInteger(100000);
 

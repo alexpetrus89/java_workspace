@@ -89,7 +89,7 @@ public class CourseSerializer extends JsonSerializer<CourseDto> {
     }
 
 
-    public void serialize(CourseDto courseDto,  JsonGenerator generator) {
+    public void serialize(CourseDto courseDto, JsonGenerator generator) {
         try {
             this.serialize(courseDto, generator, this.provider);
         } catch (IOException e) {

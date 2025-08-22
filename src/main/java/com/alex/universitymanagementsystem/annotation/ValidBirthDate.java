@@ -6,17 +6,17 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import com.alex.universitymanagementsystem.validator.BirthDateValidator;
+import com.alex.universitymanagementsystem.component.validator.BirthDateValidator;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 
 @Documented
 @Constraint(validatedBy = BirthDateValidator.class)
-@Target({ ElementType.FIELD })
+@Target({ ElementType.FIELD, ElementType.PARAMETER })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidBirthDate {
-    String message() default "La data di nascita non può essere odierna o futura.";
+    String message() default "The date of birth cannot be today or in the future.";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }

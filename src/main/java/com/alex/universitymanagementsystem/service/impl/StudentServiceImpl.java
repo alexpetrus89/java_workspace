@@ -17,6 +17,7 @@ import com.alex.universitymanagementsystem.domain.Student;
 import com.alex.universitymanagementsystem.domain.StudyPlan;
 import com.alex.universitymanagementsystem.domain.immutable.FiscalCode;
 import com.alex.universitymanagementsystem.domain.immutable.Register;
+import com.alex.universitymanagementsystem.dto.RegistrationForm;
 import com.alex.universitymanagementsystem.dto.StudentDto;
 import com.alex.universitymanagementsystem.enum_type.DomainType;
 import com.alex.universitymanagementsystem.exception.DataAccessServiceException;
@@ -27,7 +28,6 @@ import com.alex.universitymanagementsystem.repository.DegreeCourseRepository;
 import com.alex.universitymanagementsystem.repository.StudentRepository;
 import com.alex.universitymanagementsystem.repository.StudyPlanRepository;
 import com.alex.universitymanagementsystem.service.StudentService;
-import com.alex.universitymanagementsystem.utils.RegistrationForm;
 
 import jakarta.persistence.PersistenceException;
 import jakarta.transaction.Transactional;

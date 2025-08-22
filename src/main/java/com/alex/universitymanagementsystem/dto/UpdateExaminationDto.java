@@ -2,6 +2,8 @@ package com.alex.universitymanagementsystem.dto;
 
 import java.time.LocalDate;
 
+import com.alex.universitymanagementsystem.annotation.ValidRegister;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
@@ -11,6 +13,7 @@ public class UpdateExaminationDto {
 
     // instance variables
     @NotBlank(message = "Old register must not be blank")
+    @ValidRegister
     private String oldRegister;
 
     @NotBlank(message = "Old course name must not be blank")
@@ -20,6 +23,7 @@ public class UpdateExaminationDto {
     private String oldDegreeCourseName;
 
     @NotBlank(message = "New register must not be blank")
+    @ValidRegister
     private String newRegister;
 
     @NotBlank(message = "New course name must not be blank")

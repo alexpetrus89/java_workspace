@@ -10,6 +10,7 @@ import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
@@ -26,12 +27,10 @@ import com.alex.universitymanagementsystem.domain.StudyPlan;
 import com.alex.universitymanagementsystem.domain.User;
 import com.alex.universitymanagementsystem.domain.immutable.Register;
 import com.alex.universitymanagementsystem.domain.immutable.UniqueCode;
-import com.alex.universitymanagementsystem.dto.StudyPlanDto;
+import com.alex.universitymanagementsystem.dto.RegistrationForm;
 import com.alex.universitymanagementsystem.enum_type.CourseType;
 import com.alex.universitymanagementsystem.enum_type.DegreeType;
 import com.alex.universitymanagementsystem.enum_type.RoleType;
-import com.alex.universitymanagementsystem.mapper.CourseMapper;
-import com.alex.universitymanagementsystem.mapper.StudyPlanMapper;
 import com.alex.universitymanagementsystem.repository.CourseRepository;
 import com.alex.universitymanagementsystem.repository.DegreeCourseRepository;
 import com.alex.universitymanagementsystem.repository.ExaminationAppealRepository;
@@ -41,7 +40,6 @@ import com.alex.universitymanagementsystem.repository.StudentRepository;
 import com.alex.universitymanagementsystem.repository.StudyPlanRepository;
 import com.alex.universitymanagementsystem.repository.UserRepository;
 import com.alex.universitymanagementsystem.utils.Builder;
-import com.alex.universitymanagementsystem.utils.RegistrationForm;
 
 
 @Configuration
@@ -69,8 +67,7 @@ public class UmsDBInitConfig implements Serializable {
     private static final String STUDENT_NOT_FOUND_ERROR = "Student not found";
 
     private final transient Logger logger =
-        org.slf4j.LoggerFactory.getLogger(UmsDBInitConfig.class);
-
+        LoggerFactory.getLogger(UmsDBInitConfig.class);
 
     @Bean
     @SuppressWarnings("unused")
@@ -134,7 +131,7 @@ public class UmsDBInitConfig implements Serializable {
 
     // initialize user
     private void initializeUsers(UserRepository userRepository, PasswordEncoder passwordEncoder) {
-        System.out.println("\n\n\n--- INIZIALIZZA ADMIN ---\n\n\n");
+        logger.info("\n\n\n--- INITIALIZE ADMIN ---");
 
         // create user  - 2 admin + 18 students + 9 professors
         Builder builderAdminOne = new Builder();
@@ -193,7 +190,7 @@ public class UmsDBInitConfig implements Serializable {
 
     // INITIALIZE DEGREE COURSE
     private void initializeDegreeCourse(DegreeCourseRepository degreeCourseRepository) {
-        System.out.println("\n\n\n--- INIZIALIZZA CORSI DI LAUREA ---\n\n\n");
+        logger.info("\n\n\n--- INITIALIZE DEGREE COURSES ---");
         // degree courses list
         List<DegreeCourse> degreeCourses = new ArrayList<>();
 
@@ -294,7 +291,7 @@ public class UmsDBInitConfig implements Serializable {
         DegreeCourseRepository degreeCourseRepository,
         PasswordEncoder passwordEncoder
     ) {
-        System.out.println("\n\n\n--- INIZIALIZZA STUDENTI ---\n\n\n");
+        logger.info("\n\n\n--- INITIALIZE STUDENTS ---");
         // 1
         Builder builderStudentOne = new Builder();
         builderStudentOne.withUsername("nino@gmail.com");
@@ -671,7 +668,7 @@ public class UmsDBInitConfig implements Serializable {
 
     // INITIALIZE PROFESSORS
     void initializeProfessors(ProfessorRepository professorRepository, PasswordEncoder passwordEncoder) {
-        System.out.println("\n\n\n--- INIZIALIZZA PROFESSORI ---\n\n\n");
+        logger.info("\n\n\n--- INITIALIZE PROFESSORS ---");
 
         Builder fbProfOne = new Builder();
         fbProfOne.withUsername("professore.giacinto@dominio.it");
@@ -797,7 +794,7 @@ public class UmsDBInitConfig implements Serializable {
         ProfessorRepository professorRepository,
         DegreeCourseRepository degreeCourseRepository
     ) {
-        System.out.println("\n\n\n--- INIZIALIZZA CORSI ---\n\n\n");
+        logger.info("\n\n\n--- INITIALIZE COURSES ---");
         // retrieve degreeCourses
         DegreeCourse ingGest = degreeCourseRepository
             .findByName(INGEGNERIA_GESTIONALE)
@@ -1658,7 +1655,7 @@ public class UmsDBInitConfig implements Serializable {
         ExaminationRepository examinationRepository
     ) {
 
-        System.out.println("\n\n\n--- INIZIALIZZA ESAMI ---\n\n\n");
+        logger.info("\n\n\n--- INITIALIZE EXAMINATIONS ---");
 
         // Retrieve existing Student entity from the database
         Student nino = studentRepository
@@ -1847,6 +1844,7 @@ public class UmsDBInitConfig implements Serializable {
         DegreeCourseRepository degreeCourseRepository,
         StudentRepository studentRepository
     ) {
+        logger.info("\n\n\n--- INITIALIZE STUDY PLANS ---");
 
         DegreeCourse ingGest = degreeCourseRepository
             .findByName(INGEGNERIA_GESTIONALE)
@@ -1925,6 +1923,7 @@ public class UmsDBInitConfig implements Serializable {
         CourseRepository courseRepository,
         StudentRepository studentRepository
     ) {
+        logger.info("\n\n\n--- INITIALIZE EXAMINATION APPEALS ---");
 
         Course analisiMat = courseRepository
             .findByNameAndDegreeCourseName("analisi matematica", INGEGNERIA_GESTIONALE)

@@ -14,10 +14,10 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.alex.universitymanagementsystem.domain.immutable.UniqueCode;
 import com.alex.universitymanagementsystem.dto.ProfessorDto;
+import com.alex.universitymanagementsystem.dto.RegistrationForm;
 import com.alex.universitymanagementsystem.exception.DataAccessServiceException;
 import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
 import com.alex.universitymanagementsystem.service.impl.ProfessorServiceImpl;
-import com.alex.universitymanagementsystem.utils.RegistrationForm;
 
 @RestController
 @RequestMapping(path = "api/v1/professor")

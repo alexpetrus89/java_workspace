@@ -7,10 +7,10 @@ import org.springframework.retry.annotation.Retryable;
 
 import com.alex.universitymanagementsystem.domain.immutable.UniqueCode;
 import com.alex.universitymanagementsystem.dto.ProfessorDto;
+import com.alex.universitymanagementsystem.dto.RegistrationForm;
 import com.alex.universitymanagementsystem.exception.DataAccessServiceException;
 import com.alex.universitymanagementsystem.exception.ObjectAlreadyExistsException;
 import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
-import com.alex.universitymanagementsystem.utils.RegistrationForm;
 
 import jakarta.persistence.PersistenceException;
 import jakarta.transaction.Transactional;

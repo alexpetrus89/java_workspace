@@ -7,7 +7,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -138,16 +137,14 @@ public class DegreeCourseController {
         try {
             return ResponseEntity.ok(degreeCourseServiceImpl.getDegreeCourses());
         } catch (DataAccessServiceException e) {
-            return ResponseEntity
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(Set.of(new DegreeCourseDto(null, e.getMessage(), null, 0)));
+            throw new JsonProcessingException("Parsing not working a cause of data access error", e);
         }
     }
 
 
     /**
      * retrieves all courses of a given degree course for ajax request
-     * @param name
+     * @param name of degree course
      * @return String - a JSON string
      * @throws JsonProcessingException if the object cannot be serialized to JSON
      */

@@ -8,8 +8,9 @@
     <title>Uni Journey</title>
 </head>
 <body>
-    <h1 th:text="${message}">Error message</h1>
-    <br>
+    <h1>Username not found</h1>
+    <p th:text="${message}"></p>
     <p><a href="javascript:history.back()">Go back</a></p>
+    <a href="#" th:href="@{/home}">Back to Menu</a>
 </body>
 </html>

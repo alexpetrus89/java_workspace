@@ -25,12 +25,7 @@ public class DegreeCourseDto {
     public DegreeCourseDto() {}
 
 
-    public DegreeCourseDto(
-        DegreeCourseId id,
-        String name,
-        DegreeType graduationClass,
-        int duration
-    ) {
+    public DegreeCourseDto(DegreeCourseId id, String name, DegreeType graduationClass, int duration) {
         this.id = id;
         this.name = name;
         this.graduationClass = graduationClass;

@@ -196,6 +196,7 @@ public class ExaminationController {
     ) {
 
         try {
+            // TODO remove db access to get just courseCfu
             Integer courseCfu = courseServiceImpl.getCourseByNameAndDegreeCourseName(courseName, degreeCourseName).getCfu();
             ExaminationDto examination = new ExaminationDto(register, courseName, degreeCourseName, courseCfu, Integer.valueOf(grade), withHonors, date);
             examinationServiceImpl.addNewExamination(examination);

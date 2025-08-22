@@ -115,9 +115,8 @@ public class Examination implements Serializable {
     }
 
     public void setWithHonors(boolean withHonors) {
-        if(getGrade() != 30) {
+        if(getGrade() != 30)
             this.withHonors = false;
-        }
         this.withHonors = withHonors;
     }
 

@@ -3,7 +3,6 @@ package com.alex.universitymanagementsystem.service.impl;
 import org.springframework.stereotype.Service;
 
 import com.alex.universitymanagementsystem.exception.DataAccessServiceException;
-import com.alex.universitymanagementsystem.exception.UsernameInvalidException;
 import com.alex.universitymanagementsystem.repository.UserRepository;
 
 import jakarta.persistence.PersistenceException;
@@ -29,12 +28,8 @@ public class RegistrationServiceImpl {
      * @throws UsernameInvalidException if the username is blank
      * @throws DataAccessServiceException if there is an error accessing the database.
      */
-    public boolean isUsernameAlreadyTaken(String username)
-        throws UsernameInvalidException, DataAccessServiceException
+    public boolean isUsernameAlreadyTaken(String username) throws DataAccessServiceException
     {
-        // sanity check
-		if(username.isBlank())
-            throw new UsernameInvalidException("Username cannot be blank");
         try {
             return userRepository.findByUsername(username).isPresent();
         } catch (PersistenceException e) {

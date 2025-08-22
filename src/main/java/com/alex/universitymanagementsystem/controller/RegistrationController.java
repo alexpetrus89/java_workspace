@@ -1,10 +1,6 @@
 package com.alex.universitymanagementsystem.controller;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,16 +8,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.alex.universitymanagementsystem.dto.RegistrationForm;
 import com.alex.universitymanagementsystem.enum_type.RoleType;
-import com.alex.universitymanagementsystem.exception.DataAccessServiceException;
-import com.alex.universitymanagementsystem.service.impl.RegistrationServiceImpl;
 import com.alex.universitymanagementsystem.utils.Builder;
-import com.alex.universitymanagementsystem.utils.RegistrationForm;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
-
-
 
 
 
@@ -31,21 +23,7 @@ import jakarta.validation.Valid;
 @RequestMapping(path = "/register")
 public class RegistrationController {
 
-    // constants
-    @Value("#{dataAccessExceptionUri}")
-    private String dataAccessExceptionUri;
-
-    // instance variables
-    private final RegistrationServiceImpl registrationServiceImpl;
-
-    // constructor
-    public RegistrationController(RegistrationServiceImpl registrationServiceImpl) {
-        this.registrationServiceImpl = registrationServiceImpl;
-    }
-
-
-    // methods
-    /** GET request */
+    // GET request
     /**
      * @return String
      */
@@ -55,7 +33,7 @@ public class RegistrationController {
     }
 
 
-    /** POST request */
+    // POST request
     /**
      * Process registration
      * @param request - HttpServletRequest
@@ -67,61 +45,39 @@ public class RegistrationController {
     @PostMapping
     public String processRegistration (
         @Valid @ModelAttribute("form") RegistrationForm form,
-        BindingResult bindingResult,
         HttpServletRequest request,
         SessionStatus sessionStatus
     ) {
-        // username already in use check
-        try {
-            if(registrationServiceImpl.isUsernameAlreadyTaken(form.getUsername()))
-                return "redirect:/exception/illegal/registration/username-already-taken";
 
-            if (bindingResult.hasErrors()) {
-                FieldError passwordError = bindingResult.getFieldError("password");
-                if (passwordError != null && "NotBlank".equals(passwordError.getCode()))
-                    return "redirect:/exception/illegal/registration/password-is-blank";
+        // create a new form builder
+        Builder builder = new Builder();
+        // set the values
+        builder.withUsername(form.getUsername());
+        builder.withPassword(form.getPassword());
+        builder.withFirstName(form.getFirstName().toLowerCase());
+        builder.withLastName(form.getLastName().toLowerCase());
+        builder.withDob(form.getDob());
+        builder.withFiscalCode(form.getFiscalCode());
+        builder.withStreet(form.getStreet());
+        builder.withCity(form.getCity());
+        builder.withState(form.getState());
+        builder.withZip(form.getZip());
+        builder.withPhone(form.getPhone());
+        builder.withRole(form.getRole());
 
-                ObjectError globalError = bindingResult.getGlobalError();
-                if (globalError != null && "PasswordMatches".equals(globalError.getCode()))
-                    return "redirect:/exception/illegal/registration/password-not-match";
+        // memorizza l'oggetto builder nella sessione
+        request.getSession().setAttribute("builder", builder);
 
-                FieldError dobError = bindingResult.getFieldError("dob");
-                if (dobError != null && "ValidBirthDate".equals(dobError.getCode()))
-                    return "redirect:/exception/illegal/registration/invalid-dob";
-            }
-
-            // create a new form builder
-            Builder builder = new Builder();
-            // set the values
-            builder.withUsername(form.getUsername());
-            builder.withPassword(form.getPassword());
-            builder.withFirstName(form.getFirstName().toLowerCase());
-            builder.withLastName(form.getLastName().toLowerCase());
-            builder.withDob(form.getDob());
-            builder.withFiscalCode(form.getFiscalCode());
-            builder.withStreet(form.getStreet());
-            builder.withCity(form.getCity());
-            builder.withState(form.getState());
-            builder.withZip(form.getZip());
-            builder.withPhone(form.getPhone());
-            builder.withRole(form.getRole());
-
-            // memorizza l'oggetto builder nella sessione
-            request.getSession().setAttribute("builder", builder);
-
-            return switch (form.getRole()) {
-                // Reindirizza l'utente al metodo createNewStudent
-                case RoleType.STUDENT -> "redirect:user_student/create/create-student-from-user";
-                // Reindirizza l'utente al metodo createProfessor (non mostrato nel codice)
-                case RoleType.PROFESSOR -> "redirect:user_professor/create/create-professor-from-user";
-                // Reindirizza l'utente admin al login
-                case RoleType.ADMIN -> "forward:api/v1/user/create-admin";
-                // Reindirizza all'utente alla pagina di login
-                default -> "redirect:/login";
-            };
-        } catch (DataAccessServiceException _) {
-            return "redirect:" + dataAccessExceptionUri;
-        }
+        return switch (form.getRole()) {
+            // Reindirizza l'utente al metodo createNewStudent
+            case RoleType.STUDENT -> "redirect:user_student/create/create-student-from-user";
+            // Reindirizza l'utente al metodo createProfessor (non mostrato nel codice)
+            case RoleType.PROFESSOR -> "redirect:user_professor/create/create-professor-from-user";
+            // Reindirizza l'utente admin al login
+            case RoleType.ADMIN -> "forward:api/v1/user/create-admin";
+            // Reindirizza all'utente alla pagina di login
+            default -> "redirect:/login";
+        };
     }
 
 }

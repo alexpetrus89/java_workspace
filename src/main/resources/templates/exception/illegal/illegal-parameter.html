@@ -9,9 +9,10 @@
 </head>
 <body>
     <h1>Error: Invalid parameter</h1>
-    <p th:if="${error == 'Course name cannot be empty'}">Course name cannot be empty.</p>
-    <p th:if="${error == 'Degree course name cannot be empty'}">Degree course name cannot be empty.</p>
-    <p th:if="${error == 'Date cannot be in the past'}">Date cannot be in the past.</p>
-    <p><a th:href="@{/user_professor/examinations/examination_appeal/create-examination-appeal}">Go back</a></p>
+    <p th:if="${message == 'Course name cannot be empty'}">Course name cannot be empty.</p>
+    <p th:if="${message == 'Degree course name cannot be empty'}">Degree course name cannot be empty.</p>
+    <p th:if="${message == 'Date cannot be in the past'}">Date cannot be in the past.</p>
+    <p th:text="'exception: ' + ${message}"></p>
+    <p><a href="javascript:history.back()">Go back</a></p>
 </body>
 </html>

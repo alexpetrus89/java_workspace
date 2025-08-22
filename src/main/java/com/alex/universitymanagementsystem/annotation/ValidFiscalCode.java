@@ -6,14 +6,14 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import com.alex.universitymanagementsystem.validator.FiscalCodeValidator;
+import com.alex.universitymanagementsystem.component.validator.FiscalCodeValidator;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 
 @Documented
 @Constraint(validatedBy = FiscalCodeValidator.class)
-@Target({ ElementType.FIELD })
+@Target({ ElementType.FIELD, ElementType.PARAMETER })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidFiscalCode {
     String message() default "Invalid fiscal code";

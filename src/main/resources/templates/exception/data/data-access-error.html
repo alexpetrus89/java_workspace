@@ -8,11 +8,12 @@
     <title>Uni Journey</title>
 </head>
 <body>
-    <h1 th:text="${title}">Error title</h1>
-    <h1 th:text="${errorMessage}">An error occurred</h1>
-    <h1 th:text="${status}">Status:</h1>
-    <p th:each="element : ${stackTrace}" th:text="${element}">Stack trace:</p>
+    <div class="container">
+    <h2>Data access error</h2>
+    <p th:text="${message}">A data access error occurred</p>
     <br>
     <p><a href="javascript:history.back()">Go back</a></p>
+    <br>
+    <a href="#" th:href="@{/home}">Back to home</a>
 </body>
 </html>

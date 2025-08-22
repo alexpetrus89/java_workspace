@@ -8,9 +8,9 @@
     <title>Uni Journey</title>
 </head>
 <body>
-    <br>
+	<h1>Object not found</h1>
+    <p th:text="${message}"></p>
+    <p><a href="javascript:history.back()">Go back</a></p>
     <a href="#" th:href="@{/home}">Back to Menu</a>
-	<h1>OBJECT NOT FOUND</h1>
-    <p th:text="'exception: ' + ${error}">
 </body>
 </html>

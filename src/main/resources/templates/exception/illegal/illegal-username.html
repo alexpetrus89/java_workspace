@@ -8,8 +8,9 @@
     <title>Uni Journey</title>
 </head>
 <body>
-    <h1>Error: Invalid Username</h1>
+    <h1>Error: Invalid username</h1>
+    <p th:text="${message}"></p>
     <p>The username cannot be blank. Please enter a valid username.</p>
-    <p><a th:href="@{/register}">Return to Registration Page</a></p>
+    <p><a href="javascript:history.back()">Go back</a></p>
 </body>
 </html>

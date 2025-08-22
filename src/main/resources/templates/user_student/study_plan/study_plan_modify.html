@@ -14,7 +14,7 @@
     <header class="main-header">
         <h1>UNI JOURNEY</h1>
     </header>
-    <h1 th:text="${title}">Select courses to change</h1>
+    <br>
     <form action="#" th:action="@{/api/v1/study_plan/change}"
         th:object="${courses}" method="post">
         <input type="hidden" name="_method" value="PUT"/>

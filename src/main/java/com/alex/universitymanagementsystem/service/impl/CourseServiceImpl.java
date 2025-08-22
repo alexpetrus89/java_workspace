@@ -14,6 +14,7 @@ import com.alex.universitymanagementsystem.domain.Professor;
 import com.alex.universitymanagementsystem.domain.immutable.UniqueCode;
 import com.alex.universitymanagementsystem.dto.CourseDto;
 import com.alex.universitymanagementsystem.dto.ProfessorDto;
+import com.alex.universitymanagementsystem.dto.UpdateCourseDto;
 import com.alex.universitymanagementsystem.enum_type.DomainType;
 import com.alex.universitymanagementsystem.exception.DataAccessServiceException;
 import com.alex.universitymanagementsystem.exception.ObjectAlreadyExistsException;
@@ -128,8 +129,8 @@ public class CourseServiceImpl implements CourseService {
 
     /**
      * Adds a new course to the repository.
-     * @param course the course data transfer object containing the course details
-     * @return Course
+     * @param dto the course data transfer object containing the course details
+     * @return CourseDto object representing the new Course
      * @throws ObjectAlreadyExistsException if a course with the same name already exists
      * @throws ObjectNotFoundException if no professor with the given unique code exists
      *         or no degree course with the given name exists.
@@ -138,42 +139,40 @@ public class CourseServiceImpl implements CourseService {
     @Override
     @Transactional(rollbackOn = {ObjectAlreadyExistsException.class, ObjectNotFoundException.class, IllegalArgumentException.class})
     @Retryable(retryFor = PersistenceException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
-    public CourseDto addNewCourse(CourseDto courseDto)
+    public CourseDto addNewCourse(CourseDto dto)
         throws ObjectAlreadyExistsException, ObjectNotFoundException, DataAccessServiceException
     {
         try {
 
             // Check for duplicate course name in the same degree course
-            if(courseRepository.existsByNameAndDegreeCourse(courseDto.getName(), courseDto.getDegreeCourse().toString()))
+            if(courseRepository.existsByNameAndDegreeCourse(dto.getName(), dto.getDegreeCourse().toString()))
                 throw new ObjectAlreadyExistsException(DomainType.COURSE);
 
             // Validate professor existence
             Professor professor = professorRepository
-                .findByUniqueCode(new UniqueCode(courseDto.getProfessor().getUniqueCode()))
+                .findByUniqueCode(new UniqueCode(dto.getProfessor().getUniqueCode()))
                 .orElseThrow(() -> new ObjectNotFoundException(DomainType.PROFESSOR));
 
             // Validate degree course existence
             DegreeCourse degreeCourse = degreeCourseRepository
-                .findByName(courseDto.getDegreeCourse().getName())
+                .findByName(dto.getDegreeCourse().getName())
                 .orElseThrow(() -> new ObjectNotFoundException(DomainType.DEGREE_COURSE));
 
             // create course
-            Course course = new Course(courseDto.getName(), courseDto.getType(), courseDto.getCfu(), professor, degreeCourse);
+            Course course = new Course(dto.getName(), dto.getType(), dto.getCfu(), professor, degreeCourse);
             // save
             courseRepository.saveAndFlush(course);
             return CourseMapper.toDto(course);
         } catch (PersistenceException e) {
-            throw new DataAccessServiceException("Error accessing database for course " + courseDto.getName() + ": " + e.getMessage(), e);
+            throw new DataAccessServiceException("Error accessing database for course " + dto.getName() + ": " + e.getMessage(), e);
         }
     }
 
 
     /**
      * Updates an existing course using data from the provided CourseDto.
-     * @param oldCourseName the current name of the course to be updated
-     * @param oldDegreeCourseName the current degree course name associated with the course
-     * @param updatedCourseDto the DTO containing new course information
-     * @return the updated Course
+     * @param dto the DTO containing new course information
+     * @return CourseDto object representing the updated Course
      * @throws IllegalArgumentException if old course name or degree course name are null or blank
      * or if the DTO contains invalid data
      * @throws ObjectNotFoundException if the course, professor, or degree course cannot be found
@@ -182,33 +181,29 @@ public class CourseServiceImpl implements CourseService {
     @Override
     @Transactional(rollbackOn = {IllegalArgumentException.class, ObjectNotFoundException.class})
     @Retryable(retryFor = PersistenceException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
-    public CourseDto updateCourse(String oldCourseName, String oldDegreeCourseName, CourseDto updatedCourseDto)
-        throws IllegalArgumentException, ObjectNotFoundException, DataAccessServiceException
+    public CourseDto updateCourse(UpdateCourseDto dto)
+        throws ObjectNotFoundException, DataAccessServiceException
     {
-
-        if (oldCourseName == null || oldCourseName.isBlank() ||
-            oldDegreeCourseName == null || oldDegreeCourseName.isBlank())
-            throw new IllegalArgumentException("Old course name and degree course name must not be null or blank");
 
         try {
             // Retrieve existing course
             Course course = courseRepository
-                .findByNameAndDegreeCourseName(oldCourseName, oldDegreeCourseName)
+                .findByNameAndDegreeCourseName(dto.getNewName(), dto.getNewDegreeCourseName())
                 .orElseThrow(() -> new ObjectNotFoundException(DomainType.COURSE));
 
             // Validate new degree course and professor
             DegreeCourse newDegreeCourse = degreeCourseRepository
-                .findByName(updatedCourseDto.getDegreeCourse().getName())
+                .findByName(dto.getNewDegreeCourseName())
                 .orElseThrow(() -> new ObjectNotFoundException(DomainType.DEGREE_COURSE));
 
             Professor professor = professorRepository
-                .findByUniqueCode(new UniqueCode(updatedCourseDto.getProfessor().getUniqueCode()))
+                .findByUniqueCode(new UniqueCode(dto.getUniqueCode()))
                 .orElseThrow(() -> new ObjectNotFoundException(DomainType.PROFESSOR));
 
             // Update course fields
-            course.setName(updatedCourseDto.getName());
-            course.setType(updatedCourseDto.getType());
-            course.setCfu(updatedCourseDto.getCfu());
+            course.setName(dto.getNewName());
+            course.setType(dto.getType());
+            course.setCfu(dto.getCfu());
             course.setProfessor(professor);
             course.setDegreeCourse(newDegreeCourse);
 
@@ -217,7 +212,7 @@ public class CourseServiceImpl implements CourseService {
             return CourseMapper.toDto(course);
 
         } catch (PersistenceException e) {
-            throw new DataAccessServiceException("Error accessing database for course " + updatedCourseDto.getName() + ": " + e.getMessage(), e);
+            throw new DataAccessServiceException("Error accessing database for course " + dto.getOldName() + ": " + e.getMessage(), e);
         }
     }
 

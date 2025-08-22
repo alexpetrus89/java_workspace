@@ -23,10 +23,8 @@ public class CourseDto {
     @Positive(message = "CFU must be a positive number")
     private Integer cfu;
 
-    @NotBlank(message = "Professor is mandatory")
     private ProfessorDto professor;
 
-    @NotBlank(message = "Degree course is mandatory")
     private DegreeCourseDto degreeCourse;
 
     // constructors

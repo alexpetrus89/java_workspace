@@ -18,6 +18,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.alex.universitymanagementsystem.domain.DegreeCourse;
 import com.alex.universitymanagementsystem.dto.ProfessorDto;
+import com.alex.universitymanagementsystem.dto.RegistrationForm;
 import com.alex.universitymanagementsystem.dto.StudentDto;
 import com.alex.universitymanagementsystem.dto.UserDto;
 import com.alex.universitymanagementsystem.exception.DataAccessServiceException;
@@ -27,7 +28,6 @@ import com.alex.universitymanagementsystem.service.impl.ProfessorServiceImpl;
 import com.alex.universitymanagementsystem.service.impl.StudentServiceImpl;
 import com.alex.universitymanagementsystem.service.impl.UserServiceImpl;
 import com.alex.universitymanagementsystem.utils.Builder;
-import com.alex.universitymanagementsystem.utils.RegistrationForm;
 
 import jakarta.servlet.http.HttpServletRequest;
 

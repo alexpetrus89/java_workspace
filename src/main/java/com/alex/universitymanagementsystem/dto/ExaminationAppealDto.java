@@ -3,6 +3,8 @@ package com.alex.universitymanagementsystem.dto;
 import java.time.LocalDate;
 import java.util.Set;
 
+import com.alex.universitymanagementsystem.annotation.ValidUniqueCode;
+
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -19,6 +21,7 @@ public class ExaminationAppealDto {
     private String degreeCourse;
 
     @NotBlank(message = "Professor unique code cannot be blank")
+    @ValidUniqueCode
     private String professorCode;
 
     private String professorFullName;

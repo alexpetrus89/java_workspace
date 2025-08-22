@@ -5,6 +5,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import com.alex.universitymanagementsystem.annotation.ValidUniqueCode;
 import com.alex.universitymanagementsystem.domain.immutable.FiscalCode;
 import com.alex.universitymanagementsystem.domain.immutable.UniqueCode;
 import com.alex.universitymanagementsystem.utils.Builder;
@@ -16,7 +17,6 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.Pattern;
 
 @Entity
 @Table(name = "PROFESSORS")
@@ -24,6 +24,7 @@ import jakarta.validation.constraints.Pattern;
 public class Professor extends User {
 
     //instance variables
+    @ValidUniqueCode
     private UniqueCode uniqueCode;
     private static AtomicInteger professorCounter = new AtomicInteger(100000);
 
@@ -64,7 +65,6 @@ public class Professor extends User {
         name = "unique_code",
         column = @Column(name = "unique_code")
     )
-    @Pattern(regexp = "^[a-zA-Z0-9]{1,8}$")
     public UniqueCode getUniqueCode() {
         return uniqueCode;
     }

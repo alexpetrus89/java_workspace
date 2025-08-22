@@ -33,6 +33,7 @@ package com.alex.universitymanagementsystem.exception;
  */
 
 import java.text.ParseException;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,6 +42,8 @@ import org.springframework.messaging.handler.annotation.support.MethodArgumentNo
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -49,7 +52,9 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
-import jakarta.servlet.http.HttpServletRequest;
+import com.alex.universitymanagementsystem.config.UmsConfig;
+
+import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 
 @RestControllerAdvice
@@ -61,7 +66,16 @@ public class GlobalControllerExceptionHandler {
 
     // constants
     private static final String EXCEPTION_VIEW = "exception/error";
+    private static final String DEFAULT_VALIDATION_EXCEPTION_VIEW = "exception/illegal/illegal-parameter";
+    private static final String UNKNOWN_VALIDATION_ERROR = "Unknown validation error";
     private static final String MESSAGE = "message";
+
+    // instance variables
+    private final UmsConfig umsConfig;
+
+    public GlobalControllerExceptionHandler(UmsConfig umsConfig) {
+        this.umsConfig = umsConfig;
+    }
 
     /**
      * Handles all uncaught exceptions and returns a ModelAndView with the error message.
@@ -78,7 +92,9 @@ public class GlobalControllerExceptionHandler {
 
     /**
      * Handles InternalServerError exceptions and returns a ModelAndView with a status of Internal Server Error (500).
-     * The exception is logged at the ERROR level, and the response body contains a custom error message.
+     * Returns a ModelAndView with a view name of "/exception/error"
+     * and a model containing a custom error message.
+     * The exception is logged at the ERROR level.
      * @param e the InternalServerError exception to be handled
      * @return a ModelAndView containing the error message
      */
@@ -91,8 +107,25 @@ public class GlobalControllerExceptionHandler {
 
 
     /**
+     * Handles exceptions that occur when there is an data access error.
+     * Returns a ModelAndView with a view name of "/exception/data/data-access-error"
+     * and a model containing a custom error message.
+     * The exception is logged at the ERROR level.
+     * @param e the DataAccessServiceException to be handled
+     * @return a ModelAndView containing the error message
+     */
+    @ExceptionHandler(DataAccessServiceException.class)
+    public ModelAndView handleDataAccessServiceException(DataAccessServiceException e) {
+        logger.error("Data access service error", e);
+        String message = "Data access service error: " + e.getMessage();
+        return new ModelAndView("exception/data/data-access-error", MESSAGE, message);
+    }
+
+
+    /**
      * Handles exceptions that occur when a resource is not found, such as a 404 Not Found response.
-     * Returns a ModelAndView object with a view name and a custom error message.
+     * Returns a ModelAndView object with a view name of "exception/not_found/error-not-found"
+     * and a model containing a custom error message.
      * The exception is logged at the ERROR level.
      * @param e the exception to be handled
      * @return a ModelAndView object
@@ -107,7 +140,8 @@ public class GlobalControllerExceptionHandler {
 
     /**
      * Handles exceptions that occur when parsing a .html file, such as ParseErrors, SAXExceptions, and IOExceptions.
-     * Returns a ModelAndView with a status of Internal Server Error (500) and a body containing a custom error message.
+     * Returns a ModelAndView with a status of Internal Server Error (500) and a model
+     * containing a custom error message.
      * The exception is logged at the ERROR level.
      * @param e the exception to be handled
      * @return a ModelAndView containing the error message
@@ -122,12 +156,12 @@ public class GlobalControllerExceptionHandler {
 
     /**
      * Handles AccessDeniedException exceptions and returns a ModelAndView with a status of Forbidden (403).
-     * The exception is logged at the ERROR level, and the response body contains a custom error message.
+     * The exception is logged at the ERROR level, and a model containing a custom error message.
      * This exception is thrown when a user tries to access a resource they do not have permission to access.
      * @param e the AccessDeniedException exception to be handled
      * @return a ModelAndView containing the error message
      */
-    @ExceptionHandler(value = AccessDeniedException.class)
+    @ExceptionHandler(AccessDeniedException.class)
     public ModelAndView handleAccessDeniedException(AccessDeniedException e) {
         logger.error("Access denied", e);
         String message = "Access denied, NON HAI I PERMESSI: " + e.getMessage();
@@ -137,9 +171,10 @@ public class GlobalControllerExceptionHandler {
 
     /**
      * Handles NoHandlerFoundException exceptions and returns a ModelAndView with a status of Not Found (404).
-     * The exception is logged at the ERROR level, and the response body contains a custom error message.
+     * The exception is logged at the ERROR level, and a model containing a custom error message.
      * This exception is thrown when a request is made to a URL that does not have a handler method.
-     * This can occur when a static resource (such as a .html file) is not found, as Spring MVC will not find a handler for the request.
+     * This can occur when a static resource (such as a .html file) is not found, as Spring MVC will not find a
+     * handler for the request.
      * @param e the NoHandlerFoundException exception to be handled
      * @return a ModelAndView containing the error message
      */
@@ -158,27 +193,13 @@ public class GlobalControllerExceptionHandler {
 
 
     // Add more @ExceptionHandler methods for other specific exceptions
-
-    /**
-     * Handles exceptions that occur when a username is invalid or already taken.
-     * Returns a ModelAndView with a view name of "error/error" and a model containing the error message.
-     * The exception is logged at the ERROR level.
-     * @param e the exception to be handled
-     * @return a ModelAndView containing the error message
-     */
-    @ExceptionHandler(UsernameInvalidException.class)
-    public ModelAndView handleUsernameInvalidException(UsernameInvalidException e, HttpServletRequest request) {
-        logger.error("Username is invalid", e);
-        String message = "Username is invalid: " + e.getMessage();
-        return new ModelAndView("/exception/illegal/registration/invalid-username", MESSAGE, message);
-    }
-
-
     /**
      * Handles exceptions that occur when Assertion error is throw.
      * Returns a ModelAndView with a view name of "exception/assertion/assertion" and
      * a model containing the error message.
      * The exception is logged at the ERROR level.
+     * @param e the exception to be handled
+     * @return a ModelAndView containing the error message
      */
     @ExceptionHandler(AssertionError.class)
     public ModelAndView handleAssertionError(AssertionError e) {
@@ -189,65 +210,134 @@ public class GlobalControllerExceptionHandler {
 
 
     /**
-     * Handles exceptions that occur when a method argument is not valid.
-     * Returns a ModelAndView with a view name of "exception/illegal/illegal-parameter" and
-     * a model containing the error message.
-     * The exception is logged at the ERROR level.
-     */
-    @ExceptionHandler({MethodArgumentNotValidException.class, BindException.class, ConstraintViolationException.class})
-    public ModelAndView handleValidationException(Exception e) {
-        logger.error("Validation error", e);
-        String message = "An validation error occurred: " + getErrorMessage(e);
-        return new ModelAndView("exception/illegal/illegal-parameter", MESSAGE, message);
-    }
-
-
-    /**
      * Handles exceptions that occur when a servlet request parameter is missing.
      * Returns a ModelAndView with a view of "exception/illegal/illegal-parameter" and
      * a model containing the error message.
      * The exception is logged at the ERROR level.
+     * @param e the exception to be handled
+     * @return a ModelAndView containing the error message
      */
     @ExceptionHandler(MissingServletRequestParameterException.class)
     public ModelAndView handlerMissingServletRequestParameter(MissingServletRequestParameterException e) {
         logger.error("Missing servlet request parameter", e);
         String message = "Parameter cannot be null: " + e.getMessage();
-        return new ModelAndView("exception/illegal/illegal-parameter", MESSAGE, message);
+        return new ModelAndView(DEFAULT_VALIDATION_EXCEPTION_VIEW, MESSAGE, message);
     }
 
 
     /**
      * Handles IllegalArgumentException exceptions and returns a ModelAndView with a view name of "exception/illegal/illegal-parameters".
-     * The exception is logged at the ERROR level, and the response body contains the error message.
+     * The exception is logged at the ERROR level and a model containing the error message.
      * @param e the IllegalArgumentException exception to be handled
      * @return a ModelAndView containing the error message
      */
     @ExceptionHandler(IllegalArgumentException.class)
     public ModelAndView handleIllegalArgumentException(IllegalArgumentException e) {
         logger.error("Illegal argument", e);
-        if (e.getMessage() != null && e.getMessage().contains("fiscal code"))
-            return new ModelAndView("exception/illegal/registration/invalid-fiscal-code");
-
+        String message = "Illegal argument exception: " + e.getMessage();
         // fallback for others IllegalArgumentException
-        return new ModelAndView("exception/illegal/illegal-parameters", MESSAGE, e.getMessage());
+        return new ModelAndView("exception/illegal/illegal-parameters", MESSAGE, message);
+    }
+
+
+    /**
+     * Handles JsonProcessingException exceptions and returns a ModelAndView with a view name of "exception/data/json-processing-error"
+     * The exception is logged at the ERROR level with the error message.
+     * @param e the JsonProcessingException exception to be handled
+     * @return a ModelAndView containing the error message
+     */
+    @ExceptionHandler(JsonProcessingException.class)
+    public ModelAndView handleJsonProcessingException(JsonProcessingException e) {
+        logger.error("JSON processing error", e);
+        String message = "An error occurred while processing JSON: " + e.getMessage();
+        return new ModelAndView("exception/data/json-processing-error", MESSAGE, message);
+    }
+
+
+    /**
+     * Handles validation exceptions and returns a ModelAndView with a variable view name
+     * and a model containing the error message.
+     * The exception is logged at the ERROR level.
+     *
+     * @param e the exception to be handled
+     * @return a ModelAndView containing the error message
+     */
+    @ExceptionHandler({MethodArgumentNotValidException.class, BindException.class, ConstraintViolationException.class})
+    public ModelAndView handleValidationException(Exception e) {
+        logger.error("Validation error: {}", e.getMessage(), e);
+
+        ValidationInfo info = switch (e) {
+            case MethodArgumentNotValidException ex -> extractValidationInfo(ex.getBindingResult());
+            case BindException ex -> extractValidationInfo(ex.getBindingResult());
+            case ConstraintViolationException ex -> extractConstraintViolationInfo(ex);
+            default -> new ValidationInfo("", UNKNOWN_VALIDATION_ERROR);
+        };
+
+        String viewName = umsConfig.resolveView(info.fieldName());
+        return new ModelAndView(viewName, MESSAGE, Optional.ofNullable(info.message()).orElse(UNKNOWN_VALIDATION_ERROR));
+    }
+
+
+    /**
+     * Helper record ValidationInfo.
+     */
+    private record ValidationInfo(String fieldName, String message) {}
+
+
+    /**
+     * Helper for BindingResult (FieldError + ObjectError).
+     */
+    private ValidationInfo extractValidationInfo(BindingResult br) {
+        if (br == null) return new ValidationInfo("", UNKNOWN_VALIDATION_ERROR);
+
+        FieldError fieldError = br.getFieldError();
+        ObjectError objectError = br.getGlobalError();
+
+        if (fieldError != null) {
+            return new ValidationInfo(normalizeFieldName(fieldError.getField()), fieldError.getDefaultMessage());
+        } else if (objectError != null) {
+            // associa vincoli di classe ad un campo specifico, es: "passwordsDoNotMatch"
+            return new ValidationInfo("passwordsDoNotMatch", objectError.getDefaultMessage());
+        } else {
+            return new ValidationInfo("", UNKNOWN_VALIDATION_ERROR);
+        }
+    }
+
+
+    /**
+     * Helper for ConstraintViolationException.
+     */
+    private ValidationInfo extractConstraintViolationInfo(ConstraintViolationException ex) {
+    ConstraintViolation<?> violation = ex.getConstraintViolations().stream().findFirst().orElse(null);
+        if (violation != null) {
+            String path = violation.getPropertyPath().toString();
+            String fieldName = path.contains(".") ? path.substring(path.lastIndexOf('.') + 1) : path;
+            return new ValidationInfo(fieldName, violation.getMessage());
+        }
+        return new ValidationInfo("", UNKNOWN_VALIDATION_ERROR);
     }
 
 
 
     /**
-     * Extracts the error message from the given exception.
-     * @param e the exception from which to extract the error message
-     * @return the extracted error message
+     * Normalize field, take the last part after the dot if it exists.
+     * Es: "username.usernameAlreadyTaken" -> "usernameAlreadyTaken"
      */
-    private String getErrorMessage(Exception e) {
-        return switch (e) {
-            case MethodArgumentNotValidException ex -> {
-                BindingResult bindingResult = ex.getBindingResult();
-                yield bindingResult != null ? bindingResult.getAllErrors().get(0).getDefaultMessage() : "An error occurred";
-            }
-            case BindException ex -> ex.getBindingResult().getAllErrors().get(0).getDefaultMessage();
-            default -> "An error occurred";
-        };
+    private String normalizeFieldName(String rawFieldName) {
+        if (rawFieldName.contains("."))
+            return rawFieldName.substring(rawFieldName.lastIndexOf('.') + 1);
+        return rawFieldName;
     }
+
+
+
+
+
+
+
+
+
+
+
 
 }

@@ -274,17 +274,14 @@ public class ExaminationServiceImpl implements ExaminationService {
             throw new IllegalArgumentException("Grade must be a valid integer.", e);
         }
 
-        if (parsedGrade < 0 || parsedGrade > 30) {
+        if (parsedGrade < 0 || parsedGrade > 30)
             throw new IllegalArgumentException("Grade must be between 0 and 30.");
-        }
 
-        if (request.isWithHonors() && parsedGrade != 30) {
+        if (request.isWithHonors() && parsedGrade != 30)
             throw new IllegalArgumentException("Honors can only be assigned for grade 30.");
-        }
 
-        if (request.getDate().isAfter(LocalDate.now())) {
+        if (request.getDate().isAfter(LocalDate.now()))
             throw new IllegalArgumentException("Date cannot be in the future.");
-        }
 
         try {
             // --- Load updated entities ---

@@ -16,6 +16,7 @@ import com.alex.universitymanagementsystem.domain.Address;
 import com.alex.universitymanagementsystem.domain.User;
 import com.alex.universitymanagementsystem.domain.immutable.FiscalCode;
 import com.alex.universitymanagementsystem.domain.immutable.UserId;
+import com.alex.universitymanagementsystem.dto.RegistrationForm;
 import com.alex.universitymanagementsystem.dto.UserDto;
 import com.alex.universitymanagementsystem.enum_type.DomainType;
 import com.alex.universitymanagementsystem.enum_type.RoleType;
@@ -25,7 +26,6 @@ import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
 import com.alex.universitymanagementsystem.mapper.UserMapper;
 import com.alex.universitymanagementsystem.repository.UserRepository;
 import com.alex.universitymanagementsystem.service.UserService;
-import com.alex.universitymanagementsystem.utils.RegistrationForm;
 
 import jakarta.persistence.PersistenceException;
 import jakarta.transaction.Transactional;

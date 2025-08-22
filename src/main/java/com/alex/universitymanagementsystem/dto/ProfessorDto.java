@@ -1,9 +1,9 @@
 package com.alex.universitymanagementsystem.dto;
 
 import com.alex.universitymanagementsystem.annotation.ValidFiscalCode;
+import com.alex.universitymanagementsystem.annotation.ValidUniqueCode;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 
@@ -12,7 +12,7 @@ public class ProfessorDto {
 
     // instance variables
     @NotBlank(message = "Username is mandatory")
-    @Size(min = 4, max = 20, message = "Username must be between 4 and 20 characters")
+    @Size(min = 4, max = 30, message = "Username must be between 4 and 30 characters")
     private String username;
 
     @NotBlank(message = "First name is mandatory")
@@ -28,8 +28,7 @@ public class ProfessorDto {
     private String fiscalCode;
 
     @NotBlank(message = "Unique code is mandatory")
-    @Pattern(regexp = "^[a-zA-Z0-9]{1,8}$")
-    @Size(min = 8, max = 8, message = "Unique code must be exactly 8 characters")
+    @ValidUniqueCode
     private String uniqueCode;
 
 
@@ -37,13 +36,7 @@ public class ProfessorDto {
     public ProfessorDto() {}
 
     // constructor
-    public ProfessorDto(
-        String username,
-        String firstName,
-        String lastName,
-        String fiscalCode,
-        String uniqueCode
-    ) {
+    public ProfessorDto(String username, String firstName, String lastName, String fiscalCode, String uniqueCode) {
         this.username = username;
         this.firstName = firstName;
         this.lastName = lastName;

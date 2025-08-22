@@ -9,9 +9,16 @@ import com.alex.universitymanagementsystem.exception.GlobalControllerExceptionHa
 @Configuration
 public class UmsExceptionHandlerConfig {
 
-    @Bean
+    // instance variables
+    private final UmsConfig umsConfig;
+
+    public UmsExceptionHandlerConfig(UmsConfig umsConfig) {
+        this.umsConfig = umsConfig;
+    }
+
+     @Bean
     GlobalControllerExceptionHandler globalControllerExceptionHandler() {
-        return new GlobalControllerExceptionHandler();
+        return new GlobalControllerExceptionHandler(umsConfig);
     }
 
 }

@@ -166,23 +166,23 @@ public class StudyPlanServiceImpl implements StudyPlanService {
 
             // retrieve the degree courses
             String degreeCourseNew = degreeCourseRepository
-                .findByName(dto.getNewDegreeCourseName().toUpperCase())
+                .findByName(dto.getDegreeCourseOfNewCourse().toUpperCase())
                 .orElseThrow(() -> new ObjectNotFoundException(DomainType.DEGREE_COURSE))
                 .getName();
 
             String degreeCourseOld = degreeCourseRepository
-                .findByName(dto.getOldDegreeCourseName().toUpperCase())
+                .findByName(dto.getDegreeCourseOfOldCourse().toUpperCase())
                 .orElseThrow(() -> new ObjectNotFoundException(DomainType.DEGREE_COURSE))
                 .getName();
 
             // retrieve the course to add
             Course courseToAdd = courseRepository
-                .findByNameAndDegreeCourseName(dto.getCourseToAddName(), degreeCourseNew)
+                .findByNameAndDegreeCourseName(dto.getCourseToAdd(), degreeCourseNew)
                 .orElseThrow(() -> new ObjectNotFoundException(DomainType.COURSE));
 
             // retrieve the course to remove
             Course courseToRemove = courseRepository
-                .findByNameAndDegreeCourseName(dto.getCourseToRemoveName(), degreeCourseOld)
+                .findByNameAndDegreeCourseName(dto.getCourseToRemove(), degreeCourseOld)
                 .orElseThrow(() -> new ObjectNotFoundException(DomainType.COURSE));
 
             // add the new course

@@ -6,7 +6,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import com.alex.universitymanagementsystem.validator.RegisterValidator;
+import com.alex.universitymanagementsystem.component.validator.RegisterValidator;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
@@ -14,7 +14,7 @@ import jakarta.validation.Payload;
 
 @Documented
 @Constraint(validatedBy = RegisterValidator.class)
-@Target({ ElementType.FIELD })
+@Target({ ElementType.FIELD, ElementType.PARAMETER })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidRegister {
     String message() default "Invalid register number";

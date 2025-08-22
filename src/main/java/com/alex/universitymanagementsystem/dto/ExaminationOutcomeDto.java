@@ -1,10 +1,11 @@
 package com.alex.universitymanagementsystem.dto;
 
+import com.alex.universitymanagementsystem.annotation.ValidRegister;
+
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 public class ExaminationOutcomeDto {
@@ -13,7 +14,7 @@ public class ExaminationOutcomeDto {
     private Long id;
 
     @NotBlank(message = "Register cannot be blank")
-    @Pattern(regexp = "\\d{6}", message = "Register must be a 6-digit number")
+    @ValidRegister
     private String register;
 
     @NotNull

@@ -1,4 +1,4 @@
-import { COURSES_TOKEN } from './config.js';
+import { COURSES_TOKEN } from './ums-config.js';
 
 // Quando avviene l'evento "pagina pronta"
 // chiama la funzione di aggiornamento della lista di corsi

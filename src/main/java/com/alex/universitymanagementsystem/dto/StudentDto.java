@@ -17,15 +17,15 @@ public class StudentDto {
 
     // instance variables
     @NotBlank(message = "Username is mandatory")
-    @Size(min = 4, max = 20, message = "Username must be between 4 and 20 characters")
+    @Size(min = 4, max = 30, message = "Username must be between 4 and 30 characters")
     private String username;
 
     @NotBlank(message = "First name is mandatory")
-    @Size(min = 2, max = 100, message = "First name must be between 2 and 100 characters")
+    @Size(min = 2, max = 50, message = "First name must be between 2 and 50 characters")
     private String firstName;
 
     @NotBlank(message = "Last name is mandatory")
-    @Size(min = 2, max = 100, message = "Last name must be between 2 and 100 characters")
+    @Size(min = 2, max = 50, message = "Last name must be between 2 and 50 characters")
     private String lastName;
 
     @NotNull(message = "Date of birth is mandatory")

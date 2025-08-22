@@ -89,6 +89,7 @@ public class UmsWebSecurityConfig implements Serializable {
 					"/register",
 					"/static/css/**",
 					"/static/js/ums-degree-courses.js",
+					"/static/js/ums-password-rules.js",
 					"/static/images/**",
 					"/favicon.ico",
 					"/exception/**",

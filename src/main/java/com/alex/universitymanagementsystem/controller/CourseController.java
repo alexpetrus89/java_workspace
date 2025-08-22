@@ -17,13 +17,21 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.alex.universitymanagementsystem.domain.Professor;
+import com.alex.universitymanagementsystem.domain.immutable.UniqueCode;
 import com.alex.universitymanagementsystem.dto.CourseDto;
+import com.alex.universitymanagementsystem.dto.CreateCourseDto;
+import com.alex.universitymanagementsystem.dto.DegreeCourseDto;
 import com.alex.universitymanagementsystem.dto.ProfessorDto;
+import com.alex.universitymanagementsystem.dto.UpdateCourseDto;
 import com.alex.universitymanagementsystem.exception.DataAccessServiceException;
 import com.alex.universitymanagementsystem.exception.ObjectAlreadyExistsException;
 import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
 import com.alex.universitymanagementsystem.mapper.ProfessorMapper;
 import com.alex.universitymanagementsystem.service.impl.CourseServiceImpl;
+import com.alex.universitymanagementsystem.service.impl.DegreeCourseServiceImpl;
+import com.alex.universitymanagementsystem.service.impl.ProfessorServiceImpl;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping(path = "api/v1/course")
@@ -42,10 +50,15 @@ public class CourseController {
     @Value("#{illegalArgumentExceptionUri}")
     private String illegalArgumentExceptionUri;
 
+    // instance variables
     private final CourseServiceImpl courseServiceImpl;
+    private final ProfessorServiceImpl professorServiceImpl;
+    private final DegreeCourseServiceImpl degreeCourseServiceImpl;
 
-    public CourseController(CourseServiceImpl courseServiceImpl) {
+    public CourseController(CourseServiceImpl courseServiceImpl, ProfessorServiceImpl professorServiceImpl, DegreeCourseServiceImpl degreeCourseServiceImpl) {
         this.courseServiceImpl = courseServiceImpl;
+        this.professorServiceImpl = professorServiceImpl;
+        this.degreeCourseServiceImpl = degreeCourseServiceImpl;
     }
 
 
@@ -107,7 +120,7 @@ public class CourseController {
      */
     @GetMapping(path = "/create")
     public ModelAndView createNewCourseAndReturnView() {
-        return new ModelAndView("course/create/create", COURSE, new CourseDto());
+        return new ModelAndView("course/create/create", COURSE, new CreateCourseDto());
     }
 
     /**
@@ -116,7 +129,7 @@ public class CourseController {
      */
     @GetMapping(path = "/update")
     public ModelAndView updateCourseAndReturnView() {
-        return new ModelAndView("course/update/update", COURSE, new CourseDto());
+        return new ModelAndView("course/update/update", COURSE, new UpdateCourseDto());
     }
 
 
@@ -126,10 +139,24 @@ public class CourseController {
      * @return ModelAndView
      */
     @PostMapping(path = "/create")
-    public ModelAndView createNewCourse(@ModelAttribute CourseDto dto) {
-        try{
-            CourseDto courseDto = courseServiceImpl.addNewCourse(dto);
-            return new ModelAndView("course/create/create-result", COURSE, courseDto);
+    public ModelAndView createNewCourse(@Valid @ModelAttribute("course") CreateCourseDto formDto) {
+
+        try {
+
+            ProfessorDto professor = professorServiceImpl.getProfessorByUniqueCode(new UniqueCode(formDto.getUniqueCode()));
+            DegreeCourseDto degreeCourse = degreeCourseServiceImpl.getDegreeCourseByName(formDto.getDegreeCourseName());
+
+            CourseDto courseDto = new CourseDto(
+                formDto.getName(),
+                formDto.getType(),
+                formDto.getCfu(),
+                professor,
+                degreeCourse
+            );
+
+            CourseDto saved = courseServiceImpl.addNewCourse(courseDto);
+
+            return new ModelAndView("course/create/create-result", COURSE, saved);
         } catch (ObjectNotFoundException e) {
             return new ModelAndView(notFoundExceptionUri, EXCEPTION_MESSAGE, e.getMessage());
         } catch (ObjectAlreadyExistsException e) {
@@ -148,14 +175,10 @@ public class CourseController {
      * @return ModelAndView
      */
     @PutMapping(path = "/update")
-    public ModelAndView updateCourse(
-        @RequestParam("old_name") String oldCourseName,
-        @RequestParam("old_degree_course_name") String oldDegreeCourseName,
-        @ModelAttribute CourseDto dto
-    ){
+    public ModelAndView updateCourse(@Valid @ModelAttribute UpdateCourseDto dto){
         try {
 
-            CourseDto course = courseServiceImpl.updateCourse(oldCourseName, oldDegreeCourseName, dto);
+            CourseDto course = courseServiceImpl.updateCourse(dto);
             return new ModelAndView("course/update/update-result", COURSE, course);
         } catch (IllegalArgumentException e) {
             return new ModelAndView(illegalArgumentExceptionUri, EXCEPTION_MESSAGE, e.getMessage());

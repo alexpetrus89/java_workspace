@@ -12,11 +12,11 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.alex.universitymanagementsystem.domain.immutable.Register;
+import com.alex.universitymanagementsystem.dto.RegistrationForm;
 import com.alex.universitymanagementsystem.dto.StudentDto;
 import com.alex.universitymanagementsystem.exception.DataAccessServiceException;
 import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
 import com.alex.universitymanagementsystem.service.impl.StudentServiceImpl;
-import com.alex.universitymanagementsystem.utils.RegistrationForm;
 
 @RestController
 @RequestMapping(path = "api/v1/student")

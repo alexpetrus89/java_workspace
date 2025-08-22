@@ -1,15 +1,17 @@
 package com.alex.universitymanagementsystem.controller;
 
 import java.util.Set;
+import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -17,14 +19,18 @@ import com.alex.universitymanagementsystem.domain.Student;
 import com.alex.universitymanagementsystem.domain.immutable.Register;
 import com.alex.universitymanagementsystem.dto.CourseDto;
 import com.alex.universitymanagementsystem.dto.DegreeCourseDto;
-import com.alex.universitymanagementsystem.dto.ModifyStudyPlanDto;
+import com.alex.universitymanagementsystem.dto.ExaminationDto;
 import com.alex.universitymanagementsystem.dto.StudyPlanDto;
 import com.alex.universitymanagementsystem.dto.SwapCoursesDto;
 import com.alex.universitymanagementsystem.exception.DataAccessServiceException;
 import com.alex.universitymanagementsystem.exception.ObjectAlreadyExistsException;
 import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
 import com.alex.universitymanagementsystem.service.impl.DegreeCourseServiceImpl;
+import com.alex.universitymanagementsystem.service.impl.ExaminationServiceImpl;
 import com.alex.universitymanagementsystem.service.impl.StudyPlanServiceImpl;
+
+import jakarta.validation.Valid;
+
 
 
 @RestController
@@ -41,16 +47,23 @@ public class StudyPlanController {
     @Value("#{alreadyExistsExceptionUri}")
     private String alreadyExistsExceptionUri;
 
+    // logger
+    private final Logger logger =
+        org.slf4j.LoggerFactory.getLogger(StudyPlanController.class);
+
     // instance variables
     private final StudyPlanServiceImpl studyPlanServiceImpl;
     private final DegreeCourseServiceImpl degreeCourseServiceImpl;
+    private final ExaminationServiceImpl examinationServiceImpl;
 
     public StudyPlanController(
         StudyPlanServiceImpl studyPlanServiceImpl,
-        DegreeCourseServiceImpl degreeCourseServiceImpl
+        DegreeCourseServiceImpl degreeCourseServiceImpl,
+        ExaminationServiceImpl examinationServiceImpl
     ) {
         this.studyPlanServiceImpl = studyPlanServiceImpl;
         this.degreeCourseServiceImpl = degreeCourseServiceImpl;
+        this.examinationServiceImpl = examinationServiceImpl;
     }
 
 
@@ -61,10 +74,10 @@ public class StudyPlanController {
      * @return ModelAndView
      */
     @GetMapping(path = "/view")
-    public ModelAndView getStudyPlanInfo(@AuthenticationPrincipal Student student) {
+    public ModelAndView getStudyPlanView(@AuthenticationPrincipal Student student) {
         try {
             StudyPlanDto studyPlan = studyPlanServiceImpl.getStudyPlanByRegister(student.getRegister());
-            return new ModelAndView("user_student/study_plan/study_plan_info", "studyPlan", studyPlan);
+            return new ModelAndView("user_student/study_plan/study_plan_view", "studyPlan", studyPlan);
         } catch (DataAccessServiceException e) {
             return new ModelAndView(dataAccessExceptionUri, EXCEPTION_MESSAGE, e.getMessage());
         }
@@ -91,7 +104,7 @@ public class StudyPlanController {
             // Retrieve all degree courses, student's degree course, student's study plan and security token
             Set<DegreeCourseDto> degreeCourses = degreeCourseServiceImpl.getDegreeCourses();
             String degreeCourse = student.getDegreeCourse().getName();
-            Set<CourseDto> studyPlan = studyPlanServiceImpl.getCoursesByRegister(student.getRegister());
+            Set<CourseDto> studyPlan = getFilteredStudyPlan(student.getRegister());
             String token = SecurityContextHolder
                 .getContext()
                 .getAuthentication()
@@ -101,7 +114,7 @@ public class StudyPlanController {
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Token not found"));
 
-            ModifyStudyPlanDto courses = new ModifyStudyPlanDto(
+            SwapCoursesDto courses = new SwapCoursesDto(
                 degreeCourses,
                 degreeCourse,
                 studyPlan,
@@ -123,35 +136,46 @@ public class StudyPlanController {
      * @return ModelAndView
      */
     @PutMapping(path = "/change")
-    public ModelAndView changeCourses(
+    public ModelAndView swapCourses(
         @AuthenticationPrincipal Student student,
-        @RequestParam String degreeCourseOfNewCourse,
-        @RequestParam String degreeCourseOfOldCourse,
-        @RequestParam String courseToAdd,
-        @RequestParam String courseToRemove
+        @Valid @ModelAttribute SwapCoursesDto dto
     ) {
-        Register register = student.getRegister();
+        dto.setRegister(student.getRegister());
 
         try {
-            SwapCoursesDto dto = new SwapCoursesDto();
-            dto.setRegister(student.getRegister());
-            dto.setNewDegreeCourseName(degreeCourseOfNewCourse);
-            dto.setOldDegreeCourseName(degreeCourseOfOldCourse);
-            dto.setCourseToAddName(courseToAdd);
-            dto.setCourseToRemoveName(courseToRemove);
-
             studyPlanServiceImpl.swapCourses(dto);
-            Set<CourseDto> courses = studyPlanServiceImpl.getCoursesByRegister(register);
+            Set<CourseDto> courses = studyPlanServiceImpl.getCoursesByRegister(student.getRegister());
             return new ModelAndView("user_student/study_plan/study_plan_courses", "courses", courses);
         } catch (ObjectAlreadyExistsException e) {
-            return new ModelAndView(alreadyExistsExceptionUri + "object-already-exists", EXCEPTION_MESSAGE, e.getMessage());
+            return new ModelAndView(alreadyExistsExceptionUri + "/object-already-exists", EXCEPTION_MESSAGE, e.getMessage());
         } catch (ObjectNotFoundException e) {
-            return new ModelAndView(notFoundExceptionUri + "object-not-found", EXCEPTION_MESSAGE, e.getMessage());
+            return new ModelAndView(notFoundExceptionUri + "/object-not-found", EXCEPTION_MESSAGE, e.getMessage());
         } catch (IllegalArgumentException | IllegalStateException e) {
             return new ModelAndView("validation/study_plan/invalid-choice", EXCEPTION_MESSAGE, e.getMessage());
         } catch (DataAccessServiceException e) {
             return new ModelAndView(dataAccessExceptionUri, EXCEPTION_MESSAGE, e.getMessage());
         }
+    }
+
+
+    private Set<CourseDto> getFilteredStudyPlan(Register register)
+        throws DataAccessServiceException {
+        return studyPlanServiceImpl
+            .getCoursesByRegister(register)
+            .stream()
+            .filter(course -> {
+                try {
+                    return examinationServiceImpl
+                        .getExaminationsByStudentRegister(register)
+                        .stream()
+                        .map(ExaminationDto::getCourseName)
+                        .noneMatch(courseName -> courseName.equals(course.getName()));
+                } catch (DataAccessServiceException e) {
+                    logger.error("Failed to get examinations by student register", e);
+                    return false;
+                }
+            })
+            .collect(Collectors.toSet());
     }
 
 }

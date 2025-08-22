@@ -6,54 +6,64 @@
 <head>
     <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
     <title>Uni Journey</title>
-    <link rel="stylesheet" type="text/css" href="/static/css/examination-update.css"> <!-- Riutilizza lo stile -->
+    <link rel="stylesheet" type="text/css" href="/static/css/course-update.css">
 </head>
-
 <body>
+<div class="container">
+    <h1>Update Course</h1>
 
-    <div class="container">
-        <h1>Update course information</h1>
+    <form th:action="@{/courses/update}" th:object="${updateCourseDto}" method="post">
 
-        <form action="#" th:action="@{/api/v1/course/update}" method="post">
-
-            <input type="hidden" name="_method" value="PUT" />
-
-            <label for="old_name">Old Course Name:</label>
-            <input type="text" name="old_name" id="old_name" placeholder="Old course name" title="Enter old course name" required />
-
-            <label for="old_degree_course_name">Old Degree Course Name:</label>
-            <input type="text" name="old_degree_course_name" id="old_degree_course_name" placeholder="Old degree course name" title="Enter old degree course name" required />
-
-            <label for="new_name">New Course Name:</label>
-            <input type="text" name="new_name" id="new_name" placeholder="New course name" title="Enter new course name" required />
-
-            <label for="new_degree_course_name">New Degree Course Name:</label>
-            <input type="text" name="new_degree_course_name" id="new_degree_course_name" placeholder="New degree course name" title="Enter new degree course name" required />
-
-            <label for="new_type">New Type:</label>
-            <select id="new_type" name="new_type" title="Select new course type" required>
-                <option value="" disabled selected>Select course type</option>
-                <option th:each="type : ${T(com.alex.universitymanagementsystem.enum_type.CourseType).values()}"
-                        th:value="${type}" th:text="${type.name()}">Type</option>
-            </select>
-
-            <label for="new_cfu">New CFU Value:</label>
-            <input type="text" name="new_cfu" id="new_cfu" placeholder="New CFU value" title="Enter new CFU value" required />
-
-            <label for="new_unique_code">New Professor Unique Code:</label>
-            <input type="text" name="new_unique_code" id="new_unique_code" placeholder="Professor unique code" title="Enter professor unique code" required />
-
-            <div class="form-actions">
-                <input type="submit" value="Update" class="btn primary-btn" />
-                <input type="reset" value="Reset" class="btn secondary-btn" />
-            </div>
-        </form>
-
-        <!-- Back to Menu Link -->
-        <div class="form-actions">
-            <a th:href="@{/course/course-menu}" class="home-link">Back to Menu</a>
+        <!-- Old Course Info -->
+        <div class="form-group">
+            <label for="oldName">Old Course Name</label>
+            <input type="text" th:field="*{oldName}" id="oldName"/>
+            <span th:if="${#fields.hasErrors('oldName')}" th:errors="*{oldName}" class="error"></span>
         </div>
-    </div>
 
+        <div class="form-group">
+            <label for="oldDegreeCourseName">Old Degree Course Name</label>
+            <input type="text" th:field="*{oldDegreeCourseName}" id="oldDegreeCourseName"/>
+            <span th:if="${#fields.hasErrors('oldDegreeCourseName')}" th:errors="*{oldDegreeCourseName}" class="error"></span>
+        </div>
+
+        <!-- New Course Info -->
+        <div class="form-group">
+            <label for="newName">New Course Name</label>
+            <input type="text" th:field="*{newName}" id="newName"/>
+            <span th:if="${#fields.hasErrors('newName')}" th:errors="*{newName}" class="error"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="newDegreeCourseName">New Degree Course Name</label>
+            <input type="text" th:field="*{newDegreeCourseName}" id="newDegreeCourseName"/>
+            <span th:if="${#fields.hasErrors('newDegreeCourseName')}" th:errors="*{newDegreeCourseName}" class="error"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="type">Course Type</label>
+            <select th:field="*{type}" id="type">
+                <option th:each="t : ${T(com.alex.universitymanagementsystem.enum_type.CourseType).values()}"
+                        th:value="${t}"
+                        th:text="${t}"></option>
+            </select>
+            <span th:if="${#fields.hasErrors('type')}" th:errors="*{type}" class="error"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="cfu">CFU</label>
+            <input type="number" th:field="*{cfu}" id="cfu" min="1"/>
+            <span th:if="${#fields.hasErrors('cfu')}" th:errors="*{cfu}" class="error"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="uniqueCode">Professor Unique Code</label>
+            <input type="text" th:field="*{uniqueCode}" id="uniqueCode"/>
+            <span th:if="${#fields.hasErrors('uniqueCode')}" th:errors="*{uniqueCode}" class="error"></span>
+        </div>
+
+        <button type="submit">Update Course</button>
+    </form>
+</div>
 </body>
 </html>

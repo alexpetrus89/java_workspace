@@ -8,9 +8,11 @@
     <title>Uni Journey</title>
 </head>
 <body>
-    <h1 th:text="${error}">Error message</h1>
+    <h1>Error: invalid course choice</h1>
     <br>
-    <p>Click <a th:href="@{/api/v1/study_plan/courses}">&nbsp;here&nbsp;</a> for go back</p>
+    <h1 th:text="${message}">Error message</h1>
+    <br>
+    <p>Click <a th:href="@{/user_student/student-home}">&nbsp;here&nbsp;</a> for go back</p>
     <br>
 </body>
 </html>

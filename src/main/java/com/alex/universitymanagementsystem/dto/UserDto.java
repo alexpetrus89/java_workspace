@@ -3,6 +3,7 @@ package com.alex.universitymanagementsystem.dto;
 
 import java.time.LocalDate;
 
+import com.alex.universitymanagementsystem.annotation.ValidBirthDate;
 import com.alex.universitymanagementsystem.annotation.ValidFiscalCode;
 import com.alex.universitymanagementsystem.domain.Address;
 import com.alex.universitymanagementsystem.enum_type.RoleType;
@@ -10,7 +11,6 @@ import com.alex.universitymanagementsystem.enum_type.RoleType;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
@@ -18,7 +18,7 @@ public class UserDto {
 
     // instance variables
     @NotBlank(message = "Username is mandatory")
-    @Size(min = 4, max = 20, message = "Username must be between 4 and 20 characters")
+    @Size(min = 4, max = 30, message = "Username must be between 4 and 30 characters")
     private String username;
 
     @NotBlank(message = "First name is mandatory")
@@ -26,11 +26,11 @@ public class UserDto {
     private String firstName;
 
     @NotBlank(message = "Last name is mandatory")
-    @Size(min = 2, max = 50, message = "Last name must be between 2 and 50 characters") 
+    @Size(min = 2, max = 50, message = "Last name must be between 2 and 50 characters")
     private String lastName;
 
     @NotNull(message = "Date of birth is mandatory")
-    @Past(message = "Date of birth must be in the past")
+    @ValidBirthDate
     private LocalDate dob;
 
     @NotBlank(message = "Fiscal code is mandatory")

@@ -9,7 +9,9 @@
 </head>
 <body>
     <h1>Error: invalid date of birth</h1>
+    <p th:text="${message}"></p>
     <p>The date of birth cannot be in the future. Please enter a valid date.</p>
-    <p><a th:href="@{/register}">Return to Registration Page</a></p>
+    <br>
+    <p><a href="javascript:history.back()">Go back</a></p>
 </body>
 </html>

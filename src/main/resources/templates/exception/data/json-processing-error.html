@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta name="viewport" charset="UTF-8" content="width=device-width, initial-scale=1.0">
+    <title>Uni Journey</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/errors.css">
+</head>
+<body>
+<div class="container">
+    <h2>Json parsing processing error</h2>
+    <p th:text="${message}">A processing error occurred</p>
+    <br>
+    <p><a href="javascript:history.back()">Go back</a></p>
+    <br>
+    <a href="#" th:href="@{/home}">Back to home</a>
+</div>
+</body>
+</html>

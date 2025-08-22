@@ -8,6 +8,7 @@ import org.springframework.retry.annotation.Retryable;
 
 import com.alex.universitymanagementsystem.dto.CourseDto;
 import com.alex.universitymanagementsystem.dto.ProfessorDto;
+import com.alex.universitymanagementsystem.dto.UpdateCourseDto;
 import com.alex.universitymanagementsystem.exception.DataAccessServiceException;
 import com.alex.universitymanagementsystem.exception.ObjectAlreadyExistsException;
 import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
@@ -54,8 +55,8 @@ public interface CourseService {
 
     /**
      * Adds a new course to the repository.
-     * @param course the course data transfer object containing the course details
-     * @return Course
+     * @param dto the course data transfer object containing the course details
+     * @return CourseDto object representing the new Course
      * @throws ObjectAlreadyExistsException if a course with the same name already exists
      * @throws ObjectNotFoundException if no professor with the given unique code exists
      *         or no degree course with the given name exists.
@@ -63,16 +64,14 @@ public interface CourseService {
      */
     @Transactional(rollbackOn = {ObjectAlreadyExistsException.class, ObjectNotFoundException.class, DataAccessServiceException.class})
     @Retryable(retryFor = PersistenceException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
-    CourseDto addNewCourse(CourseDto course)
+    CourseDto addNewCourse(CourseDto dto)
         throws ObjectAlreadyExistsException, ObjectNotFoundException, DataAccessServiceException;
 
 
     /**
      * Updates an existing course using data from the provided CourseDto.
-     * @param oldCourseName the current name of the course to be updated
-     * @param oldDegreeCourseName the current degree course name associated with the course
-     * @param updatedCourseDto the DTO containing new course information
-     * @return the updated Course
+     * @param dto the DTO containing new course information
+     * @return CourseDto object representing the updated Course
      * @throws IllegalArgumentException if old course name or degree course name are null or blank
      * or if the DTO contains invalid data
      * @throws ObjectNotFoundException if the course, professor, or degree course cannot be found
@@ -80,11 +79,8 @@ public interface CourseService {
      */
     @Transactional(rollbackOn = {IllegalArgumentException.class, ObjectNotFoundException.class})
     @Retryable(retryFor = PersistenceException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
-    CourseDto updateCourse(
-        String oldCourseName,
-        String oldDegreeCourseName,
-        CourseDto updatedCourseDto
-    ) throws IllegalArgumentException, ObjectNotFoundException, DataAccessServiceException;
+    CourseDto updateCourse(UpdateCourseDto dto)
+        throws IllegalArgumentException, ObjectNotFoundException, DataAccessServiceException;
 
 
     /**

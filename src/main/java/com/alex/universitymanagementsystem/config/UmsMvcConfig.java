@@ -212,17 +212,59 @@ public class UmsMvcConfig implements WebMvcConfigurer, Serializable {
 
             // exception
             registry
+                  .addViewController("/exception/access_denied/access-denied")
+                  .setViewName("/exception/access_denied/access-denied");
+            registry
+                  .addViewController("/exception/already-exists/object-already-exists")
+                  .setViewName("/exception/already-exists/object-already-exists");
+            registry
+                  .addViewController("/exception/already-exists/professor-already-exists")
+                  .setViewName("/exception/already-exists/professor-already-exists");
+            registry
+                  .addViewController("/exception/already-exists/student-already-exists")
+                  .setViewName("/exception/already-exists/student-already-exists");
+            registry
+                  .addViewController("/exception/data/data-access-error")
+                  .setViewName("/exception/data/data-access-error");
+            registry
+                  .addViewController("/exception/data/json-processing-error")
+                  .setViewName("/exception/data/json-processing-error");
+            registry
                   .addViewController("/exception/illegal/registration/username-already-taken")
                   .setViewName("/exception/illegal/registration/username-already-taken");
             registry
-                  .addViewController("/exception/illegal/registration/username-already-taken/password-not-match")
-                  .setViewName("/exception/illegal/registration/username-already-taken/password-not-match");
+                  .addViewController("/exception/illegal/registration/password-not-match")
+                  .setViewName("/exception/illegal/registration/password-not-match");
             registry
                   .addViewController("/exception/illegal/registration/invalid-dob")
                   .setViewName("/exception/illegal/registration/invalid-dob");
             registry
                   .addViewController("/exception/illegal/study_plan/invalid-choice")
                   .setViewName("/exception/illegal/study_plan/invalid-choice");
+            registry
+                  .addViewController("/exception/illegal/illegal-parameter")
+                  .setViewName("/exception/illegal/illegal-parameter");
+            registry
+                  .addViewController("/exception/illegal/illegal-parameters")
+                  .setViewName("/exception/illegal/illegal-parameters");
+            registry
+                  .addViewController("/exception/illegal/illegal-username")
+                  .setViewName("/exception/illegal/illegal-username");
+            registry
+                  .addViewController("/exception/not-found/degree-course-not-found")
+                  .setViewName("/exception/not-found/degree-course-not-found");
+            registry
+                  .addViewController("/exception/not-found/error-not-found")
+                  .setViewName("/exception/not-found/error-not-found");
+            registry
+                  .addViewController("/exception/not-found/fiscal-code-not-found")
+                  .setViewName("/exception/not-found/fiscal-code-not-found");
+            registry
+                  .addViewController("/exception/not-found/object-not-found")
+                  .setViewName("/exception/not-found/object-not-found");
+            registry
+                  .addViewController("/exception/not-found/username-not-found")
+                  .setViewName("/exception/not-found/username-not-found");
       }
 
       @Override

@@ -17,13 +17,12 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.ForeignKey;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.PrimaryKeyJoinColumn;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 
 @Entity
-@Table(name = "examination")
+@Table(name = "EXAMINATIONS")
 @Access(AccessType.PROPERTY)
 public class Examination implements Serializable {
 
@@ -31,7 +30,9 @@ public class Examination implements Serializable {
     private ExaminationId id;
     private Course course;
     private String courseNameSnapshot;
-    private Student student;
+    private String register; // es: matricola
+    private String studentFirstName;
+    private String studentLastName;
     private int grade;
     private boolean withHonors;
     private LocalDate date;
@@ -43,7 +44,9 @@ public class Examination implements Serializable {
         this.id = ExaminationId.newId();
         this.course = course;
         this.courseNameSnapshot = course.getName();
-        this.student = student;
+        this.register = student.getRegister().toString();
+        this.studentFirstName = student.getFirstName();
+        this.studentLastName = student.getLastName();
         this.grade = grade;
         this.withHonors = withHonors;
         this.date = date;
@@ -63,7 +66,6 @@ public class Examination implements Serializable {
         foreignKey = @ForeignKey(name = "fk_examination_course")
     )
     @OnDelete(action = OnDeleteAction.NO_ACTION)
-    @PrimaryKeyJoinColumn(name = "course_id")
     public Course getCourse() {
         return course;
     }
@@ -73,15 +75,20 @@ public class Examination implements Serializable {
         return courseNameSnapshot;
     }
 
-    @ManyToOne
-    @JoinColumn(
-        name = "student_id",
-        foreignKey = @ForeignKey(name = "fk_examination_student")
-    )
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @PrimaryKeyJoinColumn(name = "student_id")
-    public Student getStudent() {
-        return student;
+    // --- snapshot dello studente ---
+    @Column(name = "register", nullable = false, length = 20)
+    public String getRegister() { // es: matricola
+        return register;
+    }
+
+    @Column(name = "student_first_name", nullable = false)
+    public String getStudentFirstName() {
+        return studentFirstName;
+    }
+
+    @Column(name = "student_last_name", nullable = false)
+    public String getStudentLastName() {
+        return studentLastName;
     }
 
     @Min(18)
@@ -106,14 +113,26 @@ public class Examination implements Serializable {
         this.id = id;
     }
 
+    public void setCourseNameSnapshot(String courseNameSnapshot) {
+        this.courseNameSnapshot = courseNameSnapshot;
+    }
+
     public void setCourse(Course course) {
         this.course = course;
         if (course != null)
             this.courseNameSnapshot = course.getName(); // aggiorno anche lo snapshot
     }
 
-    public void setStudent(Student student) {
-        this.student = student;
+    public void setRegister(String register) {
+        this.register = register;
+    }
+
+    public void setStudentFirstName(String studentFirstName) {
+        this.studentFirstName = studentFirstName;
+    }
+
+    public void setStudentLastName(String studentLastName) {
+        this.studentLastName = studentLastName;
     }
 
     public void setGrade(int grade) {
@@ -132,10 +151,20 @@ public class Examination implements Serializable {
         this.date = date;
     }
 
+    public void setStudent(Student student) {
+        this.register = student.getRegister().toString();
+        this.studentFirstName = student.getFirstName();
+        this.studentLastName = student.getLastName();
+    }
+
     @Override
     public String toString() {
-        return "Examination [id=" + id + ", course=" + course + ", student="
-            + student + ", grade=" + grade + ", withHonors=" + withHonors
+        return "Examination [id=" + id +
+            ", course=" + course +
+            ", student=" + studentFirstName + " " + studentLastName +
+            ", register=" + register +
+            ", grade=" + grade +
+            ", withHonors=" + withHonors
             + ", date=" + date + "]";
     }
 

@@ -16,7 +16,7 @@ import com.alex.universitymanagementsystem.dto.RegistrationForm;
 import com.alex.universitymanagementsystem.dto.StudentDto;
 import com.alex.universitymanagementsystem.exception.DataAccessServiceException;
 import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
-import com.alex.universitymanagementsystem.service.impl.StudentServiceImpl;
+import com.alex.universitymanagementsystem.service.StudentService;
 
 @RestController
 @RequestMapping(path = "api/v1/student")
@@ -36,11 +36,11 @@ public class StudentController {
     private String illegalArgumentExceptionUri;
 
     // instance variable
-    private final StudentServiceImpl studentServiceImpl;
+    private final StudentService studentService;
 
     /** Autowired - dependency injection  - constructor */
-    public StudentController(StudentServiceImpl studentServiceImpl) {
-        this.studentServiceImpl = studentServiceImpl;
+    public StudentController(StudentService studentService) {
+        this.studentService = studentService;
     }
 
 
@@ -54,7 +54,7 @@ public class StudentController {
     @GetMapping(path = "/view")
 	public ModelAndView getAllStudents() {
         try {
-            List<StudentDto> students = studentServiceImpl.getStudents();
+            List<StudentDto> students = studentService.getStudents();
             return new ModelAndView("student/student-list", STUDENTS, students);
         } catch (DataAccessServiceException e) {
             return new ModelAndView(dataAccessExceptionUri, EXCEPTION_MESSAGE, e.getMessage());
@@ -70,7 +70,7 @@ public class StudentController {
     @GetMapping(path = "/read/register")
 	public ModelAndView getStudentByRegister(@RequestParam String register) {
         try {
-            StudentDto student = studentServiceImpl.getStudentByRegister(new Register(register));
+            StudentDto student = studentService.getStudentByRegister(new Register(register));
             return new ModelAndView("student/read/read-result", STUDENT, student);
         } catch (IllegalArgumentException e) {
             return new ModelAndView(illegalArgumentExceptionUri + "illegal-parameter", EXCEPTION_MESSAGE, e.getMessage());
@@ -89,7 +89,7 @@ public class StudentController {
 	public ModelAndView getStudentsByName(@RequestParam String name) {
 
         try{
-            List<StudentDto> students = studentServiceImpl.getStudentsByFullname(name.toLowerCase());
+            List<StudentDto> students = studentService.getStudentsByFullname(name.toLowerCase());
             return new ModelAndView("student/read/read-results", STUDENTS, students);
         } catch (IllegalArgumentException e) {
             return new ModelAndView(illegalArgumentExceptionUri + "illegal-parameter", EXCEPTION_MESSAGE, e.getMessage());
@@ -97,7 +97,6 @@ public class StudentController {
             return new ModelAndView(dataAccessExceptionUri, EXCEPTION_MESSAGE, e.getMessage());
         }
     }
-
 
     /**
      * Updates a student
@@ -120,7 +119,7 @@ public class StudentController {
     public ModelAndView updateStudent(@ModelAttribute RegistrationForm form) {
 
         try {
-            StudentDto student = studentServiceImpl.updateStudent(form);
+            StudentDto student = studentService.updateStudent(form);
             return new ModelAndView("student/update/update-result", STUDENT, student);
         } catch (IllegalArgumentException e) {
             return new ModelAndView(illegalArgumentExceptionUri + "illegal-parameters", EXCEPTION_MESSAGE, e.getMessage());

@@ -30,6 +30,7 @@ public interface ProfessorService {
      * @param uniqueCode the unique code of the professor to retrieve
      * @return ProfessorDto object containing the professor's data
      * @throws IllegalArgumentException if the unique code is blank
+     * @throws ObjectNotFoundException if no professor found
      * @throws DataAccessServiceException if there is an error accessing the database
      */
     ProfessorDto getProfessorByUniqueCode(UniqueCode uniqueCode)
@@ -41,6 +42,7 @@ public interface ProfessorService {
      * @param fiscalCode the fiscal code of the professor to retrieve.
      * @return ProfessorDto object containing the professor's data.
      * @throws IllegalArgumentException if the fiscal code is blank
+     * @throws ObjectNotFoundException if no professor found
      * @throws DataAccessServiceException if there is an error accessing the database
      */
     ProfessorDto getProfessorByFiscalCode(String fiscalCode)

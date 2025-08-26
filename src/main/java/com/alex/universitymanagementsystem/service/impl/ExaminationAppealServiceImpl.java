@@ -159,7 +159,7 @@ public class ExaminationAppealServiceImpl implements ExaminationAppealService {
                 .map(Course::getId)
                 .map(CourseId::id)
                 .filter(courseId -> !examinationRepository
-                    .findByStudent_Register(register)
+                    .findByRegister(register.toString())
                     .stream()
                     .map(Examination::getCourse)
                     .map(Course::getId)
@@ -178,7 +178,7 @@ public class ExaminationAppealServiceImpl implements ExaminationAppealService {
                 .filter(appeal -> appeal.getDate().isAfter(LocalDate.now()))
                 .map(appeal -> {
                     ExaminationAppealDto dto = mapToDto(appeal);
-                        professorRepository
+                    professorRepository
                             .findByUniqueCode(new UniqueCode(dto.getProfessorCode()))
                             .ifPresent(profDto -> {
                                 String fullName = profDto.getFirstName() + " " + profDto.getLastName();
@@ -424,7 +424,6 @@ public class ExaminationAppealServiceImpl implements ExaminationAppealService {
      * @throws DataAccessServiceException if there is an error accessing the database
      */
     public void addExaminationOutcome(ExaminationOutcome outcome) throws DataAccessServiceException {
-
         try {
             examinationOutcomeRepository.saveAndFlush(outcome);
         } catch (PersistenceException e) {
@@ -438,7 +437,7 @@ public class ExaminationAppealServiceImpl implements ExaminationAppealService {
      * Deletes expired examination appeals
      */
     @Scheduled(fixedDelay = 86400000) // ogni giorno
-    private void cleanExpiredAppeals() throws DataAccessServiceException {
+    protected void cleanExpiredAppeals() throws DataAccessServiceException {
         LocalDate today = LocalDate.now();
         // clean instance every month
         LocalDate expirationDateOneMonth = today.minusMonths(1);

@@ -1,4 +1,4 @@
-package com.alex.universitymanagementsystem.exception;
+package com.alex.universitymanagementsystem.controller;
 
 
 /**
@@ -53,6 +53,8 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import com.alex.universitymanagementsystem.config.UmsConfig;
+import com.alex.universitymanagementsystem.exception.DataAccessServiceException;
+import com.alex.universitymanagementsystem.exception.JsonProcessingException;
 
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;

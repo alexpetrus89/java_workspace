@@ -43,11 +43,11 @@ public class DegreeCourseController {
     private String illegalArgumentExceptionUri;
 
     // instance variables
-    private final DegreeCourseServiceImpl degreeCourseServiceImpl;
+    private final DegreeCourseServiceImpl degreeCourseService;
 
     // autowired - dependency injection - constructor
-    public DegreeCourseController(DegreeCourseServiceImpl degreeCourseServiceImpl) {
-        this.degreeCourseServiceImpl = degreeCourseServiceImpl;
+    public DegreeCourseController(DegreeCourseServiceImpl degreeCourseService) {
+        this.degreeCourseService = degreeCourseService;
     }
 
 
@@ -59,7 +59,7 @@ public class DegreeCourseController {
     @GetMapping(path = "/view")
     public ModelAndView getDegreeCourses() {
         try {
-            Set<DegreeCourseDto> degreeCourses = degreeCourseServiceImpl.getDegreeCourses();
+            Set<DegreeCourseDto> degreeCourses = degreeCourseService.getDegreeCourses();
             return new ModelAndView("degree_course/degree-course-list", "degreeCourses", degreeCourses);
         } catch (DataAccessServiceException e) {
             return new ModelAndView(dataAccessExceptionUri, EXCEPTION_MESSAGE, e.getMessage());
@@ -75,7 +75,7 @@ public class DegreeCourseController {
     @GetMapping(path = "/courses/view")
     public ModelAndView getCourses(@RequestParam String name) {
         try {
-            List<CourseDto> courses = degreeCourseServiceImpl.getCourses(name.toUpperCase());
+            List<CourseDto> courses = degreeCourseService.getCourses(name.toUpperCase());
             return new ModelAndView("degree_course/course-list", "courses",courses);
         } catch (IllegalArgumentException e) {
             return new ModelAndView(illegalArgumentExceptionUri + ILLEGAL_PARAMETER, EXCEPTION_MESSAGE, e.getMessage());
@@ -95,7 +95,7 @@ public class DegreeCourseController {
     @GetMapping(path = "/professors/view")
     public ModelAndView getProfessors(@RequestParam String name) {
         try {
-            List<ProfessorDto> professors = degreeCourseServiceImpl.getProfessors(name.toUpperCase());
+            List<ProfessorDto> professors = degreeCourseService.getProfessors(name.toUpperCase());
             return new ModelAndView("degree_course/professor-with-course-list","professors", professors);
         } catch (IllegalArgumentException e) {
             return new ModelAndView(illegalArgumentExceptionUri + ILLEGAL_PARAMETER, EXCEPTION_MESSAGE, e.getMessage());
@@ -116,7 +116,7 @@ public class DegreeCourseController {
     @GetMapping(path = "/students/view")
     public ModelAndView getStudents(@RequestParam String name) {
         try {
-            List<StudentDto> students = degreeCourseServiceImpl.getStudents(name.toUpperCase());
+            List<StudentDto> students = degreeCourseService.getStudents(name.toUpperCase());
             return new ModelAndView("degree_course/student-list","students", students);
         } catch (IllegalArgumentException e) {
             return new ModelAndView(illegalArgumentExceptionUri + ILLEGAL_PARAMETER, EXCEPTION_MESSAGE, e.getMessage());
@@ -135,7 +135,7 @@ public class DegreeCourseController {
     @GetMapping(path = "/ajax")
     public ResponseEntity<Set<DegreeCourseDto>> getJsonOfDegreeCourses() {
         try {
-            return ResponseEntity.ok(degreeCourseServiceImpl.getDegreeCourses());
+            return ResponseEntity.ok(degreeCourseService.getDegreeCourses());
         } catch (DataAccessServiceException e) {
             throw new JsonProcessingException("Parsing not working a cause of data access error", e);
         }
@@ -152,7 +152,7 @@ public class DegreeCourseController {
     public String getJsonOfCourses(@RequestParam String name) throws JsonProcessingException {
         try {
         // retrieve the courses
-            List<CourseDto> courses = degreeCourseServiceImpl.getCourses(name.toUpperCase());
+            List<CourseDto> courses = degreeCourseService.getCourses(name.toUpperCase());
             return "{\"degreeCourseName\": [" + courses
                 .stream()
                 .map(this::serializeCourseDto)

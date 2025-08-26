@@ -39,6 +39,8 @@ public class ExaminationDto{
     private LocalDate date;
 
     // constructors
+    public ExaminationDto() {}
+
     public ExaminationDto(String register, String courseName, String degreeCourseName, Integer courseCfu, Integer grade, boolean withHonors, LocalDate date) {
         this.register = register.toLowerCase();
         this.courseName = courseName.toLowerCase();

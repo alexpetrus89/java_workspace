@@ -99,7 +99,8 @@ public class UmsWebSecurityConfig implements Serializable {
 					"/api/v1/user/create-admin",
 					"/api/v1/user/create-student",
 					"/api/v1/user/create-professor",
-					"/api/v1/degree-course/ajax"
+					"/api/v1/degree-course/ajax",
+					"/ws/**"
 				)
 				.permitAll()
 				.requestMatchers(
@@ -161,7 +162,8 @@ public class UmsWebSecurityConfig implements Serializable {
 					"/api/v1/examination-appeal/delete-booked/{id}",
 					"/api/v1/examination-outcome/view",
 					"/api/v1/examination-outcome/outcome",
-					"/api/v1/examination-outcome/confirm-refusal"
+					"/api/v1/examination-outcome/confirm-refusal",
+					"/api/v1/outcome-notifications"
 				)
 				.hasAnyRole(STUDENT, ADMIN)
 				.requestMatchers(
@@ -191,6 +193,9 @@ public class UmsWebSecurityConfig implements Serializable {
 					.successHandler(new UmsCustomAuthenticationSuccessHandler())
 			)
 			.logout(LogoutConfigurer::permitAll);
+
+			// disabled cross site request forgery for web socket
+			http.csrf(csrf -> csrf.ignoringRequestMatchers("/ws/**"));
 
 			return http.build();
 		} catch (Exception e) {

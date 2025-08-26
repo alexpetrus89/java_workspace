@@ -2,6 +2,7 @@ package com.alex.universitymanagementsystem.service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
@@ -57,7 +58,7 @@ public interface ExaminationOutcomeService {
     /**
      * Save an examination outcome
      * @param ExaminationOutcomeDto data transfer object
-     * @return ExaminationOutcome outcome
+     * @return Optional<ExaminationOutcome> outcome
      * @throws NoSuchElementException if the student does not exist
      * @throws ObjectNotFoundException if the appeal does not exist
      * @throws ObjectAlreadyExistsException if
@@ -65,20 +66,20 @@ public interface ExaminationOutcomeService {
      */
     @Transactional(rollbackOn = {NoSuchElementException.class, ObjectNotFoundException.class, ObjectAlreadyExistsException.class})
     @Retryable(retryFor = PersistenceException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
-    ExaminationOutcomeDto addNewExaminationOutcome(@Valid ExaminationOutcomeDto dto)
+    Optional<ExaminationOutcomeDto> addNewExaminationOutcome(@Valid ExaminationOutcomeDto dto)
         throws NoSuchElementException, ObjectNotFoundException, ObjectAlreadyExistsException, DataAccessServiceException;
 
 
     /**
      * Delete an examination outcome
-     * @param outcome examination outcome of the student
-     * @return ExaminationOutcome outcome
+     * @param id of the examination outcome
+     * @return ExaminationOutcomeDto outcome
      * @throws ObjectNotFoundException if the outcome does not exist
-     * @throws DataAccessServiceException if there is an error accessing the database.
+     * @throws DataAccessServiceException if there is a data access error
      */
     @Transactional(rollbackOn = ObjectNotFoundException.class)
     @Retryable(retryFor = PersistenceException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
-    ExaminationOutcomeDto deleteExaminationOutcome(@Valid ExaminationOutcomeDto dto)
+    public ExaminationOutcomeDto deleteExaminationOutcome(Long id)
         throws ObjectNotFoundException, DataAccessServiceException;
 
 }

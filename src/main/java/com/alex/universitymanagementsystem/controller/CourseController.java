@@ -27,9 +27,9 @@ import com.alex.universitymanagementsystem.exception.DataAccessServiceException;
 import com.alex.universitymanagementsystem.exception.ObjectAlreadyExistsException;
 import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
 import com.alex.universitymanagementsystem.mapper.ProfessorMapper;
-import com.alex.universitymanagementsystem.service.impl.CourseServiceImpl;
-import com.alex.universitymanagementsystem.service.impl.DegreeCourseServiceImpl;
-import com.alex.universitymanagementsystem.service.impl.ProfessorServiceImpl;
+import com.alex.universitymanagementsystem.service.CourseService;
+import com.alex.universitymanagementsystem.service.DegreeCourseService;
+import com.alex.universitymanagementsystem.service.ProfessorService;
 
 import jakarta.validation.Valid;
 
@@ -51,14 +51,14 @@ public class CourseController {
     private String illegalArgumentExceptionUri;
 
     // instance variables
-    private final CourseServiceImpl courseServiceImpl;
-    private final ProfessorServiceImpl professorServiceImpl;
-    private final DegreeCourseServiceImpl degreeCourseServiceImpl;
+    private final CourseService courseService;
+    private final ProfessorService professorService;
+    private final DegreeCourseService degreeCourseService;
 
-    public CourseController(CourseServiceImpl courseServiceImpl, ProfessorServiceImpl professorServiceImpl, DegreeCourseServiceImpl degreeCourseServiceImpl) {
-        this.courseServiceImpl = courseServiceImpl;
-        this.professorServiceImpl = professorServiceImpl;
-        this.degreeCourseServiceImpl = degreeCourseServiceImpl;
+    public CourseController(CourseService courseService, ProfessorService professorService, DegreeCourseService degreeCourseService) {
+        this.courseService = courseService;
+        this.professorService = professorService;
+        this.degreeCourseService = degreeCourseService;
     }
 
 
@@ -69,7 +69,7 @@ public class CourseController {
     @GetMapping(path = "/view")
     public ModelAndView getCourses() {
         try {
-            Set<CourseDto> courses = courseServiceImpl.getCourses();
+            Set<CourseDto> courses = courseService.getCourses();
             return new ModelAndView("course/course-list", "courses", courses);
         } catch (DataAccessServiceException e) {
             return new ModelAndView(dataAccessExceptionUri, EXCEPTION_MESSAGE, e.getMessage());
@@ -86,7 +86,7 @@ public class CourseController {
     @GetMapping(path = "/read/name")
     public ModelAndView getCourse(@RequestParam String courseName, @RequestParam String degreeCourseName) {
         try {
-            CourseDto course = courseServiceImpl.getCourseByNameAndDegreeCourseName(courseName, degreeCourseName);
+            CourseDto course = courseService.getCourseByNameAndDegreeCourseName(courseName, degreeCourseName);
             return new ModelAndView("course/read/read-result", COURSE, course);
         } catch (IllegalArgumentException e) {
             return new ModelAndView(illegalArgumentExceptionUri + "/illegal-parameter", EXCEPTION_MESSAGE, e.getMessage());
@@ -106,7 +106,7 @@ public class CourseController {
     public ModelAndView getCoursesByProfessor(@AuthenticationPrincipal Professor professor) {
         try {
             ProfessorDto professorDto = ProfessorMapper.toDto(professor);
-            List<CourseDto> courses = courseServiceImpl.getCoursesByProfessor(professorDto);
+            List<CourseDto> courses = courseService.getCoursesByProfessor(professorDto);
             return new ModelAndView("user_professor/courses/courses", "courses", courses);
         } catch (DataAccessServiceException e) {
             return new ModelAndView(dataAccessExceptionUri, EXCEPTION_MESSAGE, e.getMessage());
@@ -143,8 +143,8 @@ public class CourseController {
 
         try {
 
-            ProfessorDto professor = professorServiceImpl.getProfessorByUniqueCode(new UniqueCode(formDto.getUniqueCode()));
-            DegreeCourseDto degreeCourse = degreeCourseServiceImpl.getDegreeCourseByName(formDto.getDegreeCourseName());
+            ProfessorDto professor = professorService.getProfessorByUniqueCode(new UniqueCode(formDto.getUniqueCode()));
+            DegreeCourseDto degreeCourse = degreeCourseService.getDegreeCourseByName(formDto.getDegreeCourseName());
 
             CourseDto courseDto = new CourseDto(
                 formDto.getName(),
@@ -154,7 +154,7 @@ public class CourseController {
                 degreeCourse
             );
 
-            CourseDto saved = courseServiceImpl.addNewCourse(courseDto);
+            CourseDto saved = courseService.addNewCourse(courseDto);
 
             return new ModelAndView("course/create/create-result", COURSE, saved);
         } catch (ObjectNotFoundException e) {
@@ -178,7 +178,7 @@ public class CourseController {
     public ModelAndView updateCourse(@Valid @ModelAttribute UpdateCourseDto dto){
         try {
 
-            CourseDto course = courseServiceImpl.updateCourse(dto);
+            CourseDto course = courseService.updateCourse(dto);
             return new ModelAndView("course/update/update-result", COURSE, course);
         } catch (IllegalArgumentException e) {
             return new ModelAndView(illegalArgumentExceptionUri, EXCEPTION_MESSAGE, e.getMessage());
@@ -201,8 +201,8 @@ public class CourseController {
 
         try{
             // retrieve course
-            CourseDto courseDto = courseServiceImpl.getCourseByNameAndDegreeCourseName(courseName, degreeCourseName);
-            courseServiceImpl.deleteByNameAndDegreeCourse(courseName, degreeCourseName);
+            CourseDto courseDto = courseService.getCourseByNameAndDegreeCourseName(courseName, degreeCourseName);
+            courseService.deleteByNameAndDegreeCourse(courseName, degreeCourseName);
             return new ModelAndView("course/delete/delete-result", COURSE, courseDto);
         } catch (IllegalArgumentException e) {
             return new ModelAndView(illegalArgumentExceptionUri, EXCEPTION_MESSAGE, e.getMessage());

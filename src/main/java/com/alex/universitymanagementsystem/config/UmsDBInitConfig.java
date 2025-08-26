@@ -1730,13 +1730,14 @@ public class UmsDBInitConfig implements Serializable {
             .orElseThrow(() -> new NoSuchElementException(STUDENT_NOT_FOUND_ERROR));
         Student raffo = studentRepository
             .findByRegister(new Register("555555"))
-            .orElseThrow(() -> new NoSuchElementException(STUDENT_NOT_FOUND_ERROR));;
+            .orElseThrow(() -> new NoSuchElementException(STUDENT_NOT_FOUND_ERROR));
         Student luca = studentRepository
             .findByRegister(new Register("123457"))
-            .orElseThrow(() -> new NoSuchElementException(STUDENT_NOT_FOUND_ERROR));;
+            .orElseThrow(() -> new NoSuchElementException(STUDENT_NOT_FOUND_ERROR));
 
 
         // Retrieve existing Course entity from the database
+
         Course analisiMatematica = courseRepository
             .findByNameAndDegreeCourseName("analisi matematica", INGEGNERIA_GESTIONALE)
             .orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND_ERROR));
@@ -2032,6 +2033,10 @@ public class UmsDBInitConfig implements Serializable {
             .findByNameAndDegreeCourseName("sicurezza degli impianti industriali", INGEGNERIA_GESTIONALE)
             .orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND_ERROR));
 
+        Course materialiInnovativi = courseRepository
+            .findByNameAndDegreeCourseName("materiali innovativi per l'ingegneria elettrica", INGEGNERIA_GESTIONALE)
+            .orElseThrow(() -> new NoSuchElementException(COURSE_NOT_FOUND_ERROR));
+
         List<ExaminationAppeal> examinationAppeals = new ArrayList<>();
 
         examinationAppeals.add(
@@ -2098,6 +2103,23 @@ public class UmsDBInitConfig implements Serializable {
             )
         );
 
+        examinationAppeals.add(
+            new ExaminationAppeal(
+                materialiInnovativi,
+                "materiali innovativi per l'ingegneria elettrica",
+                LocalDate.of(2025, 8, 18)
+            )
+        );
+
+        examinationAppeals.add(
+            new ExaminationAppeal(
+                informatica,
+                "fondamenti di informatica",
+                LocalDate.of(2025, 7, 15)
+            )
+        );
+
+
         // retrieve students
         Student nino = studentRepository
             .findByRegister(new Register("123456"))
@@ -2121,6 +2143,16 @@ public class UmsDBInitConfig implements Serializable {
         sicurezzaAppeal.addRegister(nino.getRegister());
         sicurezzaAppeal.addRegister(raffo.getRegister());
         examinationAppeals.add(sicurezzaAppeal);
+
+        ExaminationAppeal materialiInnovativiAppeal = new ExaminationAppeal(materialiInnovativi, "materiali innovativi per l'ingegneria elettrica", LocalDate.of(2025, 8, 18));
+        materialiInnovativiAppeal.addRegister(nino.getRegister());
+        materialiInnovativiAppeal.addRegister(raffo.getRegister());
+        examinationAppeals.add(materialiInnovativiAppeal);
+
+        ExaminationAppeal inf2Appeal = new ExaminationAppeal(informatica, "fondamenti di informatica", LocalDate.of(2025, 7, 15));
+        inf2Appeal.addRegister(nino.getRegister());
+        inf2Appeal.addRegister(raffo.getRegister());
+        examinationAppeals.add(inf2Appeal);
 
         if(examinationAppeals.isEmpty())
             throw new IllegalArgumentException("examination appeal list is empty");

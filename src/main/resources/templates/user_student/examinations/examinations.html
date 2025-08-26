@@ -17,8 +17,6 @@
                 <tr>
                     <th>Course</th>
                     <th>Cfu</th>
-                    <th>Registration</th>
-                    <th>Name</th>
                     <th>Grade</th>
                     <th>Date</th>
                     <th>Degree Course</th>
@@ -28,8 +26,6 @@
                 <tr th:each="examination : ${examinations}">
                     <td th:text="${examination.courseName}">Course</td>
                     <td th:text="${examination.courseCfu}">Cfu</td>
-                    <td th:text="${examination.register}">Student register</td>
-                    <td th:text="${examination.register} + ' ' + ${examination.register}">Student name</td>
                     <td>
                         <span th:text="${examination.grade}">Grade</span>
                         <span th:if="${examination.withHonors}"> with honors</span>

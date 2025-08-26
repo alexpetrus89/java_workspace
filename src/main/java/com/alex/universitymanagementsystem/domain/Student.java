@@ -51,14 +51,8 @@ public class Student extends User {
         this.age = calculateAge();
     }
 
-    public Student(
-        Builder builder,
-        PasswordEncoder passwordEncoder,
-        Register register,
-        DegreeCourse degreeCourse,
-        StudyPlan studyPlan
-    ) {
-        super(builder, passwordEncoder);
+    public Student(Builder builder, PasswordEncoder encoder, Register register, DegreeCourse degreeCourse, StudyPlan studyPlan) {
+        super(builder, encoder);
         this.register = register;
         this.degreeCourse = degreeCourse;
         this.studyPlan = studyPlan;

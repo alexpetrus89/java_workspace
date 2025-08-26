@@ -123,10 +123,10 @@ public class DegreeCourse implements Serializable {
 
     // methods
     public void addCourse(Course course) {
-        if (!courses.contains(course)) {
-            courses.add(course);
-            course.setDegreeCourse(this);
-        }
+        if (courses.contains(course))
+            return; // already added
+        courses.add(course);
+        course.setDegreeCourse(this);
     }
 
     public void addStudent(Student student) {

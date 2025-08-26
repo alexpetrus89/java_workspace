@@ -17,6 +17,7 @@ import jakarta.persistence.PersistenceException;
 import jakarta.transaction.Transactional;
 
 
+
 public interface StudentService {
 
     /**
@@ -32,6 +33,7 @@ public interface StudentService {
 	 * @param register the register of the student.
 	 * @return StudentDto object containing the student's data.
 	 * @throws IllegalArgumentException if the register is null or blank.
+	 * @throws ObjectNotFoundException if no student found
 	 * @throws DataAccessServiceException if there is an error accessing the database.
 	 */
 	StudentDto getStudentByRegister(Register register)
@@ -63,7 +65,7 @@ public interface StudentService {
 	 * 		   in the repository.
 	 * @throws DataAccessServiceException if there is an error accessing the database
 	 */
-	@Transactional(rollbackOn = ObjectAlreadyExistsException.class)
+	@Transactional(rollbackOn = {IllegalArgumentException.class, ObjectAlreadyExistsException.class, ObjectNotFoundException.class})
     @Retryable(retryFor = PersistenceException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
     StudentDto addNewStudent(RegistrationForm form, DegreeCourse degreeCourse, String ordering)
 		throws IllegalArgumentException, ObjectAlreadyExistsException, ObjectNotFoundException, DataAccessServiceException;
@@ -78,7 +80,7 @@ public interface StudentService {
 	 *         does not exist.
 	 * @throws DataAccessServiceException if there is an error accessing the database
 	 */
-	@Transactional(rollbackOn = ObjectNotFoundException.class)
+	@Transactional(rollbackOn = {IllegalArgumentException.class, ObjectNotFoundException.class})
     @Retryable(retryFor = PersistenceException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
     StudentDto updateStudent(RegistrationForm form)
 		throws IllegalArgumentException, ObjectNotFoundException, DataAccessServiceException;

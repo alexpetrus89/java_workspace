@@ -48,11 +48,11 @@ public interface StudentRepository
     /**
      * Retrieves a student by email
      * @param username of the student
-     * @return List<Student> with the student if found, or an empty
-     *         List if no student is found
+     * @return Optional<Student> with the student if found, or an empty
+     *         Optional if no student is found
      */
     @Query("SELECT s FROM Student s WHERE s.username = ?1")
-    List<Student> findByUsername(String username);
+    Optional<Student> findByUsername(String username);
 
 
     /**

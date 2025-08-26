@@ -9,7 +9,6 @@ import org.springframework.stereotype.Repository;
 
 import com.alex.universitymanagementsystem.domain.Examination;
 import com.alex.universitymanagementsystem.domain.immutable.ExaminationId;
-import com.alex.universitymanagementsystem.domain.immutable.Register;
 
 
 @Repository
@@ -23,7 +22,7 @@ public interface ExaminationRepository
      * @param register the register of the student
      * @return list of examinations associated with the student
      */
-    List<Examination> findByStudent_Register(Register register);
+    List<Examination> findByRegister(String register);
 
 
     /**

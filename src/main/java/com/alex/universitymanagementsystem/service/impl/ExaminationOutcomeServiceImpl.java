@@ -3,6 +3,7 @@ package com.alex.universitymanagementsystem.service.impl;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -36,6 +37,7 @@ import com.alex.universitymanagementsystem.repository.CourseRepository;
 import com.alex.universitymanagementsystem.repository.ExaminationAppealRepository;
 import com.alex.universitymanagementsystem.repository.ExaminationOutcomeRepository;
 import com.alex.universitymanagementsystem.repository.StudentRepository;
+import com.alex.universitymanagementsystem.service.ExaminationAppealService;
 import com.alex.universitymanagementsystem.service.ExaminationOutcomeService;
 
 import jakarta.persistence.PersistenceException;
@@ -51,20 +53,20 @@ public class ExaminationOutcomeServiceImpl implements ExaminationOutcomeService 
     // instance variables
     private final ExaminationOutcomeRepository examinationOutcomeRepository;
     private final ExaminationAppealRepository examinationAppealRepository;
-    private final ExaminationAppealServiceImpl examinationAppealServiceImpl;
+    private final ExaminationAppealService examinationAppealService;
     private final StudentRepository studentRepository;
     private final CourseRepository courseRepository;
 
     public ExaminationOutcomeServiceImpl(
         ExaminationOutcomeRepository examinationOutcomeRepository,
         ExaminationAppealRepository examinationAppealRepository,
-        ExaminationAppealServiceImpl examinationAppealServiceImpl,
+        ExaminationAppealService examinationAppealService,
         StudentRepository studentRepository,
         CourseRepository courseRepository
     ) {
         this.examinationOutcomeRepository = examinationOutcomeRepository;
         this.examinationAppealRepository = examinationAppealRepository;
-        this.examinationAppealServiceImpl = examinationAppealServiceImpl;
+        this.examinationAppealService = examinationAppealService;
         this.studentRepository = studentRepository;
         this.courseRepository = courseRepository;
     }
@@ -169,57 +171,70 @@ public class ExaminationOutcomeServiceImpl implements ExaminationOutcomeService 
      * @throws DataAccessServiceException if there is a data access error
      */
     @Override
-    @Transactional(rollbackOn = {NoSuchElementException.class, ObjectNotFoundException.class, ObjectAlreadyExistsException.class})
+    @Transactional(rollbackOn = {
+        NoSuchElementException.class,
+        ObjectNotFoundException.class,
+        ObjectAlreadyExistsException.class
+    })
     @Retryable(retryFor = PersistenceException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
-    public ExaminationOutcomeDto addNewExaminationOutcome(@Valid ExaminationOutcomeDto dto)
-        throws NoSuchElementException, ObjectNotFoundException, ObjectAlreadyExistsException, DataAccessServiceException
-    {
-        // sanity checks
-        if (!studentRepository.existsByRegister(new Register(dto.getRegister())))
+    public Optional<ExaminationOutcomeDto> addNewExaminationOutcome(@Valid ExaminationOutcomeDto dto)
+        throws NoSuchElementException, ObjectNotFoundException, ObjectAlreadyExistsException, DataAccessServiceException {
+
+        Register studentRegister = new Register(dto.getRegister());
+
+        // verifica se lo studente esiste
+        if (!studentRepository.existsByRegister(studentRegister))
             throw new NoSuchElementException("Student does not exist");
 
+        // verifica se l'esito esiste già
         if (examinationOutcomeRepository.existsByIdAndRegister(dto.getAppeal().getId(), dto.getRegister()))
             throw new ObjectAlreadyExistsException(DomainType.EXAMINATION_OUTCOME);
 
         try {
-            ExaminationAppeal appeal = examinationAppealRepository.findById(dto.getAppeal().getId())
+            // recupera l'appello
+            ExaminationAppeal appeal = examinationAppealRepository
+                .findById(dto.getAppeal().getId())
                 .orElseThrow(() -> new ObjectNotFoundException("Appeal not found"));
 
             ExaminationOutcome outcome = ExaminationOutcomeMapper.toEntity(dto, appeal);
 
-            // check if the student is present
-            if(outcome.isPresent())
+            // se l'outcome è stato creato con successo, salva l'esito e ritorna Optional.of(dto)
+            if (outcome != null) {
                 examinationOutcomeRepository.saveAndFlush(outcome);
+                examinationAppealService.removeStudentFromAppeal(dto.getAppeal().getId(), studentRegister);
+                return Optional.of(dto);
+            }
 
-            examinationAppealServiceImpl.removeStudentFromAppeal(dto.getAppeal().getId(), new Register(dto.getRegister()));
-            return dto;
+            // se l'outcome non è stato creato con successo, ritorno Optional.empty()
+            examinationAppealService.removeStudentFromAppeal(dto.getAppeal().getId(), studentRegister);
+            return Optional.empty();
+
         } catch (PersistenceException e) {
             throw new DataAccessServiceException(DATA_ACCESS_ERROR, e);
         }
     }
 
 
+
     /**
      * Delete an examination outcome
-     * @param outcome examination outcome of the student
-     * @return ExaminationOutcome outcome
+     * @param id of the examination outcome
+     * @return ExaminationOutcomeDto outcome
      * @throws ObjectNotFoundException if the outcome does not exist
      * @throws DataAccessServiceException if there is a data access error
      */
     @Override
     @Transactional(rollbackOn = ObjectNotFoundException.class)
     @Retryable(retryFor = PersistenceException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
-    public ExaminationOutcomeDto deleteExaminationOutcome(@Valid ExaminationOutcomeDto dto)
-        throws ObjectNotFoundException, DataAccessServiceException
-    {
+    public ExaminationOutcomeDto deleteExaminationOutcome(Long id)
+        throws ObjectNotFoundException, DataAccessServiceException {
         try {
-            ExaminationAppeal appeal = examinationAppealRepository.findById(dto.getAppeal().getId())
-                .orElseThrow(() -> new ObjectNotFoundException("Appeal not found"));
-
-            ExaminationOutcome outcome = ExaminationOutcomeMapper.toEntity(dto, appeal);
+            ExaminationOutcome outcome = examinationOutcomeRepository
+                .findById(id)
+                .orElseThrow(() -> new ObjectNotFoundException(DomainType.EXAMINATION_OUTCOME));
 
             examinationOutcomeRepository.delete(outcome);
-            return dto;
+            return mapToDto(outcome);
         } catch (PersistenceException e) {
             throw new DataAccessServiceException(DATA_ACCESS_ERROR, e);
         }

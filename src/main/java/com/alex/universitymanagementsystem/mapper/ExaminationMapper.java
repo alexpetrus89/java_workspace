@@ -22,15 +22,15 @@ public class ExaminationMapper {
 
     public static ExaminationDto toDto(Examination examination) {
         if (examination == null) return null;
-        return new ExaminationDto(
-            examination.getStudent().getRegister().toString(),
-            examination.getCourse().getName(),
-            examination.getCourse().getDegreeCourse().getName(),
-            examination.getCourse().getCfu(),
-            examination.getGrade(),
-            examination.isWithHonors(),
-            examination.getDate()
-        );
+        ExaminationDto dto = new ExaminationDto();
+        dto.setCourseName(examination.getCourse().getName());
+        dto.setRegister(examination.getRegister());
+        dto.setDegreeCourseName(examination.getCourse().getDegreeCourse().getName());
+        dto.setCourseCfu(examination.getCourse().getCfu());
+        dto.setGrade(examination.getGrade());
+        dto.setWithHonors(examination.isWithHonors());
+        dto.setDate(examination.getDate());
+        return dto;
     }
 
 }

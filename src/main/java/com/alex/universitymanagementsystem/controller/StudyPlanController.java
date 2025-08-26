@@ -25,9 +25,9 @@ import com.alex.universitymanagementsystem.dto.SwapCoursesDto;
 import com.alex.universitymanagementsystem.exception.DataAccessServiceException;
 import com.alex.universitymanagementsystem.exception.ObjectAlreadyExistsException;
 import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
-import com.alex.universitymanagementsystem.service.impl.DegreeCourseServiceImpl;
-import com.alex.universitymanagementsystem.service.impl.ExaminationServiceImpl;
-import com.alex.universitymanagementsystem.service.impl.StudyPlanServiceImpl;
+import com.alex.universitymanagementsystem.service.DegreeCourseService;
+import com.alex.universitymanagementsystem.service.ExaminationService;
+import com.alex.universitymanagementsystem.service.StudyPlanService;
 
 import jakarta.validation.Valid;
 
@@ -52,18 +52,18 @@ public class StudyPlanController {
         org.slf4j.LoggerFactory.getLogger(StudyPlanController.class);
 
     // instance variables
-    private final StudyPlanServiceImpl studyPlanServiceImpl;
-    private final DegreeCourseServiceImpl degreeCourseServiceImpl;
-    private final ExaminationServiceImpl examinationServiceImpl;
+    private final StudyPlanService studyPlanService;
+    private final DegreeCourseService degreeCourseService;
+    private final ExaminationService examinationService;
 
     public StudyPlanController(
-        StudyPlanServiceImpl studyPlanServiceImpl,
-        DegreeCourseServiceImpl degreeCourseServiceImpl,
-        ExaminationServiceImpl examinationServiceImpl
+        StudyPlanService studyPlanService,
+        DegreeCourseService degreeCourseService,
+        ExaminationService examinationService
     ) {
-        this.studyPlanServiceImpl = studyPlanServiceImpl;
-        this.degreeCourseServiceImpl = degreeCourseServiceImpl;
-        this.examinationServiceImpl = examinationServiceImpl;
+        this.studyPlanService = studyPlanService;
+        this.degreeCourseService = degreeCourseService;
+        this.examinationService = examinationService;
     }
 
 
@@ -76,7 +76,7 @@ public class StudyPlanController {
     @GetMapping(path = "/view")
     public ModelAndView getStudyPlanView(@AuthenticationPrincipal Student student) {
         try {
-            StudyPlanDto studyPlan = studyPlanServiceImpl.getStudyPlanByRegister(student.getRegister());
+            StudyPlanDto studyPlan = studyPlanService.getStudyPlanByRegister(student.getRegister());
             return new ModelAndView("user_student/study_plan/study_plan_view", "studyPlan", studyPlan);
         } catch (DataAccessServiceException e) {
             return new ModelAndView(dataAccessExceptionUri, EXCEPTION_MESSAGE, e.getMessage());
@@ -102,7 +102,7 @@ public class StudyPlanController {
     public ModelAndView modifyStudyPlan(@AuthenticationPrincipal Student student) {
         try {
             // Retrieve all degree courses, student's degree course, student's study plan and security token
-            Set<DegreeCourseDto> degreeCourses = degreeCourseServiceImpl.getDegreeCourses();
+            Set<DegreeCourseDto> degreeCourses = degreeCourseService.getDegreeCourses();
             String degreeCourse = student.getDegreeCourse().getName();
             Set<CourseDto> studyPlan = getFilteredStudyPlan(student.getRegister());
             String token = SecurityContextHolder
@@ -143,8 +143,8 @@ public class StudyPlanController {
         dto.setRegister(student.getRegister().toString());
 
         try {
-            studyPlanServiceImpl.swapCourses(dto);
-            Set<CourseDto> courses = studyPlanServiceImpl.getCoursesByRegister(student.getRegister());
+            studyPlanService.swapCourses(dto);
+            Set<CourseDto> courses = studyPlanService.getCoursesByRegister(student.getRegister());
             return new ModelAndView("user_student/study_plan/study_plan_courses", "courses", courses);
         } catch (ObjectAlreadyExistsException e) {
             return new ModelAndView(alreadyExistsExceptionUri + "/object-already-exists", EXCEPTION_MESSAGE, e.getMessage());
@@ -160,12 +160,12 @@ public class StudyPlanController {
 
     private Set<CourseDto> getFilteredStudyPlan(Register register)
         throws DataAccessServiceException {
-        return studyPlanServiceImpl
+        return studyPlanService
             .getCoursesByRegister(register)
             .stream()
             .filter(course -> {
                 try {
-                    return examinationServiceImpl
+                    return examinationService
                         .getExaminationsByStudentRegister(register)
                         .stream()
                         .map(ExaminationDto::getCourseName)

@@ -24,6 +24,7 @@ public class ExaminationOutcomeDto {
     @Max(30)
     private int grade;
 
+    @NotNull
     private boolean present;
     private boolean withHonors;
     private boolean accepted;

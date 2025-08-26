@@ -83,11 +83,12 @@ public class StudentServiceImpl implements StudentService {
 	 * @param register the register of the student.
 	 * @return StudentDto object containing the student's data.
 	 * @throws IllegalArgumentException if the register is null or blank.
+	 * @throws ObjectNotFoundException if no student found
 	 * @throws DataAccessServiceException if there is an error accessing the database.
 	 */
 	@Override
 	public StudentDto getStudentByRegister(Register register)
-		throws IllegalArgumentException, DataAccessServiceException
+		throws IllegalArgumentException, ObjectNotFoundException, DataAccessServiceException
 	{
 		// sanity check
 		if(register.toString().isBlank())
@@ -97,7 +98,7 @@ public class StudentServiceImpl implements StudentService {
 			return studentRepository
 				.findByRegister(register)
 				.map(StudentMapper::toDto)
-				.orElse(null);
+				.orElseThrow(() -> new ObjectNotFoundException(DomainType.STUDENT));
 		} catch (PersistenceException e) {
 			throw new DataAccessServiceException("Error accessing database for fetching student by register: " + e.getMessage(), e);
 		}
@@ -149,7 +150,7 @@ public class StudentServiceImpl implements StudentService {
 	 * @throws DataAccessServiceException if there is an error accessing the database
 	 */
 	@Override
-	@Transactional(rollbackOn = ObjectAlreadyExistsException.class)
+	@Transactional(rollbackOn = {IllegalArgumentException.class, ObjectAlreadyExistsException.class, ObjectNotFoundException.class})
     @Retryable(retryFor = PersistenceException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
     public StudentDto addNewStudent(RegistrationForm form, DegreeCourse degreeCourse, String ordering)
 		throws IllegalArgumentException, ObjectAlreadyExistsException, ObjectNotFoundException, DataAccessServiceException
@@ -204,7 +205,7 @@ public class StudentServiceImpl implements StudentService {
 	 * @throws DataAccessServiceException if there is an error accessing the database
 	 */
 	@Override
-	@Transactional(rollbackOn = ObjectNotFoundException.class)
+	@Transactional(rollbackOn = {IllegalArgumentException.class, ObjectNotFoundException.class})
     @Retryable(retryFor = PersistenceException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
     public StudentDto updateStudent(RegistrationForm form)
 		throws IllegalArgumentException, ObjectNotFoundException, DataAccessServiceException

@@ -65,6 +65,7 @@ public class ProfessorServiceImpl implements ProfessorService {
      * @param uniqueCode the unique code of the professor to retrieve
      * @return ProfessorDto object containing the professor's data
      * @throws IllegalArgumentException if the unique code is blank
+     * @throws ObjectNotFoundException if no professor found
      * @throws DataAccessServiceException if there is an error accessing the database
      */
     @Override
@@ -79,7 +80,7 @@ public class ProfessorServiceImpl implements ProfessorService {
             return professorRepository
                 .findByUniqueCode(uniqueCode)
                 .map(ProfessorMapper::toDto)
-                .orElse(null);
+                .orElseThrow(() -> new ObjectNotFoundException(DomainType.PROFESSOR));
         } catch (PersistenceException e) {
             throw new DataAccessServiceException("Error accessing database for fetching professor by unique code: " + e.getMessage(), e);
         }
@@ -91,6 +92,7 @@ public class ProfessorServiceImpl implements ProfessorService {
      * @param fiscalCode the fiscal code of the professor to retrieve.
      * @return ProfessorDto object containing the professor's data.
      * @throws IllegalArgumentException if the fiscal code is blank
+     * @throws ObjectNotFoundException if no professor found
      * @throws DataAccessServiceException if there is an error accessing the database
      */
     @Override
@@ -104,7 +106,7 @@ public class ProfessorServiceImpl implements ProfessorService {
             return professorRepository
                 .findByFiscalCode(new FiscalCode(fiscalCode))
                 .map(ProfessorMapper::toDto)
-                .orElse(null);
+                .orElseThrow(() -> new ObjectNotFoundException(DomainType.PROFESSOR));
         } catch (PersistenceException e) {
             throw new DataAccessServiceException("Error accessing database for fetching professor by fiscal code: " + e.getMessage(), e);
         }

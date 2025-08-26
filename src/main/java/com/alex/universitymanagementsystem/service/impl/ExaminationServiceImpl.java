@@ -140,7 +140,7 @@ public class ExaminationServiceImpl implements ExaminationService {
 
         try {
             return examinationRepository
-                .findByStudent_Register(register)
+                .findByRegister(register.toString())
                 .stream()
                 .map(ExaminationMapper::toDto)
                 .toList();
@@ -209,10 +209,10 @@ public class ExaminationServiceImpl implements ExaminationService {
 
         try {
             // --- Load domain entities ---
-            Register register = new Register(request.getRegister());
+            String register = request.getRegister();
 
             Student student = studentRepository
-                .findByRegister(register)
+                .findByRegister(new Register(register))
                 .orElseThrow(() -> new ObjectNotFoundException(DomainType.STUDENT));
 
             DegreeCourse degreeCourse = degreeCourseRepository
@@ -231,7 +231,7 @@ public class ExaminationServiceImpl implements ExaminationService {
                 throw new ObjectNotFoundException("Course is not part of the student's study plan.");
 
             boolean alreadyExists = examinationRepository
-                .findByStudent_Register(register)
+                .findByRegister(register)
                 .stream()
                 .anyMatch(exam -> exam.getCourse().equals(course));
 
@@ -285,10 +285,10 @@ public class ExaminationServiceImpl implements ExaminationService {
 
         try {
             // --- Load updated entities ---
-            Register oldRegister = new Register(request.getOldRegister());
-            Register newRegister = new Register(request.getNewRegister());
+            String oldRegister = request.getOldRegister();
+            String newRegister = request.getNewRegister();
 
-            Student newStudent = studentRepository.findByRegister(newRegister)
+            Student newStudent = studentRepository.findByRegister(new Register(newRegister))
                 .orElseThrow(() -> new ObjectNotFoundException(DomainType.STUDENT));
 
             DegreeCourse newDegreeCourse = degreeCourseRepository.findByName(request.getNewDegreeCourseName().toUpperCase())
@@ -310,7 +310,7 @@ public class ExaminationServiceImpl implements ExaminationService {
                 .findByCourse_Id_Id(oldCourse.getId().getId())
                 .stream()
                 .filter(e -> e.getCourse().getDegreeCourse().getName().equals(request.getOldDegreeCourseName()))
-                .filter(e -> e.getStudent().getRegister().equals(oldRegister))
+                .filter(e -> e.getRegister().equals(oldRegister))
                 .findFirst()
                 .orElseThrow(() -> new ObjectNotFoundException(DomainType.EXAMINATION));
 
@@ -371,7 +371,7 @@ public class ExaminationServiceImpl implements ExaminationService {
             Examination examination = examinationRepository
                 .findByCourse_Id_Id(course.getId().getId())
                 .stream()
-                .filter(exam -> !exam.getStudent().getRegister().equals(new Register(register)))
+                .filter(exam -> !exam.getRegister().equals(register))
                 .findFirst()
                 .orElseThrow(() -> new ObjectNotFoundException("Examination of course " + courseName + " and student register " + register));
 

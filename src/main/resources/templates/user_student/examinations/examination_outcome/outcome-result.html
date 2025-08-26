@@ -10,27 +10,62 @@
 </head>
 <body>
 
-    <div class="container">
+    <div class="container" th:if="${outcome}" th:object="${outcome}">
     <h1>Outcome</h1>
-    <div th:if="${outcome}"></div>
+
     <p th:text="'course: ' + ${outcome.appeal.course}"></p>
     <p th:text="'date: ' + ${outcome.appeal.date}"></p>
     <p th:text="'grade: ' + ${outcome.grade}"></p>
     <p th:if="${outcome.withHonors}" th:text="'with honors'"></p>
-    <br>
-    <div th:if="${outcome.grade >= 18}">
+
+
+    <!-- Assente -->
+    <div th:if="*{!present}">
+        <p>Result: absent</p>
+        <form th:action="@{/api/v1/examination-outcome/delete/{id}(id=${outcome.id})}" method="post">
+            <input type="hidden" name="_method" value="DELETE">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+            <button type="submit">Confirm</button>
+        </form>
+    </div>
+
+
+    <!-- Presente: logica voto -->
+    <div th:if="*{present}">
+        <div th:if="*{grade} >= 18">
         <form th:action="@{/api/v1/examination/create}" method="post">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
             <input type="hidden" name="register" th:value="${outcome.register}">
             <input type="hidden" name="courseName" th:value="${outcome.appeal.course}">
-            <input type="hidden" name="degreeCourseName" th:value="${outcome.appeal.degreeCourse}">
+            <input type="hidden" name="degreeCourseName" th:value="${outcome.appeal.degreeCourse}"/>
             <input type="hidden" name="grade" th:value="${outcome.grade}">
             <input type="hidden" name="withHonors" th:value="${outcome.withHonors}">
-            <input type="hidden" name="date" th:value="${outcome.appeal.date}">
+            <input type="hidden" name="date" th:value="${#temporals.format(outcome.appeal.date, 'yyyy-MM-dd')}">
             <button type="submit">Accept grade</button>
         </form>
-        <button type="button" onclick="window.location.href='/user_student/examinations/examination_outcome/confirm-refusal';">Refuse grade</button>
+
+        <form th:action="@{/user_student/examinations/examination_outcome/confirm-refusal}" method="get">
+            <button type="submit">Refuse grade</button>
+        </form>
+
+        </div>
+
+        <div th:if="*{grade} < 18">
+        <p>Result: insufficient</p>
+        <form th:action="@{/api/v1/examination-outcome/delete/{id}(id=${outcome.id})}" method="post">
+            <input type="hidden" name="_method" value="DELETE">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+            <button type="submit">Confirm</button>
+        </form>
+        </div>
+
+        <div th:if="*{grade} < 0">
+            <p>Result: failed</p>
+        </div>
+
     </div>
-    </br>
+
+    <br>
     <a href="#" th:href="@{/user_student/examinations/examination-menu}">Back to Menu</a>
     </div>
 </body>

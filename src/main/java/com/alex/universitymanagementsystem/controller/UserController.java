@@ -25,9 +25,9 @@ import com.alex.universitymanagementsystem.dto.UserDto;
 import com.alex.universitymanagementsystem.exception.DataAccessServiceException;
 import com.alex.universitymanagementsystem.exception.ObjectAlreadyExistsException;
 import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
-import com.alex.universitymanagementsystem.service.impl.ProfessorServiceImpl;
-import com.alex.universitymanagementsystem.service.impl.StudentServiceImpl;
-import com.alex.universitymanagementsystem.service.impl.UserServiceImpl;
+import com.alex.universitymanagementsystem.service.ProfessorService;
+import com.alex.universitymanagementsystem.service.StudentService;
+import com.alex.universitymanagementsystem.service.UserService;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -54,19 +54,19 @@ public class UserController {
     private String alreadyExistsExceptionUri;
 
     // instance variables
-    private final UserServiceImpl userServiceImpl;
-    private final StudentServiceImpl studentServiceImpl;
-    private final ProfessorServiceImpl professorServiceImpl;
+    private final UserService userService;
+    private final StudentService studentService;
+    private final ProfessorService professorService;
 
     /** Autowired - dependency injection - constructor */
     public UserController(
-        UserServiceImpl userServiceImpl,
-        StudentServiceImpl studentServiceImpl,
-        ProfessorServiceImpl professorServiceImpl
+        UserService userService,
+        StudentService studentService,
+        ProfessorService professorService
     ) {
-        this.userServiceImpl = userServiceImpl;
-        this.studentServiceImpl = studentServiceImpl;
-        this.professorServiceImpl = professorServiceImpl;
+        this.userService = userService;
+        this.studentService = studentService;
+        this.professorService = professorService;
     }
 
 
@@ -78,7 +78,7 @@ public class UserController {
     public ModelAndView getAllUsers() {
         try {
             // retrieves all users
-            List<UserDto> users = userServiceImpl.getUsers();
+            List<UserDto> users = userService.getUsers();
             return new ModelAndView("user_admin/read/user-list", "users", users);
         } catch (DataAccessServiceException e) {
             return new ModelAndView(dataAccessExceptionUri, EXCEPTION_MESSAGE, e.getMessage());
@@ -125,7 +125,7 @@ public class UserController {
     public String createUser(HttpServletRequest request) {
         try {
             Builder builder = (Builder) request.getSession().getAttribute(BUILDER);
-            if(userServiceImpl.addNewUser(new RegistrationForm(builder)) != null)
+            if(userService.addNewUser(new RegistrationForm(builder)) != null)
                 return REDIRECT_LOGIN;
             else return FORWARD + genericExceptionUri;
         } catch (ObjectAlreadyExistsException _) {
@@ -149,7 +149,7 @@ public class UserController {
             // recupera l'oggetto UserDto dalla sessione
             Builder builder = (Builder) request.getSession().getAttribute(BUILDER);
             // save
-            StudentDto student = studentServiceImpl.addNewStudent(new RegistrationForm(builder), degreeCourse, ordering);
+            StudentDto student = studentService.addNewStudent(new RegistrationForm(builder), degreeCourse, ordering);
             return new ModelAndView("user_student/create/student-result", "student", student);
         } catch (ObjectAlreadyExistsException e) {
             return new ModelAndView(alreadyExistsExceptionUri + "/student-already-exists", EXCEPTION_MESSAGE, e.getMessage());
@@ -170,7 +170,7 @@ public class UserController {
             // recupera l'oggetto UserDto dalla sessione
             Builder builder = (Builder) request.getSession().getAttribute(BUILDER);
             // save
-            ProfessorDto professor = professorServiceImpl.addNewProfessor(new RegistrationForm(builder));
+            ProfessorDto professor = professorService.addNewProfessor(new RegistrationForm(builder));
             return new ModelAndView("user_professor/create/professor-result", "professor", professor);
         } catch (ObjectAlreadyExistsException e) {
             return new ModelAndView(alreadyExistsExceptionUri + "/professor-already-exists", EXCEPTION_MESSAGE, e.getMessage());
@@ -191,7 +191,7 @@ public class UserController {
             return new ModelAndView(
                 "user_admin/update/update-result",
                 "result",
-                userServiceImpl.updateUser(new RegistrationForm(builder)) != null?
+                userService.updateUser(new RegistrationForm(builder)) != null?
                     "User updated successfully" : "User not updated"
             );
         } catch (ObjectNotFoundException e) {
@@ -214,7 +214,7 @@ public class UserController {
             return new ModelAndView(
                 "user_admin/delete/delete-result",
                 "result",
-                userServiceImpl.deleteUser(userId)?
+                userService.deleteUser(userId)?
                     "User delete successfully" : "User not deleted"
             );
         } catch (UsernameNotFoundException e) {

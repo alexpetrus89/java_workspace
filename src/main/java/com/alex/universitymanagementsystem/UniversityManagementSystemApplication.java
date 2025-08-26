@@ -2,14 +2,16 @@ package com.alex.universitymanagementsystem;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alex.universitymanagementsystem.component.UmsExitCodeGenerator;
 import com.alex.universitymanagementsystem.config.UmsConfig;
 
-@SpringBootApplication
 @RestController
+@EnableScheduling
+@SpringBootApplication
 public class UniversityManagementSystemApplication {
 
 	// injecting UmsConfig object

@@ -24,9 +24,9 @@ import com.alex.universitymanagementsystem.dto.UpdateExaminationDto;
 import com.alex.universitymanagementsystem.exception.DataAccessServiceException;
 import com.alex.universitymanagementsystem.exception.ObjectAlreadyExistsException;
 import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
-import com.alex.universitymanagementsystem.service.impl.CourseServiceImpl;
-import com.alex.universitymanagementsystem.service.impl.ExaminationOutcomeServiceImpl;
-import com.alex.universitymanagementsystem.service.impl.ExaminationServiceImpl;
+import com.alex.universitymanagementsystem.service.CourseService;
+import com.alex.universitymanagementsystem.service.ExaminationOutcomeService;
+import com.alex.universitymanagementsystem.service.ExaminationService;
 
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -54,19 +54,19 @@ public class ExaminationController {
     private String illegalArgumentExceptionUri;
 
     // instance variable
-    private final ExaminationServiceImpl examinationServiceImpl;
-    private final ExaminationOutcomeServiceImpl examinationOutcomeServiceImpl;
-    private final CourseServiceImpl courseServiceImpl;
+    private final ExaminationService examinationService;
+    private final ExaminationOutcomeService examinationOutcomeService;
+    private final CourseService courseService;
 
     // autowired - dependency injection - constructor
     public ExaminationController(
-        ExaminationServiceImpl examinationServiceImpl,
-        ExaminationOutcomeServiceImpl examinationOutcomeServiceImpl,
-        CourseServiceImpl courseServiceImpl
+        ExaminationService examinationService,
+        ExaminationOutcomeService examinationOutcomeService,
+        CourseService courseService
     ) {
-        this.examinationServiceImpl = examinationServiceImpl;
-        this.examinationOutcomeServiceImpl = examinationOutcomeServiceImpl;
-        this.courseServiceImpl = courseServiceImpl;
+        this.examinationService = examinationService;
+        this.examinationOutcomeService = examinationOutcomeService;
+        this.courseService = courseService;
     }
 
 
@@ -78,7 +78,7 @@ public class ExaminationController {
     @GetMapping(path = "/view")
     public ModelAndView getExaminations() {
         try {
-            List<ExaminationDto> examinations = examinationServiceImpl.getExaminations();
+            List<ExaminationDto> examinations = examinationService.getExaminations();
             return new ModelAndView(EXAMINATIONS_LIST, EXAMINATIONS, examinations);
         } catch (DataAccessServiceException e) {
             return new ModelAndView(dataAccessExceptionUri, EXCEPTION_MESSAGE, e.getMessage());
@@ -96,7 +96,7 @@ public class ExaminationController {
     public ModelAndView getExaminationsByCourseAndDegreeCourse(@RequestParam String courseName, @RequestParam String degreeCourseName) {
 
         try {
-            List<ExaminationDto> examinations = examinationServiceImpl.getExaminationsByCourseNameAndDegreeCourseName(courseName, degreeCourseName);
+            List<ExaminationDto> examinations = examinationService.getExaminationsByCourseNameAndDegreeCourseName(courseName, degreeCourseName);
             return new ModelAndView(EXAMINATIONS_LIST, EXAMINATIONS, examinations);
         } catch (IllegalArgumentException e) {
             return new ModelAndView(illegalArgumentExceptionUri + ILLEGAL_PARAMETERS, EXCEPTION_MESSAGE, e.getMessage());
@@ -122,7 +122,7 @@ public class ExaminationController {
         try {
             Register studRegister = student != null ? student.getRegister() : new Register(register);
 
-            List<ExaminationDto> examinations = examinationServiceImpl.getExaminationsByStudentRegister(studRegister);
+            List<ExaminationDto> examinations = examinationService.getExaminationsByStudentRegister(studRegister);
             return new ModelAndView("user_student/examinations/examinations", EXAMINATIONS, examinations);
         } catch (IllegalArgumentException e) {
             return new ModelAndView(illegalArgumentExceptionUri + ILLEGAL_PARAMETERS, EXCEPTION_MESSAGE, e.getMessage());
@@ -143,7 +143,7 @@ public class ExaminationController {
     public ModelAndView getExaminationsByProfessorUniqueCode(@RequestParam String uniqueCode) {
 
         try {
-            List<ExaminationDto> examinations = examinationServiceImpl.getExaminationsByProfessorUniqueCode(new UniqueCode(uniqueCode));
+            List<ExaminationDto> examinations = examinationService.getExaminationsByProfessorUniqueCode(new UniqueCode(uniqueCode));
             return new ModelAndView(EXAMINATIONS_LIST, EXAMINATIONS, examinations);
         } catch (IllegalArgumentException e) {
             return new ModelAndView(illegalArgumentExceptionUri + ILLEGAL_PARAMETERS, EXCEPTION_MESSAGE, e.getMessage());
@@ -197,11 +197,11 @@ public class ExaminationController {
 
         try {
             // TODO remove db access to get just courseCfu
-            Integer courseCfu = courseServiceImpl.getCourseByNameAndDegreeCourseName(courseName, degreeCourseName).getCfu();
+            Integer courseCfu = courseService.getCourseByNameAndDegreeCourseName(courseName, degreeCourseName).getCfu();
             ExaminationDto examination = new ExaminationDto(register, courseName, degreeCourseName, courseCfu, Integer.valueOf(grade), withHonors, date);
-            examinationServiceImpl.addNewExamination(examination);
-            ExaminationOutcomeDto outcome = examinationOutcomeServiceImpl.getOutcomeByCourseAndStudent(courseName, register);
-            examinationOutcomeServiceImpl.deleteExaminationOutcome(outcome);
+            examinationService.addNewExamination(examination);
+            ExaminationOutcomeDto outcome = examinationOutcomeService.getOutcomeByCourseAndStudent(courseName, register);
+            examinationOutcomeService.deleteExaminationOutcome(outcome.getId());
             return new ModelAndView("examination/create/create-result", EXAMINATION, examination);
         } catch (IllegalArgumentException e) {
             return new ModelAndView(illegalArgumentExceptionUri + ILLEGAL_PARAMETERS, EXCEPTION_MESSAGE, e.getMessage());
@@ -254,7 +254,7 @@ public class ExaminationController {
             dto.setGrade(grade);
             dto.setWithHonors(withHonors);
             dto.setDate(date);
-            ExaminationDto examination = examinationServiceImpl.updateExamination(dto);
+            ExaminationDto examination = examinationService.updateExamination(dto);
             return new ModelAndView("examination/create/create-result", EXAMINATION, examination);
         } catch (IllegalArgumentException | IllegalStateException e) {
             return new ModelAndView(illegalArgumentExceptionUri + ILLEGAL_PARAMETERS, EXCEPTION_MESSAGE, e.getMessage());
@@ -280,7 +280,7 @@ public class ExaminationController {
     ) {
 
         try {
-            examinationServiceImpl.deleteExamination(
+            examinationService.deleteExamination(
                 register.toLowerCase(),
                 courseName.toLowerCase(),
                 degreeCourseName.toUpperCase()

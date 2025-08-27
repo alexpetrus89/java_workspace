@@ -15,6 +15,7 @@ import com.alex.universitymanagementsystem.dto.Builder;
 import jakarta.persistence.Access;
 import jakarta.persistence.AccessType;
 import jakarta.persistence.AttributeOverride;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
@@ -91,7 +92,7 @@ public class Student extends User {
         return degreeCourse;
     }
 
-    @OneToOne(mappedBy = "student")
+    @OneToOne(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
     public StudyPlan getStudyPlan() {
         return studyPlan;
     }

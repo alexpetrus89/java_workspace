@@ -158,7 +158,7 @@ public class GlobalControllerExceptionHandler {
     public ModelAndView handleDataAccessServiceException(DataAccessServiceException e) {
         logger.error("Data access service error", e);
         String message = "Data access service error: " + e.getMessage();
-        return new ModelAndView("exception/data/data-access-error", MESSAGE, message);
+        return new ModelAndView("exception/data/data-access-exception", MESSAGE, message);
     }
 
 
@@ -174,7 +174,7 @@ public class GlobalControllerExceptionHandler {
     public ModelAndView handleNoResourceFoundException(Exception e) {
         logger.error("Resource not found", e);
         String message = "Resource not found: " + e.getMessage();
-        return new ModelAndView("exception/not_found/error-not-found", MESSAGE, message);
+        return new ModelAndView("exception/not_found/exception-not-found", MESSAGE, message);
     }
 
 
@@ -290,7 +290,7 @@ public class GlobalControllerExceptionHandler {
     public ModelAndView handleJsonProcessingException(JsonProcessingException e) {
         logger.error("JSON processing error", e);
         String message = "An error occurred while processing JSON: " + e.getMessage();
-        return new ModelAndView("exception/data/json-processing-error", MESSAGE, message);
+        return new ModelAndView("exception/data/json-processing-exception", MESSAGE, message);
     }
 
 
@@ -379,7 +379,7 @@ public class GlobalControllerExceptionHandler {
     public ModelAndView handleTransientObjectException(TransientObjectException e) {
         logger.error("Transient object error", e);
 
-        ModelAndView mav = new ModelAndView("exception/transient-object-error");
+        ModelAndView mav = new ModelAndView("exception/transient-object-exception");
         mav.addObject("errorType", e.getClass().getName());           // nome completo della classe eccezione
         mav.addObject(MESSAGE, e.getMessage());                     // messaggio base
         mav.addObject("stackTrace", e.getStackTrace());               // stacktrace come array

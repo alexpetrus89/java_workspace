@@ -13,6 +13,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.alex.universitymanagementsystem.domain.Address;
+import com.alex.universitymanagementsystem.domain.ExaminationAppeal;
+import com.alex.universitymanagementsystem.domain.Student;
+import com.alex.universitymanagementsystem.domain.StudyPlan;
 import com.alex.universitymanagementsystem.domain.User;
 import com.alex.universitymanagementsystem.domain.immutable.FiscalCode;
 import com.alex.universitymanagementsystem.domain.immutable.UserId;
@@ -24,6 +27,8 @@ import com.alex.universitymanagementsystem.exception.DataAccessServiceException;
 import com.alex.universitymanagementsystem.exception.ObjectAlreadyExistsException;
 import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
 import com.alex.universitymanagementsystem.mapper.UserMapper;
+import com.alex.universitymanagementsystem.repository.ExaminationAppealRepository;
+import com.alex.universitymanagementsystem.repository.StudyPlanRepository;
 import com.alex.universitymanagementsystem.repository.UserRepository;
 import com.alex.universitymanagementsystem.service.UserService;
 
@@ -35,10 +40,14 @@ public class UserServiceImpl implements UserService{
 
     // instance variable
     private final UserRepository userRepository;
+    private final StudyPlanRepository studyPlanRepository;
+    private final ExaminationAppealRepository examinationAppealRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserRepository userRepository, StudyPlanRepository studyPlanRepository, ExaminationAppealRepository examinationAppealRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.studyPlanRepository = studyPlanRepository;
+        this.examinationAppealRepository = examinationAppealRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -195,11 +204,34 @@ public class UserServiceImpl implements UserService{
                 .findById(new UserId(UUID.fromString(userId)))
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
+            if(userToDelete instanceof Student student)
+                deleteStudentRelationship(student);
+
             // delete the user
             userRepository.delete(userToDelete);
             return UserMapper.toDto(userToDelete);
         } catch (PersistenceException e) {
             throw new DataAccessServiceException("Error accessing database for user " + userId + ": " + e.getMessage(), e);
+        }
+    }
+
+
+
+    // private methods
+    public void deleteStudentRelationship(Student student) {
+        // 1. Remove the student's StudyPlan
+        StudyPlan studyPlan = student.getStudyPlan();
+        if (studyPlan != null) {
+            studyPlanRepository.delete(studyPlan);
+        }
+
+        // 2. Remove the student's Register from all ExaminationAppeals
+        List<ExaminationAppeal> appeals = examinationAppealRepository.findAll();
+        for (ExaminationAppeal appeal : appeals) {
+            if (appeal.getRegisters().contains(student.getRegister())) {
+                appeal.getRegisters().remove(student.getRegister());
+                examinationAppealRepository.save(appeal); // update the appeal
+            }
         }
     }
 

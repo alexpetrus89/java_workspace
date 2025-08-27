@@ -59,14 +59,14 @@ public interface UserService extends UserDetailsService {
 	/**
      * Deletes a user from the repository.
      * @param userId user id of the user to be deleted
-     * @return boolean
+     * @return the deleted user dto
      * @throws AccessDeniedException if the authenticated user is not an admin
      * @throws UsernameNotFoundException if the user to be deleted is not found
      * @throws DataAccessServiceException if there is an error accessing the database
      */
     @Transactional(rollbackOn = {AccessDeniedException.class, UsernameNotFoundException.class})
     @Retryable(retryFor = PersistenceException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
-    boolean deleteUser(String userId)
+    UserDto deleteUser(String userId)
         throws AccessDeniedException, UsernameNotFoundException, DataAccessServiceException;
 
 }

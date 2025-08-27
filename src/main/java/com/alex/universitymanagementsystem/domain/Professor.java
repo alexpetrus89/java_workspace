@@ -22,33 +22,25 @@ import jakarta.persistence.Table;
 @Access(AccessType.PROPERTY)
 public class Professor extends User {
 
-    //instance variables
+    // instance variables
     private UniqueCode uniqueCode;
-    private static AtomicInteger professorCounter = new AtomicInteger(100000);
+    private static final AtomicInteger professorCounter = new AtomicInteger(100000);
 
-    //default constructor
-    public Professor() {}
+    // constructors
+    protected Professor() { super(); }
 
-    // constructor
     public Professor(Builder builder, PasswordEncoder encoder) {
         super(builder, encoder);
         this.uniqueCode = new UniqueCode(generateUniqueCode());
     }
 
 
-    // constructor
     public Professor(Builder builder, PasswordEncoder passwordEncoder, UniqueCode uniqueCode) {
         super(builder, passwordEncoder);
         this.uniqueCode = uniqueCode;
     }
 
-    public Professor(
-        String username,
-        String firstName,
-        String lastName,
-        String fiscalCode,
-        String uniqueCode
-    ) {
+    public Professor(String username, String firstName, String lastName, String fiscalCode, String uniqueCode) {
         this.username = username;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -60,8 +52,8 @@ public class Professor extends User {
     // getters
     @Embedded
     @AttributeOverride(
-        name = "unique_code",
-        column = @Column(name = "unique_code")
+        name = "value",
+        column = @Column(name = "unique_code", nullable = false, unique = true)
     )
     public UniqueCode getUniqueCode() {
         return uniqueCode;
@@ -72,15 +64,21 @@ public class Professor extends User {
         this.uniqueCode = uniqueCode;
     }
 
+    // --- Object methods ---
     @Override
     public String toString() {
-        return "Professor [id=" + id + ", uniqueCode=" + uniqueCode + ", name=" + firstName + " " + lastName + ", email=" + username + "]";
+        return "Professor [id=" + id +
+        ", uniqueCode=" + uniqueCode +
+        ", name=" + firstName + " " + lastName +
+        ", fiscal code=" + fiscalCode +
+        ", email=" + username +
+        "]";
     }
 
     // equals and hashCode
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(uniqueCode);
     }
 
     @Override
@@ -88,10 +86,10 @@ public class Professor extends User {
         if (this == o) return true;
         if (!(o instanceof Professor)) return false;
         Professor other = (Professor) o;
-        return Objects.equals(id, other.id);
+        return Objects.equals(uniqueCode, other.uniqueCode);
     }
 
-    // private methods
+    // --- Private helper ---
     private String generateUniqueCode() {
         int code = professorCounter.getAndIncrement();
         return String.format("%08x", code);

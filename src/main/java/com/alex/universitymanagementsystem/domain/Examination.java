@@ -14,12 +14,14 @@ import jakarta.persistence.AccessType;
 import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.ForeignKey;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "EXAMINATIONS")
@@ -30,14 +32,17 @@ public class Examination implements Serializable {
     private ExaminationId id;
     private Course course;
     private String courseNameSnapshot;
+
+    // student's snapshot
     private String register; // es: matricola
     private String studentFirstName;
     private String studentLastName;
+
     private int grade;
     private boolean withHonors;
     private LocalDate date;
 
-    // default constructor
+    // constructors
     public Examination() {}
 
     public Examination(Course course, Student student, int grade, boolean withHonors, LocalDate date) {
@@ -47,93 +52,68 @@ public class Examination implements Serializable {
         this.register = student.getRegister().toString();
         this.studentFirstName = student.getFirstName();
         this.studentLastName = student.getLastName();
-        this.grade = grade;
-        this.withHonors = withHonors;
+        initializeGrade(grade);
+        initializeWithHonors(withHonors);
         this.date = date;
+    }
+
+    // Factory method for easier creation
+    public static Examination of(Course course, Student student, int grade, boolean withHonors, LocalDate date) {
+        return new Examination(course, student, grade, withHonors, date);
     }
 
 
     // getters
     @EmbeddedId
-    @Column(name = "examination_id")
-    public ExaminationId getId() {
-        return id;
-    }
+    public ExaminationId getId() { return id; }
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(
         name = "course_id",
         foreignKey = @ForeignKey(name = "fk_examination_course")
     )
     @OnDelete(action = OnDeleteAction.NO_ACTION)
-    public Course getCourse() {
-        return course;
-    }
+    public Course getCourse() { return course; }
 
     @Column(name = "course_name_snapshot", nullable = false, length = 255)
-    public String getCourseNameSnapshot() {
-        return courseNameSnapshot;
-    }
+    public String getCourseNameSnapshot() { return courseNameSnapshot; }
 
     // --- snapshot dello studente ---
     @Column(name = "register", nullable = false, length = 20)
-    public String getRegister() { // es: matricola
-        return register;
-    }
+    public String getRegister() { return register; }
 
-    @Column(name = "student_first_name", nullable = false)
-    public String getStudentFirstName() {
-        return studentFirstName;
-    }
+    @Column(name = "student_first_name", nullable = false, length = 50)
+    public String getStudentFirstName() { return studentFirstName; }
 
-    @Column(name = "student_last_name", nullable = false)
-    public String getStudentLastName() {
-        return studentLastName;
-    }
+    @Column(name = "student_last_name", nullable = false, length = 50)
+    public String getStudentLastName() { return studentLastName; }
 
+    @NotNull
     @Min(18)
     @Max(30)
     @Column(name = "grade")
-    public int getGrade() {
-        return grade;
-    }
+    public Integer getGrade() { return grade; }
 
     @Column(name = "with_honors")
-    public boolean isWithHonors() {
-        return withHonors;
-    }
+    public boolean isWithHonors() { return withHonors; }
 
-    @Column(name = "examination_dob")
-    public LocalDate getDate() {
-        return date;
-    }
+    @NotNull
+    @Column(name = "examination_date")
+    public LocalDate getDate() { return date; }
 
     // setters
-    public void setId(ExaminationId id) {
-        this.id = id;
-    }
-
-    public void setCourseNameSnapshot(String courseNameSnapshot) {
-        this.courseNameSnapshot = courseNameSnapshot;
-    }
+    public void setId(ExaminationId id) { this.id = id; }
 
     public void setCourse(Course course) {
         this.course = course;
         if (course != null)
-            this.courseNameSnapshot = course.getName(); // aggiorno anche lo snapshot
+            setCourseNameSnapshot(course.getName()); // aggiorno anche lo snapshot
     }
 
-    public void setRegister(String register) {
-        this.register = register;
-    }
-
-    public void setStudentFirstName(String studentFirstName) {
-        this.studentFirstName = studentFirstName;
-    }
-
-    public void setStudentLastName(String studentLastName) {
-        this.studentLastName = studentLastName;
-    }
+    public void setCourseNameSnapshot(String name) { this.courseNameSnapshot = name; }
+    public void setRegister(String register) { this.register = register; }
+    public void setStudentFirstName(String studentFirstName) { this.studentFirstName = studentFirstName; }
+    public void setStudentLastName(String studentLastName) { this.studentLastName = studentLastName; }
 
     public void setGrade(int grade) {
         if (grade < 18 || grade > 30)
@@ -141,22 +121,17 @@ public class Examination implements Serializable {
         this.grade = grade;
     }
 
-    public void setWithHonors(boolean withHonors) {
-        if(getGrade() != 30)
-            this.withHonors = false;
-        this.withHonors = withHonors;
-    }
+    public void setWithHonors(boolean withHonors) { this.withHonors = (grade == 30) && withHonors; }
+    public void setDate(LocalDate date) { this.date = date; }
 
-    public void setDate(LocalDate date) {
-        this.date = date;
-    }
-
-    public void setStudent(Student student) {
+    public void setStudentSnapshot(Student student) {
         this.register = student.getRegister().toString();
         this.studentFirstName = student.getFirstName();
         this.studentLastName = student.getLastName();
     }
 
+
+    // --- Object methods ---
     @Override
     public String toString() {
         return "Examination [id=" + id +
@@ -179,6 +154,16 @@ public class Examination implements Serializable {
         if (!(o instanceof Examination)) return false;
         Examination other = (Examination) o;
         return Objects.equals(id, other.id);
+    }
+
+
+    // initialization
+    private void initializeGrade(int grade) {
+        setGrade(grade);
+    }
+
+    private void initializeWithHonors(boolean withHonors) {
+        setWithHonors(withHonors);
     }
 
 

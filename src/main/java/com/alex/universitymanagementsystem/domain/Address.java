@@ -28,10 +28,9 @@ public class Address implements Serializable {
     private String state;
     private String zipCode;
 
-    // default constructor
+    // constructors
     public Address() {}
 
-    // constructor
     public Address(String street, String city, String state, String zipCode) {
         this.street = street;
         this.city = city;

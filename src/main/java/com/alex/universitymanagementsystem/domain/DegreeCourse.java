@@ -5,20 +5,16 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Objects;
 
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
-
 import com.alex.universitymanagementsystem.domain.immutable.DegreeCourseId;
 import com.alex.universitymanagementsystem.enum_type.DegreeType;
 
 import jakarta.persistence.Access;
 import jakarta.persistence.AccessType;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
-import jakarta.persistence.ForeignKey;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
@@ -37,7 +33,7 @@ public class DegreeCourse implements Serializable {
 
 
     // constructors
-    public DegreeCourse() {}
+    protected DegreeCourse() {}
 
     public DegreeCourse(String name, DegreeType graduationClass, int duration) {
         this.id = DegreeCourseId.newId();
@@ -58,7 +54,6 @@ public class DegreeCourse implements Serializable {
 
     // getters
     @EmbeddedId
-    @Column(name = "degreeCourse_id")
     public DegreeCourseId getId() {
         return id;
     }
@@ -79,17 +74,22 @@ public class DegreeCourse implements Serializable {
     }
 
     // DegreeCourse is the owner of the relationship
-    @OneToMany(mappedBy = "degreeCourse", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "degreeCourse",
+        fetch = FetchType.EAGER, // carica i corsi immediatamente
+        cascade = CascadeType.ALL,
+        orphanRemoval = true
+    )
     public Collection<Course> getCourses() {
         return courses;
     }
 
-    @OneToMany // lato inverso
-    @JoinColumn(
-        name = "degree_course_id",
-        foreignKey = @ForeignKey(name = "fk_degreeCourse_student")
+    // reverse side
+    @OneToMany(
+        mappedBy = "degreeCourse",
+        fetch = FetchType.LAZY, // carica gli studenti con ritardo
+        cascade = CascadeType.ALL,
+        orphanRemoval = false
     )
-    @OnDelete(action = OnDeleteAction.SET_NULL)
     public Collection<Student> getStudents() {
         return students;
     }
@@ -121,12 +121,17 @@ public class DegreeCourse implements Serializable {
     }
 
 
-    // methods
+    // Bi-directional helpers
     public void addCourse(Course course) {
         if (courses.contains(course))
             return; // already added
         courses.add(course);
         course.setDegreeCourse(this);
+    }
+
+    public void removeCourse(Course course) {
+        courses.remove(course);
+        course.setDegreeCourse(null);
     }
 
     public void addStudent(Student student) {
@@ -136,10 +141,22 @@ public class DegreeCourse implements Serializable {
         student.setDegreeCourse(this);
     }
 
+    public void removeStudent(Student student) {
+        students.remove(student);
+        student.setDegreeCourse(null);
+    }
+
+    // --- Object methods ---
     @Override
     public String toString() {
-        return "DegreeCourse [id=" + id + ", name=" + name + ", graduationClass="
-            + graduationClass + ", duration=" + duration + "]";
+        return "DegreeCourse{" +
+            "id=" + id +
+            ", name='" + name + '\'' +
+            ", graduationClass=" + graduationClass +
+            ", duration=" + duration +
+            ", coursesCount=" + (courses != null ? courses.size() : 0) +
+            ", studentsCount=" + (students != null ? students.size() : 0) +
+            '}';
     }
 
     @Override
@@ -150,9 +167,8 @@ public class DegreeCourse implements Serializable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof DegreeCourse)) return false;
-        DegreeCourse other = (DegreeCourse) o;
-        return Objects.equals(id, other.id);
+        if (!(o instanceof DegreeCourse dc)) return false;
+        return Objects.equals(id, dc.id);
     }
 
 }

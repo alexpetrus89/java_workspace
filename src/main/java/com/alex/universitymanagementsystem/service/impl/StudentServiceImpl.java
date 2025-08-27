@@ -227,7 +227,7 @@ public class StudentServiceImpl implements StudentService {
 			updatableStudent.setLastName(form.getLastName());
 			updatableStudent.setDob(form.getDob());
 			updatableStudent.setFiscalCode(new FiscalCode(form.getFiscalCode()));
-			updatableStudent.setPhoneNumber(form.getPhone());
+			updatableStudent.setPhone(form.getPhone());
 			updatableStudent.setAddress(new Address(form.getStreet(), form.getCity(), form.getState(), form.getZip()));
 
 			// save

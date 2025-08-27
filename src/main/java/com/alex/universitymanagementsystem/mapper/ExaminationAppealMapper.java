@@ -30,7 +30,7 @@ public final class ExaminationAppealMapper {
 
     public static ExaminationAppeal toEntity(ExaminationAppealDto dto, Course course) {
         if (dto == null || course == null) return null;
-        ExaminationAppeal appeal = new ExaminationAppeal(course, dto.getDescription(), dto.getDate());
+        ExaminationAppeal appeal = ExaminationAppeal.of(course, dto.getDescription(), dto.getDate());
 
         // Set ID if present (for update scenarios)
         if (dto.getId() != null)

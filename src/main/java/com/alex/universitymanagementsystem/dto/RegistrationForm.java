@@ -73,132 +73,56 @@ public class RegistrationForm implements Serializable, PasswordCarrier {
     // constructors
     public RegistrationForm() {}
 
-    public RegistrationForm(Builder formBuilder) {
-        this.username = formBuilder.getUsername();
-        this.password = formBuilder.getPassword();
-        this.confirm = formBuilder.getConfirm();
-        this.firstName = formBuilder.getFirstName();
-        this.lastName = formBuilder.getLastName();
-        this.dob = formBuilder.getDob();
-        this.fiscalCode = formBuilder.getFiscalCode();
-        this.street = formBuilder.getStreet();
-        this.city = formBuilder.getCity();
-        this.state = formBuilder.getState();
-        this.zip = formBuilder.getZip();
-        this.phone = formBuilder.getPhone();
-        this.role = formBuilder.getRole();
+    public RegistrationForm(Builder builder) {
+        this.username = builder.getUsername();
+        this.password = builder.getPassword();
+        this.confirm = builder.getConfirm();
+        this.firstName = builder.getFirstName();
+        this.lastName = builder.getLastName();
+        this.dob = builder.getDob();
+        this.fiscalCode = builder.getFiscalCode();
+        this.street = builder.getStreet();
+        this.city = builder.getCity();
+        this.state = builder.getState();
+        this.zip = builder.getZip();
+        this.phone = builder.getPhone();
+        this.role = builder.getRole();
     }
 
     // getters
-    public String getUsername() {
-        return username;
-    }
-
+    public String getUsername() { return username; }
     @Override
-    public String getPassword() {
-        return password;
-    }
-
+    public String getPassword() { return password; }
     @Override
-    public String getConfirm() {
-        return confirm;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public LocalDate getDob() {
-        return dob;
-    }
-
-    public String getFiscalCode() {
-        return fiscalCode;
-    }
-
-    public String getStreet() {
-        return street;
-    }
-
-    public String getCity() {
-        return city;
-    }
-
-    public String getState() {
-        return state;
-    }
-
-    public String getZip() {
-        return zip;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public RoleType getRole() {
-        return role;
-    }
+    public String getConfirm() { return confirm; }
+    public String getFirstName() { return firstName; }
+    public String getLastName() { return lastName; }
+    public LocalDate getDob() { return dob; }
+    public String getFiscalCode() { return fiscalCode; }
+    public String getStreet() { return street; }
+    public String getCity() { return city; }
+    public String getState() { return state; }
+    public String getZip() { return zip; }
+    public String getPhone() { return phone; }
+    public RoleType getRole() { return role; }
 
 
     // setters
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
+    public void setUsername(String username) { this.username = username; }
     @Override
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
+    public void setPassword(String password) { this.password = password; }
     @Override
-    public void setConfirm(String confirm) {
-        this.confirm = confirm;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public void setDob(LocalDate dob) {
-        this.dob = dob;
-    }
-
-    public void setFiscalCode(String fiscalCode) {
-        this.fiscalCode = fiscalCode;
-    }
-
-    public void setStreet(String street) {
-        this.street = street;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public void setState(String state) {
-        this.state = state;
-    }
-
-    public void setZip(String zip) {
-        this.zip = zip;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public void setRole(RoleType role) {
-        this.role = role;
-    }
+    public void setConfirm(String confirm) { this.confirm = confirm; }
+    public void setFirstName(String firstName) { this.firstName = firstName; }
+    public void setLastName(String lastName) { this.lastName = lastName; }
+    public void setDob(LocalDate dob) { this.dob = dob; }
+    public void setFiscalCode(String fiscalCode) { this.fiscalCode = fiscalCode.toUpperCase(); }
+    public void setStreet(String street) { this.street = street; }
+    public void setCity(String city) { this.city = city; }
+    public void setState(String state) { this.state = state; }
+    public void setZip(String zip) { this.zip = zip; }
+    public void setPhone(String phone) { this.phone = (phone == null || phone.isEmpty()) ? "N/A" : phone; }
+    public void setRole(RoleType role) { this.role = role; }
 
 
     // methods

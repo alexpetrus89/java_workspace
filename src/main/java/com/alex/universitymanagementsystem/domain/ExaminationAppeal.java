@@ -15,9 +15,11 @@ import com.alex.universitymanagementsystem.domain.immutable.UniqueCode;
 
 import jakarta.persistence.Access;
 import jakarta.persistence.AccessType;
+import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -38,22 +40,23 @@ public class ExaminationAppeal implements Serializable {
     private LocalDate date;
     private Set<Register> registers = new HashSet<>();
 
-    // constructor
-    public ExaminationAppeal() {}
+    // constructors
+    protected ExaminationAppeal() {}
 
-    public ExaminationAppeal(Course course, String description, LocalDate date) {
+    private ExaminationAppeal(Course course, String description, LocalDate date, Set<Register> registers) {
         this.course = course;
         this.professor = course.getProfessor().getUniqueCode();
         this.description = description;
         this.date = date;
+        initializeRegisters(registers);
     }
 
-    public ExaminationAppeal(Course course, String description, LocalDate date, Set<Register> registers) {
-        this.course = course;
-        this.professor = course.getProfessor().getUniqueCode();
-        this.description = description;
-        this.date = date;
-        this.registers = registers;
+    public static ExaminationAppeal of(Course course, String description, LocalDate date) {
+        return new ExaminationAppeal(course, description, date, null);
+    }
+
+    public static ExaminationAppeal of(Course course, String description, LocalDate date, Set<Register> registers) {
+        return new ExaminationAppeal(course, description, date, registers);
     }
 
     // getters
@@ -62,22 +65,23 @@ public class ExaminationAppeal implements Serializable {
     @Column(name = "examination_appeal_id")
     public Long getId() { return id; }
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "course_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
     public Course getCourse() { return course; }
 
-    @Column(name = "professor_unique_code")
+    @Column(name = "professor_unique_code", nullable = false)
     public UniqueCode getProfessor() { return professor; }
 
-    @Column(name = "description")
+    @Column(name = "description", length = 255)
     public String getDescription() { return description; }
 
-    @Column(name = "date")
+    @Column(name = "date", nullable = false )
     public LocalDate getDate() { return date; }
 
-    @Column(name = "registers")
     @ElementCollection(targetClass = Register.class)
+    @CollectionTable(name = "EXAMINATION_APPEAL_REGISTERS", joinColumns = @JoinColumn(name = "examination_appeal_id"))
+    @Column(name = "registers")
     public Set<Register> getRegisters() { return registers; }
 
     // setters
@@ -86,11 +90,34 @@ public class ExaminationAppeal implements Serializable {
     public void setProfessor(UniqueCode professor) { this.professor = professor; }
     public void setDescription(String description) { this.description = description; }
     public void setDate(LocalDate date) { this.date = date; }
-    public void setRegisters(Set<Register> registers) { this.registers = registers; }
+    public void setRegisters(Set<Register> registers) {
+        this.registers = (registers != null) ? new HashSet<>(registers) : new HashSet<>();
+    }
 
+    // Bi-directional helpers
+    public boolean addRegister(Register register) {
+        if (register == null) throw new IllegalArgumentException("Register cannot be null");
+        return this.registers.add(register);
+    }
+
+    public boolean removeRegister(Register register) {
+        if (register == null) throw new IllegalArgumentException("Register cannot be null");
+        return this.registers.remove(register);
+    }
+
+    public boolean deleteIfExpiredAndNoRegisters() {
+        return LocalDate.now().isAfter(getDate()) && getRegisters().isEmpty();
+    }
+
+
+    // --- Object methods ---
     @Override
     public String toString() {
-        return "ExaminationAppeal [course=" + course.getName() + ", professor=" + professor.toString() + ", description=" + description + ", date=" + date.format(DateTimeFormatter.ofPattern("dd-MM-yyyy")) + "]";
+        return "ExaminationAppeal [course=" + course.getName() +
+            ", professor=" + professor.toString() +
+            ", description=" + description +
+            ", date=" + date.format(DateTimeFormatter.ofPattern("dd-MM-yyyy")) +
+            "]";
     }
 
     @Override
@@ -101,32 +128,14 @@ public class ExaminationAppeal implements Serializable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof ExaminationAppeal)) return false;
-        ExaminationAppeal other = (ExaminationAppeal) o;
-        return Objects.equals(id, other.id);
-    }
-
-    // other methods
-    public boolean addRegister(Register register) {
-        // check if register is null
-        if (register == null)
-            throw new IllegalArgumentException("Register cannot be null");
-
-        return this.registers.add(register);
-    }
-
-    public boolean removeRegister(Register register) {
-        if (register == null)
-            throw new IllegalArgumentException("Register cannot be null");
-
-        return this.registers.remove(register);
-    }
-
-    public boolean deleteIfExpiredAndNoRegisters() {
-        LocalDate today = LocalDate.now();
-        return today.isAfter(getDate()) && getRegisters().isEmpty();
+        if (!(o instanceof ExaminationAppeal ea)) return false;
+        return Objects.equals(id, ea.id);
     }
 
 
+    // initialization
+    private void initializeRegisters(Set<Register> registers) {
+        setRegisters(registers);
+    }
 
 }

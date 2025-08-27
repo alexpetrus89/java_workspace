@@ -1,0 +1,92 @@
+body {
+    font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background: #f9f9f9;
+    color: #333;
+}
+
+header {
+    background: #b71c1c;
+    color: #fff;
+    padding: 1rem 2rem;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 1.6rem;
+}
+
+main {
+    padding: 2rem;
+}
+
+.error-box {
+    background: #fff;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    margin-bottom: 2rem;
+}
+
+.error-box h2 {
+    margin-top: 0;
+    color: #d32f2f;
+}
+
+.field {
+    margin: 0.5rem 0;
+}
+
+.label {
+    font-weight: bold;
+    color: #555;
+}
+
+.value {
+    margin-left: 0.5rem;
+    color: #111;
+}
+details {
+    margin-top: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 0.5rem 1rem;
+    background: #f5f5f5;
+}
+
+details summary {
+    cursor: pointer;
+    font-weight: bold;
+    color: #333;
+}
+
+pre {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    font-size: 0.9rem;
+    color: #444;
+    margin: 0.5rem 0 0;
+}
+
+footer {
+    text-align: center;
+    padding: 1rem;
+    font-size: 0.85rem;
+    color: #777;
+}
+
+.back-link {
+    display: inline-block;
+    margin-top: 1rem;
+    background: #d32f2f;
+    color: #fff;
+    text-decoration: none;
+    padding: 0.6rem 1rem;
+    border-radius: 6px;
+    transition: background 0.2s ease-in-out;
+}
+
+.back-link:hover {
+    background: #9a0007;
+}

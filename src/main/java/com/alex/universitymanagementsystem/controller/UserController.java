@@ -214,13 +214,13 @@ public class UserController {
             return new ModelAndView(
                 "user_admin/delete/delete-result",
                 "result",
-                userService.deleteUser(userId)?
+                userService.deleteUser(userId)!= null?
                     "User delete successfully" : "User not deleted"
             );
         } catch (UsernameNotFoundException e) {
-            return new ModelAndView(notFoundExceptionUri + "username-not-found", EXCEPTION_MESSAGE, e.getMessage());
+            return new ModelAndView(notFoundExceptionUri + "/username-not-found", EXCEPTION_MESSAGE, e.getMessage());
         } catch (AccessDeniedException e) {
-            return new ModelAndView(accessDeniedExceptionUri + "access-denied", EXCEPTION_MESSAGE, e.getMessage());
+            return new ModelAndView(accessDeniedExceptionUri + "/access-denied", EXCEPTION_MESSAGE, e.getMessage());
         } catch (DataAccessServiceException e) {
             return new ModelAndView(dataAccessExceptionUri, EXCEPTION_MESSAGE, e.getMessage());
         }

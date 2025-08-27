@@ -322,7 +322,7 @@ public class ExaminationServiceImpl implements ExaminationService {
                 throw new ObjectNotFoundException("Course is not part of the student's study plan.");
 
             // --- Update and save ---
-            examination.setStudent(newStudent);
+            examination.setStudentSnapshot(newStudent);
             examination.setCourse(newCourse);
             examination.setGrade(parsedGrade);
             examination.setWithHonors(request.isWithHonors());

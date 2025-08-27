@@ -13,10 +13,15 @@ import com.alex.universitymanagementsystem.enum_type.MiurAcronymType;
 
 import jakarta.persistence.Access;
 import jakarta.persistence.AccessType;
+import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.ForeignKey;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
@@ -35,8 +40,8 @@ public class Course implements Serializable {
     private Professor professor;
     private DegreeCourse degreeCourse;
 
-    // default constructor
-    public Course() {}
+    // constructors
+    protected Course() {}
 
     public Course(String name, CourseType type, Integer cfu) {
         this.id = CourseId.newId();
@@ -67,41 +72,47 @@ public class Course implements Serializable {
 
     // getters
     @EmbeddedId
-    @Column(name = "course_id")
     public CourseId getId() {
         return id;
     }
 
     @Embedded
+    @AttributeOverride(
+        name = "value",
+        column = @Column(name = "miur_course_code", unique = true, nullable = false)
+    )
     @Column(name = "miur_course_code", unique = true, nullable = false)
     public MiurCourseCode getCode() {
         return code;
     }
 
-    @Column(name = "name")
+    @Column(name = "name", nullable=false)
     public String getName() {
         return name;
     }
 
-    @Column(name = "type")
+    @Enumerated(EnumType.STRING)
+    @Column(name = "type", nullable = false)
     public CourseType getType() {
         return type;
     }
 
-    @Column(name = "cfu")
+    @Column(name = "cfu", nullable = false)
     public Integer getCfu() {
         return cfu;
     }
 
-    @ManyToOne // owning side
+    // owning side
+    @ManyToOne(fetch = FetchType.EAGER)
     @OnDelete(action = OnDeleteAction.SET_NULL)
+    @JoinColumn(name = "professor_id", foreignKey = @ForeignKey(name = "fk_course_professor"))
     public Professor getProfessor() {
         return professor;
     }
 
-    @ManyToOne // owning side
-    @JoinColumn(name = "degree_course_id")
-    @OnDelete(action = OnDeleteAction.CASCADE)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @OnDelete(action = OnDeleteAction.SET_NULL)
+    @JoinColumn(name = "degree_course_id", foreignKey = @ForeignKey(name = "fk_course_degree_course"))
     public DegreeCourse getDegreeCourse() {
         return degreeCourse;
     }
@@ -136,30 +147,30 @@ public class Course implements Serializable {
         this.degreeCourse = degreeCourse;
     }
 
+    // --- Object methods ---
     @Override
     public String toString() {
         return "Course{" +
             "id=" + id +
             ", code=" + code +
             ", name='" + name + '\'' +
-            ", type='" + type.name() + '\'' +
+            ", type=" + type +
             ", cfu=" + cfu +
-            ", professor=" + professor +
-            ", degreeCourse=" + degreeCourse +
+            ", professorId=" + (professor != null ? professor.getId() : null) +
+            ", degreeCourseId=" + (degreeCourse != null ? degreeCourse.getId() : null) +
             '}';
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(code);
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Course)) return false;
-        Course other = (Course) o;
-        return Objects.equals(id, other.id);
+        if (!(o instanceof Course c)) return false;
+        return Objects.equals(code, c.code);
     }
 
 

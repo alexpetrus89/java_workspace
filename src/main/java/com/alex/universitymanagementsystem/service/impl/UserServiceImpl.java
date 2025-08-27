@@ -153,7 +153,7 @@ public class UserServiceImpl implements UserService{
             user.setLastName(form.getLastName());
             user.setDob(form.getDob());
             user.setFiscalCode(new FiscalCode(form.getFiscalCode()));
-            user.setPhoneNumber(form.getPhone());
+            user.setPhone(form.getPhone());
             user.setAddress(new Address(form.getStreet(), form.getCity(), form.getState(), form.getZip()));
             if(form.getRole() != null)
                 user.setRole(form.getRole());
@@ -169,7 +169,7 @@ public class UserServiceImpl implements UserService{
     /**
      * Deletes a user from the repository.
      * @param userId user id of the user to be deleted
-     * @return boolean
+     * @return the deleted user dto
      * @throws AccessDeniedException if the authenticated user is not an admin
      * @throws UsernameNotFoundException if the user to be deleted is not found
      * @throws DataAccessServiceException if there are trouble accessing the database
@@ -177,7 +177,7 @@ public class UserServiceImpl implements UserService{
     @Override
     @Transactional(rollbackOn = {AccessDeniedException.class, UsernameNotFoundException.class})
     @Retryable(retryFor = PersistenceException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
-    public boolean deleteUser(String userId)
+    public UserDto deleteUser(String userId)
         throws AccessDeniedException, UsernameNotFoundException, DataAccessServiceException
     {
 
@@ -197,7 +197,7 @@ public class UserServiceImpl implements UserService{
 
             // delete the user
             userRepository.delete(userToDelete);
-            return true;
+            return UserMapper.toDto(userToDelete);
         } catch (PersistenceException e) {
             throw new DataAccessServiceException("Error accessing database for user " + userId + ": " + e.getMessage(), e);
         }

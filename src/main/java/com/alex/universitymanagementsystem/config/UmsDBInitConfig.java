@@ -2040,7 +2040,7 @@ public class UmsDBInitConfig implements Serializable {
         List<ExaminationAppeal> examinationAppeals = new ArrayList<>();
 
         examinationAppeals.add(
-            new ExaminationAppeal(
+            ExaminationAppeal.of(
                 analisiMat,
                 "modulo 1 + modulo 2",
                 LocalDate.of(2026, 6, 23)
@@ -2048,7 +2048,7 @@ public class UmsDBInitConfig implements Serializable {
         );
 
         examinationAppeals.add(
-            new ExaminationAppeal(
+            ExaminationAppeal.of(
                 geometria,
                 "matrici",
                 LocalDate.of(2025, 6, 23)
@@ -2056,7 +2056,7 @@ public class UmsDBInitConfig implements Serializable {
         );
 
         examinationAppeals.add(
-            new ExaminationAppeal(
+            ExaminationAppeal.of(
                 fisicaGen,
                 "meccanica, termodinamica, elettromagnetismo",
                 LocalDate.of(2025, 4, 23)
@@ -2064,7 +2064,7 @@ public class UmsDBInitConfig implements Serializable {
         );
 
         examinationAppeals.add(
-            new ExaminationAppeal(
+            ExaminationAppeal.of(
                 scienzaDelleCostr,
                 "tensori, travi, sollecitazioni",
                 LocalDate.of(2025, 7, 26)
@@ -2072,7 +2072,7 @@ public class UmsDBInitConfig implements Serializable {
         );
 
         examinationAppeals.add(
-            new ExaminationAppeal(
+            ExaminationAppeal.of(
                 chimicaGen,
                 "chimica inorganica",
                 LocalDate.of(2025, 5, 16)
@@ -2080,7 +2080,7 @@ public class UmsDBInitConfig implements Serializable {
         );
 
         examinationAppeals.add(
-            new ExaminationAppeal(
+            ExaminationAppeal.of(
                 calcoloNum,
                 "fondamenti del calcolo numerico",
                 LocalDate.of(2025, 5, 18)
@@ -2088,7 +2088,7 @@ public class UmsDBInitConfig implements Serializable {
         );
 
         examinationAppeals.add(
-            new ExaminationAppeal(
+            ExaminationAppeal.of(
                 economia,
                 "microeconomia + macroeconomia",
                 LocalDate.of(2025, 11, 18)
@@ -2096,7 +2096,7 @@ public class UmsDBInitConfig implements Serializable {
         );
 
         examinationAppeals.add(
-            new ExaminationAppeal(
+            ExaminationAppeal.of(
                 sicurezza,
                 "sicurezza degli impianti industriali",
                 LocalDate.of(2025, 05, 03)
@@ -2104,7 +2104,7 @@ public class UmsDBInitConfig implements Serializable {
         );
 
         examinationAppeals.add(
-            new ExaminationAppeal(
+            ExaminationAppeal.of(
                 materialiInnovativi,
                 "materiali innovativi per l'ingegneria elettrica",
                 LocalDate.of(2025, 8, 18)
@@ -2112,7 +2112,7 @@ public class UmsDBInitConfig implements Serializable {
         );
 
         examinationAppeals.add(
-            new ExaminationAppeal(
+            ExaminationAppeal.of(
                 informatica,
                 "fondamenti di informatica",
                 LocalDate.of(2025, 7, 15)
@@ -2129,27 +2129,27 @@ public class UmsDBInitConfig implements Serializable {
             .orElseThrow(() -> new NoSuchElementException(STUDENT_NOT_FOUND_ERROR));
 
         // add students
-        ExaminationAppeal gpAppeal = new ExaminationAppeal(gp, "crm, pert", LocalDate.of(2025, 04, 30));
+        ExaminationAppeal gpAppeal = ExaminationAppeal.of(gp, "crm, pert", LocalDate.of(2025, 04, 30));
         gpAppeal.addRegister(nino.getRegister());
         gpAppeal.addRegister(raffo.getRegister());
         examinationAppeals.add(gpAppeal);
 
-        ExaminationAppeal infAppeal = new ExaminationAppeal(informatica, "programmazione", LocalDate.of(2025, 10, 19));
+        ExaminationAppeal infAppeal = ExaminationAppeal.of(informatica, "programmazione", LocalDate.of(2025, 10, 19));
         infAppeal.addRegister(nino.getRegister());
         infAppeal.addRegister(raffo.getRegister());
         examinationAppeals.add(infAppeal);
 
-        ExaminationAppeal sicurezzaAppeal = new ExaminationAppeal(sicurezza, "sicurezza degli impianti industriali", LocalDate.of(2025, 05, 07));
+        ExaminationAppeal sicurezzaAppeal = ExaminationAppeal.of(sicurezza, "sicurezza degli impianti industriali", LocalDate.of(2025, 05, 07));
         sicurezzaAppeal.addRegister(nino.getRegister());
         sicurezzaAppeal.addRegister(raffo.getRegister());
         examinationAppeals.add(sicurezzaAppeal);
 
-        ExaminationAppeal materialiInnovativiAppeal = new ExaminationAppeal(materialiInnovativi, "materiali innovativi per l'ingegneria elettrica", LocalDate.of(2025, 8, 18));
+        ExaminationAppeal materialiInnovativiAppeal = ExaminationAppeal.of(materialiInnovativi, "materiali innovativi per l'ingegneria elettrica", LocalDate.of(2025, 8, 18));
         materialiInnovativiAppeal.addRegister(nino.getRegister());
         materialiInnovativiAppeal.addRegister(raffo.getRegister());
         examinationAppeals.add(materialiInnovativiAppeal);
 
-        ExaminationAppeal inf2Appeal = new ExaminationAppeal(informatica, "fondamenti di informatica", LocalDate.of(2025, 7, 15));
+        ExaminationAppeal inf2Appeal = ExaminationAppeal.of(informatica, "fondamenti di informatica", LocalDate.of(2025, 7, 15));
         inf2Appeal.addRegister(nino.getRegister());
         inf2Appeal.addRegister(raffo.getRegister());
         examinationAppeals.add(inf2Appeal);

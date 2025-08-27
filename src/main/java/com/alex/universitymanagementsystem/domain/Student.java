@@ -5,6 +5,8 @@ import java.time.Period;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.alex.universitymanagementsystem.domain.immutable.Register;
@@ -16,6 +18,9 @@ import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.ForeignKey;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrimaryKeyJoinColumn;
@@ -36,7 +41,7 @@ public class Student extends User {
     private static AtomicInteger registerCounter = new AtomicInteger(100000);
 
     // constructors
-    public Student() {}
+    public Student() { super(); } // public for mapper use
 
     public Student(Builder builder, PasswordEncoder passwordEncoder) {
         super(builder, passwordEncoder);
@@ -63,8 +68,8 @@ public class Student extends User {
     // getters
     @Embedded
     @AttributeOverride(
-        name = "register",
-        column = @Column(name = "register")
+        name = "value",
+        column = @Column(name = "register", nullable = false, unique = true)
     )
     public Register getRegister() {
         return register;
@@ -75,7 +80,13 @@ public class Student extends User {
         return age;
     }
 
-    @ManyToOne
+    // owning side
+    @ManyToOne(fetch = FetchType.EAGER, optional = true)
+    @JoinColumn(
+        name = "degree_course_id",
+        foreignKey = @ForeignKey(name = "fk_student_degreeCourse")
+    )
+    @OnDelete(action = OnDeleteAction.SET_NULL)
     public DegreeCourse getDegreeCourse() {
         return degreeCourse;
     }
@@ -100,24 +111,43 @@ public class Student extends User {
         this.studyPlan = studyPlan;
     }
 
-    // other methods
+    // --- Object methods ---
     @Override
     public String toString() {
-        return "Student [id= " + id + ", name= " + firstName + " " + lastName +
-            ", age= " + age + ", dob= " + dob + ", fiscal code= " + fiscalCode + ", register= " + register + ", email= " + username + "]";
+        return "Student [id= " + id +
+            ", name= " + firstName +
+            " " + lastName +
+            ", age= " + age +
+            ", dob= " + dob +
+            ", fiscal code= " + fiscalCode +
+            ", register= " + register +
+            ", email= " + username +
+            ", degreeCourseId=" + (degreeCourse != null ? degreeCourse.getId() : null) +
+            "]";
     }
 
+    /**
+     * Returns a hash code value for this object. The hash code is equal to
+     * the hash code of the identifier of the student.
+     * @return a hash code value for this object
+     */
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(register);
     }
 
+    /**
+     * Two students are considered equal if and only if they have the same identifier.
+     * The identifier is immutable and unique for each student.
+     * @param o the other object to compare with
+     * @return true if the two objects are equal, false otherwise
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Student)) return false;
         Student other = (Student) o;
-        return Objects.equals(id, other.id);
+        return Objects.equals(register, other.register);
     }
 
 

@@ -26,8 +26,8 @@ public class OutcomeNotification implements Serializable {
     private LocalDateTime expiresAt;
     private boolean read; // true se lo studente ha già accettato l’esito
 
-    // constructors
-    public OutcomeNotification() {}
+    // constructor
+    public OutcomeNotification() { /* no args constructor  */}
 
     // getter
     @Id

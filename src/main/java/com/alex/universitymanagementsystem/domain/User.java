@@ -21,53 +21,87 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "\"users\"", schema = "public")
+@Table(name = "USERS", schema = "public")
 @Inheritance(strategy = jakarta.persistence.InheritanceType.JOINED)
 public class User implements UserDetails {
 
     // instance variables
     @EmbeddedId
-    protected UserId id;
+    protected final UserId id;
+
     @Column(name = "username", nullable = false, unique = true, length = 50)
     protected String username;
+
     @Column(name = "password", nullable = false)
     protected String password;
+
     @Column(name = "first_name", nullable = false, unique = false, length = 50)
     protected String firstName;
+
     @Column(name = "last_name", nullable = false, unique = false, length = 50)
     protected String lastName;
+
     @Column(name = "dob", nullable = false)
     protected LocalDate dob;
+
     @Embedded
     @Column(name = "fiscal_code", nullable = false, unique = true, length = 16)
     protected FiscalCode fiscalCode;
+
     @Column(name = "phone", nullable = false, length = 15)
     protected String phone;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role", nullable = false)
     protected RoleType role;
-    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER, optional = false)
+
+    @OneToOne(
+        cascade = {CascadeType.PERSIST, CascadeType.MERGE},
+        fetch = FetchType.LAZY,
+        optional = false
+    )
     protected Address address;
 
-    // default constructor
-    public User() {}
+
+    // spring security field
+    @Column(name = "enabled", nullable = false)
+    private boolean enabled;
+
+    @Column(name = "account_locked", nullable = false)
+    private boolean accountLocked;
+
+    @Column(name = "credentials_expiration")
+    private LocalDate credentialsExpirationDate;
+
 
     // constructors
+    protected User() {
+        this.id = UserId.newId();
+    }
+
     public User(Builder builder, PasswordEncoder encoder) {
-        this.id = new UserId(UUID.randomUUID());
+        this.id = UserId.newId();
         this.username = builder.getUsername();
         this.password = encoder.encode(builder.getPassword());
         this.firstName = builder.getFirstName();
         this.lastName = builder.getLastName();
         this.dob = builder.getDob();
-        this.fiscalCode = new FiscalCode(builder.getFiscalCode().toUpperCase());
-        this.phone = (builder.getPhone() == null || builder.getPhone().isEmpty()) ? "N/A" : builder.getPhone();
+        this.fiscalCode = new FiscalCode(builder.getFiscalCode());
+        this.phone = builder.getPhone();
         this.role = builder.getRole();
         this.address = new Address(builder.getStreet(), builder.getCity(), builder.getState(), builder.getZip());
+        this.enabled = true;
+        this.accountLocked = false;
+        this.credentialsExpirationDate = LocalDate.of(2100, 1, 1);
+
     }
 
     public User(Builder builder) {
@@ -77,84 +111,40 @@ public class User implements UserDetails {
         this.lastName = builder.getLastName();
         this.dob = builder.getDob();
         this.fiscalCode = new FiscalCode(builder.getFiscalCode());
-        this.phone = (builder.getPhone() == null || builder.getPhone().isEmpty()) ? "N/A" : builder.getPhone();
+        this.phone = builder.getPhone();
         this.role = builder.getRole();
         this.address = new Address(builder.getStreet(), builder.getCity(), builder.getState(), builder.getZip());
+        this.enabled = true;
+        this.accountLocked = false;
+        this.credentialsExpirationDate = LocalDate.of(2100, 1, 1);
     }
 
 
     // getters
-    public UserId getId() {
-        return id;
-    }
+    public UserId getId() { return id; }
 
     @Override
-    public String getUsername() {
-        return username;
-    }
+    public String getUsername() { return username; }
 
     @Override
-    public String getPassword() {
-        return password;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public LocalDate getDob() {
-        return dob;
-    }
-
-    public FiscalCode getFiscalCode() {
-        return fiscalCode;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public RoleType getRole() {
-        return role;
-    }
-
-    public Address getAddress() {
-        return address;
-    }
+    public String getPassword() { return password; }
+    public String getFirstName() { return firstName; }
+    public String getLastName() { return lastName; }
+    public LocalDate getDob() { return dob; }
+    public FiscalCode getFiscalCode() { return fiscalCode; }
+    public String getPhone() { return phone; }
+    public RoleType getRole() { return role; }
+    public Address getAddress() { return address; }
 
 
     // setters
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public void setDob(LocalDate dob) {
-        this.dob = dob;
-    }
-
-    public void setFiscalCode(FiscalCode fiscalCode) {
-        this.fiscalCode = fiscalCode;
-    }
-
-    public void setPhoneNumber(String phone) {
-        this.phone = phone;
-    }
+    public void setUsername(String username) { this.username = username; }
+    public void setPassword(String password) { this.password = password; }
+    public void setFirstName(String firstName) { this.firstName = firstName; }
+    public void setLastName(String lastName) { this.lastName = lastName; }
+    public void setDob(LocalDate dob) { this.dob = dob; }
+    public void setFiscalCode(FiscalCode fiscalCode) { this.fiscalCode = fiscalCode; }
+    public void setPhone(String phone) { this.phone = phone; }
 
     public void setRole(RoleType role) {
         this.role = role;
@@ -164,52 +154,57 @@ public class User implements UserDetails {
         this.address = address;
     }
 
-    // toString
-    @Override
-    public String toString() {
-        return "User {" +
-            "id=" + id +
-            ", username='" + username + '\'' +
-            ", password='" + password + '\'' +
-            ", firstName='" + firstName + '\'' +
-            ", lastName='" + lastName + '\'' +
-            ", dob='" + dob + '\'' +
-            ", fiscalCode='" + fiscalCode.toString() + '\'' +
-            ", street='" + address.getStreet() + '\'' +
-            ", city='" + address.getCity() + '\'' +
-            ", state='" + address.getState() + '\'' +
-            ", zip='" + address.getZipCode() + '\'' +
-            ", phoneNumber='" + phone + '\'' + '}';
-    }
 
+    // --- UserDetails methods ---
 
+    // permission state
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
     }
 
     @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
+    public boolean isEnabled() { return enabled; }
 
     @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
+    public boolean isAccountNonLocked() { return !accountLocked; }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return true;
+        if (credentialsExpirationDate == null) return true; // mai scaduta
+        return LocalDate.now().isBefore(credentialsExpirationDate);
     }
 
     @Override
-    public boolean isEnabled() {
-        return true;
+    public boolean isAccountNonExpired() { return true; }
+
+
+    // change permission state
+    public void lockAccount() { this.accountLocked = true; }
+    public void unlockAccount() {  this.accountLocked = false; }
+    public void disableUser() { this.enabled = false; }
+    public void enableUser() { this.enabled = true; }
+    public void setPasswordExpirationDate(LocalDate date) { this.credentialsExpirationDate = date; }
+
+
+
+
+
+    // --- Object methods ---
+    @Override
+    public String toString() {
+        return "User [id=" + id +
+            ", username='" + username + '\'' +
+            ", firstName='" + firstName + '\'' +
+            ", lastName='" + lastName + '\'' +
+            ", dob='" + dob +
+            ", fiscalCode='" + fiscalCode.toString() + '\'' +
+            ", phoneNumber='" + phone + '\'' +
+            ", role=" + role +
+            "]";
     }
 
-
-    // equals and hashCode
+    // Equals & HashCode based on ID
     @Override
     public int hashCode() {
         return Objects.hash(id);

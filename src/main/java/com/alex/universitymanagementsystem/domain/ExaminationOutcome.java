@@ -6,6 +6,7 @@ import jakarta.persistence.Access;
 import jakarta.persistence.AccessType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -38,17 +39,20 @@ public class ExaminationOutcome implements Serializable {
     // constructors
     public ExaminationOutcome() {}
 
-    public ExaminationOutcome(ExaminationAppeal appeal, String register) {
-        this.appeal = appeal;
-        this.register = register;
-    }
-
-    public ExaminationOutcome(ExaminationAppeal appeal, String register, boolean present, int grade, boolean withHonors) {
+    private ExaminationOutcome(ExaminationAppeal appeal, String register, boolean present, int grade, boolean withHonors) {
         this.appeal = appeal;
         this.register = register;
         this.present = present;
-        this.grade = grade;
-        this.withHonors = withHonors;
+        initializeGrade(grade);
+        initializeWithHonors(withHonors);
+    }
+
+    public static ExaminationOutcome of(ExaminationAppeal appeal, String register) {
+        return new ExaminationOutcome(appeal, register, false, 0, false);
+    }
+
+    public static ExaminationOutcome of(ExaminationAppeal appeal, String register, boolean present, int grade, boolean withHonors) {
+        return new ExaminationOutcome(appeal, register, present, grade, withHonors);
     }
 
     // getters
@@ -60,64 +64,39 @@ public class ExaminationOutcome implements Serializable {
     }
 
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "examination_appeal_id", nullable = false)
-    public ExaminationAppeal getAppeal() {
-        return appeal;
-    }
+    public ExaminationAppeal getAppeal() { return appeal; }
 
     @Column(name = "register", nullable = false, length = 6)
     @NotBlank
     @Pattern(regexp = "\\d{6}", message = "Register must be a 6-digit string")
-    public String getRegister() {
-        return register;
-    }
+    public String getRegister() { return register; }
 
     @Column(name = "present", nullable = false)
-    public boolean isPresent() {
-        return present;
-    }
+    public boolean isPresent() { return present; }
 
     @Min(0)
     @Max(30)
     @Column(name = "grade")
-    public int getGrade() {
-        return grade;
-    }
+    public int getGrade() { return grade; }
 
     @Column(name = "with_honors")
-    public boolean isWithHonors() {
-        return withHonors;
-    }
+    public boolean isWithHonors() { return withHonors; }
 
     @Column(name = "accepted")
-    public boolean isAccepted() {
-        return accepted;
-    }
+    public boolean isAccepted() { return accepted; }
 
-    @Column(name = "message")
     @Size(max = 255)
-    public String getMessage() {
-        return message;
-    }
+    @Column(name = "message")
+    public String getMessage() { return message; }
 
 
     // setters
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public void setAppeal(ExaminationAppeal appeal) {
-        this.appeal = appeal;
-    }
-
-    public void setRegister(String register) {
-        this.register = register;
-    }
-
-    public void setPresent(boolean present) {
-        this.present = present;
-    }
+    public void setId(Long id) { this.id = id; }
+    public void setAppeal(ExaminationAppeal appeal) { this.appeal = appeal; }
+    public void setRegister(String register) { this.register = register; }
+    public void setPresent(boolean present) { this.present = present; }
 
     public void setGrade(int grade) {
         if (grade < 0 || grade > 30)
@@ -126,17 +105,20 @@ public class ExaminationOutcome implements Serializable {
     }
 
     public void setWithHonors(boolean withHonors) {
-        if(getGrade() != 30)
-            this.withHonors = false;
-        this.withHonors = withHonors;
+        this.withHonors = (grade == 30) && withHonors;
     }
 
-    public void setAccepted(boolean accepted) {
-        this.accepted = accepted;
+    public void setAccepted(boolean accepted) { this.accepted = accepted; }
+    public void setMessage(String message) { this.message = message; }
+
+
+    // initialization
+    private void initializeGrade(int grade) {
+        setGrade(grade);
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    private void initializeWithHonors(boolean withHonors) {
+        setWithHonors(withHonors);
     }
 
 }

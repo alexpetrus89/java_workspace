@@ -302,9 +302,9 @@ public class ExaminationAppealServiceImpl implements ExaminationAppealService {
             if(!professor.getUniqueCode().toString().equals(course.getProfessor().getUniqueCode().toString()))
                 throw new IllegalStateException("Professor does not teach this course");
 
-            ExaminationAppeal exam = new ExaminationAppeal(course, dto.getDescription(), dto.getDate());
-            ExaminationAppeal savedExam = examinationAppealRepository.saveAndFlush(exam);
-            if(savedExam.getId() != null)
+            ExaminationAppeal appeal = ExaminationAppeal.of(course, dto.getDescription(), dto.getDate());
+            ExaminationAppeal savedAppeal = examinationAppealRepository.saveAndFlush(appeal);
+            if(savedAppeal.getId() != null)
                 return dto;
             else return null;
         } catch (PersistenceException e) {

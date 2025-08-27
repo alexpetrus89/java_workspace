@@ -35,6 +35,7 @@ package com.alex.universitymanagementsystem.controller;
 import java.text.ParseException;
 import java.util.Optional;
 
+import org.hibernate.TransientObjectException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
@@ -67,7 +68,7 @@ public class GlobalControllerExceptionHandler {
         LoggerFactory.getLogger(GlobalControllerExceptionHandler.class);
 
     // constants
-    private static final String EXCEPTION_VIEW = "exception/error";
+    private static final String GENERIC_EXCEPTION_VIEW = "exception/generic-exception";
     private static final String DEFAULT_VALIDATION_EXCEPTION_VIEW = "exception/illegal/illegal-parameter";
     private static final String UNKNOWN_VALIDATION_ERROR = "Unknown validation error";
     private static final String MESSAGE = "message";
@@ -84,12 +85,49 @@ public class GlobalControllerExceptionHandler {
      * @param e the exception to be handled
      * @return a ModelAndView containing the error message
      */
-    @ExceptionHandler(Exception.class)
+   @ExceptionHandler(Exception.class)
     public ModelAndView handleException(Exception e) {
-        logger.error("Generic exception occurred", e);
-        String message = "A generic exception occurred: " + e.getMessage();
-        return new ModelAndView(EXCEPTION_VIEW, MESSAGE, message);
+        Throwable root = getRootCause(e);
+
+        logger.error("Exception caught: {} | Root cause: {}",
+            e.getClass().getName(), root.getClass().getName(), e);
+
+        // --- Smistamento verso handler specifici ---
+        if (root instanceof TransientObjectException toe)
+            return handleTransientObjectException(toe);
+        if (root instanceof DataAccessServiceException dae)
+            return handleDataAccessServiceException(dae);
+        if (root instanceof AccessDeniedException ade)
+            return handleAccessDeniedException(ade);
+        if (root instanceof IllegalArgumentException iae)
+            return handleIllegalArgumentException(iae);
+        if (root instanceof InternalServerError ise)
+            return handleInternalServerError(ise);
+        if (root instanceof NotFoundException nrf1)
+            return handleNoResourceFoundException(nrf1);
+        if (root instanceof NoResourceFoundException nrf2)
+            return handleNoResourceFoundException(nrf2);
+        if (root instanceof ParseException pe)
+            return handleHtmlParseException(pe);
+        if (root instanceof JsonProcessingException jpe)
+            return handleJsonProcessingException(jpe);
+        if (root instanceof MissingServletRequestParameterException msrpe)
+            return handleMissingServletRequestParameterException(msrpe);
+        if (root instanceof AssertionError ae)
+            return handleAssertionError(ae);
+        if (root instanceof MethodArgumentNotValidException manve)
+            return handleValidationException(manve);
+        if (root instanceof BindException be)
+            return handleValidationException(be);
+        if (root instanceof ConstraintViolationException cve)
+            return handleValidationException(cve);
+        if (root instanceof NoHandlerFoundException nhfe)
+            return handleNoHandlerFoundException(nhfe);
+
+        // --- fallback generico se non corrisponde a nessuno ---
+        return buildDetailedErrorView(e, GENERIC_EXCEPTION_VIEW);
     }
+
 
 
     /**
@@ -104,7 +142,7 @@ public class GlobalControllerExceptionHandler {
     public ModelAndView handleInternalServerError(InternalServerError e) {
         logger.error("Internal server error", e);
         String message = "Internal server error: " + e.getMessage();
-        return new ModelAndView(EXCEPTION_VIEW, MESSAGE, message);
+        return new ModelAndView(GENERIC_EXCEPTION_VIEW, MESSAGE, message);
     }
 
 
@@ -152,7 +190,7 @@ public class GlobalControllerExceptionHandler {
     public ModelAndView handleHtmlParseException(Exception e) {
         logger.error("Error during HTML parsing", e);
         String message = "Error during HTML parsing, HAI FATTO QUALCHE ERRORE IN UN FILE .HTML: " + e.getMessage();
-        return new ModelAndView(EXCEPTION_VIEW, MESSAGE, message);
+        return new ModelAndView(GENERIC_EXCEPTION_VIEW, MESSAGE, message);
     }
 
 
@@ -184,7 +222,7 @@ public class GlobalControllerExceptionHandler {
     public ModelAndView handleNoHandlerFoundException(NoHandlerFoundException e) {
         logger.error("No handler found for request", e);
         String message = "No controller/handler found for request: " + e.getMessage();
-        return new ModelAndView(EXCEPTION_VIEW, MESSAGE, message);
+        return new ModelAndView(GENERIC_EXCEPTION_VIEW, MESSAGE, message);
     }
 
 
@@ -207,7 +245,7 @@ public class GlobalControllerExceptionHandler {
     public ModelAndView handleAssertionError(AssertionError e) {
         logger.error("Assertion error", e);
         String message = "An assertion error occurred: " + e.getMessage();
-        return new ModelAndView(EXCEPTION_VIEW, MESSAGE, message);
+        return new ModelAndView(GENERIC_EXCEPTION_VIEW, MESSAGE, message);
     }
 
 
@@ -220,7 +258,7 @@ public class GlobalControllerExceptionHandler {
      * @return a ModelAndView containing the error message
      */
     @ExceptionHandler(MissingServletRequestParameterException.class)
-    public ModelAndView handlerMissingServletRequestParameter(MissingServletRequestParameterException e) {
+    public ModelAndView handleMissingServletRequestParameterException(MissingServletRequestParameterException e) {
         logger.error("Missing servlet request parameter", e);
         String message = "Parameter cannot be null: " + e.getMessage();
         return new ModelAndView(DEFAULT_VALIDATION_EXCEPTION_VIEW, MESSAGE, message);
@@ -336,6 +374,60 @@ public class GlobalControllerExceptionHandler {
 
 
 
+
+    @ExceptionHandler(TransientObjectException.class)
+    public ModelAndView handleTransientObjectException(TransientObjectException e) {
+        logger.error("Transient object error", e);
+
+        ModelAndView mav = new ModelAndView("exception/transient-object-error");
+        mav.addObject("errorType", e.getClass().getName());           // nome completo della classe eccezione
+        mav.addObject(MESSAGE, e.getMessage());                     // messaggio base
+        mav.addObject("stackTrace", e.getStackTrace());               // stacktrace come array
+        Throwable cause = e.getCause();
+        mav.addObject("cause", cause != null ? cause.toString() : "N/A"); // causa
+        mav.addObject("timestamp", java.time.LocalDateTime.now());    // timestamp
+        return mav;
+    }
+
+    /**
+     * Estrae la causa più profonda di un'eccezione.
+     */
+    private Throwable getRootCause(Throwable e) {
+        Throwable cause = e;
+        while (cause.getCause() != null && cause.getCause() != cause) {
+            cause = cause.getCause();
+        }
+        return cause;
+    }
+
+
+    /**
+     * Costruisce una pagina di errore dettagliata.
+     */
+    private ModelAndView buildDetailedErrorView(Throwable e, String viewName) {
+        ModelAndView mav = new ModelAndView(viewName);
+
+        // Tipo di eccezione
+        mav.addObject("errorType", e.getClass().getName());
+
+        // Messaggio
+        mav.addObject(MESSAGE, e.getMessage());
+
+        // Stack trace formattato in HTML leggibile
+        StringBuilder stackTraceBuilder = new StringBuilder();
+        for (StackTraceElement element : e.getStackTrace())
+            stackTraceBuilder.append(element.toString()).append("<br/>");
+        mav.addObject("stackTrace", stackTraceBuilder.toString());
+
+        // Causa
+        Throwable cause = e.getCause();
+        mav.addObject("cause", cause != null ? cause.toString() : "N/A");
+
+        // Timestamp
+        mav.addObject("timestamp", java.time.LocalDateTime.now());
+
+        return mav;
+    }
 
 
 

@@ -15,6 +15,7 @@ import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
@@ -33,7 +34,7 @@ public class StudyPlan implements Serializable {
     private Set<Course> courses = new HashSet<>();
 
     // constructors
-    public StudyPlan() {}
+    protected StudyPlan() {}
 
     public StudyPlan(String ordering, Set<Course> courses) {
         this.id = StudyPlanId.newId();
@@ -51,47 +52,39 @@ public class StudyPlan implements Serializable {
     // getters
     @EmbeddedId
     @AttributeOverride(name = "id", column = @Column(name = "study_plan_id"))
-    public StudyPlanId getId() {
-        return id;
-    }
+    public StudyPlanId getId() { return id; }
 
 
-    @OneToOne
-    @JoinColumn(name = "student_id")
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "student_id", nullable = false, unique = true)
     @OnDelete(action = OnDeleteAction.CASCADE)
     public Student getStudent() {
         return student;
     }
 
-    @Column(name = "ordering")
+    @Column(name = "ordering", length = 255)
     public String getOrdering() {
         return ordering;
     }
 
-    @Column(name = "courses")
-    @ManyToMany(targetEntity=Course.class)
-    @JoinTable(name = "study_plan_courses", joinColumns = @JoinColumn(name = "study_plan_id"), inverseJoinColumns = @JoinColumn(name = "course_id"))
+    @ManyToMany(targetEntity = Course.class, fetch = FetchType.LAZY)
+    @JoinTable(
+        name = "study_plan_courses",
+        joinColumns = @JoinColumn(name = "study_plan_id"),
+        inverseJoinColumns = @JoinColumn(name = "course_id")
+    )
     @OnDelete(action = OnDeleteAction.CASCADE)
+    @Column(name = "courses")
     public Set<Course> getCourses() {
         return courses;
     }
 
     // setters
-    public void setId(StudyPlanId id) {
-        this.id = id;
-    }
+    public void setId(StudyPlanId id) { this.id = id; }
+    public void setStudent(Student student) { this.student = student; }
+    public void setOrdering(String ordering) { this.ordering = ordering; }
+    public void setCourses(Set<Course> courses) { this.courses = courses; }
 
-    public void setStudent(Student student) {
-        this.student = student;
-    }
-
-    public void setOrdering(String ordering) {
-        this.ordering = ordering;
-    }
-
-    public void setCourses(Set<Course> courses) {
-        this.courses = courses;
-    }
 
     // business methods
     public boolean addCourse(Course course) {

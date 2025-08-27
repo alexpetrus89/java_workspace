@@ -203,7 +203,7 @@ public class ProfessorServiceImpl implements ProfessorService {
             updatableProfessor.setLastName(form.getLastName());
             updatableProfessor.setDob(form.getDob());
             updatableProfessor.setFiscalCode(new FiscalCode(form.getFiscalCode()));
-            updatableProfessor.setPhoneNumber(form.getPhone());
+            updatableProfessor.setPhone(form.getPhone());
             updatableProfessor.setAddress(new Address(form.getStreet(), form.getCity(), form.getState(), form.getZip()));
 
 

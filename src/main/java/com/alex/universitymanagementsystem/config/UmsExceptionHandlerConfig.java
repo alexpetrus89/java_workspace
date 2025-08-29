@@ -16,7 +16,7 @@ public class UmsExceptionHandlerConfig {
         this.umsConfig = umsConfig;
     }
 
-     @Bean
+    @Bean
     GlobalControllerExceptionHandler globalControllerExceptionHandler() {
         return new GlobalControllerExceptionHandler(umsConfig);
     }

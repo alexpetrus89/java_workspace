@@ -138,15 +138,15 @@ public class UmsDBInitConfig implements Serializable {
         Builder builderAdminOne = new Builder();
         builderAdminOne.withUsername("rico@gmail.com");
         builderAdminOne.withPassword("rico");
-        builderAdminOne.withFirstName("damiano");
-        builderAdminOne.withLastName("ruggieri");
+        builderAdminOne.withFirstName("brant");
+        builderAdminOne.withLastName("bjork");
         builderAdminOne.withDob(LocalDate.of(1993, 1, 1));
         builderAdminOne.withFiscalCode("abc678rde217we56");
-        builderAdminOne.withStreet("via della nazione");
-        builderAdminOne.withCity("fasano");
-        builderAdminOne.withState("italia");
-        builderAdminOne.withZip("72015");
-        builderAdminOne.withPhone("3815674128");
+        builderAdminOne.withStreet("sky valley road");
+        builderAdminOne.withCity("Palm Desert");
+        builderAdminOne.withState("Rockalandia");
+        builderAdminOne.withZip("12398");
+        builderAdminOne.withPhone("7416328954");
         builderAdminOne.withRole(RoleType.ADMIN);
 
         Builder builderAdminTwo = new Builder();
@@ -156,11 +156,11 @@ public class UmsDBInitConfig implements Serializable {
         builderAdminTwo.withLastName("ruggieri");
         builderAdminTwo.withDob(LocalDate.of(1993, 4, 1));
         builderAdminTwo.withFiscalCode("abc678rde217we47");
-        builderAdminTwo.withStreet("via del calvario");
-        builderAdminTwo.withCity("pezze di greco");
-        builderAdminTwo.withState("italia");
-        builderAdminTwo.withZip("72015");
-        builderAdminTwo.withPhone("3815674128");
+        builderAdminTwo.withStreet("calvario street");
+        builderAdminTwo.withCity("  Oslo");
+        builderAdminTwo.withState("Norway");
+        builderAdminTwo.withZip("89632");
+        builderAdminTwo.withPhone("1234567894");
         builderAdminTwo.withRole(RoleType.ADMIN);
 
         // create users
@@ -301,11 +301,11 @@ public class UmsDBInitConfig implements Serializable {
         builderStudentOne.withLastName("dylamie");
         builderStudentOne.withDob(LocalDate.of(1991, 4, 6));
         builderStudentOne.withFiscalCode("abc678rde217we12");
-        builderStudentOne.withStreet("via delle lamie di olimpia");
-        builderStudentOne.withCity("laureto");
-        builderStudentOne.withState("italia");
-        builderStudentOne.withZip("72015");
-        builderStudentOne.withPhone("3619647852");
+        builderStudentOne.withStreet("hollywood boulevard");
+        builderStudentOne.withCity("Bishkek");
+        builderStudentOne.withState("Kyrgyzstan");
+        builderStudentOne.withZip("96358");
+        builderStudentOne.withPhone("1111111110");
         builderStudentOne.withRole(RoleType.STUDENT);
 
         // 2
@@ -316,11 +316,11 @@ public class UmsDBInitConfig implements Serializable {
         builderStudentTwo.withLastName("pelaccio");
         builderStudentTwo.withDob(LocalDate.of(1991, 11, 12));
         builderStudentTwo.withFiscalCode("abc678rde217we71");
-        builderStudentTwo.withStreet("via delle lamie di olimpia");
-        builderStudentTwo.withCity("laureto");
-        builderStudentTwo.withState("italia");
-        builderStudentTwo.withZip("72015");
-        builderStudentTwo.withPhone("38412369547");
+        builderStudentTwo.withStreet("Loreto Square");
+        builderStudentTwo.withCity("Milan");
+        builderStudentTwo.withState("Italy");
+        builderStudentTwo.withZip("20127");
+        builderStudentTwo.withPhone("2804194500");
         builderStudentTwo.withRole(RoleType.STUDENT);
 
         // 3
@@ -331,11 +331,11 @@ public class UmsDBInitConfig implements Serializable {
         builderStudentThree.withLastName("morricone");
         builderStudentThree.withDob(LocalDate.of(1991, 11, 12));
         builderStudentThree.withFiscalCode("abc678rde217we43");
-        builderStudentThree.withStreet("via delle lamie di olimpia");
-        builderStudentThree.withCity("laureto");
-        builderStudentThree.withState("italia");
-        builderStudentThree.withZip("72015");
-        builderStudentThree.withPhone("38412369547");
+        builderStudentThree.withStreet("Pancho Villa Street");
+        builderStudentThree.withCity("San Juan del Río");
+        builderStudentThree.withState("Messico");
+        builderStudentThree.withZip("76800");
+        builderStudentThree.withPhone("9876543210");
         builderStudentThree.withRole(RoleType.STUDENT);
 
         // 4

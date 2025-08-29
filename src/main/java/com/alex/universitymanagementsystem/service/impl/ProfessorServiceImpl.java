@@ -1,6 +1,7 @@
 package com.alex.universitymanagementsystem.service.impl;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
@@ -147,7 +148,7 @@ public class ProfessorServiceImpl implements ProfessorService {
     /**
      * Adds a new professor to the repository.
      * @param form with data of the professor to be added
-     * @return ProfessorDto
+    * @return Optional<ProfessorDto> data transfer object containing the added professor's information
      * @throws ObjectAlreadyExistsException if a professor with the
      *         same unique code already exists in the repository.
      * @throws DataAccessServiceException if there is an error accessing the database
@@ -155,7 +156,7 @@ public class ProfessorServiceImpl implements ProfessorService {
     @Override
     @Transactional(rollbackOn = ObjectAlreadyExistsException.class)
     @Retryable(retryFor = PersistenceException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
-    public ProfessorDto addNewProfessor(RegistrationForm form)
+    public Optional<ProfessorDto> addNewProfessor(RegistrationForm form)
         throws ObjectAlreadyExistsException, DataAccessServiceException
     {
         try {
@@ -165,7 +166,7 @@ public class ProfessorServiceImpl implements ProfessorService {
                 throw new ObjectAlreadyExistsException(fiscalCode);
 
             Professor professor = professorRepository.save(form.toProfessor(passwordEncoder));
-            return ProfessorMapper.toDto(professor);
+            return Optional.of(ProfessorMapper.toDto(professor));
         } catch (PersistenceException e) {
             throw new DataAccessServiceException("Error accessing database for user " + form.getUsername() + ": " + e.getMessage(), e);
         }

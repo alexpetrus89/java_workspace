@@ -2,6 +2,7 @@ package com.alex.universitymanagementsystem.service;
 
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
@@ -32,13 +33,13 @@ public interface UserService extends UserDetailsService {
     /**
      * Add new user
      * @param form with data of the user to be added
-     * @return UserDto
+     * @return Optional<UserDto>
      * @throws ObjectAlreadyExistsException if user to add already exists
      * @throws DataAccessServiceException if there is an error accessing the database
      */
 	@Transactional(rollbackOn = ObjectAlreadyExistsException.class)
     @Retryable(retryFor = PersistenceException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
-    UserDto addNewUser(RegistrationForm form) throws ObjectAlreadyExistsException, DataAccessServiceException;
+    Optional<UserDto> addNewUser(RegistrationForm form) throws ObjectAlreadyExistsException, DataAccessServiceException;
 
 
 	/**
@@ -46,27 +47,27 @@ public interface UserService extends UserDetailsService {
      * repository.
      * This method is transactional and mapped to the HTTP PUT request for "/update".
      * @param form with new data of the user to be updated
-     * @return UserDto
+     * @return Optional<UserDto> data transfer object containing the updated user information
      * @throws ObjectNotFoundException if the authenticated user is not found.
      * @throws DataAccessServiceException if there is an error accessing the database
      */
     @Transactional(rollbackOn = ObjectNotFoundException.class)
     @Retryable(retryFor = PersistenceException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
-    UserDto updateUser(RegistrationForm form)
+    Optional<UserDto> updateUser(RegistrationForm form)
         throws ObjectNotFoundException, DataAccessServiceException;
 
 
 	/**
      * Deletes a user from the repository.
      * @param userId user id of the user to be deleted
-     * @return the deleted user dto
+     * @return Optional<UserDto> data transfer object containing the deleted user information
      * @throws AccessDeniedException if the authenticated user is not an admin
      * @throws UsernameNotFoundException if the user to be deleted is not found
      * @throws DataAccessServiceException if there is an error accessing the database
      */
     @Transactional(rollbackOn = {AccessDeniedException.class, UsernameNotFoundException.class})
     @Retryable(retryFor = PersistenceException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
-    UserDto deleteUser(String userId)
+    Optional<UserDto> deleteUser(String userId)
         throws AccessDeniedException, UsernameNotFoundException, DataAccessServiceException;
 
 }

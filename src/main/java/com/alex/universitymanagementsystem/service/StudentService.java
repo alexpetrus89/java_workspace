@@ -1,11 +1,13 @@
 package com.alex.universitymanagementsystem.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 
 import com.alex.universitymanagementsystem.domain.DegreeCourse;
+import com.alex.universitymanagementsystem.domain.Student;
 import com.alex.universitymanagementsystem.domain.immutable.Register;
 import com.alex.universitymanagementsystem.dto.RegistrationForm;
 import com.alex.universitymanagementsystem.dto.StudentDto;
@@ -57,7 +59,7 @@ public interface StudentService {
 	 * @param form with data of the student to be added
 	 * @param degreeCourse degree course of the new student
 	 * @param ordering the ordering of the courses in the study plan
-	 * @return StudentDto object containing the added student's data.
+	 * @return Optional<StudentDto> object containing the added student's data.
 	 * @throws IllegalArgumentException if the form is invalid.
 	 * @throws ObjectAlreadyExistsException if a student with the same register
 	 * 		   already or with same name and dob exists in the repository.
@@ -67,7 +69,7 @@ public interface StudentService {
 	 */
 	@Transactional(rollbackOn = {IllegalArgumentException.class, ObjectAlreadyExistsException.class, ObjectNotFoundException.class})
     @Retryable(retryFor = PersistenceException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
-    StudentDto addNewStudent(RegistrationForm form, DegreeCourse degreeCourse, String ordering)
+    Optional<StudentDto> addNewStudent(RegistrationForm form, DegreeCourse degreeCourse, String ordering)
 		throws IllegalArgumentException, ObjectAlreadyExistsException, ObjectNotFoundException, DataAccessServiceException;
 
 
@@ -85,5 +87,14 @@ public interface StudentService {
     StudentDto updateStudent(RegistrationForm form)
 		throws IllegalArgumentException, ObjectNotFoundException, DataAccessServiceException;
 
+
+	/**
+	 * Deletes the relationship between a student and their associated entities.
+	 * @param student the student whose relationships are to be deleted
+	 * @return
+	 */
+	@Transactional
+    @Retryable(retryFor = PersistenceException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
+	void deleteStudentRelationship(Student student);
 
 }

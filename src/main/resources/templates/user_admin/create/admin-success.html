@@ -1,0 +1,24 @@
+<!DOCTYPE HTML>
+<html lang="en"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:th="https://www.thymeleaf.org"
+    xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+    <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
+    <title>Uni Journey</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/professor-result.css">
+</head>
+<body>
+    <div class="container">
+        <h1 th:if="${admin != null}">Registration completed successfully</h1>
+        <p th:text="'Name: ' + ${admin.firstName} + ' ' + ${admin.lastName}"></p>
+        <p th:text="'Email: ' + ${admin.username}"></p>
+        <p th:text="'Fiscal Code: ' + ${admin.fiscalCode}"></p>
+        <a href="#" th:href="@{/login}">Login</a>
+    </div>
+    <div th:if="${admin == null}">
+        <p>Error: profile not created.</p>
+        <a href="#" th:href="@{/login}">Login</a>
+    </div>
+</body>
+</html>

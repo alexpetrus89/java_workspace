@@ -35,9 +35,11 @@ package com.alex.universitymanagementsystem.controller;
 import java.text.ParseException;
 import java.util.Optional;
 
+import org.hibernate.ObjectNotFoundException;
 import org.hibernate.TransientObjectException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.messaging.handler.annotation.support.MethodArgumentNotValidException;
 import org.springframework.security.access.AccessDeniedException;
@@ -56,6 +58,7 @@ import org.springframework.web.servlet.resource.NoResourceFoundException;
 import com.alex.universitymanagementsystem.config.UmsConfig;
 import com.alex.universitymanagementsystem.exception.DataAccessServiceException;
 import com.alex.universitymanagementsystem.exception.JsonProcessingException;
+import com.alex.universitymanagementsystem.exception.ObjectAlreadyExistsException;
 
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
@@ -68,10 +71,23 @@ public class GlobalControllerExceptionHandler {
         LoggerFactory.getLogger(GlobalControllerExceptionHandler.class);
 
     // constants
-    private static final String GENERIC_EXCEPTION_VIEW = "exception/generic-exception";
-    private static final String DEFAULT_VALIDATION_EXCEPTION_VIEW = "exception/illegal/illegal-parameter";
     private static final String UNKNOWN_VALIDATION_ERROR = "Unknown validation error";
     private static final String MESSAGE = "message";
+
+    @Value("#{genericExceptionUri}")
+    private String genericExceptionUri;
+    @Value("#{dataAccessExceptionUri}")
+    private String dataAccessExceptionUri;
+    @Value("#{accessDeniedExceptionUri}")
+    private String accessDeniedExceptionUri;
+    @Value("#{illegalArgumentExceptionUri}")
+    private String illegalArgumentExceptionUri;
+    @Value("#{notFoundExceptionUri}")
+    private String notFoundExceptionUri;
+    @Value("#{alreadyExistsExceptionUri}")
+    private String alreadyExistsExceptionUri;
+    @Value("#{jsonProcessingExceptionUri}")
+    private String jsonProcessingExceptionUri;
 
     // instance variables
     private final UmsConfig umsConfig;
@@ -125,14 +141,26 @@ public class GlobalControllerExceptionHandler {
             return handleNoHandlerFoundException(nhfe);
 
         // --- fallback generico se non corrisponde a nessuno ---
-        return buildDetailedErrorView(e, GENERIC_EXCEPTION_VIEW);
+        return buildDetailedErrorView(e, genericExceptionUri);
     }
 
+
+    /**
+     * Handles runtime exceptions and returns a ModelAndView with a status of Internal Server Error (500).
+     * @param e the RuntimeException to be handled
+     * @return a ModelAndView containing the error message
+     */
+    @ExceptionHandler(RuntimeException.class)
+    public ModelAndView handleRuntimeException(RuntimeException e) {
+        logger.error("Unexpected runtime error", e);
+        String message = "An unexpected error occurred.";
+        return new ModelAndView(genericExceptionUri, MESSAGE, message);
+    }
 
 
     /**
      * Handles InternalServerError exceptions and returns a ModelAndView with a status of Internal Server Error (500).
-     * Returns a ModelAndView with a view name of "/exception/error"
+     * Returns a ModelAndView with a view name of genericExceptionUri
      * and a model containing a custom error message.
      * The exception is logged at the ERROR level.
      * @param e the InternalServerError exception to be handled
@@ -142,29 +170,13 @@ public class GlobalControllerExceptionHandler {
     public ModelAndView handleInternalServerError(InternalServerError e) {
         logger.error("Internal server error", e);
         String message = "Internal server error: " + e.getMessage();
-        return new ModelAndView(GENERIC_EXCEPTION_VIEW, MESSAGE, message);
-    }
-
-
-    /**
-     * Handles exceptions that occur when there is an data access error.
-     * Returns a ModelAndView with a view name of "/exception/data/data-access-error"
-     * and a model containing a custom error message.
-     * The exception is logged at the ERROR level.
-     * @param e the DataAccessServiceException to be handled
-     * @return a ModelAndView containing the error message
-     */
-    @ExceptionHandler(DataAccessServiceException.class)
-    public ModelAndView handleDataAccessServiceException(DataAccessServiceException e) {
-        logger.error("Data access service error", e);
-        String message = "Data access service error: " + e.getMessage();
-        return new ModelAndView("exception/data/data-access-exception", MESSAGE, message);
+        return new ModelAndView(genericExceptionUri, MESSAGE, message);
     }
 
 
     /**
      * Handles exceptions that occur when a resource is not found, such as a 404 Not Found response.
-     * Returns a ModelAndView object with a view name of "exception/not_found/error-not-found"
+     * Returns a ModelAndView object with a view name of "exception/not_found/not-found-exception"
      * and a model containing a custom error message.
      * The exception is logged at the ERROR level.
      * @param e the exception to be handled
@@ -174,13 +186,13 @@ public class GlobalControllerExceptionHandler {
     public ModelAndView handleNoResourceFoundException(Exception e) {
         logger.error("Resource not found", e);
         String message = "Resource not found: " + e.getMessage();
-        return new ModelAndView("exception/not_found/exception-not-found", MESSAGE, message);
+        return new ModelAndView(notFoundExceptionUri + "/not-found-exception", MESSAGE, message);
     }
 
 
     /**
      * Handles exceptions that occur when parsing a .html file, such as ParseErrors, SAXExceptions, and IOExceptions.
-     * Returns a ModelAndView with a status of Internal Server Error (500) and a model
+     * Returns a ModelAndView object with a view of genericExceptionUri and a status of Internal Server Error (500) and a model
      * containing a custom error message.
      * The exception is logged at the ERROR level.
      * @param e the exception to be handled
@@ -190,7 +202,7 @@ public class GlobalControllerExceptionHandler {
     public ModelAndView handleHtmlParseException(Exception e) {
         logger.error("Error during HTML parsing", e);
         String message = "Error during HTML parsing, HAI FATTO QUALCHE ERRORE IN UN FILE .HTML: " + e.getMessage();
-        return new ModelAndView(GENERIC_EXCEPTION_VIEW, MESSAGE, message);
+        return new ModelAndView(genericExceptionUri, MESSAGE, message);
     }
 
 
@@ -205,7 +217,7 @@ public class GlobalControllerExceptionHandler {
     public ModelAndView handleAccessDeniedException(AccessDeniedException e) {
         logger.error("Access denied", e);
         String message = "Access denied, NON HAI I PERMESSI: " + e.getMessage();
-        return new ModelAndView("exception/access_denied/access-denied", MESSAGE, message);
+        return new ModelAndView(accessDeniedExceptionUri + "/access-denied-exception", MESSAGE, message);
     }
 
 
@@ -213,7 +225,7 @@ public class GlobalControllerExceptionHandler {
      * Handles NoHandlerFoundException exceptions and returns a ModelAndView with a status of Not Found (404).
      * The exception is logged at the ERROR level, and a model containing a custom error message.
      * This exception is thrown when a request is made to a URL that does not have a handler method.
-     * This can occur when a static resource (such as a .html file) is not found, as Spring MVC will not find a
+     * This exception is thrown when a static resource (such as a .html file) is not found, as Spring MVC will not find a
      * handler for the request.
      * @param e the NoHandlerFoundException exception to be handled
      * @return a ModelAndView containing the error message
@@ -222,20 +234,13 @@ public class GlobalControllerExceptionHandler {
     public ModelAndView handleNoHandlerFoundException(NoHandlerFoundException e) {
         logger.error("No handler found for request", e);
         String message = "No controller/handler found for request: " + e.getMessage();
-        return new ModelAndView(GENERIC_EXCEPTION_VIEW, MESSAGE, message);
+        return new ModelAndView(notFoundExceptionUri + "/object-not-found", MESSAGE, message);
     }
 
 
-
-
-
-
-
-
-    // Add more @ExceptionHandler methods for other specific exceptions
     /**
      * Handles exceptions that occur when Assertion error is throw.
-     * Returns a ModelAndView with a view name of "exception/assertion/assertion" and
+     * Returns a ModelAndView with a view name of genericExceptionUri and
      * a model containing the error message.
      * The exception is logged at the ERROR level.
      * @param e the exception to be handled
@@ -245,7 +250,7 @@ public class GlobalControllerExceptionHandler {
     public ModelAndView handleAssertionError(AssertionError e) {
         logger.error("Assertion error", e);
         String message = "An assertion error occurred: " + e.getMessage();
-        return new ModelAndView(GENERIC_EXCEPTION_VIEW, MESSAGE, message);
+        return new ModelAndView(genericExceptionUri, MESSAGE, message);
     }
 
 
@@ -261,7 +266,7 @@ public class GlobalControllerExceptionHandler {
     public ModelAndView handleMissingServletRequestParameterException(MissingServletRequestParameterException e) {
         logger.error("Missing servlet request parameter", e);
         String message = "Parameter cannot be null: " + e.getMessage();
-        return new ModelAndView(DEFAULT_VALIDATION_EXCEPTION_VIEW, MESSAGE, message);
+        return new ModelAndView(illegalArgumentExceptionUri + "/illegal-parameter", MESSAGE, message);
     }
 
 
@@ -276,7 +281,56 @@ public class GlobalControllerExceptionHandler {
         logger.error("Illegal argument", e);
         String message = "Illegal argument exception: " + e.getMessage();
         // fallback for others IllegalArgumentException
-        return new ModelAndView("exception/illegal/illegal-parameters", MESSAGE, message);
+        return new ModelAndView(illegalArgumentExceptionUri + "/illegal-parameters", MESSAGE, message);
+    }
+
+
+
+
+    // Add more @ExceptionHandler methods for other specific exceptions
+
+
+    /**
+     * Handles exceptions that occur when there is an data access error.
+     * Returns a ModelAndView with a view name of dataAccessExceptionUri
+     * and a model containing a custom error message.
+     * The exception is logged at the ERROR level.
+     * @param e the DataAccessServiceException to be handled
+     * @return a ModelAndView containing the error message
+     */
+    @ExceptionHandler(DataAccessServiceException.class)
+    public ModelAndView handleDataAccessServiceException(DataAccessServiceException e) {
+        logger.error("Data access service error", e);
+        String message = "Data access service error: " + e.getMessage();
+        return new ModelAndView(dataAccessExceptionUri, MESSAGE, message);
+    }
+
+
+    /**
+     * Handles custom ObjectNotFoundException and returns a ModelAndView with a view name of "exception/not_found/object-not-found"
+     * The exception is logged at the ERROR level with the error message.
+     * @param e the ObjectNotFoundException exception to be handled
+     * @return a ModelAndView containing the error message
+     */
+    @ExceptionHandler(ObjectNotFoundException.class)
+    public ModelAndView handleObjectNotFoundException(ObjectNotFoundException e) {
+        logger.error("Object not found", e);
+        String message = "Object not found: " + e.getMessage();
+        return new ModelAndView(notFoundExceptionUri + "/object-not-found", MESSAGE, message);
+    }
+
+
+    /**
+     * Handles custom ObjectAlreadyExistsException and returns a ModelAndView with a view name of "exception/already_exists/object-already-exists"
+     * The exception is logged at the ERROR level with the error message.
+     * @param e the ObjectAlreadyExistsException exception to be handled
+     * @return a ModelAndView containing the error message
+     */
+    @ExceptionHandler(ObjectAlreadyExistsException.class)
+    public ModelAndView handleObjectAlreadyExistsException(ObjectAlreadyExistsException e) {
+        logger.error("Object already exists", e);
+        String message = "Object already exists: " + e.getMessage();
+        return new ModelAndView(alreadyExistsExceptionUri + "/object-already-exists", MESSAGE, message);
     }
 
 
@@ -290,7 +344,7 @@ public class GlobalControllerExceptionHandler {
     public ModelAndView handleJsonProcessingException(JsonProcessingException e) {
         logger.error("JSON processing error", e);
         String message = "An error occurred while processing JSON: " + e.getMessage();
-        return new ModelAndView("exception/data/json-processing-exception", MESSAGE, message);
+        return new ModelAndView(jsonProcessingExceptionUri, MESSAGE, message);
     }
 
 
@@ -318,6 +372,8 @@ public class GlobalControllerExceptionHandler {
     }
 
 
+
+    // helpers
     /**
      * Helper record ValidationInfo.
      */
@@ -356,7 +412,6 @@ public class GlobalControllerExceptionHandler {
         }
         return new ValidationInfo("", UNKNOWN_VALIDATION_ERROR);
     }
-
 
 
     /**

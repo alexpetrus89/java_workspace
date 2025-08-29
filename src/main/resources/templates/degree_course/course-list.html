@@ -12,16 +12,16 @@
     <h1>Courses</h1>
     <table>
         <tr>
-            <th>Name</th>
+            <th>Course</th>
             <th>Category</th>
             <th>Cfu</th>
             <th>Professor name</th>
         </tr>
         <tr th:each="course : ${courses}">
-            <td th:text="${course.name}">Course name</td>
+            <td th:text="${course.name}">Course</td>
             <td th:text="${course.type}">Type</td>
             <td th:text="${course.cfu}">Cfu</td>
-            <td th:text="${course.professor?.fullname}">Professor</td>
+            <td th:text="${course.professor?.firstName} + ' ' + ${course.professor?.lastName}">Professor</td>
         </tr>
     </table>
     <br>

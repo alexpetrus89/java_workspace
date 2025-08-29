@@ -62,7 +62,7 @@ public enum ModuleViews {
 
         USER_ADMIN("/user_admin", List.of(
                 "/admin-home",
-                "/user-menu",
+                "/admin-menu",
                 UPDATE.path(),
                 DELETE.path()
         )),
@@ -110,7 +110,7 @@ public enum ModuleViews {
         EXCEPTION("/exception", List.of(
                 "/generic-exception",
                 "/transient-object-exception",
-                ACCESS_DENIED.path() + "/access-denied",
+                ACCESS_DENIED.path() + "/access-denied-exception",
                 ALREADY_EXISTS.path() + "/object-already-exists",
                 ALREADY_EXISTS.path() + "/professor-already-exists",
                 ALREADY_EXISTS.path() + "/student-already-exists",
@@ -122,9 +122,8 @@ public enum ModuleViews {
                 ILLEGAL.path() + "/study_plan/invalid-choice",
                 ILLEGAL.path() + "/illegal-parameter",
                 ILLEGAL.path() + "/illegal-parameters",
-                ILLEGAL.path() + "/illegal-username",
                 NOT_FOUND.path() + "/degree-course-not-found",
-                NOT_FOUND.path() + "/error-not-found",
+                NOT_FOUND.path() + "/not-found-exception",
                 NOT_FOUND.path() + "/fiscal-code-not-found",
                 NOT_FOUND.path() + "/object-not-found",
                 NOT_FOUND.path() + "/username-not-found"

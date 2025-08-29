@@ -1,11 +1,10 @@
 package com.alex.universitymanagementsystem.controller;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -22,9 +21,6 @@ import com.alex.universitymanagementsystem.dto.ProfessorDto;
 import com.alex.universitymanagementsystem.dto.RegistrationForm;
 import com.alex.universitymanagementsystem.dto.StudentDto;
 import com.alex.universitymanagementsystem.dto.UserDto;
-import com.alex.universitymanagementsystem.exception.DataAccessServiceException;
-import com.alex.universitymanagementsystem.exception.ObjectAlreadyExistsException;
-import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
 import com.alex.universitymanagementsystem.service.ProfessorService;
 import com.alex.universitymanagementsystem.service.StudentService;
 import com.alex.universitymanagementsystem.service.UserService;
@@ -38,20 +34,6 @@ public class UserController {
 
     // constants
     private static final String BUILDER = "builder";
-    private static final String REDIRECT_LOGIN = "redirect:/login";
-    private static final String FORWARD = "forward:";
-    private static final String EXCEPTION_MESSAGE = "message";
-
-    @Value("#{genericExceptionUri}")
-    private String genericExceptionUri;
-    @Value("#{dataAccessExceptionUri}")
-    private String dataAccessExceptionUri;
-    @Value("#{accessDeniedExceptionUri}")
-    private String accessDeniedExceptionUri;
-    @Value("#{notFoundExceptionUri}")
-    private String notFoundExceptionUri;
-    @Value("#{alreadyExistsExceptionUri}")
-    private String alreadyExistsExceptionUri;
 
     // instance variables
     private final UserService userService;
@@ -76,13 +58,8 @@ public class UserController {
      */
     @GetMapping(path = "/view")
     public ModelAndView getAllUsers() {
-        try {
-            // retrieves all users
-            List<UserDto> users = userService.getUsers();
-            return new ModelAndView("user_admin/read/user-list", "users", users);
-        } catch (DataAccessServiceException e) {
-            return new ModelAndView(dataAccessExceptionUri, EXCEPTION_MESSAGE, e.getMessage());
-        }
+        List<UserDto> users = userService.getUsers();
+        return new ModelAndView("user_admin/read/user-list", "users", users);
     }
 
 
@@ -91,7 +68,7 @@ public class UserController {
      * @return ModelAndView
      */
     @GetMapping(path = "/update")
-    public ModelAndView updateUserAndReturnView() {
+    public ModelAndView loadBuilderForAdminUpdate() {
         return new ModelAndView("user_admin/update/update", BUILDER, new Builder());
     }
 
@@ -101,7 +78,7 @@ public class UserController {
      * @return ModelAndView
      */
     @GetMapping(path = "/update/student")
-    public ModelAndView updateStudentAndReturnView() {
+    public ModelAndView loadBuilderForStudentUpdate() {
         return new ModelAndView("user_student/update/update", BUILDER, new Builder());
     }
 
@@ -111,7 +88,7 @@ public class UserController {
      * @return ModelAndView
      */
     @GetMapping(path = "/update/professor")
-    public ModelAndView updateProfessorAndReturnView() {
+    public ModelAndView loadBuilderForProfessorUpdate() {
         return new ModelAndView("user_professor/update/update", BUILDER, new Builder());
     }
 
@@ -122,17 +99,13 @@ public class UserController {
      * @return String
      */
     @PostMapping(path = "/create-admin")
-    public String createUser(HttpServletRequest request) {
-        try {
-            Builder builder = (Builder) request.getSession().getAttribute(BUILDER);
-            if(userService.addNewUser(new RegistrationForm(builder)) != null)
-                return REDIRECT_LOGIN;
-            else return FORWARD + genericExceptionUri;
-        } catch (ObjectAlreadyExistsException _) {
-            return FORWARD + alreadyExistsExceptionUri + "/object-already-exists";
-        } catch (DataAccessServiceException _) {
-            return FORWARD + dataAccessExceptionUri;
-        }
+    public ModelAndView createNewUserWithRoleAdmin(HttpServletRequest request) {
+        return handleCreation(
+            request,
+            builder -> userService.addNewUser(new RegistrationForm(builder)),
+            this::adminSuccessView,
+            this::adminFailureView
+        );
     }
 
 
@@ -145,17 +118,12 @@ public class UserController {
      */
     @PostMapping(path = "/create-student")
     public ModelAndView createNewUserWithRoleStudent(HttpServletRequest request, @ModelAttribute DegreeCourse degreeCourse, String ordering) {
-        try{
-            // recupera l'oggetto UserDto dalla sessione
-            Builder builder = (Builder) request.getSession().getAttribute(BUILDER);
-            // save
-            StudentDto student = studentService.addNewStudent(new RegistrationForm(builder), degreeCourse, ordering);
-            return new ModelAndView("user_student/create/student-result", "student", student);
-        } catch (ObjectAlreadyExistsException e) {
-            return new ModelAndView(alreadyExistsExceptionUri + "/student-already-exists", EXCEPTION_MESSAGE, e.getMessage());
-        } catch (DataAccessServiceException e) {
-            return new ModelAndView(dataAccessExceptionUri, EXCEPTION_MESSAGE, e.getMessage());
-        }
+        return handleCreation(
+            request,
+            builder -> studentService.addNewStudent(new RegistrationForm(builder), degreeCourse, ordering),
+            this::studentSuccessView,
+            this::studentFailureView
+        );
     }
 
 
@@ -166,17 +134,12 @@ public class UserController {
      */
     @PostMapping(path = "/create-professor")
     public ModelAndView createNewUserWithRoleProfessor(HttpServletRequest request) {
-        try {
-            // recupera l'oggetto UserDto dalla sessione
-            Builder builder = (Builder) request.getSession().getAttribute(BUILDER);
-            // save
-            ProfessorDto professor = professorService.addNewProfessor(new RegistrationForm(builder));
-            return new ModelAndView("user_professor/create/professor-result", "professor", professor);
-        } catch (ObjectAlreadyExistsException e) {
-            return new ModelAndView(alreadyExistsExceptionUri + "/professor-already-exists", EXCEPTION_MESSAGE, e.getMessage());
-        } catch (DataAccessServiceException e) {
-            return new ModelAndView(dataAccessExceptionUri, EXCEPTION_MESSAGE, e.getMessage());
-        }
+        return handleCreation(
+            request,
+            builder -> professorService.addNewProfessor(new RegistrationForm(builder)),
+            this::professorSuccessView,
+            this::professorFailureView
+        );
     }
 
 
@@ -187,18 +150,13 @@ public class UserController {
      */
     @PutMapping(path = "/update/build")
     public ModelAndView updateUser(@Valid @ModelAttribute Builder builder) {
-        try {
-            return new ModelAndView(
-                "user_admin/update/update-result",
-                "result",
-                userService.updateUser(new RegistrationForm(builder)) != null?
-                    "User updated successfully" : "User not updated"
-            );
-        } catch (ObjectNotFoundException e) {
-            return new ModelAndView(alreadyExistsExceptionUri + "object-not-found", EXCEPTION_MESSAGE, e.getMessage());
-        } catch (DataAccessServiceException e) {
-            return new ModelAndView(dataAccessExceptionUri, EXCEPTION_MESSAGE, e.getMessage());
-        }
+        return new ModelAndView(
+            "user_admin/update/update-result",
+            "result",
+            userService.updateUser(new RegistrationForm(builder))
+                .map(_ -> "User updated successfully")
+                .orElse("User not updated")
+        );
     }
 
 
@@ -208,22 +166,76 @@ public class UserController {
      * @return ModelAndView
      */
     @DeleteMapping(path = "/delete")
-    @PreAuthorize("hasRole('ADMIN')")
     public ModelAndView deleteUser(@RequestParam("id") String userId) {
-        try {
-            return new ModelAndView(
-                "user_admin/delete/delete-result",
-                "result",
-                userService.deleteUser(userId)!= null?
-                    "User delete successfully" : "User not deleted"
-            );
-        } catch (UsernameNotFoundException e) {
-            return new ModelAndView(notFoundExceptionUri + "/username-not-found", EXCEPTION_MESSAGE, e.getMessage());
-        } catch (AccessDeniedException e) {
-            return new ModelAndView(accessDeniedExceptionUri + "/access-denied", EXCEPTION_MESSAGE, e.getMessage());
-        } catch (DataAccessServiceException e) {
-            return new ModelAndView(dataAccessExceptionUri, EXCEPTION_MESSAGE, e.getMessage());
-        }
+        return new ModelAndView(
+            "user_admin/delete/delete-result",
+            "result",
+            userService.deleteUser(userId)
+                .map(_ -> "User delete successfully")
+                .orElse("User not deleted")
+        );
     }
+
+
+
+
+    // helper methods
+
+    /**
+     * Handles the creation of a user (student or professor)
+     * @param <T>
+     * @param request
+     * @param creationFunction
+     * @param successView
+     * @param failureView
+     * @return ModelAndView
+     */
+    private <T> ModelAndView handleCreation(
+        HttpServletRequest request,
+        Function<Builder, Optional<T>> creationFunction,
+        Function<T, ModelAndView> successView,
+        Supplier<ModelAndView> failureView
+    ) {
+        Builder builder = (Builder) request.getSession().getAttribute(BUILDER);
+        return creationFunction
+            .apply(builder)
+            .map(successView)
+            .orElseGet(failureView);
+    }
+
+
+    // views
+
+    /** admin success view */
+    private ModelAndView adminSuccessView(UserDto admin) {
+        return new ModelAndView("user_admin/create/admin-success", "admin", admin);
+    }
+
+    /** admin failure view */
+    private ModelAndView adminFailureView() {
+        return new ModelAndView("user_admin/create/admin-failure", "message", "admin not created");
+    }
+
+
+    /** student success view */
+    private ModelAndView studentSuccessView(StudentDto student) {
+        return new ModelAndView("user_student/create/student-success", "student", student);
+    }
+
+    /** student failure view */
+    private ModelAndView studentFailureView() {
+        return new ModelAndView("user_student/create/student-failure", "message", "student not created");
+    }
+
+    /** professor success view */
+    private ModelAndView professorSuccessView(ProfessorDto professor) {
+        return new ModelAndView("user_professor/create/professor-success", "professor", professor);
+    }
+
+    /** professor failure view */
+    private ModelAndView professorFailureView() {
+        return new ModelAndView("user_professor/create/professor-failure", "message", "professor not created");
+    }
+
 
 }

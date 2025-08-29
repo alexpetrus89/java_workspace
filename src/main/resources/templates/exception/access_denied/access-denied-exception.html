@@ -13,7 +13,9 @@
     <h1>Access denied</h1>
     <p>You do not have permission to access this resource.</p>
     <p>If you believe this is a mistake, please contact an administrator.</p>
-    <p><a th:href="@{/}">Return to home page</a></p>
+    <p th:text="${message}"></p>
+    <p><a href="javascript:history.back()">Go back</a></p>
+    <p><a th:href="@{/home}">Return to home page</a></p>
 </div>
 </body>
 </html>

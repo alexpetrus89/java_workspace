@@ -24,27 +24,27 @@ public class UmsConfig {
         this.applicationContext = applicationContext;
 
         // campi principali del form di registrazione
-        fieldToView.put("username", "exception/illegal/registration/invalid-username");
-        fieldToView.put("usernameAlreadyTaken", "exception/illegal/registration/username-already-taken");
+        fieldToView.put("username", "exception/illegal/invalid/invalid-username");
+        fieldToView.put("usernameAlreadyTaken", "exception/illegal/invalid/username-already-taken");
 
         // password + vincolo di classe @PasswordMatches
-        fieldToView.put("password", "exception/illegal/registration/invalid-password");
-        fieldToView.put("passwordsDoNotMatch", "exception/illegal/registration/password-not-match");
+        fieldToView.put("password", "exception/illegal/invalid/invalid-password");
+        fieldToView.put("passwordsDoNotMatch", "exception/illegal/invalid/password-not-match");
 
-        fieldToView.put("firstName", "exception/illegal/registration/invalid-first-name");
-        fieldToView.put("lastName", "exception/illegal/registration/invalid-last-name");
-        fieldToView.put("dob", "exception/illegal/registration/invalid-dob");
-        fieldToView.put("fiscalCode", "exception/illegal/registration/invalid-fiscal-code");
+        fieldToView.put("firstName", "exception/illegal/invalid/invalid-first-name");
+        fieldToView.put("lastName", "exception/illegal/invalid/invalid-last-name");
+        fieldToView.put("dob", "exception/illegal/invalid/invalid-dob");
+        fieldToView.put("fiscalCode", "exception/illegal/invalid/invalid-fiscal-code");
 
         // indirizzo
-        final String invalidAddressView = "exception/illegal/registration/invalid-address";
+        final String invalidAddressView = "exception/illegal/invalid/invalid-address";
         fieldToView.put("street", invalidAddressView);
         fieldToView.put("city", invalidAddressView);
         fieldToView.put("state", invalidAddressView);
         fieldToView.put("zip", invalidAddressView);
 
-        fieldToView.put("phone", "exception/illegal/registration/invalid-phone");
-        fieldToView.put("role", "exception/illegal/registration/invalid-role");
+        fieldToView.put("phone", "exception/illegal/invalid/invalid-phone");
+        fieldToView.put("role", "exception/illegal/invalid/invalid-role");
 
         // fallback generico
         fieldToView.put("register", "exception/illegal/invalid-register");
@@ -78,19 +78,24 @@ public class UmsConfig {
 
     @Bean
     String genericExceptionUri() {
-        return "/exception/error";
+        return "/exception/generic-exception";
     }
 
 
     // commons uri
     @Bean
     String dataAccessExceptionUri() {
-        return "/exception/data/data-access-error";
+        return "/exception/data/data-access-exception";
     }
 
     @Bean
     String accessDeniedExceptionUri() {
         return "/exception/access_denied";
+    }
+
+    @Bean
+    String illegalArgumentExceptionUri() {
+        return "/exception/illegal";
     }
 
     @Bean
@@ -104,9 +109,10 @@ public class UmsConfig {
     }
 
     @Bean
-    String illegalArgumentExceptionUri() {
-        return "/exception/illegal";
+    String jsonProcessingExceptionUri() {
+        return "/exception/data/json-processing-exception";
     }
+
 
 
 

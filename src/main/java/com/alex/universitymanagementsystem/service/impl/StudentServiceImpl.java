@@ -2,6 +2,7 @@ package com.alex.universitymanagementsystem.service.impl;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.retry.annotation.Backoff;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import com.alex.universitymanagementsystem.domain.Address;
 import com.alex.universitymanagementsystem.domain.Course;
 import com.alex.universitymanagementsystem.domain.DegreeCourse;
+import com.alex.universitymanagementsystem.domain.ExaminationAppeal;
 import com.alex.universitymanagementsystem.domain.Student;
 import com.alex.universitymanagementsystem.domain.StudyPlan;
 import com.alex.universitymanagementsystem.domain.immutable.FiscalCode;
@@ -25,6 +27,7 @@ import com.alex.universitymanagementsystem.exception.ObjectAlreadyExistsExceptio
 import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
 import com.alex.universitymanagementsystem.mapper.StudentMapper;
 import com.alex.universitymanagementsystem.repository.DegreeCourseRepository;
+import com.alex.universitymanagementsystem.repository.ExaminationAppealRepository;
 import com.alex.universitymanagementsystem.repository.StudentRepository;
 import com.alex.universitymanagementsystem.repository.StudyPlanRepository;
 import com.alex.universitymanagementsystem.service.StudentService;
@@ -41,6 +44,7 @@ public class StudentServiceImpl implements StudentService {
 	// inject repository - instance variable
 	private final StudentRepository studentRepository;
 	private final DegreeCourseRepository degreeCourseRepository;
+	private final ExaminationAppealRepository examinationAppealRepository;
 	private final StudyPlanRepository studyPlanRepository;
 	private final PasswordEncoder passwordEncoder;
 
@@ -49,11 +53,13 @@ public class StudentServiceImpl implements StudentService {
 	public StudentServiceImpl(
 		StudentRepository studentRepository,
 		DegreeCourseRepository degreeCourseRepository,
+		ExaminationAppealRepository examinationAppealRepository,
 		StudyPlanRepository studyPlanRepository,
 		PasswordEncoder passwordEncoder
 	) {
 		this.studentRepository = studentRepository;
 		this.degreeCourseRepository = degreeCourseRepository;
+		this.examinationAppealRepository = examinationAppealRepository;
 		this.studyPlanRepository = studyPlanRepository;
 		this.passwordEncoder = passwordEncoder;
 	}
@@ -141,7 +147,7 @@ public class StudentServiceImpl implements StudentService {
 	 * @param form with data of the student to be added
 	 * @param degreeCourse degree course of the new student
 	 * @param ordering the ordering of the courses in the study plan
-	 * @return StudentDto object containing the added student's data.
+	 * @return Optional<StudentDto> object containing the added student's data.
 	 * @throws IllegalArgumentException if the form is invalid.
 	 * @throws ObjectAlreadyExistsException if a student with the same register
 	 * 		   already or with same name and dob exists in the repository.
@@ -152,7 +158,7 @@ public class StudentServiceImpl implements StudentService {
 	@Override
 	@Transactional(rollbackOn = {IllegalArgumentException.class, ObjectAlreadyExistsException.class, ObjectNotFoundException.class})
     @Retryable(retryFor = PersistenceException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
-    public StudentDto addNewStudent(RegistrationForm form, DegreeCourse degreeCourse, String ordering)
+    public Optional<StudentDto> addNewStudent(RegistrationForm form, DegreeCourse degreeCourse, String ordering)
 		throws IllegalArgumentException, ObjectAlreadyExistsException, ObjectNotFoundException, DataAccessServiceException
 	{
 		try {
@@ -188,7 +194,7 @@ public class StudentServiceImpl implements StudentService {
 			// save the study plan
 			studyPlanRepository.saveAndFlush(student.getStudyPlan());
 			// return the student as DTO
-			return StudentMapper.toDto(student);
+			return Optional.of(StudentMapper.toDto(student));
 		} catch (PersistenceException e) {
             throw new DataAccessServiceException("Error accessing database for user " + form.getUsername() + ": " + e.getMessage(), e);
         }
@@ -236,6 +242,30 @@ public class StudentServiceImpl implements StudentService {
 		} catch (PersistenceException e) {
             throw new DataAccessServiceException("Error accessing database for user " + form.getUsername() + ": " + e.getMessage(), e);
         }
+    }
+
+
+	/**
+	 * Deletes the relationship between a student and their associated entities.
+	 * @param student the student whose relationships are to be deleted
+	 * @return
+	 */
+	@Override
+	@Transactional
+    @Retryable(retryFor = PersistenceException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
+	public void deleteStudentRelationship(Student student) {
+        // 1. Remove the student's StudyPlan
+        StudyPlan studyPlan = student.getStudyPlan();
+        if (studyPlan != null)
+            studyPlanRepository.delete(studyPlan);
+
+        // 2. Remove the student's Register from all ExaminationAppeals
+        List<ExaminationAppeal> appeals = examinationAppealRepository.findAll();
+        for (ExaminationAppeal appeal : appeals)
+            if (appeal.getRegisters().contains(student.getRegister())) {
+                appeal.getRegisters().remove(student.getRegister());
+                examinationAppealRepository.save(appeal); // update the appeal
+            }
     }
 
 

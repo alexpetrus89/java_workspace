@@ -8,9 +8,9 @@
     <title>Uni Journey</title>
 </head>
 <body>
-    <h1>Error: Invalid username</h1>
+	<h1>Error: failure to create new admin</h1>
     <p th:text="${message}"></p>
-    <p>The username cannot be blank. Please enter a valid username.</p>
     <p><a href="javascript:history.back()">Go back</a></p>
+    <a href="#" th:href="@{/home}">Back to home</a>
 </body>
 </html>

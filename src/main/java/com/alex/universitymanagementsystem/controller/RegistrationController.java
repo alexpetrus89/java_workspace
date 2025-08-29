@@ -71,8 +71,8 @@ public class RegistrationController {
         return switch (form.getRole()) {
             // Reindirizza l'utente al metodo createNewStudent
             case RoleType.STUDENT -> "redirect:user_student/create/create-student-from-user";
-            // Reindirizza l'utente al metodo createProfessor (non mostrato nel codice)
-            case RoleType.PROFESSOR -> "redirect:user_professor/create/create-professor-from-user";
+            // Reindirizza l'utente professor al login
+            case RoleType.PROFESSOR -> "forward:api/v1/user/create-professor";
             // Reindirizza l'utente admin al login
             case RoleType.ADMIN -> "forward:api/v1/user/create-admin";
             // Reindirizza all'utente alla pagina di login

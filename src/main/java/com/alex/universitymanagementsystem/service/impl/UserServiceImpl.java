@@ -1,11 +1,13 @@
 package com.alex.universitymanagementsystem.service.impl;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -13,23 +15,19 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.alex.universitymanagementsystem.domain.Address;
-import com.alex.universitymanagementsystem.domain.ExaminationAppeal;
 import com.alex.universitymanagementsystem.domain.Student;
-import com.alex.universitymanagementsystem.domain.StudyPlan;
 import com.alex.universitymanagementsystem.domain.User;
 import com.alex.universitymanagementsystem.domain.immutable.FiscalCode;
 import com.alex.universitymanagementsystem.domain.immutable.UserId;
 import com.alex.universitymanagementsystem.dto.RegistrationForm;
 import com.alex.universitymanagementsystem.dto.UserDto;
 import com.alex.universitymanagementsystem.enum_type.DomainType;
-import com.alex.universitymanagementsystem.enum_type.RoleType;
 import com.alex.universitymanagementsystem.exception.DataAccessServiceException;
 import com.alex.universitymanagementsystem.exception.ObjectAlreadyExistsException;
 import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
 import com.alex.universitymanagementsystem.mapper.UserMapper;
-import com.alex.universitymanagementsystem.repository.ExaminationAppealRepository;
-import com.alex.universitymanagementsystem.repository.StudyPlanRepository;
 import com.alex.universitymanagementsystem.repository.UserRepository;
+import com.alex.universitymanagementsystem.service.StudentService;
 import com.alex.universitymanagementsystem.service.UserService;
 
 import jakarta.persistence.PersistenceException;
@@ -40,14 +38,12 @@ public class UserServiceImpl implements UserService{
 
     // instance variable
     private final UserRepository userRepository;
-    private final StudyPlanRepository studyPlanRepository;
-    private final ExaminationAppealRepository examinationAppealRepository;
+    private final StudentService studentService;
     private final PasswordEncoder passwordEncoder;
 
-    public UserServiceImpl(UserRepository userRepository, StudyPlanRepository studyPlanRepository, ExaminationAppealRepository examinationAppealRepository, PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserRepository userRepository, StudentService studentService, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
-        this.studyPlanRepository = studyPlanRepository;
-        this.examinationAppealRepository = examinationAppealRepository;
+        this.studentService = studentService;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -90,37 +86,22 @@ public class UserServiceImpl implements UserService{
     /**
      * Add new user
      * @param form with data of the user to be added
-     * @return UserDto
+     * @return Optional<UserDto>
      * @throws ObjectAlreadyExistsException if user to add already exists
      * @throws DataAccessServiceException if there are trouble accessing the database
      */
     @Override
 	@Transactional(rollbackOn = ObjectAlreadyExistsException.class)
     @Retryable(retryFor = PersistenceException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
-    public UserDto addNewUser(RegistrationForm form) throws ObjectAlreadyExistsException, DataAccessServiceException {
+    public Optional<UserDto> addNewUser(RegistrationForm form) throws ObjectAlreadyExistsException, DataAccessServiceException {
         try {
-            // check if the user already exists
-            if(userRepository.existsByUsername(form.getUsername()))
-                throw new ObjectAlreadyExistsException(DomainType.USER);
-
-            // check if user with same fiscal code already exists
-            if(userRepository.existsByFiscalCode_FiscalCode(form.getFiscalCode()))
-                throw new ObjectAlreadyExistsException(DomainType.USER);
-
-            // check if exists username with same fullname and dob
-            if(userRepository
-                    .findByFullname(form.getFirstName(), form.getLastName())
-                    .stream()
-                    .anyMatch(u -> (u.getFirstName() + " " + u.getLastName()).equals(form.getFirstName() + " " + form.getLastName()) &&
-                userRepository
-                    .findByDob(form.getDob())
-                    .stream()
-                    .anyMatch(uDob -> uDob.getDob().isEqual(form.getDob()))))
-                throw new ObjectAlreadyExistsException(DomainType.USER);
+            // sanity checks
+            validateNewUser(form);
 
             // save the user
             User user = userRepository.saveAndFlush((form.toUser(passwordEncoder)));
-            return UserMapper.toDto(user);
+            // if the user was created successfully, return the DTO
+            return Optional.of(UserMapper.toDto(user));
 
         } catch (PersistenceException e) {
             throw new DataAccessServiceException("Error accessing database for user " + form.getUsername() + ": " + e.getMessage(), e);
@@ -133,14 +114,15 @@ public class UserServiceImpl implements UserService{
      * repository.
      * This method is transactional and mapped to the HTTP PUT request for "/update".
      * @param form with new data of the user to be updated
-     * @return UserDto
+     * @return Optional<UserDto> data transfer object containing the updated user information
      * @throws ObjectNotFoundException if the authenticated user is not found.
      * @throws DataAccessServiceException if there are trouble accessing the database
      */
     @Override
+    @PreAuthorize("#id == authentication.principal.id or hasRole('ADMIN')")
     @Transactional(rollbackOn = ObjectNotFoundException.class)
     @Retryable(retryFor = PersistenceException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
-    public UserDto updateUser(RegistrationForm form)
+    public Optional<UserDto> updateUser(RegistrationForm form)
         throws ObjectNotFoundException, DataAccessServiceException
     {
         // SecurityContextHolder.getContext()	Recupera il contesto di sicurezza
@@ -168,7 +150,8 @@ public class UserServiceImpl implements UserService{
                 user.setRole(form.getRole());
 
             // save the user
-            return UserMapper.toDto(userRepository.saveAndFlush(user));
+            User updatedUser = userRepository.saveAndFlush(user);
+            return Optional.of(UserMapper.toDto(updatedUser));
         } catch (PersistenceException e) {
             throw new DataAccessServiceException("Error accessing database for user " + user.getId() + ": " + e.getMessage(), e);
         }
@@ -178,38 +161,30 @@ public class UserServiceImpl implements UserService{
     /**
      * Deletes a user from the repository.
      * @param userId user id of the user to be deleted
-     * @return the deleted user dto
+     * @return Optional<UserDto> data transfer object containing the deleted user information
      * @throws AccessDeniedException if the authenticated user is not an admin
      * @throws UsernameNotFoundException if the user to be deleted is not found
      * @throws DataAccessServiceException if there are trouble accessing the database
      */
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     @Transactional(rollbackOn = {AccessDeniedException.class, UsernameNotFoundException.class})
     @Retryable(retryFor = PersistenceException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
-    public UserDto deleteUser(String userId)
+    public Optional<UserDto> deleteUser(String userId)
         throws AccessDeniedException, UsernameNotFoundException, DataAccessServiceException
     {
-
         try {
-            // get the authenticated user
-            User admin =  (User) SecurityContextHolder
-                .getContext()
-                .getAuthentication()
-                .getPrincipal();
-
-            if(!admin.getRole().equals(RoleType.ADMIN))
-                throw new AccessDeniedException("Only admin can delete users");
 
             User userToDelete = userRepository
                 .findById(new UserId(UUID.fromString(userId)))
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
             if(userToDelete instanceof Student student)
-                deleteStudentRelationship(student);
+                studentService.deleteStudentRelationship(student);
 
             // delete the user
             userRepository.delete(userToDelete);
-            return UserMapper.toDto(userToDelete);
+            return Optional.of(UserMapper.toDto(userToDelete));
         } catch (PersistenceException e) {
             throw new DataAccessServiceException("Error accessing database for user " + userId + ": " + e.getMessage(), e);
         }
@@ -217,22 +192,39 @@ public class UserServiceImpl implements UserService{
 
 
 
-    // private methods
-    public void deleteStudentRelationship(Student student) {
-        // 1. Remove the student's StudyPlan
-        StudyPlan studyPlan = student.getStudyPlan();
-        if (studyPlan != null) {
-            studyPlanRepository.delete(studyPlan);
-        }
 
-        // 2. Remove the student's Register from all ExaminationAppeals
-        List<ExaminationAppeal> appeals = examinationAppealRepository.findAll();
-        for (ExaminationAppeal appeal : appeals) {
-            if (appeal.getRegisters().contains(student.getRegister())) {
-                appeal.getRegisters().remove(student.getRegister());
-                examinationAppealRepository.save(appeal); // update the appeal
-            }
-        }
+
+
+
+    // helper methods
+
+    /**
+     * Validates the new user to be added to the repository.
+     * @param form with data of the user to be added
+     * @throws ObjectAlreadyExistsException if user to add already exists
+     */
+    private void validateNewUser(RegistrationForm form)
+        throws ObjectAlreadyExistsException
+    {
+        // check if the user already exists
+        if(userRepository.existsByUsername(form.getUsername()))
+            throw new ObjectAlreadyExistsException(DomainType.USER);
+
+        // check if user with same fiscal code already exists
+        if(userRepository.existsByFiscalCode_FiscalCode(form.getFiscalCode()))
+            throw new ObjectAlreadyExistsException(DomainType.USER);
+
+        // check if exists username with same fullname and dob
+        if(userRepository
+                .findByFullname(form.getFirstName(), form.getLastName())
+                .stream()
+                .anyMatch(u -> (u.getFirstName() + " " + u.getLastName()).equals(form.getFirstName() + " " + form.getLastName()) &&
+            userRepository
+                .findByDob(form.getDob())
+                .stream()
+                .anyMatch(uDob -> uDob.getDob().isEqual(form.getDob()))))
+                throw new ObjectAlreadyExistsException(DomainType.USER);
     }
+
 
 }

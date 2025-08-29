@@ -194,7 +194,7 @@ public class ExaminationOutcomeServiceImpl implements ExaminationOutcomeService 
             // recupera l'appello
             ExaminationAppeal appeal = examinationAppealRepository
                 .findById(dto.getAppeal().getId())
-                .orElseThrow(() -> new ObjectNotFoundException("Appeal not found"));
+                .orElseThrow(() -> new ObjectNotFoundException(DomainType.EXAMINATION_APPEAL));
 
             ExaminationOutcome outcome = ExaminationOutcomeMapper.toEntity(dto, appeal);
 

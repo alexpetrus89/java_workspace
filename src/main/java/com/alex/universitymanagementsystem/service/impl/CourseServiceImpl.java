@@ -56,11 +56,11 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public Set<CourseDto> getCourses() throws DataAccessServiceException {
         try {
-        return courseRepository
-            .findAll()
-            .stream()
-            .map(CourseMapper::toDto)
-            .collect(Collectors.toSet());
+            return courseRepository
+                .findAll()
+                .stream()
+                .map(CourseMapper::toDto)
+                .collect(Collectors.toSet());
         } catch (PersistenceException e) {
             throw new DataAccessServiceException("Error accessing database for fetching courses: " + e.getMessage(), e);
         }

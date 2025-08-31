@@ -36,11 +36,11 @@ import java.text.ParseException;
 import java.util.Optional;
 
 import org.hibernate.ObjectNotFoundException;
-import org.hibernate.TransientObjectException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
+import org.springframework.mail.MailException;
 import org.springframework.messaging.handler.annotation.support.MethodArgumentNotValidException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.BindException;
@@ -109,8 +109,8 @@ public class GlobalControllerExceptionHandler {
             e.getClass().getName(), root.getClass().getName(), e);
 
         // --- Smistamento verso handler specifici ---
-        if (root instanceof TransientObjectException toe)
-            return handleTransientObjectException(toe);
+        if(root instanceof MailException me)
+            return handleMailException(me);
         if (root instanceof DataAccessServiceException dae)
             return handleDataAccessServiceException(dae);
         if (root instanceof AccessDeniedException ade)
@@ -348,6 +348,14 @@ public class GlobalControllerExceptionHandler {
     }
 
 
+    @ExceptionHandler(MailException.class)
+    public ModelAndView handleMailException(MailException e) {
+        logger.error("Mail sending error", e);
+        String message = "An error occurred while sending email: " + e.getMessage();
+        return new ModelAndView(genericExceptionUri, MESSAGE, message);
+    }
+
+
     /**
      * Handles validation exceptions and returns a ModelAndView with a variable view name
      * and a model containing the error message.
@@ -373,6 +381,9 @@ public class GlobalControllerExceptionHandler {
 
 
 
+
+
+
     // helpers
     /**
      * Helper record ValidationInfo.
@@ -386,22 +397,34 @@ public class GlobalControllerExceptionHandler {
     private ValidationInfo extractValidationInfo(BindingResult br) {
         if (br == null) return new ValidationInfo("", UNKNOWN_VALIDATION_ERROR);
 
+        // Gestione FieldError
         FieldError fieldError = br.getFieldError();
-        ObjectError objectError = br.getGlobalError();
+        if (fieldError != null)
+            return new ValidationInfo(
+                normalizeFieldName(fieldError.getField()),
+                fieldError.getDefaultMessage()
+            );
 
-        if (fieldError != null) {
-            return new ValidationInfo(normalizeFieldName(fieldError.getField()), fieldError.getDefaultMessage());
-        } else if (objectError != null) {
-            // associa vincoli di classe ad un campo specifico, es: "passwordsDoNotMatch"
-            return new ValidationInfo("passwordsDoNotMatch", objectError.getDefaultMessage());
-        } else {
-            return new ValidationInfo("", UNKNOWN_VALIDATION_ERROR);
+        // Gestione ObjectError con mappatura scalabile
+        ObjectError objectError = br.getGlobalError();
+        if (objectError != null) {
+            String fieldKey = mapObjectErrorCodeToField(objectError.getCode());
+            return new ValidationInfo(
+                fieldKey,
+                objectError.getDefaultMessage() != null ? objectError.getDefaultMessage() : UNKNOWN_VALIDATION_ERROR
+            );
         }
+
+        // Nessun errore trovato
+        return new ValidationInfo("", UNKNOWN_VALIDATION_ERROR);
     }
 
 
     /**
      * Helper for ConstraintViolationException.
+     * Extracts the first constraint violation information.
+     * @param ex the ConstraintViolationException to be handled
+     * @return the extracted validation information
      */
     private ValidationInfo extractConstraintViolationInfo(ConstraintViolationException ex) {
     ConstraintViolation<?> violation = ex.getConstraintViolations().stream().findFirst().orElse(null);
@@ -417,6 +440,8 @@ public class GlobalControllerExceptionHandler {
     /**
      * Normalize field, take the last part after the dot if it exists.
      * Es: "username.usernameAlreadyTaken" -> "usernameAlreadyTaken"
+     * @param rawFieldName the raw field name
+     * @return the normalized field name
      */
     private String normalizeFieldName(String rawFieldName) {
         if (rawFieldName.contains("."))
@@ -425,56 +450,57 @@ public class GlobalControllerExceptionHandler {
     }
 
 
+    /**
+     * Maps an object error code to a field name.
+     * @param code the error code
+     * @return the corresponding field name
+     */
+    private String mapObjectErrorCodeToField(String code) {
+        if (code == null) return "";
 
-
-
-
-
-    @ExceptionHandler(TransientObjectException.class)
-    public ModelAndView handleTransientObjectException(TransientObjectException e) {
-        logger.error("Transient object error", e);
-
-        ModelAndView mav = new ModelAndView("exception/transient-object-exception");
-        mav.addObject("errorType", e.getClass().getName());           // nome completo della classe eccezione
-        mav.addObject(MESSAGE, e.getMessage());                     // messaggio base
-        mav.addObject("stackTrace", e.getStackTrace());               // stacktrace come array
-        Throwable cause = e.getCause();
-        mav.addObject("cause", cause != null ? cause.toString() : "N/A"); // causa
-        mav.addObject("timestamp", java.time.LocalDateTime.now());    // timestamp
-        return mav;
+        return switch (code) {
+            case "PasswordMatches" -> "passwordsDoNotMatch";
+            case "SwapCoursesConstraint" -> "invalidChoice";
+            default -> "";
+        };
     }
 
+
     /**
-     * Estrae la causa più profonda di un'eccezione.
+     * Helper for extracting the root cause of an exception.
+     * @param e the exception to inspect
+     * @return the root cause of the exception
      */
     private Throwable getRootCause(Throwable e) {
         Throwable cause = e;
-        while (cause.getCause() != null && cause.getCause() != cause) {
+        while (cause.getCause() != null && cause.getCause() != cause)
             cause = cause.getCause();
-        }
         return cause;
     }
 
 
     /**
-     * Costruisce una pagina di errore dettagliata.
+     * Helper for building a detailed error view.
+     * @param e the exception to inspect
+     * @param viewName the name of the view to render
+     * @return a ModelAndView object containing the error details
      */
     private ModelAndView buildDetailedErrorView(Throwable e, String viewName) {
         ModelAndView mav = new ModelAndView(viewName);
 
-        // Tipo di eccezione
+        // exception type
         mav.addObject("errorType", e.getClass().getName());
 
-        // Messaggio
+        // Message
         mav.addObject(MESSAGE, e.getMessage());
 
-        // Stack trace formattato in HTML leggibile
+        // Stack trace formatted as readable HTML
         StringBuilder stackTraceBuilder = new StringBuilder();
         for (StackTraceElement element : e.getStackTrace())
             stackTraceBuilder.append(element.toString()).append("<br/>");
         mav.addObject("stackTrace", stackTraceBuilder.toString());
 
-        // Causa
+        // Cause
         Throwable cause = e.getCause();
         mav.addObject("cause", cause != null ? cause.toString() : "N/A");
 

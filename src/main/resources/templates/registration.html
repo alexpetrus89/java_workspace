@@ -54,9 +54,11 @@
         <input type="text" th:field="*{lastName}"
             required title="Please enter your last name"/><br/>
 
-        <label for="dob">Date of Birth:</label>
-        <input type="date" th:field="*{dob}" title="Enter date of birth"
-            required placeholder="Your date of birth"></p>
+        <div class="inline-field">
+            <label for="dob">Date of Birth:</label>
+            <input type="date" th:field="*{dob}" title="Enter date of birth"
+                required placeholder="Your date of birth">
+        </div>
 
         <label for="fiscalCode">Fiscal code: </label>
         <input type="text" th:field="*{fiscalCode}"
@@ -82,12 +84,15 @@
         <input type="text" th:field="*{phone}"
             required title="Please enter your phone number"/><br/>
 
-        <label for="role">Role: </label>
-        <select th:field="*{role}" id="role">
-            <option value="STUDENT">Student</option>
-            <option value="PROFESSOR">Professor</option>
-            <option value="ADMIN">Admin</option>
-        </select><br/>
+        <div class="inline-field">
+            <label for="role">Role: </label>
+            <select th:field="*{role}" id="role">
+                <option value="STUDENT">Student</option>
+                <option value="PROFESSOR">Professor</option>
+                <option value="ADMIN">Admin</option>
+            </select>
+        </div>
+        <div class="clear-both"></div>
 
         <input type="submit" value="Submit"/><input type="reset" value="Reset"/>
     </form>

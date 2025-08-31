@@ -2,7 +2,6 @@ package com.alex.universitymanagementsystem.controller;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,8 +22,7 @@ import com.alex.universitymanagementsystem.domain.immutable.Register;
 import com.alex.universitymanagementsystem.dto.ExaminationAppealDto;
 import com.alex.universitymanagementsystem.dto.ExaminationOutcomeDto;
 import com.alex.universitymanagementsystem.exception.DataAccessServiceException;
-import com.alex.universitymanagementsystem.exception.ObjectAlreadyExistsException;
-import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
+import com.alex.universitymanagementsystem.service.EmailService;
 import com.alex.universitymanagementsystem.service.ExaminationAppealService;
 import com.alex.universitymanagementsystem.service.ExaminationOutcomeService;
 import com.alex.universitymanagementsystem.service.OutcomeNotificationService;
@@ -41,7 +39,6 @@ public class ExaminationOutcomeController {
 
     // constants
     private static final String EXCEPTION_MESSAGE = "message";
-    private static final String OBJECT_NOT_FOUND = "/object-not-found";
 
     // logger
     private final Logger logger =
@@ -49,28 +46,27 @@ public class ExaminationOutcomeController {
 
     @Value("#{dataAccessExceptionUri}")
     private String dataAccessExceptionUri;
-    @Value("#{notFoundExceptionUri}")
-    private String notFoundExceptionUri;
-    @Value("#{alreadyExistsExceptionUri}")
-    private String alreadyExistsExceptionUri;
 
     // instance variables
     private final ExaminationOutcomeService examinationOutcomeService;
     private final ExaminationAppealService examinationAppealService;
     private final StudentService studentService;
     private final OutcomeNotificationService outcomeNotificationService;
+    private final EmailService emailService;
 
     // constructor
     public ExaminationOutcomeController(
         ExaminationOutcomeService examinationOutcomeService,
         ExaminationAppealService examinationAppealService,
         StudentService studentService,
-        OutcomeNotificationService outcomeNotificationService
+        OutcomeNotificationService outcomeNotificationService,
+        EmailService emailService
     ) {
         this.examinationOutcomeService = examinationOutcomeService;
         this.examinationAppealService = examinationAppealService;
         this.studentService = studentService;
         this.outcomeNotificationService = outcomeNotificationService;
+        this.emailService = emailService;
     }
 
 
@@ -81,14 +77,8 @@ public class ExaminationOutcomeController {
      */
     @GetMapping(path = "/view")
     public ModelAndView getExaminationOutcomes(@AuthenticationPrincipal Student student) {
-        try {
-            List<ExaminationOutcomeDto> outcomes = examinationOutcomeService.getStudentOutcomes(student.getRegister().toString());
-            return new ModelAndView("user_student/examinations/examination_outcome/outcome", "outcomes", outcomes);
-        } catch (NoSuchElementException e) {
-            return new ModelAndView(notFoundExceptionUri + OBJECT_NOT_FOUND, EXCEPTION_MESSAGE, e.getMessage());
-        } catch (DataAccessServiceException e) {
-            return new ModelAndView(dataAccessExceptionUri, EXCEPTION_MESSAGE, e.getMessage());
-        }
+        List<ExaminationOutcomeDto> outcomes = examinationOutcomeService.getStudentOutcomes(student.getRegister().toString());
+        return new ModelAndView("user_student/examinations/examination_outcome/outcome", "outcomes", outcomes);
     }
 
 
@@ -99,14 +89,8 @@ public class ExaminationOutcomeController {
      */
     @GetMapping(path = "/outcome")
     public ModelAndView getOutcome(@RequestParam Long id) {
-        try {
-            ExaminationOutcomeDto outcome = examinationOutcomeService.getOutcomeById(id);
-            return new ModelAndView("user_student/examinations/examination_outcome/outcome-result", "outcome", outcome);
-        } catch (ObjectNotFoundException e) {
-            return new ModelAndView(notFoundExceptionUri + OBJECT_NOT_FOUND, EXCEPTION_MESSAGE, e.getMessage());
-        } catch (DataAccessServiceException e) {
-            return new ModelAndView(dataAccessExceptionUri, EXCEPTION_MESSAGE, e.getMessage());
-        }
+        ExaminationOutcomeDto outcome = examinationOutcomeService.getOutcomeById(id);
+        return new ModelAndView("user_student/examinations/examination_outcome/outcome-result", "outcome", outcome);
     }
 
 
@@ -118,17 +102,9 @@ public class ExaminationOutcomeController {
      */
     @GetMapping(path = "/make/{register}/{id}")
     public ModelAndView makeExaminationOutcome(@PathVariable String register, @PathVariable Long id) {
-        try {
-            ExaminationAppealDto appeal = examinationAppealService.getExaminationAppealById(id);
-            ExaminationOutcomeDto outcome = new ExaminationOutcomeDto(appeal, register);
-            return new ModelAndView("user_professor/examinations/examination_outcome/evaluation", "outcome", outcome);
-        } catch (IllegalArgumentException e) {
-            return new ModelAndView("exception/illegal/illegal-parameter", EXCEPTION_MESSAGE, e.getMessage());
-        } catch (NoSuchElementException e) {
-            return new ModelAndView(notFoundExceptionUri + OBJECT_NOT_FOUND, EXCEPTION_MESSAGE, e.getMessage());
-        } catch (DataAccessServiceException e) {
-            return new ModelAndView(dataAccessExceptionUri, EXCEPTION_MESSAGE, e.getMessage());
-        }
+        ExaminationAppealDto appeal = examinationAppealService.getExaminationAppealById(id);
+        ExaminationOutcomeDto outcome = new ExaminationOutcomeDto(appeal, register);
+        return new ModelAndView("user_professor/examinations/examination_outcome/evaluation", "outcome", outcome);
     }
 
 
@@ -139,19 +115,10 @@ public class ExaminationOutcomeController {
      */
     @PostMapping(path = "/create")
     public ModelAndView addNewExaminationOutcome(@Valid @ModelAttribute ExaminationOutcomeDto outcome) {
-        try {
-            return examinationOutcomeService
-                .addNewExaminationOutcome(outcome)
-                .map(this::handleSuccess)
-                .orElseGet(this::failureView);
-
-        } catch (ObjectNotFoundException | NoSuchElementException e) {
-            return new ModelAndView(notFoundExceptionUri + OBJECT_NOT_FOUND, EXCEPTION_MESSAGE, e.getMessage());
-        } catch (ObjectAlreadyExistsException e) {
-            return new ModelAndView(alreadyExistsExceptionUri + "object-already-exists", EXCEPTION_MESSAGE, e.getMessage());
-        } catch (DataAccessServiceException e) {
-            return new ModelAndView(dataAccessExceptionUri, EXCEPTION_MESSAGE, e.getMessage());
-        }
+        return examinationOutcomeService
+            .addNewExaminationOutcome(outcome)
+            .map(this::handleSuccess)
+            .orElseGet(this::failureView);
     }
 
 
@@ -180,20 +147,14 @@ public class ExaminationOutcomeController {
      */
     @DeleteMapping(path = "/delete/{id}")
     public ModelAndView deleteExaminationOutcome(@PathVariable Long id) {
-        try {
-            examinationOutcomeService.deleteExaminationOutcome(id);
-            return new ModelAndView("/user_student/examinations/examination-menu");
-        } catch (ObjectNotFoundException e) {
-            return new ModelAndView(notFoundExceptionUri + OBJECT_NOT_FOUND, EXCEPTION_MESSAGE, e.getMessage());
-        } catch (DataAccessServiceException e) {
-            return new ModelAndView(dataAccessExceptionUri, EXCEPTION_MESSAGE, e.getMessage());
-        }
+        examinationOutcomeService.deleteExaminationOutcome(id);
+        return new ModelAndView("/user_student/examinations/examination-menu");
     }
 
 
 
 
-    // private methods
+    // helper methods
     /** Gestisce il caso di outcome creato con successo */
     private ModelAndView handleSuccess(ExaminationOutcomeDto outcome) {
         try {
@@ -203,6 +164,7 @@ public class ExaminationOutcomeController {
 
             String message = buildNotificationMessage(outcome);
             outcomeNotificationService.notifyExamOutcome(username, message);
+            emailService.sendEmail(username, "Exam Outcome Notification", message);
 
             return successView();
         } catch (DataAccessServiceException e) {
@@ -213,8 +175,8 @@ public class ExaminationOutcomeController {
 
     /** Costruisce il messaggio di notifica */
     private String buildNotificationMessage(ExaminationOutcomeDto outcome) {
-        return "The results of the " + outcome.getAppeal().getCourse() +
-                " exam held on " + outcome.getAppeal().getDate() + " are available.";
+        return "The results of the \"" + outcome.getAppeal().getCourse() +
+                "\" exam held on " + outcome.getAppeal().getDate() + " are available.";
     }
 
     /** View in caso di successo */

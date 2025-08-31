@@ -10,11 +10,11 @@
 </head>
 <body>
 	<h1>Examination appeal created</h1>
-    <p th:text="'Course: ' + ${examinationAppeal?.course}"></p>
-    <p th:text="'Degree course: ' + ${examinationAppeal?.degreeCourse}"></p>
-    <p th:text="'Professor: ' + ${examinationAppeal.professorCode}"></p>
-    <p th:text="'Date: ' + ${examinationAppeal?.date}"></p>
-    <p th:text="'Description: ' + ${examinationAppeal?.description}"></p>
+    <p th:text="'Course: ' + ${appeal?.course}"></p>
+    <p th:text="'Degree course: ' + ${appeal?.degreeCourse}"></p>
+    <p th:text="'Professor: ' + ${appeal?.professorCode}"></p>
+    <p th:text="'Date: ' + ${appeal?.date}"></p>
+    <p th:text="'Description: ' + ${appeal?.description}"></p>
     <br>
     <a href="#" th:href="@{/user_professor/examinations/examination_appeal/create/create-examination-appeal}">Submit another</a>
     <br>

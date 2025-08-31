@@ -125,7 +125,6 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() { return username; }
-
     @Override
     public String getPassword() { return password; }
     public String getFirstName() { return firstName; }
@@ -145,14 +144,8 @@ public class User implements UserDetails {
     public void setDob(LocalDate dob) { this.dob = dob; }
     public void setFiscalCode(FiscalCode fiscalCode) { this.fiscalCode = fiscalCode; }
     public void setPhone(String phone) { this.phone = phone; }
-
-    public void setRole(RoleType role) {
-        this.role = role;
-    }
-
-    public void setAddress(Address address) {
-        this.address = address;
-    }
+    public void setRole(RoleType role) { this.role = role; }
+    public void setAddress(Address address) { this.address = address; }
 
 
     // --- UserDetails methods ---

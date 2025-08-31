@@ -28,8 +28,16 @@
             <label for="password">Password: </label>
             <input type="password" name="password" id="password" /><br/>
             <input type="submit" value="Login"/>
+
             <p class="register-link">New user? Click&nbsp;
-                <a class="register-link" th:href="@{/register}">here</a>&nbsp;to register.</p>
+                <a class="register-link" th:href="@{/register}">here</a>&nbsp;to register.
+            </p>
+
+            <p class="forgot-password">
+                Forgot your password? Click&nbsp;
+            <a th:href="@{/forgot-password}">here</a>&nbsp;to reset it.
+            </p>
+
         </form>
         <div class="form-actions">
             <a href="/" class="home-link">Home</a>

@@ -24,10 +24,13 @@
                     <option th:each="course : ${courses}"
                             th:value="${course.name}"
                             th:data-degree="${course.degreeCourse.name}"
+                            th:data-cfu="${course.cfu}"
                             th:text="${course.name + ' - ' + course.degreeCourse.name}">Course</option>
                 </select>
 
                 <input type="hidden" id="degreeCourseName" name="degreeCourseName">
+
+                <input type="hidden" id="courseCfu" name="courseCfu">
             </div>
 
             <div class="form-group">

@@ -3,17 +3,20 @@ package com.alex.universitymanagementsystem.service.impl;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
-import org.springframework.lang.NonNull;
 
-import com.alex.universitymanagementsystem.service.UmsEmailService;
+import com.alex.universitymanagementsystem.service.EmailService;
 
 @Service
-public class UmsEmailServiceImpl implements UmsEmailService {
+public class EmailServiceImpl implements EmailService {
 
-    private JavaMailSender javaMailSender;
+    private final JavaMailSender javaMailSender;
+
+    public EmailServiceImpl(JavaMailSender sender) {
+        this.javaMailSender = sender;
+    }
 
     @Override
-    public void sendEmail(@NonNull String to, @NonNull String subject, @NonNull String body) {
+    public void sendEmail(String to, String subject, String body) {
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setTo(to);
         mailMessage.setSubject(subject);

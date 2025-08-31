@@ -20,6 +20,7 @@ public final class ExaminationAppealMapper {
         dto.setId(appeal.getId());
         dto.setCourse(appeal.getCourse().getName());
         dto.setDegreeCourse(appeal.getCourse().getDegreeCourse().getName());
+        dto.setCourseCfu(appeal.getCourse().getCfu().toString());
         dto.setProfessorCode(appeal.getProfessor().toString());
         dto.setDescription(appeal.getDescription());
         dto.setDate(appeal.getDate());

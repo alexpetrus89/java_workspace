@@ -6,7 +6,6 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,18 +29,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @RequestMapping(path = "api/v1/degree-course")
 public class DegreeCourseController {
 
-    // constants
-    private static final String EXCEPTION_MESSAGE = "message";
-    private static final String OBJECT_NOT_FOUND = "/object-not-found";
-    private static final String ILLEGAL_PARAMETER = "/illegal-parameter";
-
-    @Value("#{dataAccessExceptionUri}")
-    private String dataAccessExceptionUri;
-    @Value("#{notFoundExceptionUri}")
-    private String notFoundExceptionUri;
-    @Value("#{illegalArgumentExceptionUri}")
-    private String illegalArgumentExceptionUri;
-
     // instance variables
     private final DegreeCourseServiceImpl degreeCourseService;
 
@@ -58,12 +45,8 @@ public class DegreeCourseController {
      */
     @GetMapping(path = "/view")
     public ModelAndView getDegreeCourses() {
-        try {
-            Set<DegreeCourseDto> degreeCourses = degreeCourseService.getDegreeCourses();
-            return new ModelAndView("degree_course/degree-course-list", "degreeCourses", degreeCourses);
-        } catch (DataAccessServiceException e) {
-            return new ModelAndView(dataAccessExceptionUri, EXCEPTION_MESSAGE, e.getMessage());
-        }
+        Set<DegreeCourseDto> degreeCourses = degreeCourseService.getDegreeCourses();
+        return new ModelAndView("user_admin/degree_course/degree-course-list", "degreeCourses", degreeCourses);
     }
 
 
@@ -74,16 +57,8 @@ public class DegreeCourseController {
      */
     @GetMapping(path = "/courses/view")
     public ModelAndView getCourses(@RequestParam String name) {
-        try {
-            List<CourseDto> courses = degreeCourseService.getCourses(name.toUpperCase());
-            return new ModelAndView("degree_course/course-list", "courses",courses);
-        } catch (IllegalArgumentException e) {
-            return new ModelAndView(illegalArgumentExceptionUri + ILLEGAL_PARAMETER, EXCEPTION_MESSAGE, e.getMessage());
-        } catch (NoSuchElementException e) {
-            return new ModelAndView(notFoundExceptionUri + OBJECT_NOT_FOUND, EXCEPTION_MESSAGE, e.getMessage());
-        } catch (DataAccessServiceException e) {
-            return new ModelAndView(dataAccessExceptionUri, EXCEPTION_MESSAGE, e.getMessage());
-        }
+        List<CourseDto> courses = degreeCourseService.getCourses(name.toUpperCase());
+        return new ModelAndView("user_admin/degree_course/course-list", "courses",courses);
     }
 
 
@@ -94,17 +69,8 @@ public class DegreeCourseController {
      */
     @GetMapping(path = "/professors/view")
     public ModelAndView getProfessors(@RequestParam String name) {
-        try {
-            List<ProfessorDto> professors = degreeCourseService.getProfessors(name.toUpperCase());
-            return new ModelAndView("degree_course/professor-with-course-list","professors", professors);
-        } catch (IllegalArgumentException e) {
-            return new ModelAndView(illegalArgumentExceptionUri + ILLEGAL_PARAMETER, EXCEPTION_MESSAGE, e.getMessage());
-        } catch (NoSuchElementException e) {
-            return new ModelAndView(notFoundExceptionUri + OBJECT_NOT_FOUND, EXCEPTION_MESSAGE, e.getMessage());
-        } catch (DataAccessServiceException e) {
-            return new ModelAndView(dataAccessExceptionUri, EXCEPTION_MESSAGE, e.getMessage());
-        }
-
+        List<ProfessorDto> professors = degreeCourseService.getProfessors(name.toUpperCase());
+        return new ModelAndView("user_admin/degree_course/professor-with-course-list","professors", professors);
     }
 
 
@@ -115,16 +81,8 @@ public class DegreeCourseController {
      */
     @GetMapping(path = "/students/view")
     public ModelAndView getStudents(@RequestParam String name) {
-        try {
-            List<StudentDto> students = degreeCourseService.getStudents(name.toUpperCase());
-            return new ModelAndView("degree_course/student-list","students", students);
-        } catch (IllegalArgumentException e) {
-            return new ModelAndView(illegalArgumentExceptionUri + ILLEGAL_PARAMETER, EXCEPTION_MESSAGE, e.getMessage());
-        } catch (NoSuchElementException e) {
-            return new ModelAndView(notFoundExceptionUri + OBJECT_NOT_FOUND, EXCEPTION_MESSAGE, e.getMessage());
-        } catch (DataAccessServiceException e) {
-            return new ModelAndView(dataAccessExceptionUri, EXCEPTION_MESSAGE, e.getMessage());
-        }
+        List<StudentDto> students = degreeCourseService.getStudents(name.toUpperCase());
+        return new ModelAndView("user_admin/degree_course/student-list","students", students);
     }
 
 
@@ -151,7 +109,7 @@ public class DegreeCourseController {
     @GetMapping(path = "/courses/ajax")
     public String getJsonOfCourses(@RequestParam String name) throws JsonProcessingException {
         try {
-        // retrieve the courses
+            // retrieve the courses
             List<CourseDto> courses = degreeCourseService.getCourses(name.toUpperCase());
             return "{\"degreeCourseName\": [" + courses
                 .stream()
@@ -165,6 +123,8 @@ public class DegreeCourseController {
 
     /**
      * Serializes a CourseDto object to a JSON string.
+     * @param courseDto the CourseDto object to serialize
+     * @return a JSON string representation of the CourseDto object
      */
     private String serializeCourseDto(CourseDto courseDto) throws JsonProcessingException {
         try {

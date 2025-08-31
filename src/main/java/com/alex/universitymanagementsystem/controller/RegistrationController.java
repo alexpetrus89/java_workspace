@@ -44,7 +44,7 @@ public class RegistrationController {
      */
     @PostMapping
     public String processRegistration (
-        @Valid @ModelAttribute("form") RegistrationForm form,
+        @Valid @ModelAttribute RegistrationForm form,
         HttpServletRequest request,
         SessionStatus sessionStatus
     ) {

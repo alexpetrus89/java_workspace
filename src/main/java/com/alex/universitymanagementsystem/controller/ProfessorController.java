@@ -3,7 +3,6 @@ package com.alex.universitymanagementsystem.controller;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -15,8 +14,6 @@ import org.springframework.web.servlet.ModelAndView;
 import com.alex.universitymanagementsystem.domain.immutable.UniqueCode;
 import com.alex.universitymanagementsystem.dto.ProfessorDto;
 import com.alex.universitymanagementsystem.dto.RegistrationForm;
-import com.alex.universitymanagementsystem.exception.DataAccessServiceException;
-import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
 import com.alex.universitymanagementsystem.service.ProfessorService;
 
 
@@ -27,14 +24,6 @@ public class ProfessorController {
     // constants
     private static final String PROFESSOR = "professor";
     private static final String PROFESSORS = "professors";
-    private static final String EXCEPTION_MESSAGE = "message";
-
-    @Value("#{dataAccessExceptionUri}")
-    private String dataAccessExceptionUri;
-    @Value("#{notFoundExceptionUri}")
-    private String notFoundExceptionUri;
-    @Value("#{illegalArgumentExceptionUri}")
-    private String illegalArgumentExceptionUri;
 
 
     // instance variable
@@ -46,20 +35,16 @@ public class ProfessorController {
     }
 
 
-    // methods
+    // model and view methods
     /** GET request */
     /**
      * Retrieves all professors
-     * @return ResponseEntity<List<ProfessorDto>>
+     * @return ModelAndView
      */
     @GetMapping(path = "/view")
     public ModelAndView getAllProfessors() {
-        try {
-            List<ProfessorDto> professors = professorService.getProfessors();
-            return new ModelAndView("professor/professor-list", PROFESSORS, professors);
-        } catch (DataAccessServiceException e) {
-            return new ModelAndView(dataAccessExceptionUri, EXCEPTION_MESSAGE, e.getMessage());
-        }
+        List<ProfessorDto> professors = professorService.getProfessors();
+        return new ModelAndView("user_professor/professor-list", PROFESSORS, professors);
     }
 
 
@@ -70,15 +55,8 @@ public class ProfessorController {
      */
     @GetMapping(path = "/read/uniquecode")
     public ModelAndView getProfessorByUniqueCode(@RequestParam UniqueCode uniqueCode) {
-
-        try {
-            ProfessorDto professor = professorService.getProfessorByUniqueCode(uniqueCode);
-            return new ModelAndView("professor/read/read-result", PROFESSOR, professor);
-        } catch (IllegalArgumentException e) {
-            return new ModelAndView(illegalArgumentExceptionUri + "illegal-parameter", EXCEPTION_MESSAGE, e.getMessage());
-        } catch (DataAccessServiceException e) {
-            return new ModelAndView(dataAccessExceptionUri, EXCEPTION_MESSAGE, e.getMessage());
-        }
+        ProfessorDto professor = professorService.getProfessorByUniqueCode(uniqueCode);
+        return new ModelAndView("user_professor/read/read-result", PROFESSOR, professor);
     }
 
 
@@ -89,14 +67,8 @@ public class ProfessorController {
      */
     @GetMapping(path = "/read/name")
     public ModelAndView getProfessorsByFullname(@RequestParam String fullname) {
-        try {
-            List<ProfessorDto> professors = professorService.getProfessorsByFullname(fullname);
-            return new ModelAndView("professor/read/read-results", PROFESSORS, professors);
-        } catch (IllegalArgumentException e) {
-            return new ModelAndView(illegalArgumentExceptionUri + "illegal-parameter", EXCEPTION_MESSAGE, e.getMessage());
-        } catch (DataAccessServiceException e) {
-            return new ModelAndView(dataAccessExceptionUri, EXCEPTION_MESSAGE, e.getMessage());
-        }
+        List<ProfessorDto> professors = professorService.getProfessorsByFullname(fullname);
+        return new ModelAndView("user_professor/read/read-results", PROFESSORS, professors);
     }
 
 
@@ -105,8 +77,8 @@ public class ProfessorController {
      * @return ModelAndView
      */
     @GetMapping(path = "/update")
-    public ModelAndView updateProfessorAndReturnView() {
-        return new ModelAndView("professor/update/update", PROFESSOR, new RegistrationForm());
+    public ModelAndView loadFormAndUpdateProfessor() {
+        return new ModelAndView("user_professor/update/update", PROFESSOR, new RegistrationForm());
     }
 
 
@@ -120,14 +92,8 @@ public class ProfessorController {
      */
     @PutMapping(path = "/update")
     public ModelAndView updateProfessor(@ModelAttribute RegistrationForm form) {
-        try {
-            ProfessorDto professor = professorService.updateProfessor(form);
-            return new ModelAndView("professor/update/update-result", PROFESSOR, professor);
-        } catch (ObjectNotFoundException e) {
-            return new ModelAndView(notFoundExceptionUri + "object-not-found", EXCEPTION_MESSAGE, e.getMessage());
-        } catch (DataAccessServiceException e) {
-            return new ModelAndView(dataAccessExceptionUri, EXCEPTION_MESSAGE, e.getMessage());
-        }
+        ProfessorDto professor = professorService.updateProfessor(form);
+        return new ModelAndView("user_professor/update/update-result", PROFESSOR, professor);
     }
 
 }

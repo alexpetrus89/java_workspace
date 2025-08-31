@@ -1,79 +1,140 @@
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(to bottom, #f0f4f8, #dfe9f3);
-    color: #333;
+/* Reset di base */
+* {
+    box-sizing: border-box;
     margin: 0;
     padding: 0;
 }
 
-/* Titolo della pagina */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(to bottom, #f0f4f8, #dfe9f3);
+    color: #333;
+    line-height: 1.6;
+    padding: 20px;
+}
+
+/* Titolo principale */
 h1 {
     color: #0056b3;
     font-size: 32px;
     text-align: center;
-    margin-top: 40px;
+    margin: 30px 0 15px;
+}
+
+/* Sottotitoli */
+h2 {
+    color: #444;
+    text-align: center;
     margin-bottom: 20px;
+}
+
+/* Messaggi (successo/errore) */
+div[th\\if] {
+    max-width: 700px;
+    margin: 10px auto;
+    padding: 12px;
+    border-radius: 8px;
+    text-align: center;
+    font-weight: 500;
+}
+
+div[th\\if][th\\if*="error"] {
+    background-color: #ffe5e5;
+    color: #b30000;
+    border: 1px solid #ffcccc;
+}
+
+div[th\\if][th\\if*="message"] {
+    background-color: #e6ffed;
+    color: #006633;
+    border: 1px solid #b3ffcc;
+}
+
+/* Paragrafi generali */
+p {
+    text-align: center;
+    margin: 15px 0;
+    color: #555;
 }
 
 /* Form container */
 form {
-    max-width: 400px;
+    max-width: 700px;
     margin: 0 auto;
-    padding: 30px;
+    padding: 25px 30px;
     background-color: #fff;
     border-radius: 12px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
     border: 1px solid #e0e0e0;
 }
 
 /* Etichette */
 label {
     display: block;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
     font-weight: 600;
     color: #444;
 }
 
 /* Campi input */
 input[type="text"],
-input[type="password"] {
+input[type="password"],
+input[type="email"],
+input[type="date"],
+select {
     width: 100%;
     padding: 12px;
-    margin-bottom: 20px;
+    margin-bottom: 18px;
     border: 1px solid #ccc;
     border-radius: 8px;
-    font-size: 16px;
-    transition: border 0.2s;
+    font-size: 15px;
+    transition: border 0.2s, box-shadow 0.2s;
 }
 
-input[type="text"]:focus,
-input[type="password"]:focus {
+input:focus,
+select:focus {
     border-color: #3498db;
     outline: none;
+    box-shadow: 0 0 4px rgba(52, 152, 219, 0.4);
 }
 
-/* Bottone submit */
-input[type="submit"] {
-    width: 100%;
+/* Bottoni principali */
+input[type="submit"],
+input[type="reset"] {
+    width: 48%;
     padding: 12px;
-    background-color: #0056b3;
-    color: #fff;
+    margin-top: 10px;
     border: none;
     border-radius: 8px;
-    font-size: 16px;
+    font-size: 15px;
     font-weight: bold;
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
 
-input[type="submit"]:hover {
-    background-color: #2ecc71;
+input[type="submit"] {
+    background-color: #0056b3;
+    color: #fff;
 }
 
-/* Link generali */
+input[type="submit"]:hover {
+    background-color: #004494;
+}
+
+input[type="reset"] {
+    background-color: #e0e0e0;
+    color: #333;
+}
+
+input[type="reset"]:hover {
+    background-color: #cccccc;
+}
+
+/* Link */
 a {
     text-decoration: none;
     color: #2ecc71;
+    font-weight: 500;
     transition: color 0.3s;
 }
 
@@ -81,24 +142,10 @@ a:hover {
     color: #1abc9c;
 }
 
-/* Paragrafi e testo centrato */
-p {
-    text-align: center;
-    margin-top: 20px;
-    color: #555;
-}
-
-/* Link alla homepage */
-.home-link {
-    display: block;
-    text-align: center;
-    margin-top: 15px;
-    font-weight: 500;
-    color: #3498db;
-}
+/* Azioni form (link Home) */
 .form-actions {
     text-align: center;
-    margin-top: 20px;
+    margin-top: 25px;
 }
 
 .home-link {
@@ -107,7 +154,6 @@ p {
     background-color: #3498db;
     color: white;
     font-weight: bold;
-    text-decoration: none;
     border-radius: 8px;
     transition: background-color 0.3s ease;
 }
@@ -115,53 +161,66 @@ p {
 .home-link:hover {
     background-color: #2980b9;
 }
-/* Aggiungi per allineare i campi Date of Birth e Role orizzontalmente */
+
+.clear-both {
+    clear: both;
+}
+
+/* Inline fields (es. Date of Birth + Role) */
 .inline-field {
     display: inline-block;
-    width: 48%; /* Puoi regolare questa larghezza a seconda della tua preferenza */
-    margin-right: 4%;
+    width: 48%;
+    margin-right: 3%;
     vertical-align: top;
 }
 
-.inline-field select,
-.inline-field input[type="date"] {
+.inline-field:last-child {
+    margin-right: 0;
+}
+
+.inline-field input,
+.inline-field select {
     width: 100%;
 }
 
-/* Ultima colonna per allineare i campi rimanenti */
-form input[type="text"],
-form input[type="password"],
-form select {
-    width: 100%;
-    padding: 12px;
-    margin-bottom: 20px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    font-size: 16px;
-    transition: border 0.2s;
+
+/* ----------------- */
+/* Responsive design */
+/* ----------------- */
+@media (max-width: 600px) {
+
+    body {
+        padding: 10px;
+    }
+
+    form {
+        padding: 20px;
+    }
+
+    h1 {
+        font-size: 26px;
+    }
+
+    .inline-field {
+        display: block;
+        width: 100%;
+        margin-right: 0;
+    }
+
+    input[type="submit"],
+    input[type="reset"] {
+        width: 100%;
+        margin-bottom: 10px;
+        margin-left: 0;
+    }
+
+    .form-actions {
+        margin-top: 15px;
+    }
+
+    .home-link {
+        width: 100%;
+        text-align: center;
+    }
 }
 
-form label {
-    font-weight: bold;
-    color: #444;
-    margin-bottom: 8px;
-}
-
-/* Margine tra i campi di input */
-form input[type="text"],
-form input[type="password"],
-form input[type="date"],
-form select {
-    margin-bottom: 15px;
-}
-
-/* Aggiungi per garantire che i campi non si sovrappongano */
-form {
-    max-width: 700px;
-    margin: 0 auto;
-    padding: 30px;
-    background-color: #fff;
-    border-radius: 12px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
-    border: 1px solid #e0e0e0;
-}

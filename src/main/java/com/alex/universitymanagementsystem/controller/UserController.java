@@ -34,6 +34,7 @@ public class UserController {
 
     // constants
     private static final String BUILDER = "builder";
+    private static final String MESSAGE = "message";
 
     // instance variables
     private final UserService userService;
@@ -68,7 +69,7 @@ public class UserController {
      * @return ModelAndView
      */
     @GetMapping(path = "/update")
-    public ModelAndView loadBuilderForAdminUpdate() {
+    public ModelAndView instantiateBuilderForAdminUpdate() {
         return new ModelAndView("user_admin/update/update", BUILDER, new Builder());
     }
 
@@ -78,7 +79,7 @@ public class UserController {
      * @return ModelAndView
      */
     @GetMapping(path = "/update/student")
-    public ModelAndView loadBuilderForStudentUpdate() {
+    public ModelAndView instantiateBuilderForStudentUpdate() {
         return new ModelAndView("user_student/update/update", BUILDER, new Builder());
     }
 
@@ -88,7 +89,7 @@ public class UserController {
      * @return ModelAndView
      */
     @GetMapping(path = "/update/professor")
-    public ModelAndView loadBuilderForProfessorUpdate() {
+    public ModelAndView instantiateBuilderForProfessorUpdate() {
         return new ModelAndView("user_professor/update/update", BUILDER, new Builder());
     }
 
@@ -179,6 +180,8 @@ public class UserController {
 
 
 
+
+
     // helper methods
 
     /**
@@ -213,7 +216,7 @@ public class UserController {
 
     /** admin failure view */
     private ModelAndView adminFailureView() {
-        return new ModelAndView("user_admin/create/admin-failure", "message", "admin not created");
+        return new ModelAndView("user_admin/create/admin-failure", MESSAGE, "admin not created");
     }
 
 
@@ -224,7 +227,7 @@ public class UserController {
 
     /** student failure view */
     private ModelAndView studentFailureView() {
-        return new ModelAndView("user_student/create/student-failure", "message", "student not created");
+        return new ModelAndView("user_student/create/student-failure", MESSAGE, "student not created");
     }
 
     /** professor success view */
@@ -234,7 +237,7 @@ public class UserController {
 
     /** professor failure view */
     private ModelAndView professorFailureView() {
-        return new ModelAndView("user_professor/create/professor-failure", "message", "professor not created");
+        return new ModelAndView("user_professor/create/professor-failure", MESSAGE, "professor not created");
     }
 
 

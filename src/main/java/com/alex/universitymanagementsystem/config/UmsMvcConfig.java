@@ -13,17 +13,18 @@ import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.alex.universitymanagementsystem.component.StringToDegreeCourseConverter;
-import com.alex.universitymanagementsystem.enum_type.ModuleViews;
 import com.alex.universitymanagementsystem.repository.DegreeCourseRepository;
 
 @Configuration
 public class UmsMvcConfig implements WebMvcConfigurer, Serializable {
 
     // instance variables
+    private final transient UmsConfig umsConfig;
     private final transient DegreeCourseRepository degreeCourseRepository;
 
     // constructor
-    public UmsMvcConfig(DegreeCourseRepository degreeCourseRepository) {
+    public UmsMvcConfig(UmsConfig umsConfig, DegreeCourseRepository degreeCourseRepository) {
+        this.umsConfig = umsConfig;
         this.degreeCourseRepository = degreeCourseRepository;
     }
 
@@ -45,9 +46,14 @@ public class UmsMvcConfig implements WebMvcConfigurer, Serializable {
 		registry
             .addViewController("/login")
             .setViewName("login");
+        registry
+            .addViewController("/forgot-password")
+            .setViewName("forgot-password");
+        registry
+            .addViewController("/reset-password")
+            .setViewName("reset-password");
 
-        ModuleViews.Modules.streamAllViews()
-            .forEach(view -> registry.addViewController(view).setViewName(view));
+        umsConfig.streamAllViews().forEach(view -> registry.addViewController(view).setViewName(view));
     }
 
 

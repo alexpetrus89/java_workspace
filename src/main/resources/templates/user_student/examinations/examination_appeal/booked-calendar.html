@@ -24,13 +24,13 @@
                 </tr>
             </thead>
             <tbody>
-                <tr th:each="examinationAppeal : ${examinationAppeals}">
-                    <td th:text="${examinationAppeal.degreeCourse}">Degree course</td>
-                    <td th:text="${examinationAppeal.course}">Course</td>
-                    <td th:text="${examinationAppeal.description}">Description</td>
-                    <td th:text="${examinationAppeal.date}">Date</td>
+                <tr th:each="appeal : ${appeals}">
+                    <td th:text="${appeal.degreeCourse}">Degree course</td>
+                    <td th:text="${appeal.course}">Course</td>
+                    <td th:text="${appeal.description}">Description</td>
+                    <td th:text="${appeal.date}">Date</td>
                     <td>
-                        <form th:action="@{/api/v1/examination-appeal/delete-booked/{id}(id=${examinationAppeal?.getId()})}" method="post">
+                        <form th:action="@{/api/v1/examination-appeal/delete-booked/{id}(id=${appeal?.getId()})}" method="post">
                             <button type="submit" class="delete-button">Delete</button>
                             <input type="hidden" name="_method" value="DELETE">
                         </form>

@@ -38,6 +38,7 @@
             <input type="hidden" name="register" th:value="${outcome.register}">
             <input type="hidden" name="courseName" th:value="${outcome.appeal.course}">
             <input type="hidden" name="degreeCourseName" th:value="${outcome.appeal.degreeCourse}"/>
+            <input type="hidden" name="courseCfu" th:value="${outcome.appeal.courseCfu}"/>
             <input type="hidden" name="grade" th:value="${outcome.grade}">
             <input type="hidden" name="withHonors" th:value="${outcome.withHonors}">
             <input type="hidden" name="date" th:value="${#temporals.format(outcome.appeal.date, 'yyyy-MM-dd')}">

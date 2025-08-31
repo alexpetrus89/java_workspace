@@ -2,7 +2,6 @@ package com.alex.universitymanagementsystem.controller;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -14,26 +13,15 @@ import org.springframework.web.servlet.ModelAndView;
 import com.alex.universitymanagementsystem.domain.immutable.Register;
 import com.alex.universitymanagementsystem.dto.RegistrationForm;
 import com.alex.universitymanagementsystem.dto.StudentDto;
-import com.alex.universitymanagementsystem.exception.DataAccessServiceException;
-import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
 import com.alex.universitymanagementsystem.service.StudentService;
 
 @RestController
 @RequestMapping(path = "api/v1/student")
 public class StudentController {
 
-
     // constants
     private static final String STUDENT = "student";
     private static final String STUDENTS = "students";
-    private static final String EXCEPTION_MESSAGE = "message";
-
-    @Value("#{dataAccessExceptionUri}")
-    private String dataAccessExceptionUri;
-    @Value("#{notFoundExceptionUri}")
-    private String notFoundExceptionUri;
-    @Value("#{illegalArgumentExceptionUri}")
-    private String illegalArgumentExceptionUri;
 
     // instance variable
     private final StudentService studentService;
@@ -53,12 +41,8 @@ public class StudentController {
      */
     @GetMapping(path = "/view")
 	public ModelAndView getAllStudents() {
-        try {
-            List<StudentDto> students = studentService.getStudents();
-            return new ModelAndView("student/student-list", STUDENTS, students);
-        } catch (DataAccessServiceException e) {
-            return new ModelAndView(dataAccessExceptionUri, EXCEPTION_MESSAGE, e.getMessage());
-        }
+        List<StudentDto> students = studentService.getStudents();
+        return new ModelAndView("user_student/student-list", STUDENTS, students);
     }
 
 
@@ -69,14 +53,8 @@ public class StudentController {
      */
     @GetMapping(path = "/read/register")
 	public ModelAndView getStudentByRegister(@RequestParam String register) {
-        try {
-            StudentDto student = studentService.getStudentByRegister(new Register(register));
-            return new ModelAndView("student/read/read-result", STUDENT, student);
-        } catch (IllegalArgumentException e) {
-            return new ModelAndView(illegalArgumentExceptionUri + "illegal-parameter", EXCEPTION_MESSAGE, e.getMessage());
-        } catch (DataAccessServiceException e) {
-            return new ModelAndView(dataAccessExceptionUri, EXCEPTION_MESSAGE, e.getMessage());
-        }
+        StudentDto student = studentService.getStudentByRegister(new Register(register));
+        return new ModelAndView("user_student/read/read-result", STUDENT, student);
     }
 
 
@@ -87,15 +65,8 @@ public class StudentController {
      */
     @GetMapping(path = "/read/name")
 	public ModelAndView getStudentsByName(@RequestParam String name) {
-
-        try{
-            List<StudentDto> students = studentService.getStudentsByFullname(name.toLowerCase());
-            return new ModelAndView("student/read/read-results", STUDENTS, students);
-        } catch (IllegalArgumentException e) {
-            return new ModelAndView(illegalArgumentExceptionUri + "illegal-parameter", EXCEPTION_MESSAGE, e.getMessage());
-        } catch (DataAccessServiceException e) {
-            return new ModelAndView(dataAccessExceptionUri, EXCEPTION_MESSAGE, e.getMessage());
-        }
+        List<StudentDto> students = studentService.getStudentsByFullname(name.toLowerCase());
+        return new ModelAndView("user_student/read/read-results", STUDENTS, students);
     }
 
     /**
@@ -103,8 +74,8 @@ public class StudentController {
      * @return ModelAndView
      */
     @GetMapping(path = "/update")
-    public ModelAndView updateStudentAndReturnView() {
-        return new ModelAndView("student/update/update", STUDENT, new RegistrationForm());
+    public ModelAndView instantiateFormForUpdate() {
+        return new ModelAndView("user_student/update/update", STUDENT, new RegistrationForm());
     }
 
 
@@ -117,18 +88,8 @@ public class StudentController {
      */
     @PutMapping(path = "/update")
     public ModelAndView updateStudent(@ModelAttribute RegistrationForm form) {
-
-        try {
-            StudentDto student = studentService.updateStudent(form);
-            return new ModelAndView("student/update/update-result", STUDENT, student);
-        } catch (IllegalArgumentException e) {
-            return new ModelAndView(illegalArgumentExceptionUri + "illegal-parameters", EXCEPTION_MESSAGE, e.getMessage());
-        } catch (ObjectNotFoundException e) {
-            return new ModelAndView(notFoundExceptionUri + "object-not-found", EXCEPTION_MESSAGE, e.getMessage());
-        } catch (DataAccessServiceException e) {
-            return new ModelAndView(dataAccessExceptionUri, EXCEPTION_MESSAGE, e.getMessage());
-        }
+        StudentDto student = studentService.updateStudent(form);
+        return new ModelAndView("user_student/update/update-result", STUDENT, student);
     }
-
 
 }

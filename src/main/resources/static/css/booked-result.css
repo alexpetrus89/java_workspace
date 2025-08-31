@@ -20,13 +20,13 @@ body {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.titolo {
+.title {
     text-align: center;
     color: #4CAF50;
     margin-bottom: 20px;
 }
 
-.messaggio-errore {
+.error-message {
     background-color: #f8d7da;
     color: #721c24;
     padding: 10px;
@@ -34,16 +34,16 @@ body {
     margin-bottom: 20px;
 }
 
-.appello p {
+.appeal p {
     font-size: 1.1em;
     margin: 10px 0;
 }
 
-.appello strong {
+.appeal strong {
     color: #333;
 }
 
-.azione {
+.action {
     text-align: center;
     margin-top: 20px;
 }

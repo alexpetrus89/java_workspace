@@ -20,6 +20,9 @@ public class ExaminationAppealDto {
     @NotBlank(message = "Degree course cannot be blank")
     private String degreeCourse;
 
+    @NotBlank(message = "Course CFU cannot be blank")
+    private String courseCfu;
+
     @NotBlank(message = "Professor unique code cannot be blank")
     @ValidUniqueCode
     private String professorCode;
@@ -37,36 +40,24 @@ public class ExaminationAppealDto {
 
     // Getters
     public Long getId() { return id; }
-
     public String getCourse() { return course; }
-
     public String getDegreeCourse() { return degreeCourse; }
-
+    public String getCourseCfu() { return courseCfu; }
     public String getProfessorCode() { return professorCode; }
-
     public String getProfessorFullName() { return professorFullName; }
-
     public String getDescription() { return description; }
-
     public LocalDate getDate() { return date; }
-
     public Set<StudentDto> getStudents() { return students; }
 
     // Setters
     public void setId(Long id) { this.id = id; }
-
     public void setCourse(String course) { this.course = course; }
-
     public void setDegreeCourse(String degreeCourse) { this.degreeCourse = degreeCourse; }
-
+    public void setCourseCfu(String courseCfu) { this.courseCfu = courseCfu; }
     public void setProfessorCode(String professorCode) { this.professorCode = professorCode; }
-
     public void setProfessorFullName(String professorFullName) { this.professorFullName = professorFullName; }
-
     public void setDescription(String description) { this.description = description; }
-
     public void setDate(LocalDate date) { this.date = date; }
-
     public void setStudents(Set<StudentDto> students) { this.students = students; }
 }
 

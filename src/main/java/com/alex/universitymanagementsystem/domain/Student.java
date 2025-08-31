@@ -72,14 +72,10 @@ public class Student extends User {
         name = "value",
         column = @Column(name = "register", nullable = false, unique = true)
     )
-    public Register getRegister() {
-        return register;
-    }
+    public Register getRegister() { return register; }
 
     @Transient
-    public Integer getAge() {
-        return age;
-    }
+    public Integer getAge() { return age; }
 
     // owning side
     @ManyToOne(fetch = FetchType.EAGER, optional = true)
@@ -88,29 +84,16 @@ public class Student extends User {
         foreignKey = @ForeignKey(name = "fk_student_degreeCourse")
     )
     @OnDelete(action = OnDeleteAction.SET_NULL)
-    public DegreeCourse getDegreeCourse() {
-        return degreeCourse;
-    }
+    public DegreeCourse getDegreeCourse() { return degreeCourse; }
 
     @OneToOne(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
-    public StudyPlan getStudyPlan() {
-        return studyPlan;
-    }
+    public StudyPlan getStudyPlan() { return studyPlan; }
 
 
     // setters
-    public void setRegister(Register register) {
-        this.register = register;
-    }
-
-    public void setDegreeCourse(DegreeCourse degreeCourse) {
-        this.degreeCourse = degreeCourse;
-    }
-
-
-    public void setStudyPlan(StudyPlan studyPlan) {
-        this.studyPlan = studyPlan;
-    }
+    public void setRegister(Register register) { this.register = register; }
+    public void setDegreeCourse(DegreeCourse degreeCourse) { this.degreeCourse = degreeCourse; }
+    public void setStudyPlan(StudyPlan studyPlan) { this.studyPlan = studyPlan; }
 
     // --- Object methods ---
     @Override

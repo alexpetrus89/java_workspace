@@ -179,11 +179,11 @@ public class ExaminationAppealServiceImpl implements ExaminationAppealService {
                 .map(appeal -> {
                     ExaminationAppealDto dto = mapToDto(appeal);
                     professorRepository
-                            .findByUniqueCode(new UniqueCode(dto.getProfessorCode()))
-                            .ifPresent(profDto -> {
-                                String fullName = profDto.getFirstName() + " " + profDto.getLastName();
-                                dto.setProfessorFullName(fullName);
-                            });
+                        .findByUniqueCode(new UniqueCode(dto.getProfessorCode()))
+                        .ifPresent(profDto -> {
+                            String fullName = profDto.getFirstName() + " " + profDto.getLastName();
+                            dto.setProfessorFullName(fullName);
+                        });
                     return dto;
                 })
                 .toList();

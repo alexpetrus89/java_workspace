@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
-import java.util.UUID;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -13,7 +12,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.alex.universitymanagementsystem.domain.immutable.FiscalCode;
 import com.alex.universitymanagementsystem.domain.immutable.UserId;
-import com.alex.universitymanagementsystem.dto.Builder;
+import com.alex.universitymanagementsystem.dto.RegistrationForm;
+import com.alex.universitymanagementsystem.dto.UpdateForm;
 import com.alex.universitymanagementsystem.enum_type.RoleType;
 
 import jakarta.persistence.CascadeType;
@@ -83,37 +83,37 @@ public class User implements UserDetails {
 
 
     // constructors
-    protected User() {
+    public User() {
         this.id = UserId.newId();
     }
 
-    public User(Builder builder, PasswordEncoder encoder) {
+    public User(RegistrationForm form, PasswordEncoder encoder) {
         this.id = UserId.newId();
-        this.username = builder.getUsername();
-        this.password = encoder.encode(builder.getPassword());
-        this.firstName = builder.getFirstName();
-        this.lastName = builder.getLastName();
-        this.dob = builder.getDob();
-        this.fiscalCode = new FiscalCode(builder.getFiscalCode());
-        this.phone = builder.getPhone();
-        this.role = builder.getRole();
-        this.address = new Address(builder.getStreet(), builder.getCity(), builder.getState(), builder.getZip());
+        this.username = form.getUsername();
+        this.password = encoder.encode(form.getPassword());
+        this.firstName = form.getFirstName();
+        this.lastName = form.getLastName();
+        this.dob = form.getDob();
+        this.fiscalCode = new FiscalCode(form.getFiscalCode());
+        this.phone = form.getPhone();
+        this.role = form.getRole();
+        this.address = new Address(form.getStreet(), form.getCity(), form.getState(), form.getZip());
         this.enabled = true;
         this.accountLocked = false;
         this.credentialsExpirationDate = LocalDate.of(2100, 1, 1);
 
     }
 
-    public User(Builder builder) {
-        this.id = new UserId(UUID.randomUUID());
-        this.username = builder.getUsername();
-        this.firstName = builder.getFirstName();
-        this.lastName = builder.getLastName();
-        this.dob = builder.getDob();
-        this.fiscalCode = new FiscalCode(builder.getFiscalCode());
-        this.phone = builder.getPhone();
-        this.role = builder.getRole();
-        this.address = new Address(builder.getStreet(), builder.getCity(), builder.getState(), builder.getZip());
+    public User(UpdateForm form) {
+        this.id = UserId.newId();
+        this.username = form.getUsername();
+        this.firstName = form.getFirstName();
+        this.lastName = form.getLastName();
+        this.dob = form.getDob();
+        this.fiscalCode = new FiscalCode(form.getFiscalCode());
+        this.phone = form.getPhone();
+        this.role = form.getRole();
+        this.address = new Address(form.getStreet(), form.getCity(), form.getState(), form.getZip());
         this.enabled = true;
         this.accountLocked = false;
         this.credentialsExpirationDate = LocalDate.of(2100, 1, 1);

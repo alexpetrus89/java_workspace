@@ -7,7 +7,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.alex.universitymanagementsystem.domain.immutable.FiscalCode;
 import com.alex.universitymanagementsystem.domain.immutable.UniqueCode;
-import com.alex.universitymanagementsystem.dto.Builder;
+import com.alex.universitymanagementsystem.dto.RegistrationForm;
 
 import jakarta.persistence.Access;
 import jakarta.persistence.AccessType;
@@ -29,14 +29,14 @@ public class Professor extends User {
     // constructors
     protected Professor() { super(); }
 
-    public Professor(Builder builder, PasswordEncoder encoder) {
-        super(builder, encoder);
+    public Professor(RegistrationForm form, PasswordEncoder encoder) {
+        super(form, encoder);
         this.uniqueCode = new UniqueCode(generateUniqueCode());
     }
 
 
-    public Professor(Builder builder, PasswordEncoder passwordEncoder, UniqueCode uniqueCode) {
-        super(builder, passwordEncoder);
+    public Professor(RegistrationForm form, PasswordEncoder passwordEncoder, UniqueCode uniqueCode) {
+        super(form, passwordEncoder);
         this.uniqueCode = uniqueCode;
     }
 

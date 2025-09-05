@@ -4,6 +4,7 @@ import java.time.LocalDate;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import com.alex.universitymanagementsystem.annotation.UniqueFiscalCode;
 import com.alex.universitymanagementsystem.annotation.UniqueUsername;
 import com.alex.universitymanagementsystem.annotation.ValidBirthDate;
 import com.alex.universitymanagementsystem.annotation.ValidFiscalCode;
@@ -47,6 +48,7 @@ public class RegistrationForm implements Serializable, PasswordCarrier {
 
     @NotBlank(message = "Fiscal code is required")
     @ValidFiscalCode
+    @UniqueFiscalCode
     private String fiscalCode;
 
     @NotBlank(message = "Street is required")
@@ -71,23 +73,7 @@ public class RegistrationForm implements Serializable, PasswordCarrier {
 
 
     // constructors
-    public RegistrationForm() {}
-
-    public RegistrationForm(Builder builder) {
-        this.username = builder.getUsername();
-        this.password = builder.getPassword();
-        this.confirm = builder.getConfirm();
-        this.firstName = builder.getFirstName();
-        this.lastName = builder.getLastName();
-        this.dob = builder.getDob();
-        this.fiscalCode = builder.getFiscalCode();
-        this.street = builder.getStreet();
-        this.city = builder.getCity();
-        this.state = builder.getState();
-        this.zip = builder.getZip();
-        this.phone = builder.getPhone();
-        this.role = builder.getRole();
-    }
+    public RegistrationForm() { /* no-args constructor */ }
 
     // getters
     public String getUsername() { return username; }
@@ -126,34 +112,17 @@ public class RegistrationForm implements Serializable, PasswordCarrier {
 
 
     // methods
-    private Builder toBuilder() {
-        Builder builder = new Builder();
-        builder.withUsername(username);
-        builder.withPassword(password);
-        builder.withConfirm(confirm);
-        builder.withFirstName(firstName);
-        builder.withLastName(lastName);
-        builder.withDob(dob);
-        builder.withFiscalCode(fiscalCode);
-        builder.withStreet(street);
-        builder.withCity(city);
-        builder.withState(state);
-        builder.withZip(zip);
-        builder.withPhone(phone);
-        builder.withRole(role);
-        return builder;
-    }
 
     public User toUser(PasswordEncoder passwordEncoder) {
-        return new User(toBuilder(), passwordEncoder);
+        return new User(this, passwordEncoder);
     }
 
     public Student toStudent(PasswordEncoder passwordEncoder) {
-        return new Student(toBuilder(), passwordEncoder);
+        return new Student(this, passwordEncoder);
     }
 
     public Professor toProfessor(PasswordEncoder passwordEncoder) {
-        return new Professor(toBuilder(), passwordEncoder);
+        return new Professor(this, passwordEncoder);
     }
 
 

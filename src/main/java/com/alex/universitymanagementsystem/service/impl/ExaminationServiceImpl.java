@@ -1,14 +1,13 @@
 package com.alex.universitymanagementsystem.service.impl;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 
+import com.alex.universitymanagementsystem.component.ServiceHelpers;
+import com.alex.universitymanagementsystem.component.validator.ServiceValidators;
 import com.alex.universitymanagementsystem.domain.Course;
 import com.alex.universitymanagementsystem.domain.DegreeCourse;
 import com.alex.universitymanagementsystem.domain.Examination;
@@ -17,16 +16,12 @@ import com.alex.universitymanagementsystem.domain.immutable.Register;
 import com.alex.universitymanagementsystem.domain.immutable.UniqueCode;
 import com.alex.universitymanagementsystem.dto.ExaminationDto;
 import com.alex.universitymanagementsystem.dto.UpdateExaminationDto;
-import com.alex.universitymanagementsystem.enum_type.DomainType;
 import com.alex.universitymanagementsystem.exception.DataAccessServiceException;
 import com.alex.universitymanagementsystem.exception.ObjectAlreadyExistsException;
 import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
 import com.alex.universitymanagementsystem.mapper.ExaminationMapper;
 import com.alex.universitymanagementsystem.repository.CourseRepository;
-import com.alex.universitymanagementsystem.repository.DegreeCourseRepository;
 import com.alex.universitymanagementsystem.repository.ExaminationRepository;
-import com.alex.universitymanagementsystem.repository.ProfessorRepository;
-import com.alex.universitymanagementsystem.repository.StudentRepository;
 import com.alex.universitymanagementsystem.service.ExaminationService;
 
 import jakarta.persistence.PersistenceException;
@@ -38,31 +33,29 @@ import jakarta.validation.Valid;
 public class ExaminationServiceImpl implements ExaminationService {
 
 	// constants
-    private static final String REGISTER_BLANK_ERROR = "Register cannot be null or empty";
-    private static final String COURSE_NAME_BLANK_ERROR = "Course name cannot be null or empty";
-    private static final String DEGREE_COURSE_NAME_BLANK_ERROR = "Degree course name cannot be null or empty";
+    private static final String REGISTER_ERROR = "Register cannot be null or empty";
+    private static final String UNIQUE_CODE_ERROR = "Unique code cannot be null or empty";
+    private static final String COURSE_NAME_ERROR = "Course name cannot be null or empty";
+    private static final String DEGREE_COURSE_NAME_ERROR = "Degree course name cannot be null or empty";
 
     // instance variables
-    private final StudentRepository studentRepository;
-    private final ProfessorRepository professorRepository;
     private final CourseRepository courseRepository;
-    private final DegreeCourseRepository degreeCourseRepository;
     private final ExaminationRepository examinationRepository;
+    private final ServiceHelpers helpers;
+    private final ServiceValidators validators;
 
 
     // autowired - dependency injection - constructor
     public ExaminationServiceImpl(
-        StudentRepository studentRepository,
-        ProfessorRepository professorRepository,
         CourseRepository courseRepository,
-        DegreeCourseRepository degreeCourseRepository,
-        ExaminationRepository examinationRepository
+        ExaminationRepository examinationRepository,
+        ServiceHelpers helpers,
+        ServiceValidators validators
     ) {
-        this.studentRepository = studentRepository;
-        this.professorRepository = professorRepository;
         this.courseRepository = courseRepository;
-        this.degreeCourseRepository = degreeCourseRepository;
         this.examinationRepository = examinationRepository;
+        this.helpers = helpers;
+        this.validators = validators;
     }
 
 
@@ -74,11 +67,7 @@ public class ExaminationServiceImpl implements ExaminationService {
     @Override
     public List<ExaminationDto> getExaminations() throws DataAccessServiceException {
         try {
-            return examinationRepository
-                .findAll()
-                .stream()
-                .map(ExaminationMapper::toDto)
-                .toList();
+            return helpers.mapExaminations(examinationRepository.findAll());
         } catch (PersistenceException e) {
             throw new DataAccessServiceException("Error accessing database for fetching examinations: " + e.getMessage(), e);
         }
@@ -98,22 +87,14 @@ public class ExaminationServiceImpl implements ExaminationService {
     public List<ExaminationDto> getExaminationsByCourseNameAndDegreeCourseName(String courseName, String degreeCourseName)
         throws IllegalArgumentException, ObjectNotFoundException, DataAccessServiceException
     {
-        if(courseName.isBlank())
-            throw new IllegalArgumentException(COURSE_NAME_BLANK_ERROR);
+        // sanity checks
+        validators.validateNotNullOrNotBlank(courseName, COURSE_NAME_ERROR);
+        validators.validateNotNullOrNotBlank(degreeCourseName, DEGREE_COURSE_NAME_ERROR);
 
-        if(degreeCourseName.isBlank())
-            throw new IllegalArgumentException(DEGREE_COURSE_NAME_BLANK_ERROR);
-
-        Course course = courseRepository
-            .findByNameAndDegreeCourseName(courseName, degreeCourseName)
-            .orElseThrow(() -> new ObjectNotFoundException(DomainType.COURSE));
+        Course course = helpers.fetchCourse(courseName, degreeCourseName);
 
         try {
-            return examinationRepository
-                .findByCourse_Id_Id(course.getId().getId())
-                .stream()
-                .map(ExaminationMapper::toDto)
-                .toList();
+            return helpers.mapExaminations(examinationRepository.findByCourse_Id_Id(course.getId().getId()));
         } catch (PersistenceException e) {
             throw new DataAccessServiceException("Error accessing database for fetching examinations: " + e.getMessage(), e);
         }
@@ -132,18 +113,12 @@ public class ExaminationServiceImpl implements ExaminationService {
     public List<ExaminationDto> getExaminationsByStudentRegister(Register register)
         throws IllegalArgumentException, ObjectNotFoundException, DataAccessServiceException
     {
-        if(register.toString().isBlank())
-            throw new IllegalArgumentException("Register cannot be empty");
-
-        if (!studentRepository.existsByRegister(register))
-            throw new ObjectNotFoundException(register);
+        // sanity check
+        validators.validateNotNullOrNotBlank(register.toString(), REGISTER_ERROR);
+        validators.validateStudentExists(register);
 
         try {
-            return examinationRepository
-                .findByRegister(register.toString())
-                .stream()
-                .map(ExaminationMapper::toDto)
-                .toList();
+            return helpers.mapExaminations(examinationRepository.findByRegister(register.toString()));
         } catch (PersistenceException e) {
             throw new DataAccessServiceException("Error accessing database for fetching examinations: " + e.getMessage(), e);
         }
@@ -162,25 +137,19 @@ public class ExaminationServiceImpl implements ExaminationService {
     public List<ExaminationDto> getExaminationsByProfessorUniqueCode(UniqueCode uniqueCode)
         throws IllegalArgumentException, ObjectNotFoundException, DataAccessServiceException
     {
-        if(uniqueCode.toString().isBlank())
-            throw new IllegalArgumentException("Unique Code cannot be null or empty");
-
-        if (!professorRepository.existsByUniqueCode(uniqueCode))
-            throw new ObjectNotFoundException(uniqueCode);
+        // sanity check
+        validators.validateNotNullOrNotBlank(uniqueCode.toString(), UNIQUE_CODE_ERROR);
+        validators.validateProfessorExists(uniqueCode);
 
         try {
-            Set<Course> courses = courseRepository.findByProfessor(uniqueCode);
-            List<ExaminationDto> examinationsDto = new ArrayList<>();
-
-            courses.forEach(course -> examinationsDto.addAll(
-                examinationRepository
+            return courseRepository
+                .findByProfessor(uniqueCode)
+                .stream()
+                .flatMap(course -> examinationRepository
                     .findByCourse_Id_Id(course.getId().getId())
                     .stream()
-                    .map(ExaminationMapper::toDto)
-                    .toList()
-            ));
-
-            return examinationsDto;
+                    .map(ExaminationMapper::toDto))
+                .toList();
         } catch (PersistenceException e) {
             throw new DataAccessServiceException("Error accessing database for fetching examinations: " + e.getMessage(), e);
         }
@@ -203,25 +172,15 @@ public class ExaminationServiceImpl implements ExaminationService {
     public ExaminationDto addNewExamination(@Valid ExaminationDto request)
         throws IllegalArgumentException, ObjectNotFoundException, ObjectAlreadyExistsException, DataAccessServiceException
     {
-
-        if (request.isWithHonors() && request.getGrade() != 30)
-            throw new IllegalArgumentException("Honors can only be given if the grade is 30.");
+        // sanity check
+        validators.validateGradeWithHonors(request.getGrade(), request.isWithHonors());
 
         try {
-            // --- Load domain entities ---
-            String register = request.getRegister();
+            // --- Fetch domain entities ---
 
-            Student student = studentRepository
-                .findByRegister(new Register(register))
-                .orElseThrow(() -> new ObjectNotFoundException(DomainType.STUDENT));
-
-            DegreeCourse degreeCourse = degreeCourseRepository
-                .findByName(request.getDegreeCourseName().toUpperCase())
-                .orElseThrow(() -> new ObjectNotFoundException(DomainType.DEGREE_COURSE));
-
-            Course course = courseRepository
-                .findByNameAndDegreeCourseName(request.getCourseName(), request.getDegreeCourseName().toUpperCase())
-                .orElseThrow(() -> new ObjectNotFoundException(DomainType.COURSE));
+            Student student = helpers.fetchStudent(request.getRegister());
+            DegreeCourse degreeCourse = helpers.fetchDegreeCourse(request.getDegreeCourseName());
+            Course course = helpers.fetchCourse(request.getCourseName(), request.getDegreeCourseName());
 
             // --- Domain validations ---
             if (!degreeCourse.getStudents().contains(student))
@@ -230,12 +189,10 @@ public class ExaminationServiceImpl implements ExaminationService {
             if (student.getStudyPlan() == null || !student.getStudyPlan().getCourses().contains(course))
                 throw new ObjectNotFoundException("Course is not part of the student's study plan.");
 
-            boolean alreadyExists = examinationRepository
-                .findByRegister(register)
-                .stream()
-                .anyMatch(exam -> exam.getCourse().equals(course));
-
-            if (alreadyExists)
+            if (examinationRepository
+                    .findByRegister(request.getRegister())
+                    .stream()
+                    .anyMatch(e -> e.getCourse().equals(course)))
                 throw new ObjectAlreadyExistsException("Examination already exists for this student and course.");
 
             // --- Create & persist ---
@@ -267,52 +224,20 @@ public class ExaminationServiceImpl implements ExaminationService {
     {
 
         // --- Parse & validate grade ---
-        int parsedGrade;
-        try {
-            parsedGrade = Integer.parseInt(request.getGrade());
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("Grade must be a valid integer.", e);
-        }
-
-        if (parsedGrade < 0 || parsedGrade > 30)
-            throw new IllegalArgumentException("Grade must be between 0 and 30.");
-
-        if (request.isWithHonors() && parsedGrade != 30)
-            throw new IllegalArgumentException("Honors can only be assigned for grade 30.");
-
-        if (request.getDate().isAfter(LocalDate.now()))
-            throw new IllegalArgumentException("Date cannot be in the future.");
+        int parsedGrade = validators.parseAndValidateGrade(request.getGrade(), request.isWithHonors(), request.getDate());
 
         try {
             // --- Load updated entities ---
             String oldRegister = request.getOldRegister();
             String newRegister = request.getNewRegister();
 
-            Student newStudent = studentRepository.findByRegister(new Register(newRegister))
-                .orElseThrow(() -> new ObjectNotFoundException(DomainType.STUDENT));
-
-            DegreeCourse newDegreeCourse = degreeCourseRepository.findByName(request.getNewDegreeCourseName().toUpperCase())
-                .orElseThrow(() -> new ObjectNotFoundException(DomainType.DEGREE_COURSE));
-
-            Course newCourse = courseRepository.findByNameAndDegreeCourseName(
-                    request.getNewCourseName(),
-                    request.getNewDegreeCourseName().toUpperCase())
-                .orElseThrow(() -> new ObjectNotFoundException(DomainType.COURSE));
-
-            Course oldCourse = courseRepository.findByNameAndDegreeCourseName(
-                    request.getOldCourseName(),
-                    request.getOldDegreeCourseName().toUpperCase())
-                .orElseThrow(() -> new ObjectNotFoundException(DomainType.COURSE));
-
+            Student newStudent = helpers.fetchStudent(newRegister);
+            DegreeCourse newDegreeCourse = helpers.fetchDegreeCourse(request.getNewDegreeCourseName());
+            Course newCourse = helpers.fetchCourse(request.getNewCourseName(), request.getNewDegreeCourseName());
+            Course oldCourse = helpers.fetchCourse(request.getOldCourseName(), request.getOldDegreeCourseName());
 
             // --- Retrieve old examination ---
-            Examination examination = examinationRepository
-                .findByCourse_Id_Id(oldCourse.getId().getId())
-                .stream()
-                .filter(e -> e.getCourse().getDegreeCourse().getName().equals(request.getOldDegreeCourseName()))
-                .filter(e -> e.getRegister().equals(oldRegister))
-                .findFirst()
-                .orElseThrow(() -> new ObjectNotFoundException(DomainType.EXAMINATION));
+            Examination examination = helpers.findExistingExamination(oldCourse, oldRegister, request.getOldDegreeCourseName());
 
             // --- Validate domain constraints ---
             if (!newDegreeCourse.getStudents().contains(newStudent))
@@ -354,18 +279,12 @@ public class ExaminationServiceImpl implements ExaminationService {
 	public ExaminationDto deleteExamination(String register, String courseName, String degreeCourseName)
 		throws IllegalArgumentException, ObjectNotFoundException, DataAccessServiceException
 	{
-        if(register.isBlank())
-            throw new IllegalArgumentException(REGISTER_BLANK_ERROR);
+        // sanity checks
+        validators.validateNotNullOrNotBlank(register, REGISTER_ERROR);
+        validators.validateNotNullOrNotBlank(courseName, COURSE_NAME_ERROR);
+        validators.validateNotNullOrNotBlank(degreeCourseName, DEGREE_COURSE_NAME_ERROR);
 
-        if(courseName.isBlank())
-            throw new IllegalArgumentException(COURSE_NAME_BLANK_ERROR);
-
-        if (degreeCourseName.isBlank())
-            throw new IllegalArgumentException(DEGREE_COURSE_NAME_BLANK_ERROR);
-
-        Course course = courseRepository
-            .findByNameAndDegreeCourseName(courseName, degreeCourseName.toUpperCase())
-            .orElseThrow(() -> new ObjectNotFoundException(DomainType.COURSE));
+        Course course = helpers.fetchCourse(courseName, degreeCourseName);
 
         try {
             Examination examination = examinationRepository
@@ -381,6 +300,7 @@ public class ExaminationServiceImpl implements ExaminationService {
             throw new DataAccessServiceException("data access error while deleting examination of course " + courseName + " and student register " + register, e);
         }
     }
+
 
 }
 

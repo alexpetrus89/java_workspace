@@ -3,8 +3,9 @@ package com.alex.universitymanagementsystem.mapper;
 
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.alex.universitymanagementsystem.domain.Address;
 import com.alex.universitymanagementsystem.domain.User;
-import com.alex.universitymanagementsystem.dto.Builder;
+import com.alex.universitymanagementsystem.domain.immutable.FiscalCode;
 import com.alex.universitymanagementsystem.dto.UserDto;
 
 public class UserMapper {
@@ -14,19 +15,21 @@ public class UserMapper {
 
     public static User toEntity(UserDto dto) {
         if(dto == null) return null;
-        Builder builder = new Builder();
-        builder.setUsername(dto.getUsername());
-        builder.setFirstName(dto.getFirstName());
-        builder.setLastName(dto.getLastName());
-        builder.setDob(dto.getDob());
-        builder.setFiscalCode(dto.getFiscalCode());
-        builder.setPhone(dto.getPhone());
-        builder.setRole(dto.getRole());
-        builder.setStreet(dto.getAddress().getStreet());
-        builder.setCity(dto.getAddress().getCity());
-        builder.setState(dto.getAddress().getState());
-        builder.setZip(dto.getAddress().getZipCode());
-        return new User(builder);
+        User user = new User();
+        user.setUsername(dto.getUsername());
+        user.setFirstName(dto.getFirstName());
+        user.setLastName(dto.getLastName());
+        user.setDob(dto.getDob());
+        user.setFiscalCode(new FiscalCode(dto.getFiscalCode()));
+        user.setPhone(dto.getPhone());
+        user.setRole(dto.getRole());
+        Address address = new Address();
+        address.setStreet(dto.getAddress().getStreet());
+        address.setCity(dto.getAddress().getCity());
+        address.setState(dto.getAddress().getState());
+        address.setZipCode(dto.getAddress().getZipCode());
+        user.setAddress(address);
+        return user;
     }
 
     public static UserDto toDto(User user) {

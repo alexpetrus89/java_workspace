@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import com.alex.universitymanagementsystem.annotation.UniqueUsername;
+import com.alex.universitymanagementsystem.annotation.UniqueFiscalCode;
 import com.alex.universitymanagementsystem.exception.DataAccessServiceException;
 import com.alex.universitymanagementsystem.service.impl.RegistrationServiceImpl;
 
@@ -13,32 +13,33 @@ import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
 @Component
-public class UniqueUsernameValidator implements ConstraintValidator<UniqueUsername, String> {
+public class UniqueFiscalCodeValidator implements ConstraintValidator<UniqueFiscalCode, String> {
 
-    private static final Logger logger = LoggerFactory.getLogger(UniqueUsernameValidator.class);
+    private static final Logger logger = LoggerFactory.getLogger(UniqueFiscalCodeValidator.class);
 
     private final RegistrationServiceImpl registrationService;
 
-    public UniqueUsernameValidator(RegistrationServiceImpl registrationService) {
+    public UniqueFiscalCodeValidator(RegistrationServiceImpl registrationService) {
         this.registrationService = registrationService;
     }
 
-    @Override
-    public boolean isValid(String username, ConstraintValidatorContext context) {
-        if (!StringUtils.hasText(username))
-            return false;
 
+    @Override
+    public boolean isValid(String fiscalCode, ConstraintValidatorContext context) {
+        if (!StringUtils.hasText(fiscalCode))
+            return false;
         try {
-            if (registrationService.isUsernameAlreadyTaken(username)) {
-                reject(context, "Username is already taken", "usernameAlreadyTaken");
+            if(registrationService.isFiscalCodeAlreadyTaken(fiscalCode)) {
+                reject(context, "Error with fiscal code", "fiscalCodeAlreadyTaken");
                 return false;
             }
             return true;
         } catch (DataAccessServiceException e) {
-            logger.error("Error checking username availability", e);
+            logger.error("Error checking fiscal code availability", e);
             return false;
         }
     }
+
 
     private void reject(ConstraintValidatorContext context, String message, String fieldName) {
         context.disableDefaultConstraintViolation();
@@ -46,5 +47,5 @@ public class UniqueUsernameValidator implements ConstraintValidator<UniqueUserna
             .addPropertyNode(fieldName)
             .addConstraintViolation();
     }
-}
 
+}

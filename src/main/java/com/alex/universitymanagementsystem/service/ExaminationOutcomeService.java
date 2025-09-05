@@ -48,20 +48,20 @@ public interface ExaminationOutcomeService {
      * Get an examination outcomes by student register
      * @param register of the student
      * @return List of examination outcomes
-     * @throws NoSuchElementException if the student does not exist
+     * @throws ObjectNotFoundException if the student does not exist
      * @throws DataAccessServiceException if there is an error accessing the database.  
      */
     List<ExaminationOutcomeDto> getStudentOutcomes(String register)
-        throws NoSuchElementException, DataAccessServiceException;
+        throws ObjectNotFoundException, DataAccessServiceException;
 
 
     /**
      * Save an examination outcome
      * @param ExaminationOutcomeDto data transfer object
      * @return Optional<ExaminationOutcome> outcome
-     * @throws NoSuchElementException if the student does not exist
-     * @throws ObjectNotFoundException if the appeal does not exist
-     * @throws ObjectAlreadyExistsException if
+     * @throws ObjectNotFoundException if the student does not exist or
+     * if the appeal does not exist
+     * @throws ObjectAlreadyExistsException if the outcome already exists
      * @throws DataAccessServiceException if there is an error accessing the database.
      */
     @Transactional(rollbackOn = {NoSuchElementException.class, ObjectNotFoundException.class, ObjectAlreadyExistsException.class})

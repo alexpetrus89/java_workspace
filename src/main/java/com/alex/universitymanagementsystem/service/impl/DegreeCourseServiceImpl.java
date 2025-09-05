@@ -1,19 +1,20 @@
 package com.alex.universitymanagementsystem.service.impl;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import com.alex.universitymanagementsystem.component.ServiceHelpers;
+import com.alex.universitymanagementsystem.component.validator.ServiceValidators;
 import com.alex.universitymanagementsystem.domain.Course;
-import com.alex.universitymanagementsystem.domain.DegreeCourse;
 import com.alex.universitymanagementsystem.dto.CourseDto;
 import com.alex.universitymanagementsystem.dto.DegreeCourseDto;
 import com.alex.universitymanagementsystem.dto.ProfessorDto;
 import com.alex.universitymanagementsystem.dto.StudentDto;
 import com.alex.universitymanagementsystem.exception.DataAccessServiceException;
+import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
 import com.alex.universitymanagementsystem.mapper.CourseMapper;
 import com.alex.universitymanagementsystem.mapper.DegreeCourseMapper;
 import com.alex.universitymanagementsystem.mapper.ProfessorMapper;
@@ -29,15 +30,22 @@ public class DegreeCourseServiceImpl implements DegreeCourseService {
 
 	// constants
 	private static final String DATA_ACCESS_ERROR = "data access error";
-    private static final String DEGREE_COURSE_NOT_FOUND_ERROR = "Degree course not found";
-    private static final String DEGREE_COURSE_BLANK_ERROR = "Degree course name cannot be empty";
 
     // instance variables
     private final DegreeCourseRepository degreeCourseRepository;
+    private final ServiceHelpers helpers;
+    private final ServiceValidators validators;
+
 
     // autowired - dependency injection - constructor
-    public DegreeCourseServiceImpl(DegreeCourseRepository degreeCourseRepository) {
+    public DegreeCourseServiceImpl(
+        DegreeCourseRepository degreeCourseRepository,
+        ServiceHelpers helpers,
+        ServiceValidators validators
+    ) {
         this.degreeCourseRepository = degreeCourseRepository;
+        this.helpers = helpers;
+        this.validators = validators;
     }
 
 
@@ -67,21 +75,17 @@ public class DegreeCourseServiceImpl implements DegreeCourseService {
      * @return DegreeCourseDto object representing the degree course
      *         with the given name.
      * @throws IllegalArgumentException if the name is blank.
-     * @throws NoSuchElementException if the degree course is not found
+     * @throws ObjectNotFoundException if the degree course is not found
      * @throws DataAccessServiceException if there is an error accessing the database
      */
     @Override
     public DegreeCourseDto getDegreeCourseByName(String name)
-        throws IllegalArgumentException, NoSuchElementException, DataAccessServiceException
+        throws IllegalArgumentException, ObjectNotFoundException, DataAccessServiceException
     {
-        if(name.isBlank())
-            throw new IllegalArgumentException(DEGREE_COURSE_BLANK_ERROR);
+        validators.validateDegreeCourseExists(name);
 
         try {
-            return degreeCourseRepository
-                .findByName(name.toUpperCase())
-                .map(DegreeCourseMapper::toDto)
-                .orElseThrow(() -> new NoSuchElementException(DEGREE_COURSE_NOT_FOUND_ERROR));
+            return DegreeCourseMapper.toDto(helpers.fetchDegreeCourse(name));
         } catch (PersistenceException e) {
             throw new DataAccessServiceException(DATA_ACCESS_ERROR, e);
         }
@@ -95,22 +99,18 @@ public class DegreeCourseServiceImpl implements DegreeCourseService {
      * @return List<CourseDto> objects representing all courses of the given
      *         degree course.
      * @throws IllegalArgumentException if the name is empty.
-     * @throws NoSuchElementException if the degree course is not found
+     * @throws ObjectNotFoundException if the degree course is not found
      * @throws DataAccessServiceException if there is an error accessing the database
      */
     @Override
     public List<CourseDto> getCourses(String name)
-        throws IllegalArgumentException, NoSuchElementException, DataAccessServiceException
+        throws IllegalArgumentException, ObjectNotFoundException, DataAccessServiceException
     {
-        if(name.isBlank())
-            throw new IllegalArgumentException(DEGREE_COURSE_BLANK_ERROR);
+        validators.validateDegreeCourseExists(name);
 
         try {
-            DegreeCourse degreeCourse = degreeCourseRepository
-                .findByName(name)
-                .orElseThrow(() -> new NoSuchElementException(DEGREE_COURSE_NOT_FOUND_ERROR));
-
-            return degreeCourse
+            return helpers
+                .fetchDegreeCourse(name)
                 .getCourses()
                 .stream()
                 .map(CourseMapper::toDto)
@@ -128,20 +128,18 @@ public class DegreeCourseServiceImpl implements DegreeCourseService {
      * @return List<ProfessorDto> representing all professors of the given
      *         degree course
      * @throws IllegalArgumentException if the name is blank.
-     * @throws NoSuchElementException if the degree course is not found
+     * @throws ObjectNotFoundException if the degree course is not found
      * @throws DataAccessServiceException if there is an error accessing the database
      */
     @Override
     public List<ProfessorDto> getProfessors(String name)
-        throws IllegalArgumentException, NoSuchElementException, DataAccessServiceException
+        throws IllegalArgumentException, ObjectNotFoundException, DataAccessServiceException
     {
-        if(name.isBlank())
-            throw new IllegalArgumentException(DEGREE_COURSE_BLANK_ERROR);
+        validators.validateDegreeCourseExists(name);
 
         try {
-            return degreeCourseRepository
-                .findByName(name)
-                .orElseThrow(() -> new NoSuchElementException(DEGREE_COURSE_NOT_FOUND_ERROR))
+            return helpers
+                .fetchDegreeCourse(name)
                 .getCourses()
                 .stream()
                 .filter(course -> course.getProfessor() != null)
@@ -162,21 +160,19 @@ public class DegreeCourseServiceImpl implements DegreeCourseService {
      * @return List of StudentDto objects representing all students of the
      *         given degree course.
      * @throws IllegalArgumentException if the name is blank.
-     * @throws NoSuchElementException if the degree course is not found
+     * @throws ObjectNotFoundException if the degree course is not found
      * @throws DataAccessServiceException if there is an error accessing the database
      */
     @Override
     public List<StudentDto> getStudents(String name)
-        throws IllegalArgumentException, NoSuchElementException, DataAccessServiceException
+        throws IllegalArgumentException, ObjectNotFoundException, DataAccessServiceException
     {
 
-        if(name.isBlank())
-            throw new IllegalArgumentException(DEGREE_COURSE_BLANK_ERROR);
+        validators.validateDegreeCourseExists(name);
 
         try {
-            return degreeCourseRepository
-            .findByName(name)
-            .orElseThrow(() -> new NoSuchElementException(DEGREE_COURSE_NOT_FOUND_ERROR))
+            return helpers
+            .fetchDegreeCourse(name)
             .getStudents()
             .stream()
             .map(StudentMapper::toDto)

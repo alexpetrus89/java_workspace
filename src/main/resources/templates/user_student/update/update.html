@@ -19,7 +19,7 @@
     <div class="container">
         <h1>Update information</h1>
         <form action="#" th:action="@{/api/v1/user/update/build}"
-            th:object="${builder}" method="post">
+            th:object="${form}" method="post">
 
         <input type="hidden" name="_method" value="PUT" />
 

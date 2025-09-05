@@ -27,7 +27,6 @@ import com.alex.universitymanagementsystem.domain.StudyPlan;
 import com.alex.universitymanagementsystem.domain.User;
 import com.alex.universitymanagementsystem.domain.immutable.Register;
 import com.alex.universitymanagementsystem.domain.immutable.UniqueCode;
-import com.alex.universitymanagementsystem.dto.Builder;
 import com.alex.universitymanagementsystem.dto.RegistrationForm;
 import com.alex.universitymanagementsystem.enum_type.CourseType;
 import com.alex.universitymanagementsystem.enum_type.DegreeType;
@@ -135,38 +134,38 @@ public class UmsDBInitConfig implements Serializable {
         logger.info("\n\n\n--- INITIALIZE ADMIN ---");
 
         // create user  - 2 admin + 18 students + 9 professors
-        Builder builderAdminOne = new Builder();
-        builderAdminOne.withUsername("rico@gmail.com");
-        builderAdminOne.withPassword("rico");
-        builderAdminOne.withFirstName("brant");
-        builderAdminOne.withLastName("bjork");
-        builderAdminOne.withDob(LocalDate.of(1993, 1, 1));
-        builderAdminOne.withFiscalCode("abc678rde217we56");
-        builderAdminOne.withStreet("sky valley road");
-        builderAdminOne.withCity("Palm Desert");
-        builderAdminOne.withState("Rockalandia");
-        builderAdminOne.withZip("12398");
-        builderAdminOne.withPhone("7416328954");
-        builderAdminOne.withRole(RoleType.ADMIN);
+        RegistrationForm form = new RegistrationForm();
+        form.setUsername("rico@gmail.com");
+        form.setPassword("rico");
+        form.setFirstName("brant");
+        form.setLastName("bjork");
+        form.setDob(LocalDate.of(1993, 1, 1));
+        form.setFiscalCode("abc678rde217we56");
+        form.setStreet("sky valley road");
+        form.setCity("Palm Desert");
+        form.setState("Rockalandia");
+        form.setZip("12398");
+        form.setPhone("7416328954");
+        form.setRole(RoleType.ADMIN);
 
-        Builder builderAdminTwo = new Builder();
-        builderAdminTwo.withUsername("fido@gmail.com");
-        builderAdminTwo.withPassword("fido");
-        builderAdminTwo.withFirstName("enrico");
-        builderAdminTwo.withLastName("ruggieri");
-        builderAdminTwo.withDob(LocalDate.of(1993, 4, 1));
-        builderAdminTwo.withFiscalCode("abc678rde217we47");
-        builderAdminTwo.withStreet("calvario street");
-        builderAdminTwo.withCity("  Oslo");
-        builderAdminTwo.withState("Norway");
-        builderAdminTwo.withZip("89632");
-        builderAdminTwo.withPhone("1234567894");
-        builderAdminTwo.withRole(RoleType.ADMIN);
+        RegistrationForm formTwo = new RegistrationForm();
+        formTwo.setUsername("fido@gmail.com");
+        formTwo.setPassword("fido");
+        formTwo.setFirstName("enrico");
+        formTwo.setLastName("ruggieri");
+        formTwo.setDob(LocalDate.of(1993, 4, 1));
+        formTwo.setFiscalCode("abc678rde217we47");
+        formTwo.setStreet("calvario street");
+        formTwo.setCity("  Oslo");
+        formTwo.setState("Norway");
+        formTwo.setZip("89632");
+        formTwo.setPhone("1234567894");
+        formTwo.setRole(RoleType.ADMIN);
 
         // create users
         List<User> users = List.of(
-            new RegistrationForm(builderAdminOne).toUser(passwordEncoder),
-            new RegistrationForm(builderAdminTwo).toUser(passwordEncoder)
+            form.toUser(passwordEncoder),
+            formTwo.toUser(passwordEncoder)
         );
 
         // save user
@@ -294,139 +293,139 @@ public class UmsDBInitConfig implements Serializable {
     ) {
         logger.info("\n\n\n--- INITIALIZE STUDENTS ---");
         // 1
-        Builder builderStudentOne = new Builder();
-        builderStudentOne.withUsername("nino@gmail.com");
-        builderStudentOne.withPassword("nino");
-        builderStudentOne.withFirstName("bob");
-        builderStudentOne.withLastName("dylamie");
-        builderStudentOne.withDob(LocalDate.of(1991, 4, 6));
-        builderStudentOne.withFiscalCode("abc678rde217we12");
-        builderStudentOne.withStreet("hollywood boulevard");
-        builderStudentOne.withCity("Bishkek");
-        builderStudentOne.withState("Kyrgyzstan");
-        builderStudentOne.withZip("96358");
-        builderStudentOne.withPhone("1111111110");
-        builderStudentOne.withRole(RoleType.STUDENT);
+        RegistrationForm formStudentOne = new RegistrationForm();
+        formStudentOne.setUsername("nino@gmail.com");
+        formStudentOne.setPassword("nino");
+        formStudentOne.setFirstName("bob");
+        formStudentOne.setLastName("dylamie");
+        formStudentOne.setDob(LocalDate.of(1991, 4, 6));
+        formStudentOne.setFiscalCode("abc678rde217we12");
+        formStudentOne.setStreet("hollywood boulevard");
+        formStudentOne.setCity("Bishkek");
+        formStudentOne.setState("Kyrgyzstan");
+        formStudentOne.setZip("96358");
+        formStudentOne.setPhone("1111111110");
+        formStudentOne.setRole(RoleType.STUDENT);
 
         // 2
-        Builder builderStudentTwo = new Builder();
-        builderStudentTwo.withUsername("luca@gmail.com");
-        builderStudentTwo.withPassword("luca");
-        builderStudentTwo.withFirstName("pelaccio");
-        builderStudentTwo.withLastName("pelaccio");
-        builderStudentTwo.withDob(LocalDate.of(1991, 11, 12));
-        builderStudentTwo.withFiscalCode("abc678rde217we71");
-        builderStudentTwo.withStreet("Loreto Square");
-        builderStudentTwo.withCity("Milan");
-        builderStudentTwo.withState("Italy");
-        builderStudentTwo.withZip("20127");
-        builderStudentTwo.withPhone("2804194500");
-        builderStudentTwo.withRole(RoleType.STUDENT);
+        RegistrationForm formStudentTwo = new RegistrationForm();
+        formStudentTwo.setUsername("luca@gmail.com");
+        formStudentTwo.setPassword("luca");
+        formStudentTwo.setFirstName("pelaccio");
+        formStudentTwo.setLastName("pelaccio");
+        formStudentTwo.setDob(LocalDate.of(1991, 11, 12));
+        formStudentTwo.setFiscalCode("abc678rde217we71");
+        formStudentTwo.setStreet("Loreto Square");
+        formStudentTwo.setCity("Milan");
+        formStudentTwo.setState("Italy");
+        formStudentTwo.setZip("20127");
+        formStudentTwo.setPhone("2804194500");
+        formStudentTwo.setRole(RoleType.STUDENT);
 
         // 3
-        Builder builderStudentThree = new Builder();
-        builderStudentThree.withUsername("ennio@gmail.com");
-        builderStudentThree.withPassword("ennio");
-        builderStudentThree.withFirstName("ennio");
-        builderStudentThree.withLastName("morricone");
-        builderStudentThree.withDob(LocalDate.of(1991, 11, 12));
-        builderStudentThree.withFiscalCode("abc678rde217we43");
-        builderStudentThree.withStreet("Pancho Villa Street");
-        builderStudentThree.withCity("San Juan del Río");
-        builderStudentThree.withState("Messico");
-        builderStudentThree.withZip("76800");
-        builderStudentThree.withPhone("9876543210");
-        builderStudentThree.withRole(RoleType.STUDENT);
+        RegistrationForm formStudentThree = new RegistrationForm();
+        formStudentThree.setUsername("ennio@gmail.com");
+        formStudentThree.setPassword("ennio");
+        formStudentThree.setFirstName("ennio");
+        formStudentThree.setLastName("morricone");
+        formStudentThree.setDob(LocalDate.of(1991, 11, 12));
+        formStudentThree.setFiscalCode("abc678rde217we43");
+        formStudentThree.setStreet("Pancho Villa Street");
+        formStudentThree.setCity("San Juan del Río");
+        formStudentThree.setState("Messico");
+        formStudentThree.setZip("76800");
+        formStudentThree.setPhone("9876543210");
+        formStudentThree.setRole(RoleType.STUDENT);
 
         // 4
-        Builder builderStudentFour = new Builder();
-        builderStudentFour.withUsername("gino@gmail.com");
-        builderStudentFour.withPassword("gino");
-        builderStudentFour.withFirstName("gino");
-        builderStudentFour.withLastName("bramieri");
-        builderStudentFour.withDob(LocalDate.of(1991, 11, 12));
-        builderStudentFour.withFiscalCode("abc678rde217we34");
-        builderStudentFour.withStreet("via delle lamie di olimpia");
-        builderStudentFour.withCity("laureto");
-        builderStudentFour.withState("italia");
-        builderStudentFour.withZip("72015");
-        builderStudentFour.withPhone("38412369547");
-        builderStudentFour.withRole(RoleType.STUDENT);
+        RegistrationForm formStudentFour = new RegistrationForm();
+        formStudentFour.setUsername("gino@gmail.com");
+        formStudentFour.setPassword("gino");
+        formStudentFour.setFirstName("gino");
+        formStudentFour.setLastName("bramieri");
+        formStudentFour.setDob(LocalDate.of(1991, 11, 12));
+        formStudentFour.setFiscalCode("abc678rde217we34");
+        formStudentFour.setStreet("via delle lamie di olimpia");
+        formStudentFour.setCity("laureto");
+        formStudentFour.setState("italia");
+        formStudentFour.setZip("72015");
+        formStudentFour.setPhone("38412369547");
+        formStudentFour.setRole(RoleType.STUDENT);
 
         // 5
-        Builder builderStudentFive = new Builder();
-        builderStudentFive.withUsername("pino@gmail.com");
-        builderStudentFive.withPassword("pino");
-        builderStudentFive.withFirstName("pino");
-        builderStudentFive.withLastName("pino");
-        builderStudentFive.withDob(LocalDate.of(1991, 11, 12));
-        builderStudentFive.withFiscalCode("abc678rde217we18");
-        builderStudentFive.withStreet("via delle lamie di olimpia");
-        builderStudentFive.withCity("laureto");
-        builderStudentFive.withState("italia");
-        builderStudentFive.withZip("72015");
-        builderStudentFive.withPhone("38412369547");
-        builderStudentFive.withRole(RoleType.STUDENT);
+        RegistrationForm formStudentFive = new RegistrationForm();
+        formStudentFive.setUsername("pino@gmail.com");
+        formStudentFive.setPassword("pino");
+        formStudentFive.setFirstName("pino");
+        formStudentFive.setLastName("pino");
+        formStudentFive.setDob(LocalDate.of(1991, 11, 12));
+        formStudentFive.setFiscalCode("abc678rde217we18");
+        formStudentFive.setStreet("via delle lamie di olimpia");
+        formStudentFive.setCity("laureto");
+        formStudentFive.setState("italia");
+        formStudentFive.setZip("72015");
+        formStudentFive.setPhone("38412369547");
+        formStudentFive.setRole(RoleType.STUDENT);
 
         // 6
-        Builder builderStudentSix = new Builder();
-        builderStudentSix.withUsername("tino@gmail.com");
-        builderStudentSix.withPassword("tino");
-        builderStudentSix.withFirstName("tino");
-        builderStudentSix.withLastName("filipp");
-        builderStudentSix.withDob(LocalDate.of(1991, 11, 12));
-        builderStudentSix.withFiscalCode("abc678rde217we19");
-        builderStudentSix.withStreet("via delle lamie di olimpia");
-        builderStudentSix.withCity("laureto");
-        builderStudentSix.withState("italia");
-        builderStudentSix.withZip("72015");
-        builderStudentSix.withPhone("38412369547");
-        builderStudentSix.withRole(RoleType.STUDENT);
+        RegistrationForm formStudentSix = new RegistrationForm();
+        formStudentSix.setUsername("tino@gmail.com");
+        formStudentSix.setPassword("tino");
+        formStudentSix.setFirstName("tino");
+        formStudentSix.setLastName("filipp");
+        formStudentSix.setDob(LocalDate.of(1991, 11, 12));
+        formStudentSix.setFiscalCode("abc678rde217we19");
+        formStudentSix.setStreet("via delle lamie di olimpia");
+        formStudentSix.setCity("laureto");
+        formStudentSix.setState("italia");
+        formStudentSix.setZip("72015");
+        formStudentSix.setPhone("38412369547");
+        formStudentSix.setRole(RoleType.STUDENT);
 
         // 7
-        Builder builderStudentSeven = new Builder();
-        builderStudentSeven.withUsername("solo@gmail.com");
-        builderStudentSeven.withPassword("tino");
-        builderStudentSeven.withFirstName("tino");
-        builderStudentSeven.withLastName("laghezza");
-        builderStudentSeven.withDob(LocalDate.of(1991, 11, 12));
-        builderStudentSeven.withFiscalCode("abc678rde217we20");
-        builderStudentSeven.withStreet("via delle lamie di olimpia");
-        builderStudentSeven.withCity("laureto");
-        builderStudentSeven.withState("italia");
-        builderStudentSeven.withZip("72015");
-        builderStudentSeven.withPhone("38412369547");
-        builderStudentSeven.withRole(RoleType.STUDENT);
+        RegistrationForm formStudentSeven = new RegistrationForm();
+        formStudentSeven.setUsername("solo@gmail.com");
+        formStudentSeven.setPassword("tino");
+        formStudentSeven.setFirstName("tino");
+        formStudentSeven.setLastName("laghezza");
+        formStudentSeven.setDob(LocalDate.of(1991, 11, 12));
+        formStudentSeven.setFiscalCode("abc678rde217we20");
+        formStudentSeven.setStreet("via delle lamie di olimpia");
+        formStudentSeven.setCity("laureto");
+        formStudentSeven.setState("italia");
+        formStudentSeven.setZip("72015");
+        formStudentSeven.setPhone("38412369547");
+        formStudentSeven.setRole(RoleType.STUDENT);
 
         // 8
-        Builder builderStudentEight = new Builder();
-        builderStudentEight.withUsername("otto@gmail.com");
-        builderStudentEight.withPassword("otto");
-        builderStudentEight.withFirstName("otto");
-        builderStudentEight.withLastName("von bismarck");
-        builderStudentEight.withDob(LocalDate.of(1991, 11, 12));
-        builderStudentEight.withFiscalCode("abc678rde217we21");
-        builderStudentEight.withStreet("via delle lamie di olimpia");
-        builderStudentEight.withCity("laureto");
-        builderStudentEight.withState("italia");
-        builderStudentEight.withZip("72015");
-        builderStudentEight.withPhone("38412369547");
-        builderStudentEight.withRole(RoleType.STUDENT);
+        RegistrationForm formStudentEight = new RegistrationForm();
+        formStudentEight.setUsername("otto@gmail.com");
+        formStudentEight.setPassword("otto");
+        formStudentEight.setFirstName("otto");
+        formStudentEight.setLastName("von bismarck");
+        formStudentEight.setDob(LocalDate.of(1991, 11, 12));
+        formStudentEight.setFiscalCode("abc678rde217we21");
+        formStudentEight.setStreet("via delle lamie di olimpia");
+        formStudentEight.setCity("laureto");
+        formStudentEight.setState("italia");
+        formStudentEight.setZip("72015");
+        formStudentEight.setPhone("38412369547");
+        formStudentEight.setRole(RoleType.STUDENT);
 
         // 9
-        Builder builderStudentNine = new Builder();
-        builderStudentNine.withUsername("raffo@gmail.com");
-        builderStudentNine.withPassword("raffo");
-        builderStudentNine.withFirstName("raffaele");
-        builderStudentNine.withLastName("macina leone");
-        builderStudentNine.withDob(LocalDate.of(1991, 11, 12));
-        builderStudentNine.withFiscalCode("abc678rde217we22");
-        builderStudentNine.withStreet("via les claypool 71");
-        builderStudentNine.withCity("Bari");
-        builderStudentNine.withState("italia");
-        builderStudentNine.withZip("72100");
-        builderStudentNine.withPhone("38412369547");
-        builderStudentNine.withRole(RoleType.STUDENT);
+        RegistrationForm formStudentNine = new RegistrationForm();
+        formStudentNine.setUsername("raffo@gmail.com");
+        formStudentNine.setPassword("raffo");
+        formStudentNine.setFirstName("raffaele");
+        formStudentNine.setLastName("macina leone");
+        formStudentNine.setDob(LocalDate.of(1991, 11, 12));
+        formStudentNine.setFiscalCode("abc678rde217we22");
+        formStudentNine.setStreet("via les claypool 71");
+        formStudentNine.setCity("Bari");
+        formStudentNine.setState("italia");
+        formStudentNine.setZip("72100");
+        formStudentNine.setPhone("38412369547");
+        formStudentNine.setRole(RoleType.STUDENT);
 
 
         List<Student> students = new ArrayList<>();
@@ -434,7 +433,7 @@ public class UmsDBInitConfig implements Serializable {
         // 1
         students.add(
             new Student(
-                builderStudentOne,
+                formStudentOne,
                 passwordEncoder,
                 new Register("123456"),
                 degreeCourseRepository
@@ -446,7 +445,7 @@ public class UmsDBInitConfig implements Serializable {
         // 2
         students.add(
             new Student(
-                builderStudentTwo,
+                formStudentTwo,
                 passwordEncoder,
                 new Register("123457"),
                 degreeCourseRepository
@@ -458,7 +457,7 @@ public class UmsDBInitConfig implements Serializable {
         // 3
         students.add(
             new Student(
-                builderStudentThree,
+                formStudentThree,
                 passwordEncoder,
                 new Register("123458"),
                 degreeCourseRepository
@@ -470,7 +469,7 @@ public class UmsDBInitConfig implements Serializable {
         // 4
         students.add(
             new Student(
-                builderStudentFour,
+                formStudentFour,
                 passwordEncoder,
                 new Register("123459"),
                 degreeCourseRepository
@@ -482,7 +481,7 @@ public class UmsDBInitConfig implements Serializable {
         // 5
         students.add(
             new Student(
-                builderStudentFive,
+                formStudentFive,
                 passwordEncoder,
                 new Register("123460"),
                 degreeCourseRepository
@@ -494,7 +493,7 @@ public class UmsDBInitConfig implements Serializable {
         // 6
         students.add(
             new Student(
-                builderStudentSix,
+                formStudentSix,
                 passwordEncoder,
                 new Register("123461"),
                 degreeCourseRepository
@@ -506,7 +505,7 @@ public class UmsDBInitConfig implements Serializable {
         // 7
         students.add(
             new Student(
-                builderStudentSeven,
+                formStudentSeven,
                 passwordEncoder,
                 new Register("123462"),
                 degreeCourseRepository
@@ -518,7 +517,7 @@ public class UmsDBInitConfig implements Serializable {
         // 7
         students.add(
             new Student(
-                builderStudentEight,
+                formStudentEight,
                 passwordEncoder,
                 new Register("169841"),
                 degreeCourseRepository
@@ -530,7 +529,7 @@ public class UmsDBInitConfig implements Serializable {
         // 8
         students.add(
             new Student(
-                builderStudentNine,
+                formStudentNine,
                 passwordEncoder,
                 new Register("555555"),
                 degreeCourseRepository
@@ -671,19 +670,19 @@ public class UmsDBInitConfig implements Serializable {
     void initializeProfessors(ProfessorRepository professorRepository, PasswordEncoder passwordEncoder) {
         logger.info("\n\n\n--- INITIALIZE PROFESSORS ---");
 
-        Builder fbProfOne = new Builder();
-        fbProfOne.withUsername("professore.giacinto@dominio.it");
-        fbProfOne.withPassword("dino");
-        fbProfOne.withFirstName("gilles");
-        fbProfOne.withLastName("villeneuve");
-        fbProfOne.withDob(LocalDate.of(1993, 4, 6));
-        fbProfOne.withFiscalCode("abc678rde217we11");
-        fbProfOne.withStreet("via di vancouver");
-        fbProfOne.withCity("vancouver");
-        fbProfOne.withState("canada");
-        fbProfOne.withZip("48759");
-        fbProfOne.withPhone("8749652314");
-        fbProfOne.withRole(RoleType.PROFESSOR);
+        RegistrationForm fbProfOne = new RegistrationForm();
+        fbProfOne.setUsername("professore.giacinto@dominio.it");
+        fbProfOne.setPassword("dino");
+        fbProfOne.setFirstName("gilles");
+        fbProfOne.setLastName("villeneuve");
+        fbProfOne.setDob(LocalDate.of(1993, 4, 6));
+        fbProfOne.setFiscalCode("abc678rde217we11");
+        fbProfOne.setStreet("via di vancouver");
+        fbProfOne.setCity("vancouver");
+        fbProfOne.setState("canada");
+        fbProfOne.setZip("48759");
+        fbProfOne.setPhone("8749652314");
+        fbProfOne.setRole(RoleType.PROFESSOR);
         List<Professor> professors = new ArrayList<>();
 
         // 1
@@ -697,19 +696,19 @@ public class UmsDBInitConfig implements Serializable {
 
 
         // 2
-        Builder fbProfTwo = new Builder();
-        fbProfTwo.withUsername("professore.genesio@dominio.it");
-        fbProfTwo.withPassword("gene");
-        fbProfTwo.withFirstName("tazio");
-        fbProfTwo.withLastName("nuvolari");
-        fbProfTwo.withDob(LocalDate.of(1968, 4, 6));
-        fbProfTwo.withFiscalCode("abc999rde217we48");
-        fbProfTwo.withStreet("via di babel");
-        fbProfTwo.withCity("firenze");
-        fbProfTwo.withState("italia");
-        fbProfTwo.withZip("41695");
-        fbProfTwo.withPhone("8749652314");
-        fbProfTwo.withRole(RoleType.PROFESSOR);
+        RegistrationForm fbProfTwo = new RegistrationForm();
+        fbProfTwo.setUsername("professore.genesio@dominio.it");
+        fbProfTwo.setPassword("gene");
+        fbProfTwo.setFirstName("tazio");
+        fbProfTwo.setLastName("nuvolari");
+        fbProfTwo.setDob(LocalDate.of(1968, 4, 6));
+        fbProfTwo.setFiscalCode("abc999rde217we48");
+        fbProfTwo.setStreet("via di babel");
+        fbProfTwo.setCity("firenze");
+        fbProfTwo.setState("italia");
+        fbProfTwo.setZip("41695");
+        fbProfTwo.setPhone("8749652314");
+        fbProfTwo.setRole(RoleType.PROFESSOR);
 
         // 2
         professors.add(
@@ -722,19 +721,19 @@ public class UmsDBInitConfig implements Serializable {
 
 
         // 3
-        Builder fbProfThree = new Builder();
-        fbProfThree.withUsername("professore.giacomo@dominio.it");
-        fbProfThree.withPassword("giaco");
-        fbProfThree.withFirstName("giacomo");
-        fbProfThree.withLastName("agostini");
-        fbProfThree.withDob(LocalDate.of(1984, 8, 7));
-        fbProfThree.withFiscalCode("abc568rde217we76");
-        fbProfThree.withStreet("via di florio");
-        fbProfThree.withCity("palermo");
-        fbProfThree.withState("italia");
-        fbProfThree.withZip("91000");
-        fbProfThree.withPhone("8749652314");
-        fbProfThree.withRole(RoleType.PROFESSOR);
+        RegistrationForm fbProfThree = new RegistrationForm();
+        fbProfThree.setUsername("professore.giacomo@dominio.it");
+        fbProfThree.setPassword("giaco");
+        fbProfThree.setFirstName("giacomo");
+        fbProfThree.setLastName("agostini");
+        fbProfThree.setDob(LocalDate.of(1984, 8, 7));
+        fbProfThree.setFiscalCode("abc568rde217we76");
+        fbProfThree.setStreet("via di florio");
+        fbProfThree.setCity("palermo");
+        fbProfThree.setState("italia");
+        fbProfThree.setZip("91000");
+        fbProfThree.setPhone("8749652314");
+        fbProfThree.setRole(RoleType.PROFESSOR);
 
         // 3
         professors.add(
@@ -747,19 +746,19 @@ public class UmsDBInitConfig implements Serializable {
 
 
         // 3
-        Builder fbProfFour = new Builder();
-        fbProfFour.withUsername("professore.gioele@dominio.it");
-        fbProfFour.withPassword("gioele");
-        fbProfFour.withFirstName("john");
-        fbProfFour.withLastName("surtees");
-        fbProfFour.withDob(LocalDate.of(1993, 4, 6));
-        fbProfFour.withFiscalCode("zzz665rde217we56");
-        fbProfFour.withStreet("via di vancouver");
-        fbProfFour.withCity("vancouver");
-        fbProfFour.withState("canada");
-        fbProfFour.withZip("48759");
-        fbProfFour.withPhone("8749652314");
-        fbProfFour.withRole(RoleType.PROFESSOR);
+        RegistrationForm fbProfFour = new RegistrationForm();
+        fbProfFour.setUsername("professore.gioele@dominio.it");
+        fbProfFour.setPassword("gioele");
+        fbProfFour.setFirstName("john");
+        fbProfFour.setLastName("surtees");
+        fbProfFour.setDob(LocalDate.of(1993, 4, 6));
+        fbProfFour.setFiscalCode("zzz665rde217we56");
+        fbProfFour.setStreet("via di vancouver");
+        fbProfFour.setCity("vancouver");
+        fbProfFour.setState("canada");
+        fbProfFour.setZip("48759");
+        fbProfFour.setPhone("8749652314");
+        fbProfFour.setRole(RoleType.PROFESSOR);
 
         // 3
         professors.add(

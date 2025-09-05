@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import com.alex.universitymanagementsystem.domain.User;
+import com.alex.universitymanagementsystem.domain.immutable.FiscalCode;
 import com.alex.universitymanagementsystem.domain.immutable.UserId;
 
 /**
@@ -72,6 +73,24 @@ public interface UserRepository extends JpaRepository<User, UserId> {
      * @return true if the user exists, false otherwise
      */
     boolean existsByFiscalCode_FiscalCode(String fiscalCode);
+
+
+    /**
+     * Check if a user with the given username exists
+     * @param username the username to check
+     * @param id the id to exclude
+     * @return true if the user exists, false otherwise
+     */
+    boolean existsByUsernameAndIdNot(String username, UserId id);
+
+
+    /**
+     * Check if a user with the given fiscal code exists
+     * @param fiscalCode the fiscal code to check
+     * @param id the id to exclude
+     * @return true if the user exists, false otherwise
+     */
+    boolean existsByFiscalCodeAndIdNot(FiscalCode fiscalCode, UserId id);
 
 
 }

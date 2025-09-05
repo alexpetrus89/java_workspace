@@ -1,5 +1,6 @@
 package com.alex.universitymanagementsystem.service.impl;
 
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -7,8 +8,10 @@ import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 
+import com.alex.universitymanagementsystem.component.ServiceHelpers;
+import com.alex.universitymanagementsystem.component.validator.ServiceValidators;
 import com.alex.universitymanagementsystem.domain.Course;
-import com.alex.universitymanagementsystem.domain.Student;
+import com.alex.universitymanagementsystem.domain.StudyPlan;
 import com.alex.universitymanagementsystem.domain.immutable.Register;
 import com.alex.universitymanagementsystem.dto.CourseDto;
 import com.alex.universitymanagementsystem.dto.StudyPlanDto;
@@ -17,9 +20,6 @@ import com.alex.universitymanagementsystem.enum_type.DomainType;
 import com.alex.universitymanagementsystem.exception.DataAccessServiceException;
 import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
 import com.alex.universitymanagementsystem.mapper.CourseMapper;
-import com.alex.universitymanagementsystem.repository.CourseRepository;
-import com.alex.universitymanagementsystem.repository.DegreeCourseRepository;
-import com.alex.universitymanagementsystem.repository.StudentRepository;
 import com.alex.universitymanagementsystem.repository.StudyPlanRepository;
 import com.alex.universitymanagementsystem.service.StudyPlanService;
 
@@ -36,20 +36,17 @@ public class StudyPlanServiceImpl implements StudyPlanService {
 
     // instance variables
     private final StudyPlanRepository studyPlanRepository;
-    private final StudentRepository studentRepository;
-    private final CourseRepository courseRepository;
-    private final DegreeCourseRepository degreeCourseRepository;
+    private final ServiceHelpers helpers;
+    private final ServiceValidators validators;
 
     public StudyPlanServiceImpl(
         StudyPlanRepository studyPlanRepository,
-        StudentRepository studentRepository,
-        DegreeCourseRepository degreeCourseRepository,
-        CourseRepository courseRepository
+        ServiceHelpers helpers,
+        ServiceValidators validators
     ) {
         this.studyPlanRepository = studyPlanRepository;
-        this.studentRepository = studentRepository;
-        this.degreeCourseRepository = degreeCourseRepository;
-        this.courseRepository = courseRepository;
+        this.helpers = helpers;
+        this.validators = validators;
     }
 
 
@@ -64,16 +61,7 @@ public class StudyPlanServiceImpl implements StudyPlanService {
     public String getOrderingByRegister(Register register)
         throws ObjectNotFoundException, DataAccessServiceException
     {
-        try {
-            // retrieve student ordering
-            return studentRepository
-                .findByRegister(register)
-                .orElseThrow(() -> new ObjectNotFoundException(DomainType.STUDY_PLAN))
-                .getStudyPlan()
-                .getOrdering();
-        } catch (PersistenceException e) {
-            throw new DataAccessServiceException(DATA_ACCESS_ERROR, e);
-        }
+        return getStudyPlan(register).getOrdering();
     }
 
 
@@ -88,19 +76,12 @@ public class StudyPlanServiceImpl implements StudyPlanService {
     public Set<CourseDto> getCoursesByRegister(Register register)
         throws ObjectNotFoundException, DataAccessServiceException
     {
-        try {
-            // retrieve the courses of the study plan
-            return studentRepository
-                .findByRegister(register)
-                .orElseThrow(() -> new ObjectNotFoundException(DomainType.STUDENT))
-                .getStudyPlan()
-                .getCourses()
-                .stream()
-                .map(CourseMapper::toDto)
-                .collect(Collectors.toSet());
-        } catch (PersistenceException e) {
-            throw new DataAccessServiceException(DATA_ACCESS_ERROR, e);
-        }
+        // retrieve the courses of the study plan
+        return getStudyPlan(register)
+            .getCourses()
+            .stream()
+            .map(CourseMapper::toDto)
+            .collect(Collectors.toSet());
     }
 
 
@@ -115,27 +96,16 @@ public class StudyPlanServiceImpl implements StudyPlanService {
     public StudyPlanDto getStudyPlanByRegister(Register register)
         throws ObjectNotFoundException, DataAccessServiceException
     {
-        try {
-            // retrieve the ordering of the study plan
-            String ordering = studentRepository
-                .findByRegister(register)
-                .orElseThrow(() -> new ObjectNotFoundException(DomainType.STUDENT))
-                .getStudyPlan()
-                .getOrdering();
-            // retrieve the courses of the study plan
-            Set<CourseDto> courses =  studentRepository
-                .findByRegister(register)
-                .orElseThrow(() -> new ObjectNotFoundException(DomainType.STUDENT))
-                .getStudyPlan()
-                .getCourses()
-                .stream()
-                .map(CourseMapper::toDto)
-                .collect(Collectors.toSet());
+        // retrieve the ordering of the study plan
+        String ordering = getStudyPlan(register).getOrdering();
+        // retrieve the courses of the study plan
+        Set<CourseDto> courses = getStudyPlan(register)
+            .getCourses()
+            .stream()
+            .map(CourseMapper::toDto)
+            .collect(Collectors.toSet());
 
-            return new StudyPlanDto(ordering, courses);
-        } catch (PersistenceException e) {
-            throw new DataAccessServiceException(DATA_ACCESS_ERROR, e);
-        }
+        return new StudyPlanDto(ordering, courses);
     }
 
 
@@ -155,42 +125,60 @@ public class StudyPlanServiceImpl implements StudyPlanService {
         throws IllegalArgumentException, ObjectNotFoundException, IllegalStateException, DataAccessServiceException
     {
         try {
-            // retrieve all data
-            Student student = studentRepository
-                .findByRegister(new Register(dto.getRegister()))
-                .orElseThrow(() -> new ObjectNotFoundException(DomainType.STUDENT));
+            // retrieve study plan
+            StudyPlan studyPlan = Optional.ofNullable(getStudyPlan(new Register(dto.getRegister())))
+                .orElseThrow(() -> new ObjectNotFoundException(DomainType.STUDY_PLAN));
 
-            // retrieve the courses to add and remove
-            if(student.getStudyPlan() == null)
-                throw new ObjectNotFoundException(DomainType.STUDY_PLAN);
-
-            // retrieve the degree courses
-            String degreeCourseNew = degreeCourseRepository
-                .findByName(dto.getDegreeCourseOfNewCourse().toUpperCase())
-                .orElseThrow(() -> new ObjectNotFoundException(DomainType.DEGREE_COURSE))
-                .getName();
-
-            String degreeCourseOld = degreeCourseRepository
-                .findByName(dto.getDegreeCourseOfOldCourse().toUpperCase())
-                .orElseThrow(() -> new ObjectNotFoundException(DomainType.DEGREE_COURSE))
-                .getName();
-
-            // retrieve the course to add
-            Course courseToAdd = courseRepository
-                .findByNameAndDegreeCourseName(dto.getCourseToAdd(), degreeCourseNew)
-                .orElseThrow(() -> new ObjectNotFoundException(DomainType.COURSE));
-
-            // retrieve the course to remove
-            Course courseToRemove = courseRepository
-                .findByNameAndDegreeCourseName(dto.getCourseToRemove(), degreeCourseOld)
-                .orElseThrow(() -> new ObjectNotFoundException(DomainType.COURSE));
+            // retrieve course to add
+            Course courseToAdd = getCourse(dto.getCourseToAdd(), dto.getDegreeCourseOfNewCourse());
+            // retrieve course to remove
+            Course courseToRemove = getCourse(dto.getCourseToRemove(), dto.getDegreeCourseOfOldCourse());
 
             // add the new course
-            student.getStudyPlan().addCourse(courseToAdd);
+            studyPlan.addCourse(courseToAdd);
             // remove the old course
-            student.getStudyPlan().removeCourse(courseToRemove);
-            // save
-            studyPlanRepository.saveAndFlush(student.getStudyPlan());
+            studyPlan.removeCourse(courseToRemove);
+            // save changes
+            studyPlanRepository.saveAndFlush(studyPlan);
+        } catch (PersistenceException e) {
+            throw new DataAccessServiceException(DATA_ACCESS_ERROR, e);
+        }
+    }
+
+
+
+    // --- Helper methods ---
+
+    /**
+     * Retrieves a student by their register.
+     * @param register the student's register
+     * @return the student
+     */
+    private StudyPlan getStudyPlan(Register register) {
+        try {
+            return helpers
+                .fetchStudent(register.toString())
+                .getStudyPlan();
+        } catch (PersistenceException e) {
+            throw new DataAccessServiceException(DATA_ACCESS_ERROR, e);
+        }
+    }
+
+
+    /**
+     * Retrieves a course by its name and degree course name.
+     * @param courseName
+     * @param degreeCourseName
+     * @return the course
+     */
+    private Course getCourse(String courseName, String degreeCourseName) {
+        try {
+            String normalizedDegreeCourse = degreeCourseName.toUpperCase();
+
+            validators.validateDegreeCourseExists(normalizedDegreeCourse);
+
+            return helpers.fetchCourse(courseName, normalizedDegreeCourse);
+
         } catch (PersistenceException e) {
             throw new DataAccessServiceException(DATA_ACCESS_ERROR, e);
         }

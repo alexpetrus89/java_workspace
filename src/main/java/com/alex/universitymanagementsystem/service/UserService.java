@@ -7,12 +7,16 @@ import java.util.Optional;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import com.alex.universitymanagementsystem.dto.RegistrationForm;
+import com.alex.universitymanagementsystem.dto.UpdateForm;
 import com.alex.universitymanagementsystem.dto.UserDto;
 import com.alex.universitymanagementsystem.exception.DataAccessServiceException;
+import com.alex.universitymanagementsystem.exception.DuplicateFiscalCodeException;
+import com.alex.universitymanagementsystem.exception.DuplicateUsernameException;
 import com.alex.universitymanagementsystem.exception.ObjectAlreadyExistsException;
 import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
 
@@ -46,15 +50,18 @@ public interface UserService extends UserDetailsService {
      * Updates the current authenticated user's information and saves it to the
      * repository.
      * This method is transactional and mapped to the HTTP PUT request for "/update".
-     * @param form with new data of the user to be updated
-     * @return Optional<UserDto> data transfer object containing the updated user information
+     * @param form with new data of the user to be updated.
+     * @return Optional<UserDto> data transfer object containing the updated user information.
      * @throws ObjectNotFoundException if the authenticated user is not found.
-     * @throws DataAccessServiceException if there is an error accessing the database
+     * @throws DuplicateUsernameException if the new username is already in use by another user.
+     * @throws DuplicateFiscalCodeException if the new fiscal code is already in use by another user
+     * @throws DataAccessServiceException if there are trouble accessing the database.
      */
+    @PreAuthorize("#id == authentication.principal.id or hasRole('ADMIN')")
     @Transactional(rollbackOn = ObjectNotFoundException.class)
     @Retryable(retryFor = PersistenceException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
-    Optional<UserDto> updateUser(RegistrationForm form)
-        throws ObjectNotFoundException, DataAccessServiceException;
+    public Optional<UserDto> updateUser(UpdateForm form)
+        throws ObjectNotFoundException, DuplicateUsernameException, DuplicateFiscalCodeException, DataAccessServiceException;
 
 
 	/**

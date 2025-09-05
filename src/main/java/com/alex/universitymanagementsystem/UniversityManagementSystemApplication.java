@@ -17,20 +17,30 @@ public class UniversityManagementSystemApplication {
 	// injecting UmsConfig object
     private final UmsConfig umsConfig;
 
+	// constructor
 	public UniversityManagementSystemApplication(UmsConfig umsConfig) {
 		this.umsConfig = umsConfig;
 	}
+
 
     @GetMapping("/shutdown")
     public void shutdown() {
         umsConfig.shutDown(new UmsExitCodeGenerator());
     }
 
+
+	@GetMapping("/restart")
+    public void restart() {
+        umsConfig.restart();
+    }
+
+
 	/**
 	 * Entry point of the program.
 	 * @param args The command line arguments passed to the program.
 	 */
 	public static void main(String[] args) {
+		UmsConfig.setMainArgs(args); // save the main args
 		SpringApplication.run(UniversityManagementSystemApplication.class, args);
 	}
 

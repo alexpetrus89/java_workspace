@@ -25,7 +25,6 @@ public class RegistrationServiceImpl {
      * Check if the username is already in use by other users
      * @param username
      * @return true if the username is already in use, false otherwise
-     * @throws UsernameInvalidException if the username is blank
      * @throws DataAccessServiceException if there is an error accessing the database.
      */
     public boolean isUsernameAlreadyTaken(String username) throws DataAccessServiceException
@@ -35,6 +34,22 @@ public class RegistrationServiceImpl {
         } catch (PersistenceException e) {
 			throw new DataAccessServiceException(DATA_ACCESS_ERROR, e);
 		}
+    }
+
+
+    /**
+     * Check if the fiscal code is already in use by other users
+     * @param fiscalCode
+     * @return true if the fiscal code is already in use, false otherwise
+     * @throws DataAccessServiceException
+     */
+    public boolean isFiscalCodeAlreadyTaken(String fiscalCode) throws DataAccessServiceException
+    {
+        try {
+            return userRepository.findByFiscalCode_FiscalCode(fiscalCode).isPresent();
+        } catch (PersistenceException e) {
+            throw new DataAccessServiceException(DATA_ACCESS_ERROR, e);
+        }
     }
 
 }

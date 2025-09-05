@@ -73,21 +73,6 @@ public interface StudentService {
 		throws IllegalArgumentException, ObjectAlreadyExistsException, ObjectNotFoundException, DataAccessServiceException;
 
 
-    /**
-	 * Updates an existing student's information.
-	 * @param form with new data of the student to be updated
-	 * @throws IllegalArgumentException if the form is invalid.
-	 * @throws ObjectNotFoundException if no student with the given register
-	 * 		   exists in the repository or if the specified degree course
-	 *         does not exist.
-	 * @throws DataAccessServiceException if there is an error accessing the database
-	 */
-	@Transactional(rollbackOn = {IllegalArgumentException.class, ObjectNotFoundException.class})
-    @Retryable(retryFor = PersistenceException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
-    StudentDto updateStudent(RegistrationForm form)
-		throws IllegalArgumentException, ObjectNotFoundException, DataAccessServiceException;
-
-
 	/**
 	 * Deletes the relationship between a student and their associated entities.
 	 * @param student the student whose relationships are to be deleted

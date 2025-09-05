@@ -85,6 +85,15 @@ td {
     background-color: #005fa3;
 }
 
+.total-row td {
+    font-weight: bold;
+    text-align: center;
+    background-color: #f0f4f8;  /* Colore chiaro per distinguere la riga */
+    color: #0074d9;
+    border-top: 2px solid #0074d9;
+    padding: 12px;
+}
+
 /* Responsive Styles */
 @media (max-width: 768px) {
     body {

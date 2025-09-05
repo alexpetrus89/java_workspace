@@ -57,6 +57,8 @@ import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import com.alex.universitymanagementsystem.config.UmsConfig;
 import com.alex.universitymanagementsystem.exception.DataAccessServiceException;
+import com.alex.universitymanagementsystem.exception.DuplicateFiscalCodeException;
+import com.alex.universitymanagementsystem.exception.DuplicateUsernameException;
 import com.alex.universitymanagementsystem.exception.JsonProcessingException;
 import com.alex.universitymanagementsystem.exception.ObjectAlreadyExistsException;
 
@@ -88,6 +90,10 @@ public class GlobalControllerExceptionHandler {
     private String alreadyExistsExceptionUri;
     @Value("#{jsonProcessingExceptionUri}")
     private String jsonProcessingExceptionUri;
+    @Value("#{duplicateUsernameUri}")
+    private String duplicateUsernameUri;
+    @Value("#{duplicateFiscalCodeUri}")
+    private String duplicateFiscalCodeUri;
 
     // instance variables
     private final UmsConfig umsConfig;
@@ -101,52 +107,42 @@ public class GlobalControllerExceptionHandler {
      * @param e the exception to be handled
      * @return a ModelAndView containing the error message
      */
-   @ExceptionHandler(Exception.class)
+    @ExceptionHandler(Exception.class)
     public ModelAndView handleException(Exception e) {
         Throwable root = getRootCause(e);
 
         logger.error("Exception caught: {} | Root cause: {}",
             e.getClass().getName(), root.getClass().getName(), e);
 
-        // --- Smistamento verso handler specifici ---
-        if(root instanceof MailException me)
-            return handleMailException(me);
-        if (root instanceof DataAccessServiceException dae)
-            return handleDataAccessServiceException(dae);
-        if (root instanceof AccessDeniedException ade)
-            return handleAccessDeniedException(ade);
-        if (root instanceof IllegalArgumentException iae)
-            return handleIllegalArgumentException(iae);
-        if (root instanceof InternalServerError ise)
-            return handleInternalServerError(ise);
-        if (root instanceof NotFoundException nrf1)
-            return handleNoResourceFoundException(nrf1);
-        if (root instanceof NoResourceFoundException nrf2)
-            return handleNoResourceFoundException(nrf2);
-        if (root instanceof ParseException pe)
-            return handleHtmlParseException(pe);
-        if (root instanceof JsonProcessingException jpe)
-            return handleJsonProcessingException(jpe);
-        if (root instanceof MissingServletRequestParameterException msrpe)
-            return handleMissingServletRequestParameterException(msrpe);
-        if (root instanceof AssertionError ae)
-            return handleAssertionError(ae);
-        if (root instanceof MethodArgumentNotValidException manve)
-            return handleValidationException(manve);
-        if (root instanceof BindException be)
-            return handleValidationException(be);
-        if (root instanceof ConstraintViolationException cve)
-            return handleValidationException(cve);
-        if (root instanceof NoHandlerFoundException nhfe)
-            return handleNoHandlerFoundException(nhfe);
-
-        // --- fallback generico se non corrisponde a nessuno ---
-        return buildDetailedErrorView(e, genericExceptionUri);
+        return switch (root) {
+            case InternalServerError ise -> handleInternalServerError(ise);
+            case NotFoundException nrf -> handleNoResourceFoundException(nrf);
+            case NoResourceFoundException nrf -> handleNoResourceFoundException(nrf);
+            case ParseException pe -> handleHtmlParseException(pe);
+            case AccessDeniedException ade -> handleAccessDeniedException(ade);
+            case NoHandlerFoundException nhfe -> handleNoHandlerFoundException(nhfe);
+            case AssertionError ae -> handleAssertionError(ae);
+            case MissingServletRequestParameterException msrpe -> handleMissingServletRequestParameterException(msrpe);
+            case IllegalArgumentException iae -> handleIllegalArgumentException(iae);
+            case DataAccessServiceException dae -> handleDataAccessServiceException(dae);
+            case JsonProcessingException jpe -> handleJsonProcessingException(jpe);
+            case MailException me -> handleMailException(me);
+            case DuplicateUsernameException due -> handleDuplicateUsernameException(due);
+            case DuplicateFiscalCodeException dfce -> handleDuplicateFiscalCodeException(dfce);
+            case MethodArgumentNotValidException manve -> handleValidationException(manve);
+            case BindException be -> handleValidationException(be);
+            case ConstraintViolationException cve -> handleValidationException(cve);
+            default -> buildDetailedErrorView(e, genericExceptionUri);
+        };
     }
+
 
 
     /**
      * Handles runtime exceptions and returns a ModelAndView with a status of Internal Server Error (500).
+     * Returns a ModelAndView with a view name of genericExceptionUri
+     * and a model containing a custom error message.
+     * The exception is logged at the ERROR level.
      * @param e the RuntimeException to be handled
      * @return a ModelAndView containing the error message
      */
@@ -353,6 +349,34 @@ public class GlobalControllerExceptionHandler {
         logger.error("Mail sending error", e);
         String message = "An error occurred while sending email: " + e.getMessage();
         return new ModelAndView(genericExceptionUri, MESSAGE, message);
+    }
+
+
+    /**
+     * Handles DuplicateUsernameException exceptions and returns a ModelAndView with a view name of "exception/already_exists/duplicate-username"
+     * The exception is logged at the ERROR level with the error message.
+     * @param e the DuplicateUsernameException exception to be handled
+     * @return a ModelAndView containing the error message
+     */
+    @ExceptionHandler(DuplicateUsernameException.class)
+    public ModelAndView handleDuplicateUsernameException(DuplicateUsernameException e) {
+        logger.error("Duplicate username error", e);
+        String message = "Username not available: " + e.getMessage();
+        return new ModelAndView(duplicateUsernameUri, MESSAGE, message);
+    }
+
+
+    /**
+     * Handles DuplicateFiscalCodeException exceptions and returns a ModelAndView with a view name of "exception/already_exists/duplicate-fiscal-code"
+     * The exception is logged at the ERROR level with the error message.
+     * @param e the DuplicateFiscalCodeException exception to be handled
+     * @return a ModelAndView containing the error message
+     */
+    @ExceptionHandler(DuplicateFiscalCodeException.class)
+    public ModelAndView handleDuplicateFiscalCodeException(DuplicateFiscalCodeException e) {
+        logger.error("Duplicate fiscal code error", e);
+        String message = "Codice fiscale già in uso: " + e.getMessage();
+        return new ModelAndView(duplicateFiscalCodeUri, MESSAGE, message);
     }
 
 

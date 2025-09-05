@@ -5,11 +5,11 @@ import java.util.Optional;
 
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.alex.universitymanagementsystem.domain.Address;
+import com.alex.universitymanagementsystem.component.ServiceHelpers;
+import com.alex.universitymanagementsystem.component.validator.ServiceValidators;
 import com.alex.universitymanagementsystem.domain.Professor;
 import com.alex.universitymanagementsystem.domain.immutable.FiscalCode;
 import com.alex.universitymanagementsystem.domain.immutable.UniqueCode;
@@ -30,14 +30,26 @@ import jakarta.transaction.Transactional;
 @Service
 public class ProfessorServiceImpl implements ProfessorService {
 
+    // constants
+    private static final String UNIQUE_CODE_ERROR = "Unique code cannot be null or empty";
+
     // instance variables
     private final ProfessorRepository professorRepository;
     private final PasswordEncoder passwordEncoder;
+    private final ServiceHelpers helpers;
+    private final ServiceValidators validators;
 
     // autowired - dependency injection - constructor
-    public ProfessorServiceImpl(ProfessorRepository professorRepository, PasswordEncoder passwordEncoder) {
+    public ProfessorServiceImpl(
+        ProfessorRepository professorRepository,
+        PasswordEncoder passwordEncoder,
+        ServiceHelpers helpers,
+        ServiceValidators validators
+    ) {
         this.professorRepository = professorRepository;
         this.passwordEncoder = passwordEncoder;
+        this.helpers = helpers;
+        this.validators = validators;
     }
 
 
@@ -74,14 +86,10 @@ public class ProfessorServiceImpl implements ProfessorService {
         throws IllegalArgumentException, DataAccessServiceException
     {
         // sanity check
-        if(uniqueCode.toString().isBlank())
-            throw new IllegalArgumentException("Unique Code cannot be null or empty");
+        validators.validateNotNullOrNotBlank(uniqueCode.toString(), UNIQUE_CODE_ERROR);
 
         try {
-            return professorRepository
-                .findByUniqueCode(uniqueCode)
-                .map(ProfessorMapper::toDto)
-                .orElseThrow(() -> new ObjectNotFoundException(DomainType.PROFESSOR));
+            return ProfessorMapper.toDto(helpers.fetchProfessor(uniqueCode.toString()));
         } catch (PersistenceException e) {
             throw new DataAccessServiceException("Error accessing database for fetching professor by unique code: " + e.getMessage(), e);
         }
@@ -100,8 +108,7 @@ public class ProfessorServiceImpl implements ProfessorService {
     public ProfessorDto getProfessorByFiscalCode(String fiscalCode)
         throws IllegalArgumentException, DataAccessServiceException
     {
-        if(fiscalCode.isBlank())
-            throw new IllegalArgumentException("Fiscal Code cannot be null or empty");
+        validators.validateNotNullOrNotBlank(fiscalCode, "Fiscal code cannot be null or empty");
 
         try {
             return professorRepository
@@ -130,8 +137,8 @@ public class ProfessorServiceImpl implements ProfessorService {
         String lastName = nameParts.length > 1 ? nameParts[1] : "";
 
         // sanity check
-        if(firstName.isBlank() || lastName.isBlank())
-            throw new IllegalArgumentException("First name and last name cannot be null or empty");
+        validators.validateNotNullOrNotBlank(firstName, "First name cannot be null or empty");
+        validators.validateNotNullOrNotBlank(lastName, "Last name cannot be null or empty");
 
         try {
             return professorRepository
@@ -160,61 +167,13 @@ public class ProfessorServiceImpl implements ProfessorService {
         throws ObjectAlreadyExistsException, DataAccessServiceException
     {
         try {
-            FiscalCode fiscalCode = new FiscalCode(form.getFiscalCode());
-
-            if(professorRepository.existsByFiscalCode(fiscalCode))
-                throw new ObjectAlreadyExistsException(fiscalCode);
-
-            Professor professor = professorRepository.save(form.toProfessor(passwordEncoder));
+            Professor professor = professorRepository.saveAndFlush(form.toProfessor(passwordEncoder));
             return Optional.of(ProfessorMapper.toDto(professor));
         } catch (PersistenceException e) {
             throw new DataAccessServiceException("Error accessing database for user " + form.getUsername() + ": " + e.getMessage(), e);
         }
     }
 
-
-    /**
-     * Updates an existing professor's information.
-     * @param form with new data of the professor to be updated
-     * @return ProfessorDto
-     * @throws ObjectNotFoundException if no professor with the given unique code
-     *         exists in the repository.
-     * @throws DataAccessServiceException if there is an error accessing the database
-     */
-    @Override
-    @Transactional(rollbackOn = ObjectNotFoundException.class)
-    @Retryable(retryFor = PersistenceException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
-    public ProfessorDto updateProfessor(RegistrationForm form)
-        throws ObjectNotFoundException, DataAccessServiceException
-    {
-
-        Professor updatableProfessor =  (Professor) SecurityContextHolder
-            .getContext()
-            .getAuthentication()
-            .getPrincipal();
-
-        try {
-            // sanity check
-            if(updatableProfessor == null)
-                throw new ObjectNotFoundException(DomainType.PROFESSOR);
-
-            // update
-            updatableProfessor.setUsername(form.getUsername());
-            updatableProfessor.setFirstName(form.getFirstName());
-            updatableProfessor.setLastName(form.getLastName());
-            updatableProfessor.setDob(form.getDob());
-            updatableProfessor.setFiscalCode(new FiscalCode(form.getFiscalCode()));
-            updatableProfessor.setPhone(form.getPhone());
-            updatableProfessor.setAddress(new Address(form.getStreet(), form.getCity(), form.getState(), form.getZip()));
-
-
-            // save
-            professorRepository.saveAndFlush(updatableProfessor);
-            return ProfessorMapper.toDto(updatableProfessor);
-        } catch (PersistenceException e) {
-            throw new DataAccessServiceException("Error accessing database for user " + form.getUsername() + ": " + e.getMessage(), e);
-        }
-    }
 
 
 }

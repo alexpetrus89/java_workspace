@@ -71,7 +71,7 @@ public interface CourseRepository
     @Query("SELECT CASE WHEN COUNT(c) > 0 THEN TRUE ELSE FALSE END "
     + "FROM Course c JOIN c.degreeCourse dc "
     + "WHERE c.name = :courseName AND dc.name = :degreeCourseName")
-    boolean existsByNameAndDegreeCourse(@Param("courseName") String courseName, @Param("degreeCourseName") String degreeCourseName);
+    boolean existsByNameAndDegreeCourseName(@Param("courseName") String courseName, @Param("degreeCourseName") String degreeCourseName);
 
 
 }

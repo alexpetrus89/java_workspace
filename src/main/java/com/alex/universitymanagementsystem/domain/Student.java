@@ -10,7 +10,7 @@ import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.alex.universitymanagementsystem.domain.immutable.Register;
-import com.alex.universitymanagementsystem.dto.Builder;
+import com.alex.universitymanagementsystem.dto.RegistrationForm;
 
 import jakarta.persistence.Access;
 import jakarta.persistence.AccessType;
@@ -44,21 +44,21 @@ public class Student extends User {
     // constructors
     public Student() { super(); } // public for mapper use
 
-    public Student(Builder builder, PasswordEncoder passwordEncoder) {
-        super(builder, passwordEncoder);
+    public Student(RegistrationForm form, PasswordEncoder passwordEncoder) {
+        super(form, passwordEncoder);
         this.register = new Register(String.format("%06d", registerCounter.getAndIncrement()));
         this.age = calculateAge();
     }
 
-    public Student(Builder builder, PasswordEncoder encoder, Register register, DegreeCourse degreeCourse) {
-        super(builder, encoder);
+    public Student(RegistrationForm form, PasswordEncoder encoder, Register register, DegreeCourse degreeCourse) {
+        super(form, encoder);
         this.register = register;
         this.degreeCourse = degreeCourse;
         this.age = calculateAge();
     }
 
-    public Student(Builder builder, PasswordEncoder encoder, Register register, DegreeCourse degreeCourse, StudyPlan studyPlan) {
-        super(builder, encoder);
+    public Student(RegistrationForm form, PasswordEncoder encoder, Register register, DegreeCourse degreeCourse, StudyPlan studyPlan) {
+        super(form, encoder);
         this.register = register;
         this.degreeCourse = degreeCourse;
         this.studyPlan = studyPlan;

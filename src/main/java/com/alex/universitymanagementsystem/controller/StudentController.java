@@ -3,15 +3,12 @@ package com.alex.universitymanagementsystem.controller;
 import java.util.List;
 
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.alex.universitymanagementsystem.domain.immutable.Register;
-import com.alex.universitymanagementsystem.dto.RegistrationForm;
 import com.alex.universitymanagementsystem.dto.StudentDto;
 import com.alex.universitymanagementsystem.service.StudentService;
 
@@ -69,27 +66,6 @@ public class StudentController {
         return new ModelAndView("user_student/read/read-results", STUDENTS, students);
     }
 
-    /**
-     * Updates a student
-     * @return ModelAndView
-     */
-    @GetMapping(path = "/update")
-    public ModelAndView instantiateFormForUpdate() {
-        return new ModelAndView("user_student/update/update", STUDENT, new RegistrationForm());
-    }
 
-
-    /**PUT request*/
-
-    /**
-     * Updates a student
-     * @param studentDto the student data transfer object
-     * @return ModelAndView
-     */
-    @PutMapping(path = "/update")
-    public ModelAndView updateStudent(@ModelAttribute RegistrationForm form) {
-        StudentDto student = studentService.updateStudent(form);
-        return new ModelAndView("user_student/update/update-result", STUDENT, student);
-    }
 
 }

@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.alex.universitymanagementsystem.dto.Builder;
 import com.alex.universitymanagementsystem.dto.RegistrationForm;
 import com.alex.universitymanagementsystem.enum_type.RoleType;
 
@@ -20,7 +19,7 @@ import jakarta.validation.Valid;
 
 
 @Controller
-@RequestMapping(path = "/register")
+@RequestMapping(path = "/registration")
 public class RegistrationController {
 
     // GET request
@@ -49,28 +48,12 @@ public class RegistrationController {
         SessionStatus sessionStatus
     ) {
 
-        // create a new form builder
-        Builder builder = new Builder();
-        // set the values
-        builder.withUsername(form.getUsername());
-        builder.withPassword(form.getPassword());
-        builder.withFirstName(form.getFirstName().toLowerCase());
-        builder.withLastName(form.getLastName().toLowerCase());
-        builder.withDob(form.getDob());
-        builder.withFiscalCode(form.getFiscalCode());
-        builder.withStreet(form.getStreet());
-        builder.withCity(form.getCity());
-        builder.withState(form.getState());
-        builder.withZip(form.getZip());
-        builder.withPhone(form.getPhone());
-        builder.withRole(form.getRole());
-
-        // memorizza l'oggetto builder nella sessione
-        request.getSession().setAttribute("builder", builder);
+        // memorize form object into session
+        request.getSession().setAttribute("form", form);
 
         return switch (form.getRole()) {
             // Reindirizza l'utente al metodo createNewStudent
-            case RoleType.STUDENT -> "redirect:user_student/create/create-student-from-user";
+            case RoleType.STUDENT -> "redirect:user_student/create/select-degree-course";
             // Reindirizza l'utente professor al login
             case RoleType.PROFESSOR -> "forward:api/v1/user/create-professor";
             // Reindirizza l'utente admin al login

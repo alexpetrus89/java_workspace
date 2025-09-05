@@ -56,7 +56,7 @@ public class ExaminationController {
      * @return ModelAndView
      */
     @GetMapping(path = "/view")
-    public ModelAndView getExaminations() {
+    public ModelAndView viewAllExaminations() {
         List<ExaminationDto> examinations = examinationService.getExaminations();
         return new ModelAndView(EXAMINATIONS_LIST, EXAMINATIONS, examinations);
     }
@@ -69,7 +69,7 @@ public class ExaminationController {
      * @return ModelAndView
      */
     @GetMapping(path = "/course-name")
-    public ModelAndView getExaminationsByCourseAndDegreeCourse(@RequestParam String courseName, @RequestParam String degreeCourseName) {
+    public ModelAndView viewExaminationsByCourseAndDegreeCourse(@RequestParam String courseName, @RequestParam String degreeCourseName) {
         List<ExaminationDto> examinations = examinationService.getExaminationsByCourseNameAndDegreeCourseName(courseName, degreeCourseName);
         return new ModelAndView(EXAMINATIONS_LIST, EXAMINATIONS, examinations);
     }
@@ -81,7 +81,7 @@ public class ExaminationController {
      * @return ModelAndView
      */
     @GetMapping(path = "/student-register")
-    public ModelAndView getExaminationsByStudentRegister(
+    public ModelAndView viewExaminationsByStudent(
         @AuthenticationPrincipal Student student,
         @Valid @RequestParam(required = false) String register
     ) {
@@ -98,7 +98,7 @@ public class ExaminationController {
      * @return ModelAndView
      */
     @GetMapping(path = "/professor-unique-code")
-    public ModelAndView getExaminationsByProfessorUniqueCode(@RequestParam String uniqueCode) {
+    public ModelAndView viewExaminationsByProfessor(@RequestParam String uniqueCode) {
         List<ExaminationDto> examinations = examinationService.getExaminationsByProfessorUniqueCode(new UniqueCode(uniqueCode));
         return new ModelAndView(EXAMINATIONS_LIST, EXAMINATIONS, examinations);
     }

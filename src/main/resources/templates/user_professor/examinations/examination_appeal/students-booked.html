@@ -38,6 +38,10 @@
         </table>
     </div>
 
+    <tr class="total-row">
+        <td colspan="5" th:text="'Total registered students: ' + ${#lists.size(appeal.students)}"></td>
+    </tr>
+
     <div class="form-actions">
         <a th:href="@{/api/v1/examination-appeal/view/professor}" class="home-link">Back to Check</a>
         <a th:href="@{/user_professor/examinations/examination_appeal/examination-appeal-menu}" class="home-link">Back to Menu</a>

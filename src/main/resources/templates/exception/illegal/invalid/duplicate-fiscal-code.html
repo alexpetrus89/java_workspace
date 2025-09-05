@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta name="viewport" charset="UTF-8" content="width=device-width, initial-scale=1.0">
+    <title>Uni Journey</title>
+</head>
+<body>
+    <h1>⚠️ Fiscal code already in use</h1>
+    <p th:text="${message}">There is another registered user with the same fiscal code</p>
+    <p><a href="javascript:history.back()">Go back to update form</a></p>
+</body>
+</html>

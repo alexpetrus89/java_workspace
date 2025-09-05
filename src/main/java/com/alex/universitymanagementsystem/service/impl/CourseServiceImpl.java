@@ -8,21 +8,19 @@ import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 
+import com.alex.universitymanagementsystem.component.ServiceHelpers;
+import com.alex.universitymanagementsystem.component.validator.ServiceValidators;
 import com.alex.universitymanagementsystem.domain.Course;
 import com.alex.universitymanagementsystem.domain.DegreeCourse;
 import com.alex.universitymanagementsystem.domain.Professor;
-import com.alex.universitymanagementsystem.domain.immutable.UniqueCode;
 import com.alex.universitymanagementsystem.dto.CourseDto;
 import com.alex.universitymanagementsystem.dto.ProfessorDto;
 import com.alex.universitymanagementsystem.dto.UpdateCourseDto;
-import com.alex.universitymanagementsystem.enum_type.DomainType;
 import com.alex.universitymanagementsystem.exception.DataAccessServiceException;
 import com.alex.universitymanagementsystem.exception.ObjectAlreadyExistsException;
 import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
 import com.alex.universitymanagementsystem.mapper.CourseMapper;
 import com.alex.universitymanagementsystem.repository.CourseRepository;
-import com.alex.universitymanagementsystem.repository.DegreeCourseRepository;
-import com.alex.universitymanagementsystem.repository.ProfessorRepository;
 import com.alex.universitymanagementsystem.service.CourseService;
 
 import jakarta.persistence.PersistenceException;
@@ -33,18 +31,18 @@ public class CourseServiceImpl implements CourseService {
 
     // instance variables
     private final CourseRepository courseRepository;
-    private final ProfessorRepository professorRepository;
-    private final DegreeCourseRepository degreeCourseRepository;
+    private final ServiceHelpers helpers;
+    private final ServiceValidators validators;
 
     // constructor
     public CourseServiceImpl(
         CourseRepository courseRepository,
-        ProfessorRepository professorRepository,
-        DegreeCourseRepository degreeCourseRepository
+        ServiceHelpers helpers,
+        ServiceValidators validators
     ) {
         this.courseRepository = courseRepository;
-        this.professorRepository = professorRepository;
-        this.degreeCourseRepository = degreeCourseRepository;
+        this.helpers = helpers;
+        this.validators = validators;
     }
 
 
@@ -80,20 +78,13 @@ public class CourseServiceImpl implements CourseService {
     public CourseDto getCourseByNameAndDegreeCourseName(String courseName, String degreeCourseName)
         throws IllegalArgumentException, ObjectNotFoundException, DataAccessServiceException
     {
+            // sanity checks
+            validators.validateCourseExists(courseName, degreeCourseName);
+            validators.validateDegreeCourseExists(degreeCourseName);
 
         try {
-            // sanity checks
-            if(courseName.isBlank() || degreeCourseName.isBlank())
-                throw new IllegalArgumentException("Course name or degree course name cannot be empty.");
-
-            if(!degreeCourseRepository.existsByName(degreeCourseName.toUpperCase()))
-                throw new ObjectNotFoundException(DomainType.DEGREE_COURSE);
-
             // find course
-            return courseRepository
-                .findByNameAndDegreeCourseName(courseName, degreeCourseName.toUpperCase())
-                .map(CourseMapper::toDto)
-                .orElseThrow(() -> new ObjectNotFoundException(DomainType.COURSE));
+            return CourseMapper.toDto(helpers.fetchCourse(courseName, degreeCourseName));
         } catch (PersistenceException e) {
             throw new DataAccessServiceException(
                 "Database access error while retrieving course with name " + courseName + " and degree course name " + degreeCourseName + ": " + e.getMessage(), e
@@ -114,8 +105,8 @@ public class CourseServiceImpl implements CourseService {
         throws DataAccessServiceException
     {
         try {
-            return courseRepository
-                .findByProfessor(new UniqueCode(professor.getUniqueCode()))
+            return helpers
+                .fetchCourses(professor.getUniqueCode())
                 .stream()
                 .map(CourseMapper::toDto)
                 .toList();
@@ -142,23 +133,12 @@ public class CourseServiceImpl implements CourseService {
     public CourseDto addNewCourse(CourseDto dto)
         throws ObjectAlreadyExistsException, ObjectNotFoundException, DataAccessServiceException
     {
+
+        // Check for duplicate course name in the same degree course
+        validators.validateCourseExists(dto.getName(), dto.getDegreeCourse().getName());
         try {
-
-            // Check for duplicate course name in the same degree course
-            if(courseRepository.existsByNameAndDegreeCourse(dto.getName(), dto.getDegreeCourse().toString()))
-                throw new ObjectAlreadyExistsException(DomainType.COURSE);
-
-            // Validate professor existence
-            Professor professor = professorRepository
-                .findByUniqueCode(new UniqueCode(dto.getProfessor().getUniqueCode()))
-                .orElseThrow(() -> new ObjectNotFoundException(DomainType.PROFESSOR));
-
-            // Validate degree course existence
-            DegreeCourse degreeCourse = degreeCourseRepository
-                .findByName(dto.getDegreeCourse().getName())
-                .orElseThrow(() -> new ObjectNotFoundException(DomainType.DEGREE_COURSE));
-
-            // create course
+            Professor professor = helpers.fetchProfessor(dto.getProfessor().getUniqueCode());
+            DegreeCourse degreeCourse = helpers.fetchDegreeCourse(dto.getDegreeCourse().getName());
             Course course = new Course(dto.getName(), dto.getType(), dto.getCfu(), professor, degreeCourse);
             // save
             courseRepository.saveAndFlush(course);
@@ -184,19 +164,9 @@ public class CourseServiceImpl implements CourseService {
     {
 
         try {
-            // Retrieve existing course
-            Course course = courseRepository
-                .findByNameAndDegreeCourseName(dto.getNewName(), dto.getNewDegreeCourseName())
-                .orElseThrow(() -> new ObjectNotFoundException(DomainType.COURSE));
-
-            // Validate new degree course and professor
-            DegreeCourse newDegreeCourse = degreeCourseRepository
-                .findByName(dto.getNewDegreeCourseName())
-                .orElseThrow(() -> new ObjectNotFoundException(DomainType.DEGREE_COURSE));
-
-            Professor professor = professorRepository
-                .findByUniqueCode(new UniqueCode(dto.getUniqueCode()))
-                .orElseThrow(() -> new ObjectNotFoundException(DomainType.PROFESSOR));
+            Course course = helpers.fetchCourse(dto.getNewName(), dto.getNewDegreeCourseName());
+            DegreeCourse newDegreeCourse = helpers.fetchDegreeCourse(dto.getNewDegreeCourseName());
+            Professor professor = helpers.fetchProfessor(dto.getUniqueCode());
 
             // Update course fields
             course.setName(dto.getNewName());
@@ -231,15 +201,11 @@ public class CourseServiceImpl implements CourseService {
         throws IllegalArgumentException, ObjectNotFoundException, DataAccessServiceException
     {
 
-        if (courseName == null || courseName.isBlank() ||
-            degreeCourseName == null || degreeCourseName.isBlank())
-            throw new IllegalArgumentException("Course name and degree course name must not be null or blank");
+        validators.validateCourseExists(courseName, degreeCourseName);
+        validators.validateDegreeCourseExists(degreeCourseName);
 
         try {
-            Course course = courseRepository
-                .findByNameAndDegreeCourseName(courseName, degreeCourseName)
-                .orElseThrow(() -> new ObjectNotFoundException(DomainType.COURSE));
-
+            Course course = helpers.fetchCourse(courseName, degreeCourseName);
             // delete
             courseRepository.delete(course);
             return CourseMapper.toDto(course);

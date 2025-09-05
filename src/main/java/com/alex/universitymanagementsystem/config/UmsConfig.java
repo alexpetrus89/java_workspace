@@ -5,25 +5,32 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.ExitCodeGenerator;
 import org.springframework.boot.SpringApplication;
-import org.springframework.context.ApplicationContext;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
+import com.alex.universitymanagementsystem.UniversityManagementSystemApplication;
 import com.alex.universitymanagementsystem.component.UmsExitCodeGenerator;
 
 
 @Configuration
 public class UmsConfig {
 
+    // logger
+    private final Logger logger = LoggerFactory.getLogger(UmsConfig.class);
+
     // instance variables
-    private final ApplicationContext applicationContext;
+    private final ConfigurableApplicationContext applicationContext;
     private final Map<String, List<String>> moduleViews = new HashMap<>();
     private final Map<String, String> fieldToView = new HashMap<>();
+    private static String[] mainArgs;
 
-    public UmsConfig(ApplicationContext applicationContext) {
+    public UmsConfig(ConfigurableApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
 
         // --- MODULE VIEWS for MvcConfig ---
@@ -32,6 +39,8 @@ public class UmsConfig {
             "/user_admin/admin-menu",
             "/user_admin/update/update",
             "/user_admin/delete/delete",
+            "/user_admin/student/student-menu",
+            "/user_admin/professor/professor-menu",
             "/user_admin/course/course-menu",
             "/user_admin/course/read/read",
             "/user_admin/course/create/create",
@@ -52,8 +61,7 @@ public class UmsConfig {
 
         moduleViews.put("user_student", List.of(
             "/user_student/student-home",
-            "User_student/student-menu",
-            "/user_student/create/create-student-from-user",
+            "/user_student/create/select-degree-course",
             "/user_student/read/read",
             "/user_student/create/create",
             "/user_student/update/update",
@@ -71,10 +79,7 @@ public class UmsConfig {
 
         moduleViews.put("user_professor", List.of(
             "/user_professor/professor-home",
-            "/user_professor/professor-menu",
-            "/user_professor/create/create-professor-from-user",
             "/user_professor/read/read",
-            "/user_professor/professor-menu",
             "/user_professor/delete/delete",
             "/user_professor/examinations/examination_appeal/examination-appeal-menu",
             "/user_professor/examinations/examination_appeal/create/create-examination-appeal",
@@ -112,6 +117,7 @@ public class UmsConfig {
         fieldToView.put("lastName", "exception/illegal/invalid/invalid-last-name");
         fieldToView.put("dob", "exception/illegal/invalid/invalid-dob");
         fieldToView.put("fiscalCode", "exception/illegal/invalid/invalid-fiscal-code");
+        fieldToView.put("fiscalCodeAlreadyTaken", "exception/illegal/invalid/fiscal-code-already-taken");
         fieldToView.put("register", "exception/illegal/invalid-register");
         fieldToView.put("phone", "exception/illegal/invalid/invalid-phone");
         fieldToView.put("role", "exception/illegal/invalid/invalid-role");
@@ -143,10 +149,11 @@ public class UmsConfig {
     protected static final String[] PUBLIC_URLS = {
         "/",
 		"/shutdown",
+        "/restart",
         "/login",
 		"/logout",
 		"/home",
-		"/register",
+		"/registration",
         "/forgot-password",
         "/reset-password",
 		"/static/css/**",
@@ -155,8 +162,7 @@ public class UmsConfig {
         "/static/images/**",
 		"/favicon.ico",
 		"/exception/**",
-        "/user_student/create/create-student-from-user",
-		"/user_professor/create/create-professor-from-user",
+        "/user_student/create/select-degree-course",
 		"/user/update/update-result",
 		"/api/v1/user/create-admin",
 		"/api/v1/user/create-student",
@@ -164,6 +170,7 @@ public class UmsConfig {
 		"/api/v1/degree-course/ajax",
         "/ws/**"
     };
+
 
     protected static final String[] ADMIN_URLS = {
         // user
@@ -182,7 +189,6 @@ public class UmsConfig {
 		"/api/v1/professor/update/update",
 
 		// course
-		"/course/course-menu",
 		"/api/v1/course/view",
 		"/api/v1/course/read/read",
 		"/api/v1/course/create/create",
@@ -190,16 +196,11 @@ public class UmsConfig {
 		"/api/v1/course/delete/delete",
 
         // degree course
-		"/degree_course/degree-course-menu",
-		"/degree_course/read/read-courses",
-        "/degree_course/read/read-professors",
-		"/degree_course/read/read-students",
 		"/api/v1/degree-course/view",
 		"/api/v1/degree-course/professors/view",
 		"/api/v1/degree-course/students/view",
 
         // examination
-		"/examination/examination-menu",
 		"/api/v1/examination/view",
 		"/api/v1/examination/update/update",
 		"/api/v1/examination/delete/delete",
@@ -207,6 +208,7 @@ public class UmsConfig {
 		"/api/v1/examination/read/student-register",
 		"/api/v1/examination/read/professor-unique-code"
     };
+
 
     protected static final String[] STUDENT_URLS = {
         // URL accessibili solo agli utenti con ruolo STUDENT o ADMIN
@@ -229,6 +231,7 @@ public class UmsConfig {
 		"/api/v1/outcome-notifications"
     };
 
+
     protected static final String[] PROFESSOR_URLS = {
         // URL accessibili solo agli utenti con ruolo PROFESSOR o ADMIN
         "/user_professor/**",
@@ -245,14 +248,17 @@ public class UmsConfig {
 
 
     /**
-     * Restituisce uno stream di tutte le view dei moduli.
+     * Return the stream of all views.
+     * @return the stream
      */
     public Stream<String> streamAllViews() {
         return moduleViews.values().stream().flatMap(List::stream);
     }
 
+
     /**
-     * Restituisce la mappa delle view dei moduli.
+     * Return a map of all views.
+     * @return the map
      */
     public Map<String, List<String>> getModuleViews() {
         return moduleViews;
@@ -260,30 +266,77 @@ public class UmsConfig {
 
 
     /**
-     * Restituisce la view corrispondente al campo.
-     * Se non esiste mapping, restituisce la view di default.
+     * Return the view corresponding to the field.
+     * If no mapping exists, returns the default view.
+     * @param fieldName the field name
+     * @return the view
      */
     public String resolveView(String fieldName) {
         return fieldToView.getOrDefault(fieldName, "exception/illegal/illegal-parameter");
     }
 
-    @Bean
-	LocalValidatorFactoryBean validator() {
-		return new LocalValidatorFactoryBean();
-	}
 
+    /**
+     * Shut down the application.
+     * @param exitCodeGenerator the exit code generator
+     * @see UmsExitCodeGenerator
+     */
+    public void shutDown(ExitCodeGenerator exitCodeGenerator) {
+        logger.info("Shutting down the application...");
+        SpringApplication.exit(applicationContext, exitCodeGenerator);
+    }
+
+
+    /**
+     * Save the main args.
+     * @param args the main args
+     */
+    public static void setMainArgs(String[] args) {
+        mainArgs = args;
+    }
+
+
+    /**
+     * Restart the application.
+     * @see UmsExitCodeGenerator
+     */
+    public void restart() {
+        Thread thread = new Thread(() -> {
+            try {
+                try (applicationContext) {
+                    logger.info("Closing application context for restart...");
+                }
+            } catch (Exception e) {
+                logger.error("Failed to close application context during restart", e);
+                return; // non ha senso riavviare se la chiusura fallisce
+            }
+
+            try {
+                logger.info("Restarting the application...");
+                SpringApplication.run(UniversityManagementSystemApplication.class, mainArgs);
+                logger.info("Application restarted successfully.");
+            } catch (Exception e) {
+                logger.error("Application failed to restart", e);
+            }
+        });
+
+        thread.setDaemon(false);
+        thread.start();
+    }
+
+
+    // beans
     @Bean
     ExitCodeGenerator exitCodeGenerator() {
         return new UmsExitCodeGenerator();
     }
 
 
-    /**
-     * Shut down the application.
-     */
-    public void shutDown(ExitCodeGenerator exitCodeGenerator) {
-        SpringApplication.exit(applicationContext, exitCodeGenerator);
-    }
+    @Bean
+	LocalValidatorFactoryBean validator() {
+		return new LocalValidatorFactoryBean();
+	}
+
 
     @Bean
     String genericExceptionUri() {
@@ -320,6 +373,16 @@ public class UmsConfig {
     @Bean
     String jsonProcessingExceptionUri() {
         return "/exception/data/json-processing-exception";
+    }
+
+    @Bean
+    String duplicateUsernameUri() {
+        return "/exception/illegal/invalid/duplicate-username";
+    }
+
+    @Bean
+    String duplicateFiscalCodeUri() {
+        return "/exception/illegal/invalid/duplicate-fiscal-code";
     }
 
 

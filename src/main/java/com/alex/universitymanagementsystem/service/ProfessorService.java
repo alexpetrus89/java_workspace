@@ -76,18 +76,5 @@ public interface ProfessorService {
         throws ObjectAlreadyExistsException, DataAccessServiceException;
 
 
-    /**
-     * Updates an existing professor's information.
-     * @param form with new data of the professor to be updated
-     * @return ProfessorDto
-     * @throws ObjectNotFoundException if no professor with the given unique code
-     *         exists in the repository.
-     * @throws DataAccessServiceException if there is an error accessing the database
-     */
-    @Transactional(rollbackOn = ObjectNotFoundException.class)
-    @Retryable(retryFor = PersistenceException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
-    ProfessorDto updateProfessor(RegistrationForm form)
-        throws ObjectNotFoundException, DataAccessServiceException;
-
 
 }

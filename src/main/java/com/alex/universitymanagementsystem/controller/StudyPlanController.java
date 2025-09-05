@@ -63,7 +63,7 @@ public class StudyPlanController {
     @GetMapping(path = "/view")
     public ModelAndView getStudyPlanView(@AuthenticationPrincipal Student student) {
         StudyPlanDto studyPlan = studyPlanService.getStudyPlanByRegister(student.getRegister());
-        return new ModelAndView("user_student/study_plan/study_plan_view", "studyPlan", studyPlan);
+        return new ModelAndView("user_student/study_plan/study-plan-view", "studyPlan", studyPlan);
     }
 
 
@@ -85,25 +85,13 @@ public class StudyPlanController {
     public ModelAndView modifyStudyPlan(@AuthenticationPrincipal Student student) {
         // Retrieve all degree courses, student's degree course, student's study plan and security token
         Set<DegreeCourseDto> degreeCourses = degreeCourseService.getDegreeCourses();
-        String degreeCourse = student.getDegreeCourse().getName();
-        Set<CourseDto> studyPlan = getFilteredStudyPlan(student.getRegister());
-        String token = SecurityContextHolder
-            .getContext()
-            .getAuthentication()
-            .getAuthorities()
-            .stream()
-            .map(GrantedAuthority::getAuthority)
-            .findFirst()
-            .orElseThrow(() -> new RuntimeException("Token not found"));
+        String studentDegreeCourse = student.getDegreeCourse().getName();
+        Set<CourseDto> availableCourses = getFilteredCourses(student.getRegister());
+        String token = getFirstAuthorityToken();
 
-        SwapCoursesDto courses = new SwapCoursesDto(
-            degreeCourses,
-            degreeCourse,
-            studyPlan,
-            token
-        );
+        SwapCoursesDto courses = new SwapCoursesDto(degreeCourses, studentDegreeCourse, availableCourses, token);
 
-        return new ModelAndView("user_student/study_plan/study_plan_modify", "courses", courses);
+        return new ModelAndView("user_student/study_plan/study-plan-modify", "courses", courses);
     }
 
     /**
@@ -122,7 +110,7 @@ public class StudyPlanController {
         dto.setRegister(student.getRegister().toString());
         studyPlanService.swapCourses(dto);
         Set<CourseDto> courses = studyPlanService.getCoursesByRegister(student.getRegister());
-        return new ModelAndView("user_student/study_plan/study_plan_courses", "courses", courses);
+        return new ModelAndView("user_student/study_plan/study-plan-courses", "courses", courses);
     }
 
 
@@ -134,7 +122,7 @@ public class StudyPlanController {
      * @return a set of CourseDto objects representing the filtered study plan
      * @throws DataAccessServiceException if there is an error accessing the data
      */
-    private Set<CourseDto> getFilteredStudyPlan(Register register) throws DataAccessServiceException
+    private Set<CourseDto> getFilteredCourses(Register register) throws DataAccessServiceException
     {
         return studyPlanService
             .getCoursesByRegister(register)
@@ -147,11 +135,27 @@ public class StudyPlanController {
                         .map(ExaminationDto::getCourseName)
                         .noneMatch(courseName -> courseName.equals(course.getName()));
                 } catch (DataAccessServiceException e) {
-                    logger.error("Failed to get examinations by student register", e);
+                    logger.error("Failed to get filtered courses for student {}", register, e);
                     return false;
                 }
             })
             .collect(Collectors.toSet());
+    }
+
+
+    /**
+     * Retrieves the first authority token from the security context.
+     * @return the first authority token
+     */
+    private String getFirstAuthorityToken() {
+        return SecurityContextHolder
+            .getContext()
+            .getAuthentication()
+            .getAuthorities()
+            .stream()
+            .map(GrantedAuthority::getAuthority)
+            .findFirst()
+            .orElseThrow(() -> new RuntimeException("Token not found"));
     }
 
 }

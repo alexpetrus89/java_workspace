@@ -3,6 +3,8 @@ package com.alex.universitymanagementsystem.dto;
 import java.io.Serializable;
 import java.time.LocalDate;
 
+import com.alex.universitymanagementsystem.annotation.UniqueFiscalCode;
+import com.alex.universitymanagementsystem.annotation.UniqueUsername;
 import com.alex.universitymanagementsystem.annotation.ValidBirthDate;
 import com.alex.universitymanagementsystem.annotation.ValidFiscalCode;
 import com.alex.universitymanagementsystem.annotation.ValidPassword;
@@ -15,11 +17,12 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
-public class Builder implements Serializable, PasswordCarrier {
+public class UpdateForm implements Serializable, PasswordCarrier {
 
     // instance variables
     @NotBlank(message = "username is required")
     @Size(min = 4, max = 30, message = "username must be between 4 and 30 characters")
+    @UniqueUsername
     private String username;
 
     @NotBlank(message = "Password is required")
@@ -41,6 +44,7 @@ public class Builder implements Serializable, PasswordCarrier {
 
     @NotBlank(message = "Fiscal code is required")
     @ValidFiscalCode
+    @UniqueFiscalCode
     private String fiscalCode;
 
     @NotBlank(message = "Street is required")
@@ -64,7 +68,7 @@ public class Builder implements Serializable, PasswordCarrier {
     private RoleType role;
 
     // constructor
-    public Builder() { /*no args constructor */ }
+    public UpdateForm() { /*no args constructor */ }
 
     // getters
     public String getUsername() { return username; }

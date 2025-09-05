@@ -16,10 +16,10 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.alex.universitymanagementsystem.domain.DegreeCourse;
-import com.alex.universitymanagementsystem.dto.Builder;
 import com.alex.universitymanagementsystem.dto.ProfessorDto;
 import com.alex.universitymanagementsystem.dto.RegistrationForm;
 import com.alex.universitymanagementsystem.dto.StudentDto;
+import com.alex.universitymanagementsystem.dto.UpdateForm;
 import com.alex.universitymanagementsystem.dto.UserDto;
 import com.alex.universitymanagementsystem.service.ProfessorService;
 import com.alex.universitymanagementsystem.service.StudentService;
@@ -33,7 +33,8 @@ import jakarta.validation.Valid;
 public class UserController {
 
     // constants
-    private static final String BUILDER = "builder";
+    private static final String REGISTRATION_FORM = "form";
+    private static final String UPDATE_FORM = "form";
     private static final String MESSAGE = "message";
 
     // instance variables
@@ -70,7 +71,7 @@ public class UserController {
      */
     @GetMapping(path = "/update")
     public ModelAndView instantiateBuilderForAdminUpdate() {
-        return new ModelAndView("user_admin/update/update", BUILDER, new Builder());
+        return new ModelAndView("user_admin/update/update", UPDATE_FORM, new UpdateForm());
     }
 
 
@@ -80,7 +81,7 @@ public class UserController {
      */
     @GetMapping(path = "/update/student")
     public ModelAndView instantiateBuilderForStudentUpdate() {
-        return new ModelAndView("user_student/update/update", BUILDER, new Builder());
+        return new ModelAndView("user_student/update/update", UPDATE_FORM, new UpdateForm());
     }
 
 
@@ -90,7 +91,7 @@ public class UserController {
      */
     @GetMapping(path = "/update/professor")
     public ModelAndView instantiateBuilderForProfessorUpdate() {
-        return new ModelAndView("user_professor/update/update", BUILDER, new Builder());
+        return new ModelAndView("user_professor/update/update", UPDATE_FORM, new UpdateForm());
     }
 
 
@@ -103,7 +104,7 @@ public class UserController {
     public ModelAndView createNewUserWithRoleAdmin(HttpServletRequest request) {
         return handleCreation(
             request,
-            builder -> userService.addNewUser(new RegistrationForm(builder)),
+            userService::addNewUser,
             this::adminSuccessView,
             this::adminFailureView
         );
@@ -121,7 +122,7 @@ public class UserController {
     public ModelAndView createNewUserWithRoleStudent(HttpServletRequest request, @ModelAttribute DegreeCourse degreeCourse, String ordering) {
         return handleCreation(
             request,
-            builder -> studentService.addNewStudent(new RegistrationForm(builder), degreeCourse, ordering),
+            form -> studentService.addNewStudent(form, degreeCourse, ordering),
             this::studentSuccessView,
             this::studentFailureView
         );
@@ -137,7 +138,7 @@ public class UserController {
     public ModelAndView createNewUserWithRoleProfessor(HttpServletRequest request) {
         return handleCreation(
             request,
-            builder -> professorService.addNewProfessor(new RegistrationForm(builder)),
+            professorService::addNewProfessor,
             this::professorSuccessView,
             this::professorFailureView
         );
@@ -150,11 +151,12 @@ public class UserController {
      * @return ModelAndView
      */
     @PutMapping(path = "/update/build")
-    public ModelAndView updateUser(@Valid @ModelAttribute Builder builder) {
+    public ModelAndView updateUser(@Valid @ModelAttribute UpdateForm form) {
         return new ModelAndView(
             "user_admin/update/update-result",
             "result",
-            userService.updateUser(new RegistrationForm(builder))
+            userService
+                .updateUser(form)
                 .map(_ -> "User updated successfully")
                 .orElse("User not updated")
         );
@@ -171,7 +173,8 @@ public class UserController {
         return new ModelAndView(
             "user_admin/delete/delete-result",
             "result",
-            userService.deleteUser(userId)
+            userService
+                .deleteUser(userId)
                 .map(_ -> "User delete successfully")
                 .orElse("User not deleted")
         );
@@ -195,13 +198,13 @@ public class UserController {
      */
     private <T> ModelAndView handleCreation(
         HttpServletRequest request,
-        Function<Builder, Optional<T>> creationFunction,
+        Function<RegistrationForm, Optional<T>> creationFunction,
         Function<T, ModelAndView> successView,
         Supplier<ModelAndView> failureView
     ) {
-        Builder builder = (Builder) request.getSession().getAttribute(BUILDER);
+        RegistrationForm form = (RegistrationForm) request.getSession().getAttribute(REGISTRATION_FORM);
         return creationFunction
-            .apply(builder)
+            .apply(form)
             .map(successView)
             .orElseGet(failureView);
     }

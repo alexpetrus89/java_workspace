@@ -1,7 +1,6 @@
 package com.alex.universitymanagementsystem.service;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
@@ -34,11 +33,11 @@ public interface ExaminationAppealService {
      * @param id the ID of the examination appeal
      * @return examination appeal dto
      * @throws IllegalArgumentException if there is an error with id
-     * @throws NoSuchElementException if the examination appeal does not exist
+     * @throws ObjectNotFoundException if the examination appeal does not exist
      * @throws DataAccessServiceException if there is an error accessing the database
      */
     ExaminationAppealDto getExaminationAppealById(Long id)
-        throws IllegalArgumentException, NoSuchElementException, DataAccessServiceException;
+        throws IllegalArgumentException, ObjectNotFoundException, DataAccessServiceException;
 
 
     /**
@@ -46,11 +45,11 @@ public interface ExaminationAppealService {
      * @param register student register
      * @return a list of dto's of examination appeals available
      * @throws IllegalArgumentException if the register is blank
-     * @throws NoSuchElementException if the student does not exist
+     * @throws ObjectNotFoundException if the student does not exist
      * @throws DataAccessServiceException if there is an error accessing the database
      */
     List<ExaminationAppealDto> getExaminationAppealsAvailable(Register register)
-        throws IllegalArgumentException, NoSuchElementException, DataAccessServiceException;
+        throws IllegalArgumentException, ObjectNotFoundException, DataAccessServiceException;
 
 
     /**
@@ -58,11 +57,11 @@ public interface ExaminationAppealService {
      * @param register student register
      * @return a list of dto's of examination appeals booked
      * @throws IllegalArgumentException if the register is blank
-     * @throws NoSuchElementException if the student does not exists
+     * @throws ObjectNotFoundException if the student does not exists
      * @throws DataAccessServiceException if there is an error accessing the database
      */
     List<ExaminationAppealDto> getExaminationAppealsBookedByStudent(Register register)
-        throws IllegalArgumentException, NoSuchElementException, DataAccessServiceException;
+        throws IllegalArgumentException, ObjectNotFoundException, DataAccessServiceException;
 
 
     /**
@@ -70,11 +69,11 @@ public interface ExaminationAppealService {
      * @param uniqueCode professor unique code
      * @return a list of examination appeals data transfer objects
      * @throws IllegalArgumentException if the unique code is blank
-     * @throws NoSuchElementException if the professor does not exist
+     * @throws ObjectNotFoundException if the professor does not exist
      * @throws DataAccessServiceException if there is an error accessing the database
      */
     List<ExaminationAppealDto> getExaminationAppealsMadeByProfessor(UniqueCode uniqueCode)
-        throws IllegalArgumentException, NoSuchElementException, DataAccessServiceException;
+        throws IllegalArgumentException, ObjectNotFoundException, DataAccessServiceException;
 
 
     /**
@@ -82,14 +81,14 @@ public interface ExaminationAppealService {
      * @param dto examination appeal data transfer object
      * @return examinationAppeal data transfer object
      * @throws IllegalArgumentException if the course name or register is invalid
-     * @throws NoSuchElementException if the degree course or professor does not exist
+     * @throws ObjectNotFoundException if the degree course or professor does not exist
      * @throws IllegalStateException if the professor does not teach the course
      * @throws DataAccessServiceException if there is an error accessing the database
      */
-    @Transactional(rollbackOn = {IllegalArgumentException.class, NoSuchElementException.class, IllegalStateException.class})
+    @Transactional(rollbackOn = {IllegalArgumentException.class, ObjectNotFoundException.class, IllegalStateException.class})
     @Retryable(retryFor = PersistenceException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
     ExaminationAppealDto addNewExaminationAppeal(@Valid ExaminationAppealDto dto)
-        throws IllegalArgumentException, NoSuchElementException, IllegalStateException, DataAccessServiceException;
+        throws IllegalArgumentException, ObjectNotFoundException, IllegalStateException, DataAccessServiceException;
 
 
     /**
@@ -97,14 +96,14 @@ public interface ExaminationAppealService {
      * @param dto professor data transfer object
      * @param id examination appeal id
      * @return boolean
-     * @throws ObjectNotFoundException if the professor does not exists
-     * @throws NoSuchElementException if the examination appeal does not exists
+     * @throws ObjectNotFoundException if the professor does not exists or
+     * if the examination appeal does not exists
      * @throws DataAccessServiceException if there is an error accessing the database
      */
-    @Transactional(rollbackOn = {ObjectNotFoundException.class, NoSuchElementException.class})
+    @Transactional(rollbackOn = ObjectNotFoundException.class)
     @Retryable(retryFor = PersistenceException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
     public boolean deleteExaminationAppeal(ProfessorDto professorDto, Long id)
-        throws ObjectNotFoundException, NoSuchElementException, DataAccessServiceException;
+        throws ObjectNotFoundException, DataAccessServiceException;
 
 
     /**
@@ -113,13 +112,13 @@ public interface ExaminationAppealService {
      * @param register student register
      * @return examinationAppeal
      * @throws IllegalArgumentException if any of the parameters is invalid
-     * @throws NoSuchElementException if the student or examination appeal does not exist
+     * @throws ObjectNotFoundException if the student or examination appeal does not exist
      * @throws DataAccessServiceException if there is an error accessing the database
      */
-    @Transactional(rollbackOn = {IllegalArgumentException.class, NoSuchElementException.class})
+    @Transactional(rollbackOn = {IllegalArgumentException.class, ObjectNotFoundException.class})
     @Retryable(retryFor = PersistenceException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
     public ExaminationAppealDto addStudentToAppeal(Long id, Register register)
-        throws IllegalArgumentException, NoSuchElementException, DataAccessServiceException;
+        throws IllegalArgumentException, ObjectNotFoundException, DataAccessServiceException;
 
 
     /**
@@ -128,12 +127,12 @@ public interface ExaminationAppealService {
      * @param register student register
      * @return examinationAppeal data transfer object
      * @throws IllegalArgumentException if any of the parameters is invalid
-     * @throws NoSuchElementException if the student or examination appeal does not exist
+     * @throws ObjectNotFoundException if the student or examination appeal does not exist
      * @throws DataAccessServiceException if there is an error accessing the database
      */
-    @Transactional(rollbackOn = {IllegalArgumentException.class, NoSuchElementException.class})
+    @Transactional(rollbackOn = {IllegalArgumentException.class, ObjectNotFoundException.class})
     @Retryable(retryFor = PersistenceException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
     ExaminationAppealDto removeStudentFromAppeal(Long id, Register register)
-        throws IllegalArgumentException, NoSuchElementException, DataAccessServiceException;
+        throws IllegalArgumentException, ObjectNotFoundException, DataAccessServiceException;
 
 }

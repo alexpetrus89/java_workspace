@@ -4,8 +4,6 @@ package com.alex.universitymanagementsystem.controller;
 import java.util.List;
 
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,8 +11,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.alex.universitymanagementsystem.domain.immutable.UniqueCode;
 import com.alex.universitymanagementsystem.dto.ProfessorDto;
-import com.alex.universitymanagementsystem.dto.RegistrationForm;
 import com.alex.universitymanagementsystem.service.ProfessorService;
+
 
 
 @RestController
@@ -71,29 +69,5 @@ public class ProfessorController {
         return new ModelAndView("user_professor/read/read-results", PROFESSORS, professors);
     }
 
-
-    /**
-     * Updates a professor
-     * @return ModelAndView
-     */
-    @GetMapping(path = "/update")
-    public ModelAndView loadFormAndUpdateProfessor() {
-        return new ModelAndView("user_professor/update/update", PROFESSOR, new RegistrationForm());
-    }
-
-
-
-    /** PUT request */
-    /**
-     * Updates a professor
-     * @param professorDto thr data transfer object containing the new details
-     *                     of the professor to be updated
-     * @return ModelAndView
-     */
-    @PutMapping(path = "/update")
-    public ModelAndView updateProfessor(@ModelAttribute RegistrationForm form) {
-        ProfessorDto professor = professorService.updateProfessor(form);
-        return new ModelAndView("user_professor/update/update-result", PROFESSOR, professor);
-    }
 
 }

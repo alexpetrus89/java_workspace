@@ -8,9 +8,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import com.alex.universitymanagementsystem.domain.Course;
-import com.alex.universitymanagementsystem.domain.immutable.CourseId;
-import com.alex.universitymanagementsystem.domain.immutable.UniqueCode;
+import com.alex.universitymanagementsystem.entity.Course;
+import com.alex.universitymanagementsystem.entity.immutable.CourseId;
+import com.alex.universitymanagementsystem.entity.immutable.UniqueCode;
 import com.alex.universitymanagementsystem.enum_type.CourseType;
 
 

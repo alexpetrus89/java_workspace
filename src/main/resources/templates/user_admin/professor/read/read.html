@@ -14,10 +14,10 @@
         Unable to read professor information. Please check your input.
     </div>
 
-    <h1 class="main-title">Professor Information</h1>
+    <h1 class="main-title">Professor information</h1>
 
     <div class="form-container">
-        <h2>Search by Unique Code</h2>
+        <h2>Search by unique code</h2>
         <form th:action="@{/api/v1/professor/read/uniquecode}" method="get">
             <input type="text" name="uniqueCode" placeholder="Enter professor Unique Code" required />
             <button type="submit">Search</button>
@@ -26,16 +26,16 @@
     </div>
 
     <div class="form-container">
-        <h2>Search by Professor Name</h2>
+        <h2>Search by professor fullname</h2>
         <form th:action="@{/api/v1/professor/read/name}" method="get">
-            <input type="text" name="name" placeholder="Enter professor name" required />
+            <input type="text" name="fullName" placeholder="Enter professor name" required />
             <button type="submit">Search</button>
             <input type="reset" value="Reset" />
         </form>
     </div>
 
     <div class="form-actions">
-        <a th:href="@{/professor/professor-menu}" class="home-link">Back to Menu</a>
+        <a th:href="@{/user_admin/professor/professor-menu}" class="home-link">Back to Menu</a>
     </div>
 
 </body>

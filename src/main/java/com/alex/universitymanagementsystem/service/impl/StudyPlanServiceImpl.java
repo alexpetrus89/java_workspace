@@ -10,12 +10,12 @@ import org.springframework.stereotype.Service;
 
 import com.alex.universitymanagementsystem.component.ServiceHelpers;
 import com.alex.universitymanagementsystem.component.validator.ServiceValidators;
-import com.alex.universitymanagementsystem.domain.Course;
-import com.alex.universitymanagementsystem.domain.StudyPlan;
-import com.alex.universitymanagementsystem.domain.immutable.Register;
 import com.alex.universitymanagementsystem.dto.CourseDto;
 import com.alex.universitymanagementsystem.dto.StudyPlanDto;
 import com.alex.universitymanagementsystem.dto.SwapCoursesDto;
+import com.alex.universitymanagementsystem.entity.Course;
+import com.alex.universitymanagementsystem.entity.StudyPlan;
+import com.alex.universitymanagementsystem.entity.immutable.Register;
 import com.alex.universitymanagementsystem.enum_type.DomainType;
 import com.alex.universitymanagementsystem.exception.DataAccessServiceException;
 import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;

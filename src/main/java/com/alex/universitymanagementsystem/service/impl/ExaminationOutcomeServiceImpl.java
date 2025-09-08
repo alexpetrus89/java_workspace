@@ -18,12 +18,12 @@ import org.springframework.web.client.RestTemplate;
 
 import com.alex.universitymanagementsystem.component.ServiceHelpers;
 import com.alex.universitymanagementsystem.component.validator.ServiceValidators;
-import com.alex.universitymanagementsystem.domain.Course;
-import com.alex.universitymanagementsystem.domain.ExaminationAppeal;
-import com.alex.universitymanagementsystem.domain.ExaminationOutcome;
-import com.alex.universitymanagementsystem.domain.Student;
-import com.alex.universitymanagementsystem.domain.immutable.Register;
 import com.alex.universitymanagementsystem.dto.ExaminationOutcomeDto;
+import com.alex.universitymanagementsystem.entity.Course;
+import com.alex.universitymanagementsystem.entity.ExaminationAppeal;
+import com.alex.universitymanagementsystem.entity.ExaminationOutcome;
+import com.alex.universitymanagementsystem.entity.Student;
+import com.alex.universitymanagementsystem.entity.immutable.Register;
 import com.alex.universitymanagementsystem.enum_type.DomainType;
 import com.alex.universitymanagementsystem.exception.DataAccessServiceException;
 import com.alex.universitymanagementsystem.exception.ObjectAlreadyExistsException;

@@ -6,8 +6,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import com.alex.universitymanagementsystem.domain.DegreeCourse;
-import com.alex.universitymanagementsystem.domain.immutable.DegreeCourseId;
+import com.alex.universitymanagementsystem.entity.DegreeCourse;
+import com.alex.universitymanagementsystem.entity.immutable.DegreeCourseId;
 
 
 

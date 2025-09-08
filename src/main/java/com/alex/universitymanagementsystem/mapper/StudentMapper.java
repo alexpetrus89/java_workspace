@@ -1,9 +1,9 @@
 package com.alex.universitymanagementsystem.mapper;
 
-import com.alex.universitymanagementsystem.domain.Student;
-import com.alex.universitymanagementsystem.domain.immutable.FiscalCode;
-import com.alex.universitymanagementsystem.domain.immutable.Register;
 import com.alex.universitymanagementsystem.dto.StudentDto;
+import com.alex.universitymanagementsystem.entity.Student;
+import com.alex.universitymanagementsystem.entity.immutable.FiscalCode;
+import com.alex.universitymanagementsystem.entity.immutable.Register;
 
 // This is a utility class that provides static methods for mapping between Student and StudentDto objects.
 public class StudentMapper {

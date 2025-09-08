@@ -1,9 +1,9 @@
 package com.alex.universitymanagementsystem.mapper;
 
-import com.alex.universitymanagementsystem.domain.ExaminationAppeal;
-import com.alex.universitymanagementsystem.domain.ExaminationOutcome;
 import com.alex.universitymanagementsystem.dto.ExaminationAppealDto;
 import com.alex.universitymanagementsystem.dto.ExaminationOutcomeDto;
+import com.alex.universitymanagementsystem.entity.ExaminationAppeal;
+import com.alex.universitymanagementsystem.entity.ExaminationOutcome;
 
 public class ExaminationOutcomeMapper {
 

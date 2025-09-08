@@ -15,13 +15,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.alex.universitymanagementsystem.domain.Professor;
-import com.alex.universitymanagementsystem.domain.immutable.UniqueCode;
 import com.alex.universitymanagementsystem.dto.CourseDto;
 import com.alex.universitymanagementsystem.dto.CreateCourseDto;
 import com.alex.universitymanagementsystem.dto.DegreeCourseDto;
 import com.alex.universitymanagementsystem.dto.ProfessorDto;
 import com.alex.universitymanagementsystem.dto.UpdateCourseDto;
+import com.alex.universitymanagementsystem.entity.Professor;
 import com.alex.universitymanagementsystem.mapper.ProfessorMapper;
 import com.alex.universitymanagementsystem.service.CourseService;
 import com.alex.universitymanagementsystem.service.DegreeCourseService;
@@ -52,8 +51,8 @@ public class CourseController {
      * retrieves all courses
      * @return ModelAndView
      */
-    @GetMapping(path = "/view")
-    public ModelAndView getCourses() {
+    @GetMapping(path = "/read/courses")
+    public ModelAndView getAllCourses() {
         Set<CourseDto> courses = courseService.getCourses();
         return new ModelAndView("course/course-list", "courses", courses);
     }
@@ -65,7 +64,7 @@ public class CourseController {
      * @param degreeCourseName
      * @return ModelAndView
      */
-    @GetMapping(path = "/read/name")
+    @GetMapping(path = "/read/course")
     public ModelAndView getCourse(@RequestParam String courseName, @RequestParam String degreeCourseName) {
         CourseDto course = courseService.getCourseByNameAndDegreeCourseName(courseName, degreeCourseName);
         return new ModelAndView("User_admin/course/read/read-result", COURSE, course);
@@ -76,7 +75,7 @@ public class CourseController {
      * retrieves all courses by professor
      * @return ModelAndView
      */
-    @GetMapping(path = "/view/professor")
+    @GetMapping(path = "/read/professor")
     public ModelAndView getCoursesByProfessor(@AuthenticationPrincipal Professor professor) {
         ProfessorDto professorDto = ProfessorMapper.toDto(professor);
         List<CourseDto> courses = courseService.getCoursesByProfessor(professorDto);
@@ -92,6 +91,7 @@ public class CourseController {
     public ModelAndView instantiateCourseForCreate() {
         return new ModelAndView("User_admin/course/create/create", COURSE, new CreateCourseDto());
     }
+
 
     /**
      * Update Course
@@ -111,7 +111,7 @@ public class CourseController {
     @PostMapping(path = "/create")
     public ModelAndView createNewCourse(@Valid @ModelAttribute("course") CreateCourseDto formDto) {
 
-        ProfessorDto professor = professorService.getProfessorByUniqueCode(new UniqueCode(formDto.getUniqueCode()));
+        ProfessorDto professor = professorService.getProfessorByUniqueCode(formDto.getUniqueCode());
         DegreeCourseDto degreeCourse = degreeCourseService.getDegreeCourseByName(formDto.getDegreeCourseName());
 
         CourseDto courseDto = new CourseDto(
@@ -145,7 +145,7 @@ public class CourseController {
      * @param degreeCourseName degree course name
      * @return ModelAndView
      */
-    @DeleteMapping("/courses/delete/{degreeCourseName}/{courseName}")
+    @DeleteMapping("/delete/{degreeCourseName}/{courseName}")
     public ModelAndView deleteCourseByName(@PathVariable String courseName, @PathVariable String degreeCourseName) {
         CourseDto courseDto = courseService.getCourseByNameAndDegreeCourseName(courseName, degreeCourseName);
         courseService.deleteByNameAndDegreeCourse(courseName, degreeCourseName);

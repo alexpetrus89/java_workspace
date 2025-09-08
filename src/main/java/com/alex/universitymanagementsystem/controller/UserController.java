@@ -15,12 +15,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.alex.universitymanagementsystem.domain.DegreeCourse;
 import com.alex.universitymanagementsystem.dto.ProfessorDto;
 import com.alex.universitymanagementsystem.dto.RegistrationForm;
 import com.alex.universitymanagementsystem.dto.StudentDto;
 import com.alex.universitymanagementsystem.dto.UpdateForm;
 import com.alex.universitymanagementsystem.dto.UserDto;
+import com.alex.universitymanagementsystem.entity.DegreeCourse;
 import com.alex.universitymanagementsystem.service.ProfessorService;
 import com.alex.universitymanagementsystem.service.StudentService;
 import com.alex.universitymanagementsystem.service.UserService;
@@ -58,10 +58,21 @@ public class UserController {
      * Retrieves all users
      * @return ModelAndView
      */
-    @GetMapping(path = "/view")
+    @GetMapping(path = "/read/users")
     public ModelAndView getAllUsers() {
         List<UserDto> users = userService.getUsers();
-        return new ModelAndView("user_admin/read/user-list", "users", users);
+        return new ModelAndView("user_admin/admin/read/users", "users", users);
+    }
+
+
+    /**
+     * Retrieves all users
+     * @return ModelAndView
+     */
+    @GetMapping(path = "/selection")
+    public ModelAndView getAllUsersForAction() {
+        List<UserDto> users = userService.getUsers();
+        return new ModelAndView("user_admin/admin/update/user-selection", "users", users);
     }
 
 
@@ -70,8 +81,8 @@ public class UserController {
      * @return ModelAndView
      */
     @GetMapping(path = "/update")
-    public ModelAndView instantiateBuilderForAdminUpdate() {
-        return new ModelAndView("user_admin/update/update", UPDATE_FORM, new UpdateForm());
+    public ModelAndView instantiateFormForAdminUpdate() {
+        return new ModelAndView("user_admin/admin/update/update", UPDATE_FORM, new UpdateForm());
     }
 
 
@@ -80,8 +91,8 @@ public class UserController {
      * @return ModelAndView
      */
     @GetMapping(path = "/update/student")
-    public ModelAndView instantiateBuilderForStudentUpdate() {
-        return new ModelAndView("user_student/update/update", UPDATE_FORM, new UpdateForm());
+    public ModelAndView instantiateFormForStudentUpdate() {
+        return new ModelAndView("user_student/student/update/update", UPDATE_FORM, new UpdateForm());
     }
 
 
@@ -90,8 +101,8 @@ public class UserController {
      * @return ModelAndView
      */
     @GetMapping(path = "/update/professor")
-    public ModelAndView instantiateBuilderForProfessorUpdate() {
-        return new ModelAndView("user_professor/update/update", UPDATE_FORM, new UpdateForm());
+    public ModelAndView instantiateFormForProfessorUpdate() {
+        return new ModelAndView("user_professor/professor/update/update", UPDATE_FORM, new UpdateForm());
     }
 
 
@@ -150,7 +161,7 @@ public class UserController {
      * @param Builder an instance of Builder class
      * @return ModelAndView
      */
-    @PutMapping(path = "/update/build")
+    @PutMapping(path = "/update")
     public ModelAndView updateUser(@Valid @ModelAttribute UpdateForm form) {
         return new ModelAndView(
             "user_admin/update/update-result",
@@ -214,33 +225,34 @@ public class UserController {
 
     /** admin success view */
     private ModelAndView adminSuccessView(UserDto admin) {
-        return new ModelAndView("user_admin/create/admin-success", "admin", admin);
+        return new ModelAndView("user_admin/admin/create/admin-success", "admin", admin);
     }
 
     /** admin failure view */
     private ModelAndView adminFailureView() {
-        return new ModelAndView("user_admin/create/admin-failure", MESSAGE, "admin not created");
+        return new ModelAndView("user_admin/admin/create/admin-failure", MESSAGE, "admin not created");
     }
 
 
     /** student success view */
     private ModelAndView studentSuccessView(StudentDto student) {
-        return new ModelAndView("user_student/create/student-success", "student", student);
+        return new ModelAndView("user_student/student/create/student-success", "student", student);
     }
 
     /** student failure view */
     private ModelAndView studentFailureView() {
-        return new ModelAndView("user_student/create/student-failure", MESSAGE, "student not created");
+        return new ModelAndView("user_student/student/create/student-failure", MESSAGE, "student not created");
     }
+
 
     /** professor success view */
     private ModelAndView professorSuccessView(ProfessorDto professor) {
-        return new ModelAndView("user_professor/create/professor-success", "professor", professor);
+        return new ModelAndView("user_professor/professor/create/professor-success", "professor", professor);
     }
 
     /** professor failure view */
     private ModelAndView professorFailureView() {
-        return new ModelAndView("user_professor/create/professor-failure", MESSAGE, "professor not created");
+        return new ModelAndView("user_professor/professor/create/professor-failure", MESSAGE, "professor not created");
     }
 
 

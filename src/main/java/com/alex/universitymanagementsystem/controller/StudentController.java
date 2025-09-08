@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.alex.universitymanagementsystem.domain.immutable.Register;
 import com.alex.universitymanagementsystem.dto.StudentDto;
+import com.alex.universitymanagementsystem.entity.immutable.Register;
 import com.alex.universitymanagementsystem.service.StudentService;
 
 @RestController
@@ -36,22 +36,10 @@ public class StudentController {
      * Retrieves all students
      * @return ModelAndView
      */
-    @GetMapping(path = "/view")
+    @GetMapping(path = "/read/students")
 	public ModelAndView getAllStudents() {
         List<StudentDto> students = studentService.getStudents();
-        return new ModelAndView("user_student/student-list", STUDENTS, students);
-    }
-
-
-    /**
-     * Retrieves a student by register
-     * @param register the register of the student
-     * @return ModelAndView
-     */
-    @GetMapping(path = "/read/register")
-	public ModelAndView getStudentByRegister(@RequestParam String register) {
-        StudentDto student = studentService.getStudentByRegister(new Register(register));
-        return new ModelAndView("user_student/read/read-result", STUDENT, student);
+        return new ModelAndView("user_admin/student/read/students", STUDENTS, students);
     }
 
 
@@ -63,7 +51,19 @@ public class StudentController {
     @GetMapping(path = "/read/name")
 	public ModelAndView getStudentsByName(@RequestParam String name) {
         List<StudentDto> students = studentService.getStudentsByFullname(name.toLowerCase());
-        return new ModelAndView("user_student/read/read-results", STUDENTS, students);
+        return new ModelAndView("user_admin/student/read/read-results", STUDENTS, students);
+    }
+
+
+    /**
+     * Retrieves a student by register
+     * @param register the register of the student
+     * @return ModelAndView
+     */
+    @GetMapping(path = "/read/register")
+	public ModelAndView getStudentByRegister(@RequestParam String register) {
+        StudentDto student = studentService.getStudentByRegister(new Register(register));
+        return new ModelAndView("user_admin/student/read/read-result", STUDENT, student);
     }
 
 

@@ -6,11 +6,11 @@ import java.util.Optional;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 
-import com.alex.universitymanagementsystem.domain.DegreeCourse;
-import com.alex.universitymanagementsystem.domain.Student;
-import com.alex.universitymanagementsystem.domain.immutable.Register;
 import com.alex.universitymanagementsystem.dto.RegistrationForm;
 import com.alex.universitymanagementsystem.dto.StudentDto;
+import com.alex.universitymanagementsystem.entity.DegreeCourse;
+import com.alex.universitymanagementsystem.entity.Student;
+import com.alex.universitymanagementsystem.entity.immutable.Register;
 import com.alex.universitymanagementsystem.exception.DataAccessServiceException;
 import com.alex.universitymanagementsystem.exception.ObjectAlreadyExistsException;
 import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;

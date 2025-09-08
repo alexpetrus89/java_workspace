@@ -5,7 +5,7 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.alex.universitymanagementsystem.domain.PasswordResetToken;
+import com.alex.universitymanagementsystem.entity.PasswordResetToken;
 
 import jakarta.persistence.PersistenceException;
 

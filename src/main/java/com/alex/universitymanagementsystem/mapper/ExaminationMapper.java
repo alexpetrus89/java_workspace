@@ -1,9 +1,9 @@
 package com.alex.universitymanagementsystem.mapper;
 
-import com.alex.universitymanagementsystem.domain.Course;
-import com.alex.universitymanagementsystem.domain.Examination;
-import com.alex.universitymanagementsystem.domain.Student;
 import com.alex.universitymanagementsystem.dto.ExaminationDto;
+import com.alex.universitymanagementsystem.entity.Course;
+import com.alex.universitymanagementsystem.entity.Examination;
+import com.alex.universitymanagementsystem.entity.Student;
 
 public class ExaminationMapper {
 

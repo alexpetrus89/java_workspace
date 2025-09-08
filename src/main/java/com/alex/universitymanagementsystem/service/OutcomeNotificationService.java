@@ -7,8 +7,8 @@ import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.scheduling.annotation.Scheduled;
 
-import com.alex.universitymanagementsystem.domain.OutcomeNotification;
-import com.alex.universitymanagementsystem.domain.Student;
+import com.alex.universitymanagementsystem.entity.OutcomeNotification;
+import com.alex.universitymanagementsystem.entity.Student;
 import com.alex.universitymanagementsystem.exception.DataAccessServiceException;
 import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
 

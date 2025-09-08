@@ -8,10 +8,10 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import com.alex.universitymanagementsystem.domain.Professor;
-import com.alex.universitymanagementsystem.domain.immutable.FiscalCode;
-import com.alex.universitymanagementsystem.domain.immutable.UniqueCode;
-import com.alex.universitymanagementsystem.domain.immutable.UserId;
+import com.alex.universitymanagementsystem.entity.Professor;
+import com.alex.universitymanagementsystem.entity.immutable.FiscalCode;
+import com.alex.universitymanagementsystem.entity.immutable.UniqueCode;
+import com.alex.universitymanagementsystem.entity.immutable.UserId;
 
 
 

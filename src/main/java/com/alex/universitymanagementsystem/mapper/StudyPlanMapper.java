@@ -2,8 +2,8 @@ package com.alex.universitymanagementsystem.mapper;
 
 import java.util.stream.Collectors;
 
-import com.alex.universitymanagementsystem.domain.StudyPlan;
 import com.alex.universitymanagementsystem.dto.StudyPlanDto;
+import com.alex.universitymanagementsystem.entity.StudyPlan;
 
 public class StudyPlanMapper {
 

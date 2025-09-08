@@ -8,9 +8,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import com.alex.universitymanagementsystem.domain.User;
-import com.alex.universitymanagementsystem.domain.immutable.FiscalCode;
-import com.alex.universitymanagementsystem.domain.immutable.UserId;
+import com.alex.universitymanagementsystem.entity.User;
+import com.alex.universitymanagementsystem.entity.immutable.FiscalCode;
+import com.alex.universitymanagementsystem.entity.immutable.UserId;
 
 /**
 | Caso                                              | Azione consigliata                               |

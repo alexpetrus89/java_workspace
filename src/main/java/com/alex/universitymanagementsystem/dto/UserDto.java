@@ -5,7 +5,7 @@ import java.time.LocalDate;
 
 import com.alex.universitymanagementsystem.annotation.ValidBirthDate;
 import com.alex.universitymanagementsystem.annotation.ValidFiscalCode;
-import com.alex.universitymanagementsystem.domain.Address;
+import com.alex.universitymanagementsystem.entity.Address;
 import com.alex.universitymanagementsystem.enum_type.RoleType;
 
 import jakarta.validation.Valid;

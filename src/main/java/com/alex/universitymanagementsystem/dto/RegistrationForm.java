@@ -9,9 +9,9 @@ import com.alex.universitymanagementsystem.annotation.UniqueUsername;
 import com.alex.universitymanagementsystem.annotation.ValidBirthDate;
 import com.alex.universitymanagementsystem.annotation.ValidFiscalCode;
 import com.alex.universitymanagementsystem.annotation.ValidPassword;
-import com.alex.universitymanagementsystem.domain.Professor;
-import com.alex.universitymanagementsystem.domain.Student;
-import com.alex.universitymanagementsystem.domain.User;
+import com.alex.universitymanagementsystem.entity.Professor;
+import com.alex.universitymanagementsystem.entity.Student;
+import com.alex.universitymanagementsystem.entity.User;
 import com.alex.universitymanagementsystem.enum_type.RoleType;
 import com.alex.universitymanagementsystem.utils.PasswordCarrier;
 

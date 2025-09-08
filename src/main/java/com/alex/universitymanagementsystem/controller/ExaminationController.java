@@ -13,13 +13,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.alex.universitymanagementsystem.domain.Examination;
-import com.alex.universitymanagementsystem.domain.Student;
-import com.alex.universitymanagementsystem.domain.immutable.Register;
-import com.alex.universitymanagementsystem.domain.immutable.UniqueCode;
 import com.alex.universitymanagementsystem.dto.ExaminationDto;
 import com.alex.universitymanagementsystem.dto.ExaminationOutcomeDto;
 import com.alex.universitymanagementsystem.dto.UpdateExaminationDto;
+import com.alex.universitymanagementsystem.entity.Examination;
+import com.alex.universitymanagementsystem.entity.Student;
+import com.alex.universitymanagementsystem.entity.immutable.Register;
+import com.alex.universitymanagementsystem.entity.immutable.UniqueCode;
 import com.alex.universitymanagementsystem.service.ExaminationOutcomeService;
 import com.alex.universitymanagementsystem.service.ExaminationService;
 
@@ -55,8 +55,8 @@ public class ExaminationController {
      * Returns a list of examinations
      * @return ModelAndView
      */
-    @GetMapping(path = "/view")
-    public ModelAndView viewAllExaminations() {
+    @GetMapping(path = "/read/examinations")
+    public ModelAndView getAllExaminations() {
         List<ExaminationDto> examinations = examinationService.getExaminations();
         return new ModelAndView(EXAMINATIONS_LIST, EXAMINATIONS, examinations);
     }
@@ -68,8 +68,8 @@ public class ExaminationController {
      * @param degreeCourseName name of the degree course
      * @return ModelAndView
      */
-    @GetMapping(path = "/course-name")
-    public ModelAndView viewExaminationsByCourseAndDegreeCourse(@RequestParam String courseName, @RequestParam String degreeCourseName) {
+    @GetMapping(path = "/read/course/degree-course")
+    public ModelAndView getExaminationsByCourseAndDegreeCourse(@RequestParam String courseName, @RequestParam String degreeCourseName) {
         List<ExaminationDto> examinations = examinationService.getExaminationsByCourseNameAndDegreeCourseName(courseName, degreeCourseName);
         return new ModelAndView(EXAMINATIONS_LIST, EXAMINATIONS, examinations);
     }
@@ -80,8 +80,8 @@ public class ExaminationController {
      * @param register register of the student
      * @return ModelAndView
      */
-    @GetMapping(path = "/student-register")
-    public ModelAndView viewExaminationsByStudent(
+    @GetMapping(path = "/read/student/register")
+    public ModelAndView getExaminationsByStudent(
         @AuthenticationPrincipal Student student,
         @Valid @RequestParam(required = false) String register
     ) {
@@ -97,8 +97,8 @@ public class ExaminationController {
      * @param uniqueCode unique code of the professor
      * @return ModelAndView
      */
-    @GetMapping(path = "/professor-unique-code")
-    public ModelAndView viewExaminationsByProfessor(@RequestParam String uniqueCode) {
+    @GetMapping(path = "read/professor/unique-code")
+    public ModelAndView getExaminationsByProfessor(@RequestParam String uniqueCode) {
         List<ExaminationDto> examinations = examinationService.getExaminationsByProfessorUniqueCode(new UniqueCode(uniqueCode));
         return new ModelAndView(EXAMINATIONS_LIST, EXAMINATIONS, examinations);
     }

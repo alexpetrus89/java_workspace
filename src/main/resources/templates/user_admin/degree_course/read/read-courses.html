@@ -6,7 +6,7 @@
 <head>
     <meta name="viewport" charset="UTF-8" content="width=device-width, initial-scale=1.0">
     <title>Uni Journey</title>
-    <link rel="stylesheet" type="text/css" href="/static/css/read-student.css"> <!-- Assicurati che il CSS sia corretto -->
+    <link rel="stylesheet" type="text/css" href="/static/css/read-courses.css"> <!-- Assicurati che il CSS sia corretto -->
 </head>
 <body>
 
@@ -18,7 +18,7 @@
 
     <div class="form-container">
         <h2>Find by degree course</h2>
-        <form th:action="@{/api/v1/degree-course/courses/view}" method="get">
+        <form th:action="@{/api/v1/degree-course/read/courses"}" method="get">
             <input type="text" name="name" placeholder="Enter degree course name" required />
             <button type="submit">Search</button>
             <input type="reset" value="Reset" />

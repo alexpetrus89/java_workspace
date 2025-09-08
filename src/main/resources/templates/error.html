@@ -1,0 +1,48 @@
+
+<!DOCTYPE html>
+<html lang="en"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta name="viewport" charset="UTF-8" content="width=device-width, initial-scale=1.0">
+    <title>Uni Journey - Error - [[${errorType}]]</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/generic-exception.css">
+</head>
+<body>
+<header>
+    <h1>⚠️ Uni Journey Exception - An error has occurred</h1>
+</header>
+<main>
+    <div class="error-box">
+        <h2 th:text="${errorType}">Error type</h2>
+
+        <div class="field">
+            <span class="label">Message:</span>
+            <span class="value" th:text="${message}">Unknown error</span>
+        </div>
+
+        <div class="field">
+            <span class="label">Cause:</span>
+            <span class="value" th:text="${cause}">N/A</span>
+        </div>
+
+        <div class="field">
+            <span class="label">Timestamp:</span>
+            <span class="value" th:text="${timestamp}">--</span>
+        </div>
+
+        <details>
+            <summary>Show stack trace</summary>
+            <pre th:utext="${stackTrace}">No stack trace available</pre>
+        </details>
+
+        <a href="/home" class="back-link">Back to Home</a>
+        <p><a href="javascript:history.back()">Go back</a></p>
+    </div>
+</main>
+<footer>
+    University Management System © 2025
+</footer>
+</body>
+</html>

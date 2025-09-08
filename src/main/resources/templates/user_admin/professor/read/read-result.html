@@ -6,7 +6,7 @@
 <head>
     <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
     <title>Uni Journey</title>
-    <link rel="stylesheet" type="text/css" href="/static/css/professor-list.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/read-professor.css">
 </head>
 <body>
     <div th:if="${professor}">
@@ -20,8 +20,8 @@
         <p th:text="${message}"></p>
     </div>
     <br>
-    <a href="#" th:href="@{/professor/read/read}">Search another</a>
+    <a href="#" th:href="@{/user_admin/professor/read/read}">Search another</a>
     </br>
-    <a href="#" th:href="@{/professor/professor-menu}">Back to Menu</a>
+    <a href="#" th:href="@{/user_admin/professor/professor-menu}">Back to menu</a>
 </body>
 </html>

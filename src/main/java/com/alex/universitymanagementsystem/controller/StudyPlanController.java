@@ -14,13 +14,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.alex.universitymanagementsystem.domain.Student;
-import com.alex.universitymanagementsystem.domain.immutable.Register;
 import com.alex.universitymanagementsystem.dto.CourseDto;
 import com.alex.universitymanagementsystem.dto.DegreeCourseDto;
 import com.alex.universitymanagementsystem.dto.ExaminationDto;
 import com.alex.universitymanagementsystem.dto.StudyPlanDto;
 import com.alex.universitymanagementsystem.dto.SwapCoursesDto;
+import com.alex.universitymanagementsystem.entity.Student;
+import com.alex.universitymanagementsystem.entity.immutable.Register;
 import com.alex.universitymanagementsystem.exception.DataAccessServiceException;
 import com.alex.universitymanagementsystem.service.DegreeCourseService;
 import com.alex.universitymanagementsystem.service.ExaminationService;
@@ -61,7 +61,7 @@ public class StudyPlanController {
      * @return ModelAndView
      */
     @GetMapping(path = "/view")
-    public ModelAndView getStudyPlanView(@AuthenticationPrincipal Student student) {
+    public ModelAndView getStudyPlan(@AuthenticationPrincipal Student student) {
         StudyPlanDto studyPlan = studyPlanService.getStudyPlanByRegister(student.getRegister());
         return new ModelAndView("user_student/study_plan/study-plan-view", "studyPlan", studyPlan);
     }

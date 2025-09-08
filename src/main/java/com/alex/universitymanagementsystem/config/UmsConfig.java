@@ -36,11 +36,14 @@ public class UmsConfig {
         // --- MODULE VIEWS for MvcConfig ---
         moduleViews.put("user_admin", List.of(
             "/user_admin/admin-home",
-            "/user_admin/admin-menu",
-            "/user_admin/update/update",
-            "/user_admin/delete/delete",
+            "/user_admin/admin/admin-menu",
+            "/user_admin/admin/update/update",
+            "/user_admin/admin/update/user-selection",
+            "/user_admin/admin/delete/delete",
             "/user_admin/student/student-menu",
+            "/user_admin/student/read/read",
             "/user_admin/professor/professor-menu",
+            "/user_admin/professor/read/read",
             "/user_admin/course/course-menu",
             "/user_admin/course/read/read",
             "/user_admin/course/create/create",
@@ -61,11 +64,7 @@ public class UmsConfig {
 
         moduleViews.put("user_student", List.of(
             "/user_student/student-home",
-            "/user_student/create/select-degree-course",
-            "/user_student/read/read",
-            "/user_student/create/create",
-            "/user_student/update/update",
-            "/user_student/delete/delete",
+            "/user_student/student/create/select-degree-course",
             "/user_student/study_plan/study_plan_modify",
             "/user_student/examinations/examination-menu",
             "/user_student/examinations/examination_appeal/available-calendar",
@@ -79,8 +78,6 @@ public class UmsConfig {
 
         moduleViews.put("user_professor", List.of(
             "/user_professor/professor-home",
-            "/user_professor/read/read",
-            "/user_professor/delete/delete",
             "/user_professor/examinations/examination_appeal/examination-appeal-menu",
             "/user_professor/examinations/examination_appeal/create/create-examination-appeal",
             "/user_professor/examinations/examination_appeal/delete/delete-examination-appeal"
@@ -89,23 +86,34 @@ public class UmsConfig {
         moduleViews.put("exception", List.of(
             "/exception/generic-exception",
             "/exception/transient-object-exception",
-            "/exception/access-denied/access-denied-exception",
-            "/exception/already-exists/object-already-exists",
-            "/exception/already-exists/professor-already-exists",
-            "/exception/already-exists/student-already-exists",
+            "/exception/access_denied/access-denied-exception",
+            "/exception/already_exists/object-already-exists",
+            "/exception/already_exists/professor-already-exists",
+            "/exception/already_exists/student-already-exists",
             "/exception/data/data-access-exception",
             "/exception/data/json-processing-exception",
-            "/exception/illegal/registration/username-already-taken",
-            "/exception/illegal/registration/password-not-match",
-            "/exception/illegal/registration/invalid-dob",
-            "/exception/illegal/study_plan/invalid-choice",
+            "/exception/illegal/invalid/duplicate-username",
+            "/exception/illegal/invalid/duplicate-fiscal-code",
+            "/exception/illegal/invalid/invalid-address",
+            "/exception/illegal/invalid/invalid-choice",
+            "/exception/illegal/invalid/invalid-dob",
+            "/exception/illegal/invalid/invalid-fiscal-code",
+            "/exception/illegal/invalid/invalid-password",
+            "/exception/illegal/invalid/invalid-register",
+            "/exception/illegal/invalid/invalid-username",
+            "/exception/illegal/invalid/invalid-unique-code",
+            "/exception/illegal/invalid/username-already-taken",
+            "/exception/illegal/invalid/fiscal-code-already-taken",
+            "/exception/illegal/invalid/password-not-match",
             "/exception/illegal/illegal-parameter",
             "/exception/illegal/illegal-parameters",
-            "/exception/not-found/degree-course-not-found",
-            "/exception/not-found/not-found-exception",
-            "/exception/not-found/fiscal-code-not-found",
-            "/exception/not-found/object-not-found",
-            "/exception/not-found/username-not-found"
+            "/exception/not_found/degree-course-not-found",
+            "/exception/not_found/not-found-exception",
+            "/exception/not_found/fiscal-code-not-found",
+            "/exception/not_found/object-not-found",
+            "/exception/not_found/professor-not-found",
+            "/exception/not_found/student-not-found",
+            "/exception/not_found/username-not-found"
         ));
 
 
@@ -121,6 +129,7 @@ public class UmsConfig {
         fieldToView.put("register", "exception/illegal/invalid-register");
         fieldToView.put("phone", "exception/illegal/invalid/invalid-phone");
         fieldToView.put("role", "exception/illegal/invalid/invalid-role");
+        fieldToView.put("uniqueCode", "exception/illegal/invalid/invalid-unique-code");
 
         final String invalidAddressView = "exception/illegal/invalid/invalid-address";
         fieldToView.put("street", invalidAddressView);
@@ -140,7 +149,7 @@ public class UmsConfig {
 
 
         // fallback generico
-        fieldToView.put("register", "exception/generic-exception");
+        fieldToView.put("error", "exception/generic-exception");
 
     }
 
@@ -163,11 +172,10 @@ public class UmsConfig {
 		"/favicon.ico",
 		"/exception/**",
         "/user_student/create/select-degree-course",
-		"/user/update/update-result",
 		"/api/v1/user/create-admin",
 		"/api/v1/user/create-student",
 		"/api/v1/user/create-professor",
-		"/api/v1/degree-course/ajax",
+		"/api/v1/degree-course/read/degree-courses/ajax",
         "/ws/**"
     };
 
@@ -175,38 +183,36 @@ public class UmsConfig {
     protected static final String[] ADMIN_URLS = {
         // user
 		"/user_admin/**",
-		"/api/v1/user",
+		"/api/v1/user/read/users",
+        "/api/v1/user/selection",
+        "/api/v1/user/update",
 		"/api/v1/user/delete",
 
 		// student
-        "/api/v1/student/view",
-		"/api/v1/student/read/read",
-		"/api/v1/student/update/update",
+        "/api/v1/student/**",
 
         // professor
-		"/api/v1/professor/view",
-		"/api/v1/professor/read/read",
-		"/api/v1/professor/update/update",
+		"/api/v1/professor/read/**",
 
 		// course
-		"/api/v1/course/view",
-		"/api/v1/course/read/read",
-		"/api/v1/course/create/create",
-		"/api/v1/course/update/update",
-		"/api/v1/course/delete/delete",
+		"/api/v1/course/read/courses",
+		"/api/v1/course/read/course",
+		"/api/v1/course/create",
+		"/api/v1/course/update",
+		"/api/v1/course//delete/{degreeCourseName}/{courseName}",
 
         // degree course
-		"/api/v1/degree-course/view",
-		"/api/v1/degree-course/professors/view",
-		"/api/v1/degree-course/students/view",
+		"/api/v1/degree-course/read/degree-courses",
+		"/api/v1/degree-course/read/professors",
+		"/api/v1/degree-course/read/students",
 
         // examination
-		"/api/v1/examination/view",
+		"/api/v1/examination/read/examinations",
 		"/api/v1/examination/update/update",
 		"/api/v1/examination/delete/delete",
-		"/api/v1/examination/read/course-name",
-		"/api/v1/examination/read/student-register",
-		"/api/v1/examination/read/professor-unique-code"
+		"/api/v1/examination/read/course/degree-course",
+		"/api/v1/examination/read/student/register",
+		"/api/v1/examination/read/professor/unique-code"
     };
 
 
@@ -215,18 +221,16 @@ public class UmsConfig {
 		"/user_student/**",
 		"/api/v1/user/create/student",
 		"/api/v1/user/update/student",
-		"/api/v1/study_plan/view",
-		"/api/v1/study_plan/modify",
-		"/api/v1/study_plan/swap",
-		"/api/v1/degree-course/courses/view",
-		"/api/v1/degree-course/courses/ajax",
-		"/api/v1/examination/create/create",
+		"/api/v1/study_plan/**",
+		"/api/v1/degree-course/read/courses",
+		"/api/v1/degree-course/read/courses/ajax",
+		"/api/v1/examination/create",
 		"/api/v1/examination-appeal/available/student",
 		"/api/v1/examination-appeal/booked/student",
 		"/api/v1/examination-appeal/booked/{id}",
 		"/api/v1/examination-appeal/delete-booked/{id}",
-		"/api/v1/examination-outcome/view",
-		"/api/v1/examination-outcome/outcome",
+		"/api/v1/examination-outcome/read/outcome",
+		"/api/v1/examination-outcome/read/outcomes",
 		"/api/v1/examination-outcome/confirm-refusal",
 		"/api/v1/outcome-notifications"
     };
@@ -237,8 +241,8 @@ public class UmsConfig {
         "/user_professor/**",
         "/api/v1/user/create/professor",
         "/api/v1/user/update/professor",
-        "/api/v1/course/view/professor",
-        "/api/v1/course/read/{courseId}",
+        "/api/v1/course/read/professor",
+        "/api/v1/examination-appeal/read/professor",
 		"/api/v1/examination-appeal/make",
 		"/api/v1/examination-appeal/create",
 		"/api/v1/examination-appeal/delete",

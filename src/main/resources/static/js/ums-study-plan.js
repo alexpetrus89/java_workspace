@@ -1,27 +1,28 @@
 import { COURSES_TOKEN } from './ums-config.js';
 
-// Quando avviene l'evento "pagina pronta"
-// chiama la funzione di aggiornamento della lista di corsi
+// When the "page ready" event occurs
+// calls the course list update function
 $(document).ready(function() {
     updateCourses();
 });
 
-// Quando avviene l'evento "selezione degree course"
-// chiama la funzione di aggiornamento della lista di corsi
+
+// When the "degree course selection" event occurs
+// calls the course list update function
 $('#degreeCourseOfNewCourse').on('change', function() {
     updateCourses();
 });
 
 
-// Quando avviene l'evento "selezione degree course"questa funzione
-// aggiorna i corsi disponibili in base al corso di laurea selezionato
-// ricavandoli mediante richiesta AJAX.
+// When the "select degree course" event occurs, this function
+// updates the available courses based on the selected degree program
+// retrieves them via AJAX request.
 function updateCourses() {
     const degreeCourseName = $('#degreeCourseOfNewCourse').val();
 
     $.ajax({
         type: 'GET',
-        url: '/api/v1/degree-course/courses/ajax?name=' + degreeCourseName,
+        url: '/api/v1/read/courses/ajax?name=' + degreeCourseName,
         headers: {
             'Authorization': 'Bearer ' + COURSES_TOKEN,
         },
@@ -32,18 +33,21 @@ function updateCourses() {
             try {
                 const jsonData = data;
                 console.log(jsonData);
-                // Assicurati che jsonData sia un oggetto JSON con una proprietà "degreeCourseName"
+
+                // Make sure jsonData is a JSON object with a "degreeCourseName" property
                 if (!jsonData.degreeCourseName)
                     throw new Error('Response is not a valid JSON object.');
-                // Svuota la select
+
+                // Remove the existing options from the select element
                 $('#courseToAdd').empty();
-                // Aggiungi un'opzione vuota all'inizio
+
+                // Add an empty option at the beginning
                 $('#courseToAdd').append('<option value="">Select a course</option>');
-                // popola l'elemento select con la lista dei corsi
+
+                // Populate the select element with the list of courses
                 $.each(jsonData.degreeCourseName, function(index, course) {
-                    // Qui puoi accedere alle proprietà del corso, ad esempio:
                     const courseName = course.course.name;
-                    // Aggiungi l'opzione al select
+                    // Add the course name as an option to the select element
                     $('#courseToAdd').append('<option value="' + courseName + '">' + courseName + '</option>');
                 });
             } catch (e) {
@@ -59,7 +63,7 @@ function updateCourses() {
 }
 
 
-// Nascondi il campo degreeCourseOfOldCourse
+// Hide the degreeCourseOfOldCourse field
 $('#degreeCourseOfOldCourse').hide();
 
 

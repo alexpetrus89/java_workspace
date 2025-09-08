@@ -9,8 +9,8 @@ import org.springframework.retry.annotation.Retryable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.alex.universitymanagementsystem.domain.PasswordResetToken;
-import com.alex.universitymanagementsystem.domain.User;
+import com.alex.universitymanagementsystem.entity.PasswordResetToken;
+import com.alex.universitymanagementsystem.entity.User;
 import com.alex.universitymanagementsystem.exception.DataAccessServiceException;
 import com.alex.universitymanagementsystem.repository.PasswordResetTokenRepository;
 import com.alex.universitymanagementsystem.repository.UserRepository;

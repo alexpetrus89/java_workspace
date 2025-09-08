@@ -6,19 +6,19 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
-import com.alex.universitymanagementsystem.domain.Course;
-import com.alex.universitymanagementsystem.domain.DegreeCourse;
-import com.alex.universitymanagementsystem.domain.Examination;
-import com.alex.universitymanagementsystem.domain.ExaminationAppeal;
-import com.alex.universitymanagementsystem.domain.ExaminationOutcome;
-import com.alex.universitymanagementsystem.domain.Professor;
-import com.alex.universitymanagementsystem.domain.Student;
-import com.alex.universitymanagementsystem.domain.immutable.Register;
-import com.alex.universitymanagementsystem.domain.immutable.UniqueCode;
 import com.alex.universitymanagementsystem.dto.ExaminationAppealDto;
 import com.alex.universitymanagementsystem.dto.ExaminationDto;
 import com.alex.universitymanagementsystem.dto.ExaminationOutcomeDto;
 import com.alex.universitymanagementsystem.dto.StudentDto;
+import com.alex.universitymanagementsystem.entity.Course;
+import com.alex.universitymanagementsystem.entity.DegreeCourse;
+import com.alex.universitymanagementsystem.entity.Examination;
+import com.alex.universitymanagementsystem.entity.ExaminationAppeal;
+import com.alex.universitymanagementsystem.entity.ExaminationOutcome;
+import com.alex.universitymanagementsystem.entity.Professor;
+import com.alex.universitymanagementsystem.entity.Student;
+import com.alex.universitymanagementsystem.entity.immutable.Register;
+import com.alex.universitymanagementsystem.entity.immutable.UniqueCode;
 import com.alex.universitymanagementsystem.enum_type.DomainType;
 import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
 import com.alex.universitymanagementsystem.mapper.ExaminationAppealMapper;

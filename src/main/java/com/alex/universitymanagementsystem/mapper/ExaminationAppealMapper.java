@@ -3,11 +3,11 @@ package com.alex.universitymanagementsystem.mapper;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.alex.universitymanagementsystem.domain.Course;
-import com.alex.universitymanagementsystem.domain.ExaminationAppeal;
-import com.alex.universitymanagementsystem.domain.immutable.Register;
 import com.alex.universitymanagementsystem.dto.ExaminationAppealDto;
 import com.alex.universitymanagementsystem.dto.StudentDto;
+import com.alex.universitymanagementsystem.entity.Course;
+import com.alex.universitymanagementsystem.entity.ExaminationAppeal;
+import com.alex.universitymanagementsystem.entity.immutable.Register;
 
 public final class ExaminationAppealMapper {
 

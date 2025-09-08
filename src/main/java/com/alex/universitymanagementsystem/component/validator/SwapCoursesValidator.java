@@ -3,8 +3,8 @@ package com.alex.universitymanagementsystem.component.validator;
 import org.springframework.stereotype.Component;
 
 import com.alex.universitymanagementsystem.annotation.SwapCoursesConstraint;
-import com.alex.universitymanagementsystem.domain.Course;
 import com.alex.universitymanagementsystem.dto.SwapCoursesDto;
+import com.alex.universitymanagementsystem.entity.Course;
 import com.alex.universitymanagementsystem.repository.CourseRepository;
 
 import jakarta.validation.ConstraintValidator;

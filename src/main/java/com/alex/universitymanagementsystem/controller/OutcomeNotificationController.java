@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.alex.universitymanagementsystem.domain.Student;
 import com.alex.universitymanagementsystem.dto.OutcomeNotificationDto;
+import com.alex.universitymanagementsystem.entity.Student;
 import com.alex.universitymanagementsystem.service.OutcomeNotificationService;
 
 @RestController
@@ -31,7 +31,7 @@ public class OutcomeNotificationController {
      * @return a list of OutcomeNotificationDto
      */
     @GetMapping
-    public List<OutcomeNotificationDto> getStudentNotifications(@AuthenticationPrincipal Student student) {
+    public List<OutcomeNotificationDto> getAllStudentNotifications(@AuthenticationPrincipal Student student) {
         return outcomeNotificationService.getActiveNotifications(student)
             .stream()
             .map(OutcomeNotificationDto::toDto)

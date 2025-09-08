@@ -17,10 +17,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.alex.universitymanagementsystem.domain.Student;
-import com.alex.universitymanagementsystem.domain.immutable.Register;
 import com.alex.universitymanagementsystem.dto.ExaminationAppealDto;
 import com.alex.universitymanagementsystem.dto.ExaminationOutcomeDto;
+import com.alex.universitymanagementsystem.entity.Student;
+import com.alex.universitymanagementsystem.entity.immutable.Register;
 import com.alex.universitymanagementsystem.exception.DataAccessServiceException;
 import com.alex.universitymanagementsystem.service.EmailService;
 import com.alex.universitymanagementsystem.service.ExaminationAppealService;
@@ -75,8 +75,8 @@ public class ExaminationOutcomeController {
      * @param student of the student
      * @return ModelAndView
      */
-    @GetMapping(path = "/view")
-    public ModelAndView getExaminationOutcomes(@AuthenticationPrincipal Student student) {
+    @GetMapping(path = "/read/outcomes")
+    public ModelAndView getAllExaminationOutcomes(@AuthenticationPrincipal Student student) {
         List<ExaminationOutcomeDto> outcomes = examinationOutcomeService.getStudentOutcomes(student.getRegister().toString());
         return new ModelAndView("user_student/examinations/examination_outcome/outcome", "outcomes", outcomes);
     }
@@ -87,7 +87,7 @@ public class ExaminationOutcomeController {
      * @param outcome
      * @return ModelAndView
      */
-    @GetMapping(path = "/outcome")
+    @GetMapping(path = "/read/outcome")
     public ModelAndView getOutcome(@RequestParam Long id) {
         ExaminationOutcomeDto outcome = examinationOutcomeService.getOutcomeById(id);
         return new ModelAndView("user_student/examinations/examination_outcome/outcome-result", "outcome", outcome);

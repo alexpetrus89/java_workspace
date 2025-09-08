@@ -53,6 +53,7 @@ public class UmsMvcConfig implements WebMvcConfigurer, Serializable {
             .addViewController("/reset-password")
             .setViewName("reset-password");
 
+
         umsConfig.streamAllViews().forEach(view -> registry.addViewController(view).setViewName(view));
     }
 

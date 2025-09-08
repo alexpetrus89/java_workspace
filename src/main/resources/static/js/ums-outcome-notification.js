@@ -1,6 +1,8 @@
-var socket = new SockJS('http://localhost:8081/ws');
-var stompClient = Stomp.over(socket);
+const socket = new SockJS('http://localhost:8081/ws');
+const stompClient = Stomp.over(socket);
 
+
+// web socket connection
 stompClient.connect({}, function (frame) {
     console.log('Connected: ' + frame);
 
@@ -14,6 +16,8 @@ stompClient.connect({}, function (frame) {
     });
 });
 
+
+// function to render notification
 function renderNotification(id, message) {
     let row = `
         <tr data-id="${id}">
@@ -26,7 +30,7 @@ function renderNotification(id, message) {
 }
 
 
-// recupera notifiche persistenti
+// retrieve notifications
 fetch('/api/v1/outcome-notifications')
     .then(res => res.json())
     .then(notifications => {
@@ -37,7 +41,7 @@ fetch('/api/v1/outcome-notifications')
     });
 
 
-// funzione per segnare come letta una notifica
+// function to mark notification as read
 function markAsRead(id) {
     fetch(`/api/v1/notifications/${id}/read`, { method: "POST" })
         .then(() => {

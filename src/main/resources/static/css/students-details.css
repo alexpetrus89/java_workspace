@@ -1,0 +1,113 @@
+/* Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Segoe UI", Roboto, Arial, sans-serif;
+}
+
+/* Sfondo */
+body {
+    background-color: #f4f8ff;
+    color: #1e3a8a;
+    min-height: 100vh;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 2rem;
+}
+
+/* Contenitore */
+.container {
+    background: #fff;
+    padding: 2rem;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 1000px;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+}
+
+/* Titolo */
+.container h1 {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+    color: #2563eb;
+}
+
+/* Tabella */
+.table-container {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+thead {
+    background: #2563eb;
+    color: #fff;
+}
+
+th, td {
+    padding: 0.8rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+tbody tr:hover {
+    background-color: #f0f5ff;
+    transition: background 0.2s ease-in-out;
+}
+
+th {
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+/* Azioni */
+.actions {
+    margin-top: 1.5rem;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+}
+
+/* Bottoni */
+.btn {
+    display: inline-block;
+    padding: 0.6rem 1.2rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 500;
+    background: #2563eb;
+    color: #fff;
+    transition: background 0.3s ease;
+}
+
+.btn:hover {
+    background: #1e3a8a;
+}
+
+.btn.secondary {
+    background: #e2e8f0;
+    color: #1e3a8a;
+}
+
+.btn.secondary:hover {
+    background: #cbd5e1;
+}
+
+/* Messaggio di avviso */
+.warning {
+    background: #fee2e2;
+    color: #b91c1c;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    font-weight: 500;
+}

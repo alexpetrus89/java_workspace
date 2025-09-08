@@ -15,12 +15,12 @@
     <div class="card-container">
         <div class="card">
             <h2>View all students</h2>
-            <p>Click <a th:href="@{/api/v1/student/view}">here</a> to view the full list of students.</p>
+            <p>Click <a th:href="@{/api/v1/student/read/students}">here</a> to view the full list of students.</p>
         </div>
 
         <div class="card">
             <h2>Read student information</h2>
-            <p>Click <a th:href="@{read/read}">here</a> to read a student's information.</p>
+            <p>Click <a th:href="@{/user_admin/student/read/read}">here</a> to read a student's information.</p>
         </div>
 
         <div class="card">
@@ -30,7 +30,7 @@
     </div>
 
     <div class="form-actions">
-        <a th:href="@{/user_admin/student/student-menu}" class="home-link">Back to Home</a>
+        <a th:href="@{/user_admin/admin-home}" class="home-link">Back to Home</a>
     </div>
 
 </body>

@@ -1,13 +1,17 @@
-// funzione per recuperare la lista dei corsi di laurea
+// call the function to retrieve the list of degree courses
+getDegreeCourses();
+
+
+// function to retrieve the list of degree courses
 function getDegreeCourses() {
     $.ajax({
         type: "GET",
-        url: "/api/v1/degree-course/ajax",
+        url: "/api/v1/read/degree-course/ajax",
         dataType: "json",
 
         // success
         success: function(data) {
-            // popola l'elemento select con la lista dei corsi di laurea
+            // populates the select element with the list of degree courses
             const select = document.getElementById("degreeCourse");
             select.innerHTML = "";
             data.forEach(function(degreeCourse) {
@@ -24,6 +28,3 @@ function getDegreeCourses() {
         }
     });
 }
-
-// chiama la funzione per recuperare la lista dei corsi di laurea
-getDegreeCourses();

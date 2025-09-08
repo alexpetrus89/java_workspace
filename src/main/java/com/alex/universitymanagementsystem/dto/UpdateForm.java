@@ -8,7 +8,7 @@ import com.alex.universitymanagementsystem.annotation.UniqueUsername;
 import com.alex.universitymanagementsystem.annotation.ValidBirthDate;
 import com.alex.universitymanagementsystem.annotation.ValidFiscalCode;
 import com.alex.universitymanagementsystem.annotation.ValidPassword;
-import com.alex.universitymanagementsystem.domain.Address;
+import com.alex.universitymanagementsystem.entity.Address;
 import com.alex.universitymanagementsystem.enum_type.RoleType;
 import com.alex.universitymanagementsystem.utils.PasswordCarrier;
 

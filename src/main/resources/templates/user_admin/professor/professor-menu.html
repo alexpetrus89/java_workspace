@@ -12,21 +12,20 @@
 
     <h1>Professor Menu</h1>
 
-    <!-- Card Container per le opzioni -->
     <div class="card-container">
 
         <div class="card">
-            <h2>View Professors</h2>
-            <p>Click <a th:href="@{/api/v1/professor/view}">here</a> to view all professors</p>
+            <h2>View professors</h2>
+            <p>Click <a th:href="@{/api/v1/professor/read/professors}">here</a> to view all professors</p>
         </div>
 
         <div class="card">
-            <h2>Read Professor Information</h2>
-            <p>Click <a th:href="@{read/read}">here</a> to read professor information</p>
+            <h2>Read professor information</h2>
+            <p>Click <a th:href="@{/user_admin/professor/read/read}">here</a> to read professor information</p>
         </div>
 
         <div class="card">
-            <h2>Update Professor</h2>
+            <h2>Update professor</h2>
             <p>Click <a th:href="@{/api/v1/professor/update}">here</a> to update professor information</p>
         </div>
 
@@ -34,7 +33,7 @@
 
     <!-- Back to Home Link -->
     <div class="form-actions">
-        <a th:href="@{/user_admin/professor/professor-menu}" class="home-link">Back to Home</a>
+        <a th:href="@{/user_admin/admin-home}" class="home-link">Back to home</a>
     </div>
 
 </body>

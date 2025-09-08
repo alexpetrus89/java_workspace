@@ -3,18 +3,20 @@ package com.alex.universitymanagementsystem.controller;
 
 import java.util.List;
 
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.alex.universitymanagementsystem.domain.immutable.UniqueCode;
+import com.alex.universitymanagementsystem.annotation.ValidUniqueCode;
 import com.alex.universitymanagementsystem.dto.ProfessorDto;
 import com.alex.universitymanagementsystem.service.ProfessorService;
 
 
 
+@Validated
 @RestController
 @RequestMapping(path = "api/v1/professor")
 public class ProfessorController {
@@ -39,10 +41,10 @@ public class ProfessorController {
      * Retrieves all professors
      * @return ModelAndView
      */
-    @GetMapping(path = "/view")
+    @GetMapping(path = "/read/professors")
     public ModelAndView getAllProfessors() {
         List<ProfessorDto> professors = professorService.getProfessors();
-        return new ModelAndView("user_professor/professor-list", PROFESSORS, professors);
+        return new ModelAndView("user_admin/professor/read/professors", PROFESSORS, professors);
     }
 
 
@@ -52,9 +54,9 @@ public class ProfessorController {
      * @return ModelAndView
      */
     @GetMapping(path = "/read/uniquecode")
-    public ModelAndView getProfessorByUniqueCode(@RequestParam UniqueCode uniqueCode) {
+    public ModelAndView getProfessorByUniqueCode(@RequestParam @ValidUniqueCode String uniqueCode) {
         ProfessorDto professor = professorService.getProfessorByUniqueCode(uniqueCode);
-        return new ModelAndView("user_professor/read/read-result", PROFESSOR, professor);
+        return new ModelAndView("user_admin/professor/read/read-result", PROFESSOR, professor);
     }
 
 
@@ -64,9 +66,9 @@ public class ProfessorController {
      * @return ModelAndView
      */
     @GetMapping(path = "/read/name")
-    public ModelAndView getProfessorsByFullname(@RequestParam String fullname) {
-        List<ProfessorDto> professors = professorService.getProfessorsByFullname(fullname);
-        return new ModelAndView("user_professor/read/read-results", PROFESSORS, professors);
+    public ModelAndView getProfessorsByFullname(@RequestParam String fullName) {
+        List<ProfessorDto> professors = professorService.getProfessorsByFullname(fullName);
+        return new ModelAndView("user_admin/professor/read/read-results", PROFESSORS, professors);
     }
 
 

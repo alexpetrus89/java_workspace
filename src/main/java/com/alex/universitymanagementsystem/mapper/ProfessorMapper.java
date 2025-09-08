@@ -1,7 +1,7 @@
 package com.alex.universitymanagementsystem.mapper;
 
-import com.alex.universitymanagementsystem.domain.Professor;
 import com.alex.universitymanagementsystem.dto.ProfessorDto;
+import com.alex.universitymanagementsystem.entity.Professor;
 
 public class ProfessorMapper {
 

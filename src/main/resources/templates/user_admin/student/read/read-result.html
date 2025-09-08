@@ -5,22 +5,37 @@
     xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
     <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
-    <title>Uni Journey</title>
+    <title>Uni Journey - Student Info</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/student-details.css">
 </head>
 <body>
-    <div th:if="${student}">
-        <p th:text="'registration number: ' + ${student.register}"></p>
-        <p th:text="'name: ' + ${student.firstName} + ' ' + ${student.lastName}"></p>
-        <p th:text="'email: ' + ${student.username}"></p>
-        <p th:text="'dob: ' + ${student.dob}"></p>
-        <p th:text="'age: ' + ${student.age}"></p>
+
+<div class="container">
+
+    <h1>Student Details</h1>
+
+    <!-- Student card -->
+    <div th:if="${student}" class="student-card">
+        <p><strong>Registration number:</strong> <span th:text="${student.register}"></span></p>
+        <p><strong>Name:</strong> <span th:text="${student.firstName} + ' ' + ${student.lastName}"></span></p>
+        <p><strong>Email:</strong> <span th:text="${student.username}"></span></p>
+        <p><strong>Date of Birth:</strong> <span th:text="${student.dob}"></span></p>
+        <p><strong>Age:</strong> <span th:text="${student.age}"></span></p>
     </div>
-    <div th:if="${errorMessage}">
+
+    <!-- Error message -->
+    <div th:if="${errorMessage}" class="error-box">
         <p th:text="${errorMessage}"></p>
     </div>
-    <br>
-    <a href="#" th:href="@{/student/read/read}">Search another</a>
-    <br>
-    <a href="#" th:href="@{/student/student-menu}">Back to menu</a>
+
+    <!-- Actions -->
+    <div class="actions">
+        <a th:href="@{/user_admin/student/read/read}" class="btn">Search another</a>
+        <a th:href="@{/user_admin/student/student-menu}" class="btn secondary">Back to menu</a>
+    </div>
+
+</div>
+
 </body>
 </html>
+

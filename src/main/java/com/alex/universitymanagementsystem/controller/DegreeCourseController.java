@@ -2,7 +2,6 @@ package com.alex.universitymanagementsystem.controller;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -43,10 +42,10 @@ public class DegreeCourseController {
      * retrieves all degree courses
      * @return ModelAndView
      */
-    @GetMapping(path = "/view")
-    public ModelAndView getDegreeCourses() {
+    @GetMapping(path = "/read/degree-courses")
+    public ModelAndView getAllDegreeCourses() {
         Set<DegreeCourseDto> degreeCourses = degreeCourseService.getDegreeCourses();
-        return new ModelAndView("user_admin/degree_course/degree-course-list", "degreeCourses", degreeCourses);
+        return new ModelAndView("user_admin/degree_course/read/degree-courses", "degreeCourses", degreeCourses);
     }
 
 
@@ -55,10 +54,10 @@ public class DegreeCourseController {
      * @param name the name of the degree course
      * @return ModelAndView
      */
-    @GetMapping(path = "/courses/view")
+    @GetMapping(path = "/read/courses")
     public ModelAndView getCourses(@RequestParam String name) {
         List<CourseDto> courses = degreeCourseService.getCourses(name.toUpperCase());
-        return new ModelAndView("user_admin/degree_course/course-list", "courses",courses);
+        return new ModelAndView("user_admin/degree_course/courses", "courses",courses);
     }
 
 
@@ -67,7 +66,7 @@ public class DegreeCourseController {
      * @param name the name of the degree course
      * @return ModelAndView
      */
-    @GetMapping(path = "/professors/view")
+    @GetMapping(path = "/read/professors")
     public ModelAndView getProfessors(@RequestParam String name) {
         List<ProfessorDto> professors = degreeCourseService.getProfessors(name.toUpperCase());
         return new ModelAndView("user_admin/degree_course/professor-with-course-list","professors", professors);
@@ -79,18 +78,19 @@ public class DegreeCourseController {
      * @param name the name of the degree course
      * @return ModelAndView
      */
-    @GetMapping(path = "/students/view")
+    @GetMapping(path = "read/students")
     public ModelAndView getStudents(@RequestParam String name) {
         List<StudentDto> students = degreeCourseService.getStudents(name.toUpperCase());
-        return new ModelAndView("user_admin/degree_course/student-list","students", students);
+        return new ModelAndView("user_admin/degree_course/students","students", students);
     }
 
 
     /**
      * retrieves all degree courses for ajax request
      * @return http response entity
+     * @throws JsonProcessingException if the object cannot be serialized to JSON
      */
-    @GetMapping(path = "/ajax")
+    @GetMapping(path = "read/degree-courses/ajax")
     public ResponseEntity<Set<DegreeCourseDto>> getJsonOfDegreeCourses() {
         try {
             return ResponseEntity.ok(degreeCourseService.getDegreeCourses());
@@ -106,7 +106,7 @@ public class DegreeCourseController {
      * @return String - a JSON string
      * @throws JsonProcessingException if the object cannot be serialized to JSON
      */
-    @GetMapping(path = "/courses/ajax")
+    @GetMapping(path = "read/courses/ajax")
     public String getJsonOfCourses(@RequestParam String name) throws JsonProcessingException {
         try {
             // retrieve the courses
@@ -115,12 +115,14 @@ public class DegreeCourseController {
                 .stream()
                 .map(this::serializeCourseDto)
                 .collect(Collectors.joining(",")) + "]}";
-        } catch (IllegalArgumentException | NoSuchElementException | DataAccessServiceException | ClassCastException e) {
-            return "{\"message\": \"" + e.getMessage() + "\"}";
+        } catch (DataAccessServiceException e) {
+            throw new JsonProcessingException("Parsing not working a cause of data access error", e);
         }
     }
 
 
+
+    // helper methods
     /**
      * Serializes a CourseDto object to a JSON string.
      * @param courseDto the CourseDto object to serialize

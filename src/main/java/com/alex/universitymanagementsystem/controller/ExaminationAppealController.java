@@ -13,11 +13,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.alex.universitymanagementsystem.domain.Professor;
-import com.alex.universitymanagementsystem.domain.Student;
 import com.alex.universitymanagementsystem.dto.CourseDto;
 import com.alex.universitymanagementsystem.dto.ExaminationAppealDto;
 import com.alex.universitymanagementsystem.dto.ProfessorDto;
+import com.alex.universitymanagementsystem.entity.Professor;
+import com.alex.universitymanagementsystem.entity.Student;
 import com.alex.universitymanagementsystem.mapper.ProfessorMapper;
 import com.alex.universitymanagementsystem.service.CourseService;
 import com.alex.universitymanagementsystem.service.ExaminationAppealService;
@@ -73,7 +73,7 @@ public class ExaminationAppealController {
      * @param professor
      * @return ModelAndView
      */
-    @GetMapping(path = "/view/professor")
+    @GetMapping(path = "/read/professor")
     public ModelAndView getExaminationAppealsMadeByProfessor(@AuthenticationPrincipal Professor professor) {
         List<ExaminationAppealDto> appeals = examinationAppealService.getExaminationAppealsMadeByProfessor(professor.getUniqueCode());
         return new ModelAndView("user_professor/examinations/examination_appeal/calendar", EXAMINATION_APPEALS, appeals);
@@ -87,7 +87,7 @@ public class ExaminationAppealController {
      * @param Professor professor owner of the examination appeal
      * @return ModelAndView
      */
-    @GetMapping(path = "/view/students-booked/{id}/{date}")
+    @GetMapping(path = "/read/students-booked/{id}/{date}")
     public ModelAndView getStudentsBooked(@PathVariable Long id, @PathVariable LocalDate date, @AuthenticationPrincipal Professor professor) {
         ExaminationAppealDto appeal = examinationAppealService.getExaminationAppealById(id);
         return new ModelAndView("user_professor/examinations/examination_appeal/students-booked", EXAMINATION_APPEAL, appeal);

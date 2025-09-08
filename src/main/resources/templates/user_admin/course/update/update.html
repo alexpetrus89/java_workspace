@@ -12,7 +12,7 @@
 <div class="container">
     <h1>Update Course</h1>
 
-    <form th:action="@{/courses/update}" th:object="${updateCourseDto}" method="post">
+    <form th:action="@{/api/v1/course/update}" th:object="${updateCourseDto}" method="post">
 
         <!-- Old Course Info -->
         <div class="form-group">

@@ -3,9 +3,9 @@ package com.alex.universitymanagementsystem.exception;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import com.alex.universitymanagementsystem.domain.immutable.FiscalCode;
-import com.alex.universitymanagementsystem.domain.immutable.Register;
-import com.alex.universitymanagementsystem.domain.immutable.UniqueCode;
+import com.alex.universitymanagementsystem.entity.immutable.FiscalCode;
+import com.alex.universitymanagementsystem.entity.immutable.Register;
+import com.alex.universitymanagementsystem.entity.immutable.UniqueCode;
 import com.alex.universitymanagementsystem.enum_type.DomainType;
 
 

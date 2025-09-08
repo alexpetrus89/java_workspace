@@ -125,6 +125,8 @@ public class GlobalControllerExceptionHandler {
             case MissingServletRequestParameterException msrpe -> handleMissingServletRequestParameterException(msrpe);
             case IllegalArgumentException iae -> handleIllegalArgumentException(iae);
             case DataAccessServiceException dae -> handleDataAccessServiceException(dae);
+            case ObjectNotFoundException onfe -> handleObjectNotFoundException(onfe);
+            case ObjectAlreadyExistsException oae -> handleObjectAlreadyExistsException(oae);
             case JsonProcessingException jpe -> handleJsonProcessingException(jpe);
             case MailException me -> handleMailException(me);
             case DuplicateUsernameException due -> handleDuplicateUsernameException(due);
@@ -495,11 +497,11 @@ public class GlobalControllerExceptionHandler {
      * @param e the exception to inspect
      * @return the root cause of the exception
      */
-    private Throwable getRootCause(Throwable e) {
-        Throwable cause = e;
-        while (cause.getCause() != null && cause.getCause() != cause)
-            cause = cause.getCause();
-        return cause;
+    private Throwable getRootCause(Throwable throwable) {
+        Throwable cause = throwable.getCause();
+        if (cause == null || cause == throwable)
+            return throwable;
+        return getRootCause(cause);
     }
 
 
@@ -527,6 +529,9 @@ public class GlobalControllerExceptionHandler {
         // Cause
         Throwable cause = e.getCause();
         mav.addObject("cause", cause != null ? cause.toString() : "N/A");
+
+        // Root cause
+        mav.addObject("rootCause", getRootCause(e));
 
         // Timestamp
         mav.addObject("timestamp", java.time.LocalDateTime.now());

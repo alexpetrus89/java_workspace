@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta name="viewport" charset="UTF-8" content="width=device-width, initial-scale=1.0">
+    <title>Uni Journey</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/degree-courses.css"> <!-- Assicurati che il CSS sia corretto -->
+</head>
+<body>
+
+    <h1 class="main-title">Degree courses</h1>
+
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="degreeCourse : ${degreeCourses}">
+                    <td th:text="${degreeCourse.name}">Degree course name</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="form-actions">
+        <a th:href="@{/degree_course/degree-course-menu}" class="home-link">Back to Menu</a>
+    </div>
+
+</body>
+</html>

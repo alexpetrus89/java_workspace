@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en"
     xmlns="http://www.w3.org/1999/xhtml"
@@ -6,7 +5,7 @@
     xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta name="viewport" charset="UTF-8" content="width=device-width, initial-scale=1.0">
-    <title>Uni Journey - Error - [[${errorType}]]</title>
+    <title>Uni Journey</title>
     <link rel="stylesheet" type="text/css" href="/static/css/generic-exception.css">
 </head>
 <body>
@@ -25,6 +24,11 @@
         <div class="field">
             <span class="label">Cause:</span>
             <span class="value" th:text="${cause}">N/A</span>
+        </div>
+
+        <div class="field">
+            <span class="label">Root Cause:</span>
+            <span class="value" th:text="${rootCause}">N/A</span>
         </div>
 
         <div class="field">

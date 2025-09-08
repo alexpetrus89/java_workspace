@@ -1,6 +1,6 @@
 package com.alex.universitymanagementsystem.dto;
 
-import com.alex.universitymanagementsystem.domain.immutable.DegreeCourseId;
+import com.alex.universitymanagementsystem.entity.immutable.DegreeCourseId;
 import com.alex.universitymanagementsystem.enum_type.DegreeType;
 
 import jakarta.validation.constraints.NotNull;

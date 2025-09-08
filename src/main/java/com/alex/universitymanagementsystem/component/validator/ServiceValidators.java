@@ -6,9 +6,9 @@ import java.util.function.BooleanSupplier;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import com.alex.universitymanagementsystem.domain.immutable.ExaminationId;
-import com.alex.universitymanagementsystem.domain.immutable.Register;
-import com.alex.universitymanagementsystem.domain.immutable.UniqueCode;
+import com.alex.universitymanagementsystem.entity.immutable.ExaminationId;
+import com.alex.universitymanagementsystem.entity.immutable.Register;
+import com.alex.universitymanagementsystem.entity.immutable.UniqueCode;
 import com.alex.universitymanagementsystem.enum_type.DomainType;
 import com.alex.universitymanagementsystem.exception.ObjectAlreadyExistsException;
 import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;

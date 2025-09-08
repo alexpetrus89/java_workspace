@@ -10,11 +10,10 @@ import org.springframework.stereotype.Service;
 
 import com.alex.universitymanagementsystem.component.ServiceHelpers;
 import com.alex.universitymanagementsystem.component.validator.ServiceValidators;
-import com.alex.universitymanagementsystem.domain.Professor;
-import com.alex.universitymanagementsystem.domain.immutable.FiscalCode;
-import com.alex.universitymanagementsystem.domain.immutable.UniqueCode;
 import com.alex.universitymanagementsystem.dto.ProfessorDto;
 import com.alex.universitymanagementsystem.dto.RegistrationForm;
+import com.alex.universitymanagementsystem.entity.Professor;
+import com.alex.universitymanagementsystem.entity.immutable.FiscalCode;
 import com.alex.universitymanagementsystem.enum_type.DomainType;
 import com.alex.universitymanagementsystem.exception.DataAccessServiceException;
 import com.alex.universitymanagementsystem.exception.ObjectAlreadyExistsException;
@@ -82,14 +81,14 @@ public class ProfessorServiceImpl implements ProfessorService {
      * @throws DataAccessServiceException if there is an error accessing the database
      */
     @Override
-    public ProfessorDto getProfessorByUniqueCode(UniqueCode uniqueCode)
+    public ProfessorDto getProfessorByUniqueCode(String uniqueCode)
         throws IllegalArgumentException, DataAccessServiceException
     {
         // sanity check
-        validators.validateNotNullOrNotBlank(uniqueCode.toString(), UNIQUE_CODE_ERROR);
+        validators.validateNotNullOrNotBlank(uniqueCode, UNIQUE_CODE_ERROR);
 
         try {
-            return ProfessorMapper.toDto(helpers.fetchProfessor(uniqueCode.toString()));
+            return ProfessorMapper.toDto(helpers.fetchProfessor(uniqueCode));
         } catch (PersistenceException e) {
             throw new DataAccessServiceException("Error accessing database for fetching professor by unique code: " + e.getMessage(), e);
         }

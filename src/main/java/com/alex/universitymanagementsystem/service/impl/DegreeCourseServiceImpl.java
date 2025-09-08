@@ -8,11 +8,11 @@ import org.springframework.stereotype.Service;
 
 import com.alex.universitymanagementsystem.component.ServiceHelpers;
 import com.alex.universitymanagementsystem.component.validator.ServiceValidators;
-import com.alex.universitymanagementsystem.domain.Course;
 import com.alex.universitymanagementsystem.dto.CourseDto;
 import com.alex.universitymanagementsystem.dto.DegreeCourseDto;
 import com.alex.universitymanagementsystem.dto.ProfessorDto;
 import com.alex.universitymanagementsystem.dto.StudentDto;
+import com.alex.universitymanagementsystem.entity.Course;
 import com.alex.universitymanagementsystem.exception.DataAccessServiceException;
 import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
 import com.alex.universitymanagementsystem.mapper.CourseMapper;

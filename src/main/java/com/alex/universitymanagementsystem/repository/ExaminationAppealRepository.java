@@ -10,8 +10,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import com.alex.universitymanagementsystem.domain.ExaminationAppeal;
-import com.alex.universitymanagementsystem.domain.immutable.CourseId;
+import com.alex.universitymanagementsystem.entity.ExaminationAppeal;
+import com.alex.universitymanagementsystem.entity.immutable.CourseId;
 
 
 

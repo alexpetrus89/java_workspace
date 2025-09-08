@@ -1,7 +1,11 @@
+
+// update password rules
 document.addEventListener('DOMContentLoaded', () => {
     const passwordInput = document.getElementById('password');
-    if (!passwordInput) return; // sicurezza
+    if (!passwordInput) return; // security
 
+
+    // elements containing password rules
     const rules = {
         length: document.getElementById('rule-length'),
         uppercase: document.getElementById('rule-uppercase'),
@@ -10,8 +14,12 @@ document.addEventListener('DOMContentLoaded', () => {
         special: document.getElementById('rule-special')
     };
 
+
+    // optional: common passwords
     const commonPasswords = ["password", "12345678", "qwerty", "letmein", "admin"];
 
+
+    // update password rules
     passwordInput.addEventListener('input', () => {
         const val = passwordInput.value;
 

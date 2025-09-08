@@ -6,8 +6,8 @@ import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 
-import com.alex.universitymanagementsystem.domain.DegreeCourse;
-import com.alex.universitymanagementsystem.domain.immutable.DegreeCourseId;
+import com.alex.universitymanagementsystem.entity.DegreeCourse;
+import com.alex.universitymanagementsystem.entity.immutable.DegreeCourseId;
 import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
 import com.alex.universitymanagementsystem.repository.DegreeCourseRepository;
 

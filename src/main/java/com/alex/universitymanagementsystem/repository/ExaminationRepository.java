@@ -7,8 +7,8 @@ import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.alex.universitymanagementsystem.domain.Examination;
-import com.alex.universitymanagementsystem.domain.immutable.ExaminationId;
+import com.alex.universitymanagementsystem.entity.Examination;
+import com.alex.universitymanagementsystem.entity.immutable.ExaminationId;
 
 
 @Repository

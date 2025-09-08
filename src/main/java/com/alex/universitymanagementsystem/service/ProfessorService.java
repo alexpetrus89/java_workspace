@@ -6,7 +6,6 @@ import java.util.Optional;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 
-import com.alex.universitymanagementsystem.domain.immutable.UniqueCode;
 import com.alex.universitymanagementsystem.dto.ProfessorDto;
 import com.alex.universitymanagementsystem.dto.RegistrationForm;
 import com.alex.universitymanagementsystem.exception.DataAccessServiceException;
@@ -34,7 +33,7 @@ public interface ProfessorService {
      * @throws ObjectNotFoundException if no professor found
      * @throws DataAccessServiceException if there is an error accessing the database
      */
-    ProfessorDto getProfessorByUniqueCode(UniqueCode uniqueCode)
+    ProfessorDto getProfessorByUniqueCode(String uniqueCode)
         throws IllegalArgumentException, DataAccessServiceException;
 
 

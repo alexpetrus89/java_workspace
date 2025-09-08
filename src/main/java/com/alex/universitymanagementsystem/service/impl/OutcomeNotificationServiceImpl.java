@@ -10,8 +10,8 @@ import org.springframework.retry.annotation.Retryable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import com.alex.universitymanagementsystem.domain.OutcomeNotification;
-import com.alex.universitymanagementsystem.domain.Student;
+import com.alex.universitymanagementsystem.entity.OutcomeNotification;
+import com.alex.universitymanagementsystem.entity.Student;
 import com.alex.universitymanagementsystem.enum_type.DomainType;
 import com.alex.universitymanagementsystem.exception.DataAccessServiceException;
 import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;

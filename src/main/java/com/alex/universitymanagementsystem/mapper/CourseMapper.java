@@ -1,7 +1,7 @@
 package com.alex.universitymanagementsystem.mapper;
 
-import com.alex.universitymanagementsystem.domain.Course;
 import com.alex.universitymanagementsystem.dto.CourseDto;
+import com.alex.universitymanagementsystem.entity.Course;
 
 public class CourseMapper {
 

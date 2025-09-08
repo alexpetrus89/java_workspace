@@ -1,0 +1,104 @@
+/* Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Segoe UI", Roboto, Arial, sans-serif;
+}
+
+/* Background */
+body {
+    background-color: #f4f8ff; /* blu chiaro */
+    color: #1e3a8a; /* blu scuro */
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+}
+
+/* Container principale */
+.container {
+    background: #fff;
+    padding: 2rem;
+    border-radius: 12px;
+    max-width: 500px;
+    width: 100%;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+/* Titolo */
+.container h1 {
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+    color: #2563eb;
+}
+
+/* Card con dettagli */
+.student-card {
+    text-align: left;
+    margin-bottom: 1.5rem;
+}
+
+.student-card p {
+    margin: 0.5rem 0;
+    font-size: 1rem;
+}
+
+.student-card strong {
+    color: #1e3a8a;
+    font-weight: 600;
+}
+
+/* Messaggi di errore */
+.error-box {
+  background: #fee2e2;
+  color: #b91c1c;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  font-weight: 500;
+}
+
+/* Azioni */
+.actions {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+/* Bottoni/link */
+.btn {
+  display: inline-block;
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 500;
+  background: #2563eb;
+  color: #fff;
+  transition: background 0.3s ease;
+}
+
+.btn:hover {
+  background: #1e3a8a;
+}
+
+.btn.secondary {
+  background: #e2e8f0;
+  color: #1e3a8a;
+}
+
+.btn.secondary:hover {
+  background: #cbd5e1;
+}
+
+/* Messaggio di avviso */
+.warning {
+    background: #fee2e2;
+    color: #b91c1c;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    font-weight: 500;
+}

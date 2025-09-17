@@ -31,7 +31,7 @@ import jakarta.validation.Valid;
 
 
 @RestController
-@RequestMapping(path ="api/v1/study_plan")
+@RequestMapping(path ="api/v1/study-plan")
 public class StudyPlanController {
 
     // logger
@@ -60,10 +60,10 @@ public class StudyPlanController {
      * @param student
      * @return ModelAndView
      */
-    @GetMapping(path = "/view")
+    @GetMapping(path = "/read")
     public ModelAndView getStudyPlan(@AuthenticationPrincipal Student student) {
         StudyPlanDto studyPlan = studyPlanService.getStudyPlanByRegister(student.getRegister());
-        return new ModelAndView("user_student/study_plan/study-plan-view", "studyPlan", studyPlan);
+        return new ModelAndView("user_student/study_plan/study-plan-read", "studyPlan", studyPlan);
     }
 
 
@@ -78,10 +78,10 @@ public class StudyPlanController {
      * the study plan.
      *
      * @param student the authenticated student whose study plan is to be retrieved
-     * @return a ModelAndView object for the "user_student/study_plan/study_plan_modify"
+     * @return a ModelAndView object for the "user_student/study_plan/study_plan_change"
      * view with the SwapCoursesDto object as the model
      */
-    @GetMapping(path = "/modify")
+    @GetMapping(path = "/change")
     public ModelAndView modifyStudyPlan(@AuthenticationPrincipal Student student) {
         // Retrieve all degree courses, student's degree course, student's study plan and security token
         Set<DegreeCourseDto> degreeCourses = degreeCourseService.getDegreeCourses();
@@ -91,8 +91,9 @@ public class StudyPlanController {
 
         SwapCoursesDto courses = new SwapCoursesDto(degreeCourses, studentDegreeCourse, availableCourses, token);
 
-        return new ModelAndView("user_student/study_plan/study-plan-modify", "courses", courses);
+        return new ModelAndView("user_student/study_plan/study-plan-change", "courses", courses);
     }
+
 
     /**
      * This method is used to add a course to the study plan of a student.

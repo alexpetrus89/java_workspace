@@ -126,7 +126,7 @@ public class UmsConfig {
         fieldToView.put("dob", "exception/illegal/invalid/invalid-dob");
         fieldToView.put("fiscalCode", "exception/illegal/invalid/invalid-fiscal-code");
         fieldToView.put("fiscalCodeAlreadyTaken", "exception/illegal/invalid/fiscal-code-already-taken");
-        fieldToView.put("register", "exception/illegal/invalid-register");
+        fieldToView.put("register", "exception/illegal/invalid/invalid-register");
         fieldToView.put("phone", "exception/illegal/invalid/invalid-phone");
         fieldToView.put("role", "exception/illegal/invalid/invalid-role");
         fieldToView.put("uniqueCode", "exception/illegal/invalid/invalid-unique-code");
@@ -195,11 +195,11 @@ public class UmsConfig {
 		"/api/v1/professor/read/**",
 
 		// course
-		"/api/v1/course/read/courses",
 		"/api/v1/course/read/course",
+        "/api/v1/course/read/courses",
 		"/api/v1/course/create",
 		"/api/v1/course/update",
-		"/api/v1/course//delete/{degreeCourseName}/{courseName}",
+		"/api/v1/course/delete/{degreeCourseName}/{courseName}",
 
         // degree course
 		"/api/v1/degree-course/read/degree-courses",
@@ -221,10 +221,11 @@ public class UmsConfig {
 		"/user_student/**",
 		"/api/v1/user/create/student",
 		"/api/v1/user/update/student",
-		"/api/v1/study_plan/**",
+		"/api/v1/study-plan/**",
 		"/api/v1/degree-course/read/courses",
 		"/api/v1/degree-course/read/courses/ajax",
 		"/api/v1/examination/create",
+        "/api/v1/examination/read/student/register",
 		"/api/v1/examination-appeal/available/student",
 		"/api/v1/examination-appeal/booked/student",
 		"/api/v1/examination-appeal/booked/{id}",

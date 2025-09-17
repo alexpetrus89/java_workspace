@@ -6,11 +6,11 @@ const stompClient = Stomp.over(socket);
 stompClient.connect({}, function (frame) {
     console.log('Connected: ' + frame);
 
-    // Sottoscrizione al topic personale
+    // subscription to personal topic
     stompClient.subscribe('/user/topic/exam-outcome', function (notification) {
         let message = notification.body;
 
-        // Append in tabella notifiche
+        // append to notification table
         let row = "<tr><td>" + message + "</td></tr>";
         document.getElementById("notify").insertAdjacentHTML("beforeend", row);
     });

@@ -6,16 +6,17 @@
 <head>
     <meta name="viewport" charset="UTF-8" content="width=device-width, initial-scale=1.0">
     <title>Uni Journey</title>
-    <link rel="stylesheet" type="text/css" href="/static/css/study-plan-modify.css">
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="/static/css/study-plan-change.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="/static/js/ums-study-plan.js" type="module"></script>
+    <script src="/static/js/upload-courses.js" type="module"></script>
 </head>
 <body>
     <header class="main-header">
         <h1>UNI JOURNEY</h1>
     </header>
     <br>
-    <form action="#" th:action="@{/api/v1/study_plan/swap}"
+    <form action="#" th:action="@{/api/v1/study-plan/swap}"
         th:object="${courses}" method="post">
         <input type="hidden" name="_method" value="PUT"/>
 
@@ -51,7 +52,7 @@
     </form>
     <!-- Links moved below the form -->
     <div class="form-actions">
-        <a th:href="@{/api/v1/study_plan/view}" class="home-link">Back to study plan view</a>
+        <a th:href="@{/api/v1/study-plan/read}" class="home-link">Back to study plan view</a>
     </div>
     <div class="form-actions">
         <a th:href="@{/user_student/student-home}" class="home-link">Back to home</a>

@@ -1,0 +1,64 @@
+/* --- Base --- */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(to bottom, #f0f4f8, #dfe9f3);
+    color: #333;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+}
+
+/* --- Titolo --- */
+h1 { color: #0056b3; margin: 40px 0 20px; }
+
+/* --- Form --- */
+form {
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 30px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+}
+
+/* --- Etichette e campi --- */
+label { display: block; margin-bottom: 8px; font-weight: bold; color: #444; }
+input, select, textarea {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px;
+    box-sizing: border-box;
+    transition: border 0.3s;
+}
+input:focus, select:focus, textarea:focus { border-color: #3498db; outline: none; }
+
+/* --- Bottoni --- */
+button, input[type="submit"], input[type="reset"], .btn {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    color: #fff;
+    transition: background 0.3s;
+}
+button:hover, input[type="submit"]:hover, .primary-btn:hover { background-color: #45a049; }
+input[type="reset"]:hover, .secondary-btn:hover { background-color: #e53935; }
+
+/* --- Colori bottoni --- */
+.primary-btn, input[type="submit"] { background: #4CAF50; }
+.secondary-btn, input[type="reset"] { background: #f44336; }
+
+/* --- Link --- */
+a, .home-link { color: #3498db; text-decoration: none; display: inline-block; margin-top: 15px; padding: 10px 20px; border-radius: 8px; transition: background 0.3s; }
+a:hover, .home-link:hover { background: #2980b9; color: #fff; }
+
+/* --- Form actions --- */
+.form-actions { text-align: center; margin-top: 20px; }
+
+/* --- Campi inline --- */
+.inline-field { display: inline-block; width: 48%; margin-right: 4%; vertical-align: top; }
+.inline-field input, .inline-field select { width: 100%; }

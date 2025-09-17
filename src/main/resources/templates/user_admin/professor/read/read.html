@@ -6,24 +6,24 @@
 <head>
     <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
     <title>Uni Journey</title>
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
     <link rel="stylesheet" type="text/css" href="/static/css/read-professor.css">
+    <script src="/static/js/unique-code-validator.js" type="module"></script>
 </head>
 <body>
-
-    <div class="error-message" th:if="${error}">
-        Unable to read professor information. Please check your input.
-    </div>
 
     <h1 class="main-title">Professor information</h1>
 
     <div class="form-container">
         <h2>Search by unique code</h2>
-        <form th:action="@{/api/v1/professor/read/uniquecode}" method="get">
-            <input type="text" name="uniqueCode" placeholder="Enter professor Unique Code" required />
+        <form id="uniqueCodeForm" th:action="@{/api/v1/professor/read/uniquecode}" method="get">
+            <input type="text" id="uniqueCode" name="uniqueCode" placeholder="Enter professor Unique Code" required />
             <button type="submit">Search</button>
             <input type="reset" value="Reset" />
         </form>
     </div>
+
+    <p id="uniqueCodeError" class="error-message"></p>
 
     <div class="form-container">
         <h2>Search by professor fullname</h2>

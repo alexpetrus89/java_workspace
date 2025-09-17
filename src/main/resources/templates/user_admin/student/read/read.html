@@ -6,24 +6,24 @@
 <head>
     <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
     <title>Uni Journey</title>
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
     <link rel="stylesheet" type="text/css" href="/static/css/read-student.css">
+    <script src="/static/js/register-validator.js" type="module"></script>
 </head>
 <body>
-
-    <div class="error-message" th:if="${error}">
-        Unable to read student information. Please check your input.
-    </div>
 
     <h1 class="main-title">Student information</h1>
 
     <div class="form-container">
         <h2>Search by registration number</h2>
-        <form th:action="@{/api/v1/student/read/register}" method="get">
-            <input type="text" name="register" placeholder="Enter student registration number" required />
+        <form id="registerForm" th:action="@{/api/v1/student/read/register}" method="get">
+            <input type="text" id="register" name="register" placeholder="Enter student registration number" required />
             <button type="submit">Search</button>
             <input type="reset" value="Reset" />
         </form>
     </div>
+
+    <p id="registerError" class="error-message"></p>
 
     <div class="form-container">
         <h2>Search by student name</h2>

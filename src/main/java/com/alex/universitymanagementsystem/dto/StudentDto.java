@@ -119,6 +119,7 @@ public class StudentDto {
 
     public void setDob(LocalDate dob) {
         this.dob = dob;
+        this.age = calculateAge();
     }
 
     public void setFiscalCode(String fiscalCode) {

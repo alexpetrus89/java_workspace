@@ -6,6 +6,7 @@
 <head>
     <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
     <title>Uni Journey</title>
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
     <link rel="stylesheet" type="text/css" href="/static/css/examination-menu.css">
 </head>
 <body>
@@ -16,7 +17,7 @@
 
         <div class="card">
             <h2>Booklet</h2>
-            <p>Click <a th:href="@{/api/v1/examination/student-register}">here</a> to view your exam booklet</p>
+            <p>Click <a th:href="@{/api/v1/examination/read/student/register}">here</a> to view your exam booklet</p>
         </div>
 
         <div class="card">
@@ -31,7 +32,7 @@
 
         <div class="card">
             <h2>Evaluation</h2>
-            <p>Click <a th:href="@{/api/v1/examination-outcome/view}">here</a> to check your results</p>
+            <p>Click <a th:href="@{/api/v1/examination-outcome/read/outcomes}">here</a> to check your results</p>
         </div>
 
     </div>

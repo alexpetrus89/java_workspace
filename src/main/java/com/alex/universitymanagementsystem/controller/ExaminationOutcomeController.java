@@ -20,7 +20,6 @@ import org.springframework.web.servlet.ModelAndView;
 import com.alex.universitymanagementsystem.dto.ExaminationAppealDto;
 import com.alex.universitymanagementsystem.dto.ExaminationOutcomeDto;
 import com.alex.universitymanagementsystem.entity.Student;
-import com.alex.universitymanagementsystem.entity.immutable.Register;
 import com.alex.universitymanagementsystem.exception.DataAccessServiceException;
 import com.alex.universitymanagementsystem.service.EmailService;
 import com.alex.universitymanagementsystem.service.ExaminationAppealService;
@@ -159,7 +158,7 @@ public class ExaminationOutcomeController {
     private ModelAndView handleSuccess(ExaminationOutcomeDto outcome) {
         try {
             String username = studentService
-                .getStudentByRegister(new Register(outcome.getRegister()))
+                .getStudentByRegister(outcome.getRegister())
                 .getUsername();
 
             String message = buildNotificationMessage(outcome);
@@ -173,11 +172,13 @@ public class ExaminationOutcomeController {
         }
     }
 
+
     /** Costruisce il messaggio di notifica */
     private String buildNotificationMessage(ExaminationOutcomeDto outcome) {
         return "The results of the \"" + outcome.getAppeal().getCourse() +
                 "\" exam held on " + outcome.getAppeal().getDate() + " are available.";
     }
+
 
     /** View in caso di successo */
     private ModelAndView successView() {
@@ -187,6 +188,7 @@ public class ExaminationOutcomeController {
             "outcome created successfully"
         );
     }
+
 
     /** View in caso di fallimento */
     private ModelAndView failureView() {

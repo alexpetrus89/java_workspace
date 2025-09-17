@@ -2,6 +2,7 @@ package com.alex.universitymanagementsystem.controller;
 
 
 import java.util.List;
+import java.util.function.Supplier;
 
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,6 +13,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.alex.universitymanagementsystem.annotation.ValidUniqueCode;
 import com.alex.universitymanagementsystem.dto.ProfessorDto;
+import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
 import com.alex.universitymanagementsystem.service.ProfessorService;
 
 
@@ -55,8 +57,8 @@ public class ProfessorController {
      */
     @GetMapping(path = "/read/uniquecode")
     public ModelAndView getProfessorByUniqueCode(@RequestParam @ValidUniqueCode String uniqueCode) {
-        ProfessorDto professor = professorService.getProfessorByUniqueCode(uniqueCode);
-        return new ModelAndView("user_admin/professor/read/read-result", PROFESSOR, professor);
+        return handleProfessorSearch(() -> professorService.getProfessorByUniqueCode(uniqueCode),
+            "No professors found with unique code: " + uniqueCode);
     }
 
 
@@ -69,6 +71,23 @@ public class ProfessorController {
     public ModelAndView getProfessorsByFullname(@RequestParam String fullName) {
         List<ProfessorDto> professors = professorService.getProfessorsByFullname(fullName);
         return new ModelAndView("user_admin/professor/read/read-results", PROFESSORS, professors);
+    }
+
+
+
+    // helpers
+    /**
+     * Metodo di supporto per riutilizzare la logica di ricerca.
+     */
+    private ModelAndView handleProfessorSearch(Supplier<ProfessorDto> supplier, String notFoundMessage) {
+        try {
+            ProfessorDto professor = supplier.get();
+            return new ModelAndView("user_admin/professor/read/read-result")
+                .addObject(PROFESSOR, professor);
+        } catch (ObjectNotFoundException _) {
+            return new ModelAndView("user_admin/professor/read/read-result")
+                .addObject("message", notFoundMessage);
+        }
     }
 
 

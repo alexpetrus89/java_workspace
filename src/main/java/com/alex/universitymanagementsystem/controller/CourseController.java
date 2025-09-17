@@ -54,7 +54,7 @@ public class CourseController {
     @GetMapping(path = "/read/courses")
     public ModelAndView getAllCourses() {
         Set<CourseDto> courses = courseService.getCourses();
-        return new ModelAndView("course/course-list", "courses", courses);
+        return new ModelAndView("user_admin/course/courses", "courses", courses);
     }
 
 

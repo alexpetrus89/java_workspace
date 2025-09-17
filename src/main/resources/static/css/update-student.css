@@ -1,207 +1,66 @@
+/* --- Base --- */
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background: linear-gradient(to bottom, #f0f4f8, #dfe9f3);
     color: #333;
     margin: 0;
     padding: 0;
-}
-
-/* Titolo della pagina */
-h1 {
-    color: #0056b3;
-    font-size: 32px;
     text-align: center;
-    margin-top: 40px;
-    margin-bottom: 20px;
 }
 
-/* Form container */
+/* --- Titolo --- */
+h1 { color: #0056b3; margin: 40px 0 20px; }
+
+/* --- Form --- */
 form {
-    max-width: 400px;
+    max-width: 500px;
     margin: 0 auto;
     padding: 30px;
-    background-color: #fff;
+    background: #fff;
     border-radius: 12px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
-    border: 1px solid #e0e0e0;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
 }
 
-/* Etichette */
-label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: 600;
-    color: #444;
-}
-
-/* Campi input */
-input[type="text"],
-input[type="password"] {
+/* --- Etichette e campi --- */
+label { display: block; margin-bottom: 8px; font-weight: bold; color: #444; }
+input, select, textarea {
     width: 100%;
     padding: 12px;
-    margin-bottom: 20px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    font-size: 16px;
-    transition: border 0.2s;
-}
-
-input[type="text"]:focus,
-input[type="password"]:focus {
-    border-color: #3498db;
-    outline: none;
-}
-
-/* Bottone submit */
-input[type="submit"] {
-    width: 100%;
-    padding: 12px;
-    background-color: #0056b3;
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    font-size: 16px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-input[type="submit"]:hover {
-    background-color: #2ecc71;
-}
-
-/* Link generali */
-a {
-    text-decoration: none;
-    color: #2ecc71;
-    transition: color 0.3s;
-}
-
-a:hover {
-    color: #1abc9c;
-}
-
-/* Paragrafi e testo centrato */
-p {
-    text-align: center;
-    margin-top: 20px;
-    color: #555;
-}
-
-/* Link alla homepage */
-.home-link {
-    display: block;
-    text-align: center;
-    margin-top: 15px;
-    font-weight: 500;
-    color: #3498db;
-}
-.form-actions {
-    text-align: center;
-    margin-top: 20px;
-}
-
-.home-link {
-    display: inline-block;
-    padding: 12px 20px;
-    background-color: #3498db;
-    color: white;
-    font-weight: bold;
-    text-decoration: none;
-    border-radius: 8px;
-    transition: background-color 0.3s ease;
-}
-
-.home-link:hover {
-    background-color: #2980b9;
-}
-/* Aggiungi per allineare i campi Date of Birth e Role orizzontalmente */
-.inline-field {
-    display: inline-block;
-    width: 48%; /* Puoi regolare questa larghezza a seconda della tua preferenza */
-    margin-right: 4%;
-    vertical-align: top;
-}
-
-.inline-field select,
-.inline-field input[type="date"] {
-    width: 100%;
-}
-
-/* Ultima colonna per allineare i campi rimanenti */
-form input[type="text"],
-form input[type="password"],
-form select {
-    width: 100%;
-    padding: 12px;
-    margin-bottom: 20px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    font-size: 16px;
-    transition: border 0.2s;
-}
-
-form label {
-    font-weight: bold;
-    color: #444;
-    margin-bottom: 8px;
-}
-
-/* Margine tra i campi di input */
-form input[type="text"],
-form input[type="password"],
-form input[type="date"],
-form select {
     margin-bottom: 15px;
-}
-
-/* Aggiungi per garantire che i campi non si sovrappongano */
-form {
-    max-width: 700px;
-    margin: 0 auto;
-    padding: 30px;
-    background-color: #fff;
-    border-radius: 12px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
-    border: 1px solid #e0e0e0;
-}
-/* CSS for common button styling */
-.btn {
-    padding: 10px 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
     font-size: 16px;
-    border-radius: 5px;
+    box-sizing: border-box;
+    transition: border 0.3s;
+}
+input:focus, select:focus, textarea:focus { border-color: #3498db; outline: none; }
+
+/* --- Bottoni --- */
+button, input[type="submit"], input[type="reset"], .btn {
+    padding: 12px 20px;
     border: none;
+    border-radius: 8px;
     cursor: pointer;
-    transition: background-color 0.3s ease;
-    margin: 5px;
+    font-weight: bold;
+    color: #fff;
+    transition: background 0.3s;
 }
+button:hover, input[type="submit"]:hover, .primary-btn:hover { background-color: #45a049; }
+input[type="reset"]:hover, .secondary-btn:hover { background-color: #e53935; }
 
-/* Styling for the primary button (Update) */
-.primary-btn {
-    background-color: #4CAF50; /* Green background for the "Update" button */
-    color: white;
-}
+/* --- Colori bottoni --- */
+.primary-btn, input[type="submit"] { background: #4CAF50; }
+.secondary-btn, input[type="reset"] { background: #f44336; }
 
-.primary-btn:hover {
-    background-color: #45a049; /* Darker green on hover */
-}
+/* --- Link --- */
+a, .home-link { color: #3498db; text-decoration: none; display: inline-block; margin-top: 15px; padding: 10px 20px; border-radius: 8px; transition: background 0.3s; }
+a:hover, .home-link:hover { background: #2980b9; color: #fff; }
 
-/* Styling for the secondary button (Reset) */
-.secondary-btn {
-    background-color: #f44336; /* Red background for the "Reset" button */
-    color: white;
-}
+/* --- Form actions --- */
+.form-actions { text-align: center; margin-top: 20px; }
 
-.secondary-btn:hover {
-    background-color: #e53935; /* Darker red on hover */
-}
+/* --- Campi inline --- */
+.inline-field { display: inline-block; width: 48%; margin-right: 4%; vertical-align: top; }
+.inline-field input, .inline-field select { width: 100%; }
 
-/* Additional styling for form actions */
-.form-actions {
-    margin-top: 20px;
-    text-align: center;
-}
 
-input[type="reset"] {
-    margin-left: 10px;
-}

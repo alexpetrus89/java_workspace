@@ -10,7 +10,6 @@ import com.alex.universitymanagementsystem.dto.RegistrationForm;
 import com.alex.universitymanagementsystem.dto.StudentDto;
 import com.alex.universitymanagementsystem.entity.DegreeCourse;
 import com.alex.universitymanagementsystem.entity.Student;
-import com.alex.universitymanagementsystem.entity.immutable.Register;
 import com.alex.universitymanagementsystem.exception.DataAccessServiceException;
 import com.alex.universitymanagementsystem.exception.ObjectAlreadyExistsException;
 import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
@@ -38,7 +37,7 @@ public interface StudentService {
 	 * @throws ObjectNotFoundException if no student found
 	 * @throws DataAccessServiceException if there is an error accessing the database.
 	 */
-	StudentDto getStudentByRegister(Register register)
+	StudentDto getStudentByRegister(String register)
 		throws IllegalArgumentException, DataAccessServiceException;
 
 

@@ -17,7 +17,6 @@ import com.alex.universitymanagementsystem.entity.DegreeCourse;
 import com.alex.universitymanagementsystem.entity.ExaminationAppeal;
 import com.alex.universitymanagementsystem.entity.Student;
 import com.alex.universitymanagementsystem.entity.StudyPlan;
-import com.alex.universitymanagementsystem.entity.immutable.Register;
 import com.alex.universitymanagementsystem.exception.DataAccessServiceException;
 import com.alex.universitymanagementsystem.exception.ObjectAlreadyExistsException;
 import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
@@ -94,13 +93,13 @@ public class StudentServiceImpl implements StudentService {
 	 * @throws DataAccessServiceException if there is an error accessing the database.
 	 */
 	@Override
-	public StudentDto getStudentByRegister(Register register)
+	public StudentDto getStudentByRegister(String register)
 		throws IllegalArgumentException, ObjectNotFoundException, DataAccessServiceException
 	{
-		validators.validateNotNullOrNotBlank(register.toString(), REGISTER_ERROR);
+		validators.validateNotNullOrNotBlank(register, REGISTER_ERROR);
 
 		try {
-			return StudentMapper.toDto(helpers.fetchStudent(register.toString()));
+			return StudentMapper.toDto(helpers.fetchStudent(register));
 		} catch (PersistenceException e) {
 			throw new DataAccessServiceException("Error accessing database for fetching student by register: " + e.getMessage(), e);
 		}

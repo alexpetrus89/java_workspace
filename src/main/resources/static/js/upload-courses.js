@@ -1,4 +1,4 @@
-import { COURSES_TOKEN } from './ums-config.js';
+import { COURSES_TOKEN } from './config.js';
 
 // When the "page ready" event occurs
 // calls the course list update function
@@ -22,13 +22,14 @@ function updateCourses() {
 
     $.ajax({
         type: 'GET',
-        url: '/api/v1/read/courses/ajax?name=' + degreeCourseName,
+        url: '/api/v1/degree-course/read/courses/ajax?name=' + degreeCourseName,
         headers: {
             'Authorization': 'Bearer ' + COURSES_TOKEN,
         },
         dataType: 'json',
 
-        // Funzione eseguita in caso di successo della richiesta AJAX.
+        // Function executed in case of success of the AJAX request.
+        // response is the data returned by the server
         success: function(data) {
             try {
                 const jsonData = data;
@@ -54,7 +55,9 @@ function updateCourses() {
                 console.error('Error parsing JSON response:', e);
             }
         },
-        // Funzione eseguita in caso di errore della richiesta AJAX.
+        // Function executed in case of error of the AJAX request
+        // xhr is the XMLHttpRequest object that contains the error details
+        // status and error are the details of the error
         error: function(xhr, status, error) {
             console.log("Error: " + error + " - Status: " + status + " - Response: " + xhr.responseText);
         }

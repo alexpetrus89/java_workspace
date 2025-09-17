@@ -6,26 +6,26 @@
 <head>
     <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
     <title>Uni Journey - Student Info</title>
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
     <link rel="stylesheet" type="text/css" href="/static/css/student-details.css">
 </head>
 <body>
 
 <div class="container">
 
-    <h1>Student Details</h1>
+    <h1>Student card</h1>
 
-    <!-- Student card -->
+    <!-- case not founded -->
+    <p th:if="${message}" th:text="${message}" class="error-message"></p>
+
+    <!-- case founded -->
     <div th:if="${student}" class="student-card">
+        <p><strong>Degree course:</strong> <span th:text="${student.degreeCourse.name}"></span></p>
         <p><strong>Registration number:</strong> <span th:text="${student.register}"></span></p>
         <p><strong>Name:</strong> <span th:text="${student.firstName} + ' ' + ${student.lastName}"></span></p>
         <p><strong>Email:</strong> <span th:text="${student.username}"></span></p>
         <p><strong>Date of Birth:</strong> <span th:text="${student.dob}"></span></p>
         <p><strong>Age:</strong> <span th:text="${student.age}"></span></p>
-    </div>
-
-    <!-- Error message -->
-    <div th:if="${errorMessage}" class="error-box">
-        <p th:text="${errorMessage}"></p>
     </div>
 
     <!-- Actions -->

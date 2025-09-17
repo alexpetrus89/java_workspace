@@ -17,11 +17,20 @@ body {
 .error-message {
     background-color: #f8d7da;
     color: #721c24;
-    padding: 15px;
-    margin: 20px;
+    padding: 10px 15px;
+    margin: 15px 0;
     border-radius: 5px;
     text-align: center;
     font-weight: bold;
+}
+
+/* Mostra solo se contiene testo */
+.error-message:empty {
+    display: none;
+}
+
+.error-message:not(:empty) {
+    display: block;
 }
 
 /* Form container styling */

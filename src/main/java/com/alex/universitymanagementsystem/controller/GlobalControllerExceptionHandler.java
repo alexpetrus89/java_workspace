@@ -35,7 +35,6 @@ package com.alex.universitymanagementsystem.controller;
 import java.text.ParseException;
 import java.util.Optional;
 
-import org.hibernate.ObjectNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -48,8 +47,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MissingServletRequestParameterException;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.client.HttpServerErrorException.InternalServerError;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.NoHandlerFoundException;
@@ -61,11 +60,12 @@ import com.alex.universitymanagementsystem.exception.DuplicateFiscalCodeExceptio
 import com.alex.universitymanagementsystem.exception.DuplicateUsernameException;
 import com.alex.universitymanagementsystem.exception.JsonProcessingException;
 import com.alex.universitymanagementsystem.exception.ObjectAlreadyExistsException;
+import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
 
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 
-@RestControllerAdvice
+@ControllerAdvice
 public class GlobalControllerExceptionHandler {
 
     // logger
@@ -98,9 +98,11 @@ public class GlobalControllerExceptionHandler {
     // instance variables
     private final UmsConfig umsConfig;
 
+    // constructor
     public GlobalControllerExceptionHandler(UmsConfig umsConfig) {
         this.umsConfig = umsConfig;
     }
+
 
     /**
      * Handles all uncaught exceptions and returns a ModelAndView with the error message.
@@ -108,11 +110,11 @@ public class GlobalControllerExceptionHandler {
      * @return a ModelAndView containing the error message
      */
     @ExceptionHandler(Exception.class)
-    public ModelAndView handleException(Exception e) {
+    public ModelAndView handleGenericException(Exception e) {
         Throwable root = getRootCause(e);
 
-        logger.error("Exception caught: {} | Root cause: {}",
-            e.getClass().getName(), root.getClass().getName(), e);
+        logger.error("Exception caught: {}", e.getClass().getName());
+        logger.error("Root cause: {}", root.getClass().getName());
 
         return switch (root) {
             case InternalServerError ise -> handleInternalServerError(ise);
@@ -124,20 +126,13 @@ public class GlobalControllerExceptionHandler {
             case AssertionError ae -> handleAssertionError(ae);
             case MissingServletRequestParameterException msrpe -> handleMissingServletRequestParameterException(msrpe);
             case IllegalArgumentException iae -> handleIllegalArgumentException(iae);
-            case DataAccessServiceException dae -> handleDataAccessServiceException(dae);
-            case ObjectNotFoundException onfe -> handleObjectNotFoundException(onfe);
-            case ObjectAlreadyExistsException oae -> handleObjectAlreadyExistsException(oae);
-            case JsonProcessingException jpe -> handleJsonProcessingException(jpe);
             case MailException me -> handleMailException(me);
-            case DuplicateUsernameException due -> handleDuplicateUsernameException(due);
-            case DuplicateFiscalCodeException dfce -> handleDuplicateFiscalCodeException(dfce);
             case MethodArgumentNotValidException manve -> handleValidationException(manve);
             case BindException be -> handleValidationException(be);
             case ConstraintViolationException cve -> handleValidationException(cve);
             default -> buildDetailedErrorView(e, genericExceptionUri);
         };
     }
-
 
 
     /**
@@ -150,9 +145,12 @@ public class GlobalControllerExceptionHandler {
      */
     @ExceptionHandler(RuntimeException.class)
     public ModelAndView handleRuntimeException(RuntimeException e) {
-        logger.error("Unexpected runtime error", e);
-        String message = "An unexpected error occurred.";
-        return new ModelAndView(genericExceptionUri, MESSAGE, message);
+        Throwable root = getRootCause(e);
+
+        logger.error("Runtime exception caught: {}", e.getClass().getName());
+        logger.error("Root cause: {}", root.getClass().getName());
+
+        return buildDetailedErrorView(e, genericExceptionUri);
     }
 
 
@@ -333,7 +331,7 @@ public class GlobalControllerExceptionHandler {
 
 
     /**
-     * Handles JsonProcessingException exceptions and returns a ModelAndView with a view name of "exception/data/json-processing-error"
+     * Handles JsonProcessingException exception and returns a ModelAndView with a view name of "exception/data/json-processing-error"
      * The exception is logged at the ERROR level with the error message.
      * @param e the JsonProcessingException exception to be handled
      * @return a ModelAndView containing the error message
@@ -346,6 +344,13 @@ public class GlobalControllerExceptionHandler {
     }
 
 
+
+    /**
+     * Handles MailException exception and returns a ModelAndView with a view name of generiExceptionUri
+     * The exception is logged at the ERROR level with the error message.
+     * @param e the MailException exception to be handled
+     * @return a ModelAndView containing the error message
+     */
     @ExceptionHandler(MailException.class)
     public ModelAndView handleMailException(MailException e) {
         logger.error("Mail sending error", e);
@@ -386,7 +391,6 @@ public class GlobalControllerExceptionHandler {
      * Handles validation exceptions and returns a ModelAndView with a variable view name
      * and a model containing the error message.
      * The exception is logged at the ERROR level.
-     *
      * @param e the exception to be handled
      * @return a ModelAndView containing the error message
      */
@@ -411,6 +415,55 @@ public class GlobalControllerExceptionHandler {
 
 
     // helpers
+
+    /**
+     * Helper for extracting the root cause of an exception.
+     * @param e the exception to inspect
+     * @return the root cause of the exception
+     */
+    private Throwable getRootCause(Throwable throwable) {
+        Throwable cause = throwable.getCause();
+        if (cause == null || cause == throwable)
+            return throwable;
+        return getRootCause(cause);
+    }
+
+
+    /**
+     * Helper for building a detailed error view.
+     * @param e the exception to inspect
+     * @param viewName the name of the view to render
+     * @return a ModelAndView object containing the error details
+     */
+    private ModelAndView buildDetailedErrorView(Throwable e, String viewName) {
+        ModelAndView mav = new ModelAndView(viewName);
+
+        // exception type
+        mav.addObject("errorType", e.getClass().getName());
+
+        // Message
+        mav.addObject(MESSAGE, e.getMessage());
+
+        // Cause
+        Throwable cause = e.getCause();
+        mav.addObject("cause", cause != null ? cause.toString() : "N/A");
+
+        // Root cause
+        mav.addObject("rootCause", getRootCause(e));
+
+        // Timestamp
+        mav.addObject("timestamp", java.time.LocalDateTime.now());
+
+        // Stack trace formatted as readable HTML
+        StringBuilder stackTraceBuilder = new StringBuilder();
+        for (StackTraceElement element : e.getStackTrace())
+            stackTraceBuilder.append(element.toString()).append("<br/>");
+        mav.addObject("stackTrace", stackTraceBuilder.toString());
+
+        return mav;
+    }
+
+
     /**
      * Helper record ValidationInfo.
      */
@@ -453,7 +506,7 @@ public class GlobalControllerExceptionHandler {
      * @return the extracted validation information
      */
     private ValidationInfo extractConstraintViolationInfo(ConstraintViolationException ex) {
-    ConstraintViolation<?> violation = ex.getConstraintViolations().stream().findFirst().orElse(null);
+        ConstraintViolation<?> violation = ex.getConstraintViolations().stream().findFirst().orElse(null);
         if (violation != null) {
             String path = violation.getPropertyPath().toString();
             String fieldName = path.contains(".") ? path.substring(path.lastIndexOf('.') + 1) : path;
@@ -491,53 +544,6 @@ public class GlobalControllerExceptionHandler {
         };
     }
 
-
-    /**
-     * Helper for extracting the root cause of an exception.
-     * @param e the exception to inspect
-     * @return the root cause of the exception
-     */
-    private Throwable getRootCause(Throwable throwable) {
-        Throwable cause = throwable.getCause();
-        if (cause == null || cause == throwable)
-            return throwable;
-        return getRootCause(cause);
-    }
-
-
-    /**
-     * Helper for building a detailed error view.
-     * @param e the exception to inspect
-     * @param viewName the name of the view to render
-     * @return a ModelAndView object containing the error details
-     */
-    private ModelAndView buildDetailedErrorView(Throwable e, String viewName) {
-        ModelAndView mav = new ModelAndView(viewName);
-
-        // exception type
-        mav.addObject("errorType", e.getClass().getName());
-
-        // Message
-        mav.addObject(MESSAGE, e.getMessage());
-
-        // Stack trace formatted as readable HTML
-        StringBuilder stackTraceBuilder = new StringBuilder();
-        for (StackTraceElement element : e.getStackTrace())
-            stackTraceBuilder.append(element.toString()).append("<br/>");
-        mav.addObject("stackTrace", stackTraceBuilder.toString());
-
-        // Cause
-        Throwable cause = e.getCause();
-        mav.addObject("cause", cause != null ? cause.toString() : "N/A");
-
-        // Root cause
-        mav.addObject("rootCause", getRootCause(e));
-
-        // Timestamp
-        mav.addObject("timestamp", java.time.LocalDateTime.now());
-
-        return mav;
-    }
 
 
 

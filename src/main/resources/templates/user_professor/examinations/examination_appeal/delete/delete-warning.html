@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1">
+    <title>Uni Journey</title>
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="/static/css/delete-examination-appeal-warning.css">
+</head>
+<body>
+    <title>Warning: Delete Examination Appeal</title>
+    <div class="form-container">
+        <h1 class="main-title">Warning</h1>
+
+        <p class="error-message">
+            There are still students registered for the exam. Are you sure you want to cancel?
+        </p>
+
+        <form th:action="@{/api/v1/examination-appeal/delete/confirm}" method="post">
+            <input type="hidden" name="_method" value="DELETE"/>
+            <input type="hidden" name="id" th:value="${appealId}"/>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Confirm cancellation</button>
+                <a th:href="@{/user_professor/examinations/examination_appeal/examination-appeal-menu}"
+                    class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+
+</body>
+</html>

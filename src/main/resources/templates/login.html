@@ -30,6 +30,12 @@
             <input type="password" name="password" id="password" /><br/>
             <input type="submit" value="Login"/>
 
+            <hr>
+
+            <p>Oppure accedi con:</p>
+            <a th:href="@{/oauth2/authorization/google}">Google</a><br>
+            <a th:href="@{/oauth2/authorization/github}">GitHub</a>
+
             <p class="register-link">New user? Click&nbsp;
                 <a class="register-link" th:href="@{/registration}">here</a>&nbsp;to register.
             </p>
@@ -38,7 +44,6 @@
                 Forgot your password? Click&nbsp;
             <a th:href="@{/forgot-password}">here</a>&nbsp;to reset it.
             </p>
-
         </form>
         <div class="form-actions">
             <a href="/" class="home-link">Home</a>

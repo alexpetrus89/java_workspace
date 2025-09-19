@@ -107,6 +107,14 @@ public interface ExaminationAppealService {
 
 
     /**
+     * @param appealId
+     * @return boolean
+     */
+    public boolean hasRegisteredStudents(Long appealId)
+        throws ObjectNotFoundException, DataAccessServiceException;
+
+
+    /**
      * Adds a student to an examination appeal
      * @param id examination appeal ids
      * @param register student register

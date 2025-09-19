@@ -211,7 +211,6 @@ public class UmsConfig {
 		"/api/v1/examination/update/update",
 		"/api/v1/examination/delete/delete",
 		"/api/v1/examination/read/course/degree-course",
-		"/api/v1/examination/read/student/register",
 		"/api/v1/examination/read/professor/unique-code"
     };
 
@@ -247,6 +246,7 @@ public class UmsConfig {
 		"/api/v1/examination-appeal/make",
 		"/api/v1/examination-appeal/create",
 		"/api/v1/examination-appeal/delete",
+        "/api/v1/examination-appeal/delete/confirm",
 		"/api/v1/examination-outcome/make/{register}/{id}",
 		"/api/v1/examination-outcome/notify"
     };

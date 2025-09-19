@@ -2,6 +2,7 @@ package com.alex.universitymanagementsystem.controller;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -109,8 +110,7 @@ public class ExaminationAppealController {
     /**
      * Deletes an examination appeal
      * @param Professor professor
-     * @return a ModelAndView object for the "user_student/study_plan/study_plan_modify"
-     * view with the ChangeCoursesDto object as the model
+     * @return a ModelAndView object that represents the delete examination appeal view
      */
     @GetMapping(path = "/delete")
     public ModelAndView deleteExaminationAppeal(@AuthenticationPrincipal Professor professor) {
@@ -162,11 +162,38 @@ public class ExaminationAppealController {
         @RequestParam Long id
     ) {
         ProfessorDto professorDto = ProfessorMapper.toDto(professor);
+
+        if (examinationAppealService.hasRegisteredStudents(id))
+            return new ModelAndView(
+                "user_professor/examinations/examination_appeal/delete/delete-warning",
+                Map.of("appealId", id)
+            );
+
         return new ModelAndView(
             "user_professor/examinations/examination_appeal/delete/delete-result",
             "result",
             examinationAppealService.deleteExaminationAppeal(professorDto, id) ?
                 "appeal delete successfully" : "appeal not deleted"
+        );
+    }
+
+
+    /**
+     * Endpoint to confirm cancellation from the warning
+     */
+    @DeleteMapping("/delete/confirm")
+    public ModelAndView confirmDeleteExaminationAppeal(
+        @AuthenticationPrincipal Professor professor,
+        @RequestParam Long id
+    ) {
+
+        ProfessorDto professorDto = ProfessorMapper.toDto(professor);
+
+        return new ModelAndView(
+            "user_professor/examinations/examination_appeal/delete/delete-result",
+            "result",
+            examinationAppealService.deleteExaminationAppeal(professorDto, id)?
+                "Appeal deleted successfully" : "Appeal not deleted"
         );
     }
 

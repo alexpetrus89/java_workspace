@@ -88,7 +88,8 @@ public class UmsWebSecurityConfig implements Serializable {
     @Bean
 	SecurityFilterChain securityFilterChain(HttpSecurity http) throws AccessDeniedException {
 		try {
-			http.authorizeHttpRequests(requests -> requests
+			return http
+				.authorizeHttpRequests(requests -> requests
 				.requestMatchers(PUBLIC_URLS)
 				.permitAll()
 				.requestMatchers(ADMIN_URLS)
@@ -107,10 +108,15 @@ public class UmsWebSecurityConfig implements Serializable {
 				.permitAll()
 				.successHandler(new UmsCustomAuthenticationSuccessHandler())
 			)
+			.oauth2Login(oauth2 -> oauth2
+                .loginPage("/login")
+				.permitAll()
+                .successHandler(new UmsCustomAuthenticationSuccessHandler())
+            )
 			.logout(LogoutConfigurer::permitAll)
-			.csrf(csrf -> csrf.ignoringRequestMatchers("/ws/**")); // disabled cross site request forgery for web socket
+			.csrf(csrf -> csrf.ignoringRequestMatchers("/ws/**")) // disabled cross site request forgery for web socket
+			.build();
 
-			return http.build();
 		} catch (Exception e) {
 			throw new AccessDeniedException("Access Denied: " + e.getMessage(), e);
 		}

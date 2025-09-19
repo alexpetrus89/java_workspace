@@ -329,6 +329,19 @@ public class ExaminationAppealServiceImpl implements ExaminationAppealService {
 
 
     /**
+     * @param appealId
+     * @return boolean
+     */
+    @Override
+    public boolean hasRegisteredStudents(Long appealId)
+        throws ObjectNotFoundException, DataAccessServiceException
+    {
+        ExaminationAppeal appeal = helpers.fetchExaminationAppeal(appealId);
+        return !appeal.getRegisters().isEmpty();
+    }
+
+
+    /**
      * Adds a student to an examination appeal
      * @param id examination appeal ids
      * @param register student register

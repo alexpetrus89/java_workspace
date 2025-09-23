@@ -1,13 +1,13 @@
 package com.alex.universitymanagementsystem.component;
 
 import org.springframework.core.convert.converter.Converter;
-import org.springframework.dao.DataAccessException;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 
 import com.alex.universitymanagementsystem.entity.DegreeCourse;
 import com.alex.universitymanagementsystem.entity.immutable.DegreeCourseId;
+import com.alex.universitymanagementsystem.enum_type.DomainType;
 import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
 import com.alex.universitymanagementsystem.repository.DegreeCourseRepository;
 
@@ -24,6 +24,7 @@ public class StringToDegreeCourseConverter implements Converter<String, DegreeCo
         this.degreeCourseRepository = degreeCourseRepository;
     }
 
+
     /**
      * Converts a string representation of a degree course name into a
      * DegreeCourse object by searching the repository.
@@ -38,18 +39,14 @@ public class StringToDegreeCourseConverter implements Converter<String, DegreeCo
     @Override
     @Nullable
     public DegreeCourse convert(@NonNull String source) {
-        if (source.trim().isEmpty()) return null;
-        try {
-            return degreeCourseRepository.findById(new DegreeCourseId(source.trim())).orElse(null);
-        } catch (Exception _) {
-            // Ignora e prova con nome
-        }
+        String normalized = source.trim();
+        if (normalized.isBlank()) return null;
 
-        try {
-            return degreeCourseRepository.findByName(source.trim().toUpperCase()).orElse(null);
-        } catch (DataAccessException _) {
-            return null;
-        }
+        return degreeCourseRepository
+            .findById(new DegreeCourseId(normalized))
+            .or(() -> degreeCourseRepository.findByName(normalized))
+            .orElseThrow(() -> new ObjectNotFoundException(DomainType.DEGREE_COURSE));
     }
+
 
 }

@@ -10,43 +10,62 @@
     <link rel="stylesheet" type="text/css" href="/static/css/login.css">
 </head>
 <body>
-    <div th:if="${param.error}">
-        Invalid username and password.
-    </div>
-    <div th:if="${param.logout}">
-        You have been logged out.
-    </div>
+
     <div class="title-container">
         <h1 class="title">UNI JOURNEY Login</h1>
-    </div>
-    <div th:if="${error}">
-        Unable to login. Check your username and password.
-    </div>
 
+        <div class="message-container" th:if="${param.logout}">
+            <p class="logout-message">You have been logged out.</p>
+        </div>
+
+        <div th:if="${errorMessage}">
+            <p class="error-message" th:text="${errorMessage}"></p>
+        </div>
+
+        <div th:if="${oauth2ErrorMessage}">
+            <p class="error-message" th:text="${oauth2ErrorMessage}"></p>
+        </div>
+
+        <!-- Messaggio di errore specifico login -->
+        <div th:if="${errorMessage}">
+            <p class="error-message">Unable to login. Check your username and password.</p>
+        </div>
+
+        <!-- FORM LOGIN -->
         <form method="POST" th:action="@{/login}" id="loginForm">
-            <label for="username">Username: </label>
-            <input type="text" name="username" id="username" /><br/>
-            <label for="password">Password: </label>
-            <input type="password" name="password" id="password" /><br/>
+            <div class="form-group">
+                <input type="text" name="username" id="username" placeholder=" " required/>
+                <label for="username">Username</label>
+            </div>
+
+            <div class="form-group">
+                <input type="password" name="password" id="password" placeholder=" " required/>
+                <label for="password">Password</label>
+            </div>
+
             <input type="submit" value="Login"/>
 
             <hr>
 
-            <p>Oppure accedi con:</p>
-            <a th:href="@{/oauth2/authorization/google}">Google</a><br>
-            <a th:href="@{/oauth2/authorization/github}">GitHub</a>
+            <p>Or log in with:</p>
+            <div class="social-login">
+                <a th:href="@{/oauth2/authorization/google}" class="google">Google</a>
+                <a th:href="@{/oauth2/authorization/github}" class="github">GitHub</a>
+            </div>
 
-            <p class="register-link">New user? Click&nbsp;
-                <a class="register-link" th:href="@{/registration}">here</a>&nbsp;to register.
+            <p class="register-link">
+                New user? Click <a th:href="@{/registration}">here</a> to register.
             </p>
 
             <p class="forgot-password">
-                Forgot your password? Click&nbsp;
-            <a th:href="@{/forgot-password}">here</a>&nbsp;to reset it.
+                Forgot your password? Click <a th:href="@{/forgot-password}">here</a> to reset it.
             </p>
         </form>
+
         <div class="form-actions">
             <a href="/" class="home-link">Home</a>
         </div>
+    </div>
+
 </body>
 </html>

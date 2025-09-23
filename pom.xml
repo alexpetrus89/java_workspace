@@ -177,13 +177,6 @@
                 <artifactId>native-maven-plugin</artifactId>
             </plugin>
 
-            <!-- SpotBugs (opzionale) -->
-            <plugin>
-                <groupId>com.github.spotbugs</groupId>
-                <artifactId>spotbugs-maven-plugin</artifactId>
-                <version>4.7.3</version>
-            </plugin>
-
         </plugins>
     </build>
 

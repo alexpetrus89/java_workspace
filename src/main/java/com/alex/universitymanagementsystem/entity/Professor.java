@@ -11,8 +11,6 @@ import com.alex.universitymanagementsystem.entity.immutable.UniqueCode;
 
 import jakarta.persistence.Access;
 import jakarta.persistence.AccessType;
-import jakarta.persistence.AttributeOverride;
-import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
@@ -51,10 +49,6 @@ public class Professor extends User {
 
     // getters
     @Embedded
-    @AttributeOverride(
-        name = "value",
-        column = @Column(name = "unique_code", nullable = false, unique = true)
-    )
     public UniqueCode getUniqueCode() {
         return uniqueCode;
     }

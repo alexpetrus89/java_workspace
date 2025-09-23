@@ -1,4 +1,4 @@
-/* Reset di base */
+/* Reset */
 * {
     box-sizing: border-box;
     margin: 0;
@@ -6,143 +6,188 @@
 }
 
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(to bottom, #f0f4f8, #dfe9f3);
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #f0f4f8, #dbeafe);
     color: #333;
-    line-height: 1.6;
     padding: 20px;
 }
 
-/* Titolo principale */
+/* Titolo */
 h1 {
-    color: #0056b3;
-    font-size: 32px;
+    color: #1e40af;
+    font-size: 36px;
     text-align: center;
-    margin: 30px 0 15px;
+    margin: 20px 0 10px;
 }
 
-/* Sottotitoli */
-h2 {
-    color: #444;
+.subtitle {
     text-align: center;
-    margin-bottom: 20px;
-}
-
-/* Messaggi (successo/errore) */
-div[th\\if] {
-    max-width: 700px;
-    margin: 10px auto;
-    padding: 12px;
-    border-radius: 8px;
-    text-align: center;
-    font-weight: 500;
-}
-
-div[th\\if][th\\if*="error"] {
-    background-color: #ffe5e5;
-    color: #b30000;
-    border: 1px solid #ffcccc;
-}
-
-div[th\\if][th\\if*="message"] {
-    background-color: #e6ffed;
-    color: #006633;
-    border: 1px solid #b3ffcc;
-}
-
-/* Paragrafi generali */
-p {
-    text-align: center;
-    margin: 15px 0;
     color: #555;
+    margin-bottom: 25px;
+    font-size: 16px;
 }
 
-/* Form container */
-form {
-    max-width: 700px;
+/* Card */
+.card {
+    max-width: 750px;
     margin: 0 auto;
-    padding: 25px 30px;
-    background-color: #fff;
-    border-radius: 12px;
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
-    border: 1px solid #e0e0e0;
+    padding: 30px;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+    border: 1px solid #e5e7eb;
+}
+
+/* Titoli sezioni */
+h2 {
+    text-align: center;
+    margin-bottom: 25px;
+    font-size: 24px;
+    color: #2563eb;
 }
 
 /* Etichette */
 label {
     display: block;
-    margin-bottom: 6px;
+    margin: 12px 0 6px;
     font-weight: 600;
-    color: #444;
+    color: #374151;
 }
 
-/* Campi input */
+/* Input */
 input[type="text"],
 input[type="password"],
 input[type="email"],
 input[type="date"],
 select {
     width: 100%;
-    padding: 12px;
-    margin-bottom: 18px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
+    padding: 12px 14px;
+    margin-bottom: 15px;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
     font-size: 15px;
-    transition: border 0.2s, box-shadow 0.2s;
+    transition: 0.3s;
 }
 
 input:focus,
 select:focus {
-    border-color: #3498db;
+    border-color: #2563eb;
     outline: none;
-    box-shadow: 0 0 4px rgba(52, 152, 219, 0.4);
+    box-shadow: 0 0 5px rgba(37,99,235,0.3);
 }
 
-/* Bottoni principali */
+/* Bottoni form */
+.form-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+
 input[type="submit"],
 input[type="reset"] {
-    width: 48%;
+    flex: 1;
     padding: 12px;
-    margin-top: 10px;
+    margin: 5px;
     border: none;
-    border-radius: 8px;
+    border-radius: 10px;
+    font-weight: 600;
     font-size: 15px;
-    font-weight: bold;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: 0.3s;
 }
 
 input[type="submit"] {
-    background-color: #0056b3;
-    color: #fff;
+    background: #2563eb;
+    color: white;
 }
 
 input[type="submit"]:hover {
-    background-color: #004494;
+    background: #1e40af;
 }
 
 input[type="reset"] {
-    background-color: #e0e0e0;
-    color: #333;
+    background: #e5e7eb;
+    color: #111827;
 }
 
 input[type="reset"]:hover {
-    background-color: #cccccc;
+    background: #d1d5db;
 }
 
-/* Link */
+/* Messaggi di errore */
+.alert-error {
+    max-width: 750px;
+    margin: 15px auto;
+    padding: 12px;
+    border-radius: 8px;
+    background-color: #fee2e2;
+    color: #b91c1c;
+    border: 1px solid #fca5a5;
+    text-align: center;
+    font-weight: 600;
+}
+
+/* Info box password */
+.info-box {
+    background: #f9fafb;
+    border-left: 4px solid #2563eb;
+    padding: 10px 15px;
+    margin-bottom: 15px;
+    border-radius: 6px;
+    font-size: 14px;
+    color: #374151;
+}
+
+/* Social login */
+.social-register {
+    text-align: center;
+    margin: 25px 0;
+}
+
+.btn-social {
+    display: inline-block;
+    padding: 10px 18px;
+    margin: 5px;
+    border-radius: 50px;
+    font-weight: 600;
+    color: white;
+    transition: 0.3s;
+}
+
+.google {
+    background: #db4437;
+}
+
+.google:hover {
+    background: #c1351d;
+}
+
+.github {
+    background: #24292e;
+}
+
+.github:hover {
+    background: #000;
+}
+
+/* Link login */
+.login-link {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 14px;
+}
+
+/* Link generali */
 a {
+    color: #2563eb;
     text-decoration: none;
-    color: #2ecc71;
-    font-weight: 500;
-    transition: color 0.3s;
 }
 
 a:hover {
-    color: #1abc9c;
+    text-decoration: underline;
 }
 
-/* Azioni form (link Home) */
+/* Home button */
 .form-actions {
     text-align: center;
     margin-top: 25px;
@@ -151,22 +196,18 @@ a:hover {
 .home-link {
     display: inline-block;
     padding: 12px 20px;
-    background-color: #3498db;
+    background: #10b981;
     color: white;
     font-weight: bold;
-    border-radius: 8px;
-    transition: background-color 0.3s ease;
+    border-radius: 10px;
+    transition: 0.3s;
 }
 
 .home-link:hover {
-    background-color: #2980b9;
+    background: #059669;
 }
 
-.clear-both {
-    clear: both;
-}
-
-/* Inline fields (es. Date of Birth + Role) */
+/* Inline fields */
 .inline-field {
     display: inline-block;
     width: 48%;
@@ -178,49 +219,22 @@ a:hover {
     margin-right: 0;
 }
 
-.inline-field input,
-.inline-field select {
-    width: 100%;
-}
-
-
-/* ----------------- */
-/* Responsive design */
-/* ----------------- */
-@media (max-width: 600px) {
-
-    body {
-        padding: 10px;
-    }
-
-    form {
-        padding: 20px;
-    }
-
-    h1 {
-        font-size: 26px;
-    }
-
+/* Responsive */
+@media (max-width: 700px) {
     .inline-field {
         display: block;
         width: 100%;
         margin-right: 0;
     }
 
+    .form-buttons {
+        flex-direction: column;
+    }
+
     input[type="submit"],
     input[type="reset"] {
         width: 100%;
-        margin-bottom: 10px;
-        margin-left: 0;
-    }
-
-    .form-actions {
-        margin-top: 15px;
-    }
-
-    .home-link {
-        width: 100%;
-        text-align: center;
     }
 }
+/* End of file */
 

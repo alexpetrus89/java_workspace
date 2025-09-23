@@ -1,175 +1,260 @@
-/* Titolo della pagina */
-.title {
-    font-family: 'Avenir', cursive;
-    color: #151154;
-    font-weight: bold;
-    font-size: 50px;
-    text-align: center;
-    margin-top: 30px;
-    margin-bottom: 30px;
-    border: 2px solid #ffffff;
-    padding: 10px;
-    background-color: rgba(255, 255, 255, 0.5);
-}
-
-.title-container {
-    font-family: 'Avenir', cursive;
-    padding: 10px; /* riduco la dimensione del padding */
-    text-align: center;
-    margin: 20px auto; /* riduco la dimensione del margine */
-    width: 40%; /* riduco la dimensione della larghezza */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08); /* riduco la dimensione dell'ombra */
-}
-
-
+/* ================= BODY E SFONDO ================= */
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(to bottom, #f0f4f8, #dfe9f3);
-    color: #333;
     margin: 0;
     padding: 0;
-    /* Immagine */
-    background-image: url('/static/images/uni_4.jpg');
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: url('/static/images/uni_4.jpg') no-repeat center center;
     background-size: cover;
-    background-position: center;
+    position: relative;
+    overflow: hidden;
 }
 
-/* Form container */
-form {
-    max-width: 400px;
-    margin: 0 auto;
-    padding: 30px;
-    background-color: #fff;
-    border-radius: 12px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
-    border: 1px solid #e0e0e0;
-    font-family: 'Open Sans', sans-serif;
+body::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(120deg, rgba(0,0,0,0.45), rgba(0,0,0,0.25));
+    z-index: 0;
 }
 
-/* Etichette */
-label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: 600;
-    color: #444;
+/* ================= WRAPPER LOGIN ================= */
+.title-container {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 420px;
+    padding: 50px 40px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 25px;
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    animation: fadeInUp 1s ease forwards;
 }
 
-/* Link alla registrazione */
-.register-link {
-    font-size: 16px;
-    font-family: 'Lato', sans-serif;
-    font-weight: bold;
-    color: #666;
+/* ================= TITOLO ================= */
+.title {
+    font-family: 'Avenir', cursive;
+    font-size: 44px;
+    font-weight: 800;
     text-align: center;
-}
-
-.register-link a {
-    color: #3498db;
-    text-decoration: none;
-    transition: color 0.3s ease;
-}
-
-.register-link a:hover {
-    color: #2ecc71;
-}
-
-/* Campi input */
-input[type="text"],
-input[type="password"] {
-    width: 100%;
-    padding: 12px;
-    margin-bottom: 20px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    font-size: 16px;
-    transition: border 0.2s;
-}
-
-input[type="text"]:focus,
-input[type="password"]:focus {
-    border-color: #3498db;
-    outline: none;
-}
-
-/* Bottone submit */
-input[type="submit"] {
-    width: 100%;
-    padding: 12px;
-    background-color: #0056b3;
     color: #fff;
+    text-shadow: 2px 2px 10px rgba(0,0,0,0.7);
+    letter-spacing: 1px;
+}
+
+/* ================= FORM ================= */
+form {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-group {
+    position: relative;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 16px 14px;
+    font-size: 16px;
+    border: 1px solid rgba(255,255,255,0.6);
+    border-radius: 12px;
+    background: rgba(255,255,255,0.2);
+    color: #fff;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+.form-group input::placeholder {
+    color: transparent;
+}
+
+.form-group label {
+    position: absolute;
+    top: 50%;
+    left: 16px;
+    transform: translateY(-50%);
+    color: rgba(255,255,255,0.7);
+    font-size: 16px;
+    pointer-events: none;
+    transition: all 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group input:not(:placeholder-shown) {
+    border-color: #2ecc71;
+    box-shadow: 0 0 12px rgba(46,204,113,0.5);
+}
+
+.form-group input:focus + label,
+.form-group input:not(:placeholder-shown) + label {
+    top: -10px;
+    left: 12px;
+    font-size: 13px;
+    color: #2ecc71;
+    background: rgba(255,255,255,0.15);
+    padding: 0 5px;
+}
+
+/* ================= BUTTON SUBMIT ================= */
+input[type="submit"] {
+    padding: 16px;
+    border-radius: 12px;
     border: none;
-    border-radius: 8px;
     font-size: 16px;
     font-weight: bold;
+    background: linear-gradient(45deg, #3498db, #2ecc71, #3498db);
+    background-size: 400% 400%;
+    color: #fff;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: all 0.4s ease;
+    animation: gradientBG 6s ease infinite;
 }
 
 input[type="submit"]:hover {
-    background-color: #2ecc71;
+    transform: translateY(-3px);
+    box-shadow: 0 12px 25px rgba(0,0,0,0.3);
 }
 
-/* Link generali */
-a {
-    text-decoration: none;
+@keyframes gradientBG {
+    0%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 50%}
+}
+
+/* ================= SOCIAL LOGIN ================= */
+.social-login {
+    display: flex;
+    justify-content: space-around;
+    margin: 15px 0;
+    gap: 12px;
+}
+
+.social-login a {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 14px 0;
+    border-radius: 10px;
+    font-weight: bold;
+    color: #fff;
+    gap: 10px;
+    transition: all 0.3s ease;
+    text-align: center;
+}
+
+.social-login a.google {
+    background: #db4437;
+}
+
+.social-login a.github {
+    background: #333;
+}
+
+.social-login a:hover {
+    transform: translateY(-2px);
+    opacity: 0.9;
+}
+
+/* ================= LINK ================= */
+.register-link, .forgot-password {
+    text-align: center;
+    font-size: 14px;
+    color: #fff;
+}
+
+.register-link a, .forgot-password a {
+    font-weight: bold;
     color: #2ecc71;
-    transition: color 0.3s;
 }
 
-a:hover {
+.register-link a:hover, .forgot-password a:hover {
     color: #1abc9c;
 }
 
-/* Paragrafi e testo centrato */
-p {
-    text-align: center;
-    margin-top: 20px;
-    color: #555;
-
-}
-
-/* Link alla homepage */
+/* ================= HOME LINK ================= */
 .home-link {
-    display: block, inline-block;
-    text-align: center;
-    margin-top: 50px;
-    font-family: 'Open Sans', sans-serif;
-    font-weight: 500, bold;
+    display: block;
+    margin: 20px auto 0 auto;
+    padding: 14px 25px;
+    border-radius: 12px;
+    background: linear-gradient(45deg, #3498db, #2ecc71, #3498db);
+    background-size: 400% 400%;
     color: white;
-    padding: 12px 20px;
-    background-color: #3498db;
-    text-decoration: none;
-    border-radius: 8px;
-    transition: background-color 0.3s ease;
-}
-
-.form-actions {
     text-align: center;
-    margin-top: 20px;
+    font-weight: 600;
+    transition: all 0.4s ease;
+    animation: gradientBG 6s ease infinite;
 }
 
 .home-link:hover {
-    background-color: #2980b9;
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.25);
 }
 
-
-/* Link al recupero password */
-.forgot-password {
-    font-size: 15px;
-    font-family: 'Lato', sans-serif;
-    color: #777;
+/* ================= MESSAGGI DI ERRORE/LOGOUT INTEGRATI NEL FORM ================= */
+.title-container .message-container {
+    width: 100%;
+    margin-bottom: 20px;
+    padding: 12px 15px;
+    border-radius: 12px;
     text-align: center;
-    margin-top: 10px;
+    z-index: 2; /* sopra gli altri elementi nel container */
 }
 
-.forgot-password a {
-    color: #e67e22; /* arancione tenue */
+.title-container .error-message {
+    background-color: rgba(231, 76, 60, 0.85); /* rosso trasparente */
+    color: #fff;
     font-weight: bold;
-    text-decoration: none;
-    transition: color 0.3s ease;
+    padding: 10px 15px;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    animation: fadeInDown 0.8s ease forwards;
 }
 
-.forgot-password a:hover {
-    color: #d35400; /* arancione più scuro */
+.title-container .logout-message {
+    background-color: rgba(46, 204, 113, 0.85); /* verde trasparente */
+    color: #fff;
+    font-weight: bold;
+    padding: 10px 15px;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    animation: fadeInDown 0.8s ease forwards;
 }
+
+/* ================= ANIMAZIONE ================= */
+@keyframes fadeInDown {
+    0% { opacity: 0; transform: translateY(-20px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInUp {
+    0% { opacity: 0; transform: translateY(40px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 480px) {
+    .title-container {
+        padding: 35px 25px;
+        border-radius: 20px;
+    }
+
+    .title {
+        font-size: 32px;
+    }
+}
+
+
 

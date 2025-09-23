@@ -4,10 +4,13 @@ import java.io.Serializable;
 
 import org.springframework.util.Assert;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 
 @Embeddable
-public record Register(String register) implements Serializable {
+public record Register(
+    @Column(name = "register", nullable = false, length = 6)
+    String register) implements Serializable {
 
     public Register {
         Assert.notNull(register, "register must not be null");

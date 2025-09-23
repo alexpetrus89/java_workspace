@@ -81,7 +81,7 @@ public class ExaminationAppeal implements Serializable {
 
     @ElementCollection(targetClass = Register.class)
     @CollectionTable(name = "EXAMINATION_APPEAL_REGISTERS", joinColumns = @JoinColumn(name = "examination_appeal_id"))
-    @Column(name = "registers")
+    @Column(name = "register", nullable = false, length = 6)
     public Set<Register> getRegisters() { return registers; }
 
     // setters

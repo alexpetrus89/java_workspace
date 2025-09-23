@@ -9,14 +9,12 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import com.alex.universitymanagementsystem.entity.immutable.Register;
 import com.alex.universitymanagementsystem.dto.RegistrationForm;
+import com.alex.universitymanagementsystem.entity.immutable.Register;
 
 import jakarta.persistence.Access;
 import jakarta.persistence.AccessType;
-import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -68,10 +66,6 @@ public class Student extends User {
 
     // getters
     @Embedded
-    @AttributeOverride(
-        name = "value",
-        column = @Column(name = "register", nullable = false, unique = true)
-    )
     public Register getRegister() { return register; }
 
     @Transient

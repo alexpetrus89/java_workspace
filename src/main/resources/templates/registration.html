@@ -9,29 +9,30 @@
     <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
     <link rel="stylesheet" type="text/css" href="/static/css/registration.css">
     <link rel="stylesheet" type="text/css" href="/static/css/password-rules.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 </head>
 <body>
 
-    <div th:if="${error}">
-        Unable to register. Please check your data.
+    <!-- Messaggio errore -->
+    <div th:if="${error}" class="alert-error">
+        ⚠️ Unable to register. Please check your data.
     </div>
 
-    <h1>UNI JOURNEY - Registration</h1>
+    <h1>Uni Journey</h1>
+    <p class="subtitle">Create your account and start your journey 🚀</p>
 
-    <p>Already registered? Click&nbsp;
-        <a th:href="@{/login}">here</a>&nbsp; to login.
-    </p>
+    <form th:action="@{/registration}" th:object="${form}" method="post" class="card">
 
-    <h1>Registration to Uni Journey website</h1>
-    <form th:action="@{/registration}" th:object="${form}" method="post">
+        <h2>Registration</h2>
 
-        <label for="username">Username: </label>
-        <input type="text" th:field="*{username}"
-            required title="Please enter your username"><br/>
+        <label for="username">Username</label>
+        <input type="text" th:field="*{username}" required placeholder="Enter your username">
 
-        <label for="password">Password: </label>
-        <input type="password" id="password" th:field="*{password}" required />
-        <div id="password-rules">
+        <label for="password">Password</label>
+        <input type="password" id="password" th:field="*{password}" required placeholder="Enter your password">
+
+        <div id="password-rules" class="info-box">
             <p>Password must meet the following criteria:</p>
             <ul>
                 <li id="rule-length">At least 8 characters</li>
@@ -40,67 +41,74 @@
                 <li id="rule-number">At least one number</li>
                 <li id="rule-special">At least one special character (!@#$%^&*())</li>
             </ul>
-            <p>Avoid common passwords like "password" or "12345678".</p>
         </div>
 
-        <label for="confirm">Confirm password: </label>
-        <input type="password" th:field="*{confirm}"
-            required title="Please confirm your password"/><br/>
-
-        <label for="firstName">First name: </label>
-        <input type="text" th:field="*{firstName}"
-            required title="Please enter your first name"/><br/>
-
-        <label for="lastName">Last name: </label>
-        <input type="text" th:field="*{lastName}"
-            required title="Please enter your last name"/><br/>
+        <label for="confirm">Confirm Password</label>
+        <input type="password" th:field="*{confirm}" required placeholder="Confirm your password">
 
         <div class="inline-field">
-            <label for="dob">Date of Birth:</label>
-            <input type="date" th:field="*{dob}" title="Enter date of birth"
-                required placeholder="Your date of birth">
+            <label for="firstName">First name</label>
+            <input type="text" th:field="*{firstName}" required placeholder="John">
         </div>
 
-        <label for="fiscalCode">Fiscal code: </label>
-        <input type="text" th:field="*{fiscalCode}"
-            required title="Please enter your fiscal code"/><br/>
-
-        <label for="street">Street: </label>
-        <input type="text" th:field="*{street}"
-            required title="Please enter your street name"/><br/>
-
-        <label for="city">City: </label>
-        <input type="text" th:field="*{city}"
-            required title="Please enter your city"/><br/>
-
-        <label for="state">State: </label>
-        <input type="text" th:field="*{state}"
-            required title="Please enter your state"/><br/>
-
-        <label for="zip">Zip: </label>
-        <input type="text" th:field="*{zip}"
-            required title="Please enter your zip code"/><br/>
-
-        <label for="phone">Phone: </label>
-        <input type="text" th:field="*{phone}"
-            required title="Please enter your phone number"/><br/>
+        <div class="inline-field">
+            <label for="lastName">Last name</label>
+            <input type="text" th:field="*{lastName}" required placeholder="Doe">
+        </div>
 
         <div class="inline-field">
-            <label for="role">Role: </label>
+            <label for="dob">Date of Birth</label>
+            <input type="date" th:field="*{dob}" required placeholder="YYYY-MM-DD">
+        </div>
+
+        <div class="inline-field">
+            <label for="role">Role</label>
             <select th:field="*{role}" id="role">
                 <option value="STUDENT">Student</option>
                 <option value="PROFESSOR">Professor</option>
                 <option value="ADMIN">Admin</option>
             </select>
         </div>
-        <div class="clear-both"></div>
 
-        <input type="submit" value="Submit"/><input type="reset" value="Reset"/>
+        <label for="fiscalCode">Fiscal Code</label>
+        <input type="text" th:field="*{fiscalCode}" required placeholder="Your fiscal code">
+
+        <label for="street">Street</label>
+        <input type="text" th:field="*{street}" required placeholder="Your street">
+
+        <label for="city">City</label>
+        <input type="text" th:field="*{city}" required placeholder="Your city">
+
+        <label for="state">State</label>
+        <input type="text" th:field="*{state}" required placeholder="Your state">
+
+        <label for="zip">Zip</label>
+        <input type="text" th:field="*{zip}" required placeholder="Your ZIP code">
+
+        <label for="phone">Phone</label>
+        <input type="text" th:field="*{phone}" required placeholder="+39 333 1234567">
+
+        <div class="form-buttons">
+            <input type="submit" value="Register">
+            <input type="reset" value="Reset">
+        </div>
+
+        <!-- Registrazione social -->
+        <div class="social-register">
+            <p>Or register with:</p>
+            <a th:href="@{/oauth2/authorization/google}" class="btn-social google">Google</a>
+            <a th:href="@{/oauth2/authorization/github}" class="btn-social github">GitHub</a>
+        </div>
+
+        <p class="login-link">
+            Already registered? <a th:href="@{/login}">Click here</a> to login.
+        </p>
     </form>
-    <br>
+
     <div class="form-actions">
-        <a href="/" class="home-link">Home</a>
+        <a href="/" class="home-link">🏠 Home</a>
     </div>
+
     <script src="/static/js/password-rules.js"></script>
 </body>
 </html>

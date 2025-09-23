@@ -294,7 +294,7 @@ public class UmsDBInitConfig implements Serializable {
         logger.info("\n\n\n--- INITIALIZE STUDENTS ---");
         // 1
         RegistrationForm formStudentOne = new RegistrationForm();
-        formStudentOne.setUsername("nino@gmail.com");
+        formStudentOne.setUsername("alexpetruzzi89@gmail.com");
         formStudentOne.setPassword("nino");
         formStudentOne.setFirstName("bob");
         formStudentOne.setLastName("dylamie");

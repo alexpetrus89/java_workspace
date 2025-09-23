@@ -4,10 +4,14 @@ import java.io.Serializable;
 
 import org.springframework.util.Assert;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 
 @Embeddable
-public record FiscalCode(String fiscalCode) implements Serializable {
+public record FiscalCode(
+    @Column(name = "fiscal_code", nullable = false, unique = true, length = 16)
+    String fiscalCode
+) implements Serializable {
 
     public FiscalCode{
         Assert.notNull(fiscalCode, "fiscal code must not be null");

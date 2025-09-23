@@ -35,10 +35,9 @@ public class RegistrationController {
     // POST request
     /**
      * Process registration
+     * @param form - RegistrationForm
      * @param request - HttpServletRequest
      * @param sessionStatus - SessionStatus
-     * @param bindingResult - BindingResult
-     * @param form - RegistrationForm
      * @return String - redirect
      */
     @PostMapping

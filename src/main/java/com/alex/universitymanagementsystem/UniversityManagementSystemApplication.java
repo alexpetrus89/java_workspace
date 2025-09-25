@@ -11,7 +11,15 @@ import com.alex.universitymanagementsystem.config.UmsConfig;
 
 @RestController
 @EnableScheduling
-@SpringBootApplication
+@SpringBootApplication(exclude={
+	// Exclude automatic configuration for DataSource and MailSender
+	// as we are providing custom configurations for these.
+	// This prevents Spring Boot from trying to auto-configure them
+	// based on properties in application.properties.
+	// Uncomment the below lines if you want to exclude these auto-configurations.
+	// org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration.class,
+	// org.springframework.boot.autoconfigure.mail.MailSenderAutoConfiguration.class
+})
 public class UniversityManagementSystemApplication {
 
 	// injecting UmsConfig object

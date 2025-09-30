@@ -10,7 +10,7 @@ import com.alex.universitymanagementsystem.utils.CustomOidcUser;
 import com.alex.universitymanagementsystem.utils.PrincipalExtractor;
 
 @Component
-public class CustomOidcUserExtractor implements PrincipalExtractor {
+public class OidcUserExtractor implements PrincipalExtractor {
 
     @Override
     public boolean supports(Object principal) {

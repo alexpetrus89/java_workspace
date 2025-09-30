@@ -1,3 +1,5 @@
+<script src="/static/js/filtering-users-for-selection.js" defer></script>
+
 <!DOCTYPE html>
 <html lang="en"
     xmlns="http://www.w3.org/1999/xhtml"
@@ -8,69 +10,40 @@
     <title>Uni Journey</title>
     <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
     <link rel="stylesheet" type="text/css" href="/static/css/user-selection.css">
+    <script src="/static/js/filtering-users-for-selection.js" defer></script>
 </head>
 <body>
 
 <header>
-    <h1>Users</h1>
+    <h1>Users management</h1>
 </header>
 
 <main>
-    <!-- Desktop Table -->
     <div class="table-container">
-        <table class="desktop-table">
-            <thead>
-                <tr>
-                    <th>Username</th>
-                    <th>First Name</th>
-                    <th>Last Name</th>
-                    <th>Date of Birth</th>
-                    <th>Fiscal Code</th>
-                    <th>Street</th>
-                    <th>City</th>
-                    <th>State</th>
-                    <th>Zip</th>
-                    <th>Phone</th>
-                    <th>Role</th>
-                    <th>Actions</th> <!-- Colonna per bottoni -->
-                </tr>
-            </thead>
-            <tbody>
-                <tr th:each="user : ${users}">
-                    <td th:text="${user.username}">Username</td>
-                    <td th:text="${user.firstName}">First Name</td>
-                    <td th:text="${user.lastName}">Last Name</td>
-                    <td th:text="${#temporals.format(user.dob, 'dd/MM/yyyy')}">Date of Birth</td>
-                    <td th:text="${user.fiscalCode}">Fiscal Code</td>
-                    <td th:text="${user.address.street}">Street</td>
-                    <td th:text="${user.address.city}">City</td>
-                    <td th:text="${user.address.state}">State</td>
-                    <td th:text="${user.address.zipCode}">Zip</td>
-                    <td th:text="${user.phone}">Phone</td>
-                    <td th:text="${user.role}">Role</td>
-                    <td class="actions">
-                        <!-- Bottoni Update e Delete -->
-                        <a th:href="@{/user_admin/update-user(formUsername=${user.username})}" class="btn update-btn">Update</a>
-                        <a th:href="@{/user_admin/delete-user-confirm(formUsername=${user.username})}" class="btn delete-btn">Delete</a>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
 
-        <!-- Mobile Cards -->
-        <div class="mobile-cards">
+        <!-- Search bar -->
+        <div class="search-container">
+            <input type="text" id="userSearch" placeholder="🔍 Search users...">
+        </div>
+
+        <!-- Cards Grid -->
+        <div class="cards-grid" id="cardsGrid">
             <div class="card" th:each="user : ${users}">
-                <p><strong>Username:</strong> <span th:text="${user.username}"></span></p>
-                <p><strong>Name:</strong> <span th:text="${user.firstName + ' ' + user.lastName}"></span></p>
-                <p><strong>DOB:</strong> <span th:text="${#temporals.format(user.dob, 'dd/MM/yyyy')}"></span></p>
-                <p><strong>Fiscal Code:</strong> <span th:text="${user.fiscalCode}"></span></p>
-                <p><strong>Address:</strong> <span th:text="${user.address.street + ', ' + user.address.city + ', ' + user.address.state + ' ' + user.address.zipCode}"></span></p>
-                <p><strong>Phone:</strong> <span th:text="${user.phone}"></span></p>
-                <p><strong>Role:</strong> <span th:text="${user.role}"></span></p>
-                <p class="mobile-actions">
+                <div class="card-header">
+                    <span th:text="${user.username}" class="card-username"></span>
+                    <span th:text="${user.role}" class="card-role"></span>
+                </div>
+                <div class="card-body">
+                    <p><strong>Name:</strong> <span th:text="${user.firstName + ' ' + user.lastName}"></span></p>
+                    <p><strong>DOB:</strong> <span th:text="${#temporals.format(user.dob, 'dd/MM/yyyy')}"></span></p>
+                    <p><strong>Fiscal Code:</strong> <span th:text="${user.fiscalCode}"></span></p>
+                    <p><strong>Address:</strong> <span th:text="${user.address.street + ', ' + user.address.city + ', ' + user.address.state + ' ' + user.address.zipCode}"></span></p>
+                    <p><strong>Phone:</strong> <span th:text="${user.phone}"></span></p>
+                </div>
+                <div class="card-footer">
                     <a th:href="@{/user_admin/update-user(formUsername=${user.username})}" class="btn update-btn">Update</a>
                     <a th:href="@{/user_admin/delete-user-confirm(formUsername=${user.username})}" class="btn delete-btn">Delete</a>
-                </p>
+                </div>
             </div>
         </div>
     </div>
@@ -79,7 +52,8 @@
     <div class="form-actions">
         <a th:href="@{/user_admin/admin/admin-menu}" class="home-link">Back to Menu</a>
     </div>
-
 </main>
+
 </body>
 </html>
+

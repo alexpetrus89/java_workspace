@@ -213,7 +213,7 @@ public class GlobalControllerExceptionHandler {
     public ModelAndView handleAccessDeniedException(AccessDeniedException e) {
         logger.error("Access denied", e);
         String message = "Access denied, NON HAI I PERMESSI: " + e.getMessage();
-        return new ModelAndView(accessDeniedExceptionUri + "/access-denied-exception", MESSAGE, message);
+        return new ModelAndView(accessDeniedExceptionUri, MESSAGE, message);
     }
 
 

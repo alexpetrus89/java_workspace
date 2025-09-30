@@ -14,7 +14,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.LogoutConfigurer;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
@@ -28,13 +27,13 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
-import com.alex.universitymanagementsystem.component.login.UmsCustomAuthenticationSuccessHandler;
-import com.alex.universitymanagementsystem.component.login.UmsOAuth2LoginSuccessHandler;
+import com.alex.universitymanagementsystem.component.UmsAccessDeniedHandler;
+import com.alex.universitymanagementsystem.component.login.UmsAuthenticationSuccessHandler;
+import com.alex.universitymanagementsystem.component.login.UmsOAuth2AuthenticationSuccessHandler;
 import static com.alex.universitymanagementsystem.config.UmsConfig.ADMIN_URLS;
 import static com.alex.universitymanagementsystem.config.UmsConfig.PROFESSOR_URLS;
 import static com.alex.universitymanagementsystem.config.UmsConfig.PUBLIC_URLS;
 import static com.alex.universitymanagementsystem.config.UmsConfig.STUDENT_URLS;
-import com.alex.universitymanagementsystem.repository.UserRepository;
 import com.alex.universitymanagementsystem.service.RedirectLoginService;
 import com.alex.universitymanagementsystem.utils.CustomOAuth2User;
 import com.alex.universitymanagementsystem.utils.CustomOidcUser;
@@ -70,20 +69,6 @@ public class UmsWebSecurityConfig implements Serializable {
     }
 
 
-    /**
-     * Provides a UserDetailsService bean for retrieving user details by username.
-     * @param userRepository the UserRepository to access user data
-     * @return UserDetailsService that searches for a user by username
-     * @throws UsernameNotFoundException if the user is not found
-     */
-    @Bean
-    UserDetailsService userDetailsService(UserRepository userRepository) {
-        return username -> userRepository
-			.findByUsername(username)
-			.orElseThrow(() -> new UsernameNotFoundException("User '" + username + "' not found"));
-    }
-
-
 	/**
 	 * Provides an AuthenticationManager bean for managing authentication.
 	 * @param userDetailsService the UserDetailsService to retrieve user details
@@ -105,8 +90,8 @@ public class UmsWebSecurityConfig implements Serializable {
 	 * @return UmsCustomAuthenticationSuccessHandler instance
 	 */
 	@Bean
-    AuthenticationSuccessHandler authenticationSuccessHandler() {
-        return new UmsCustomAuthenticationSuccessHandler(redirectLoginService);
+    AuthenticationSuccessHandler umsAuthenticationSuccessHandler() {
+        return new UmsAuthenticationSuccessHandler(redirectLoginService);
     }
 
 
@@ -116,8 +101,18 @@ public class UmsWebSecurityConfig implements Serializable {
 	 * @return UmsOAuth2LoginSuccessHandler instance
 	 */
 	@Bean
-	UmsOAuth2LoginSuccessHandler umsOAuth2LoginSuccessHandler() {
-		return new UmsOAuth2LoginSuccessHandler(redirectLoginService, principalExtractors);
+	UmsOAuth2AuthenticationSuccessHandler umsOAuth2AuthenticationSuccessHandler() {
+		return new UmsOAuth2AuthenticationSuccessHandler(redirectLoginService, principalExtractors);
+	}
+
+
+	/**
+	 * Provides a custom AccessDeniedHandler bean for handling access denied exceptions.
+	 * @return UmsAccessDeniedHandler instance
+	 */
+	@Bean
+	UmsAccessDeniedHandler umsAccessDeniedHandler() {
+		return new UmsAccessDeniedHandler();
 	}
 
 
@@ -175,10 +170,9 @@ public class UmsWebSecurityConfig implements Serializable {
 	 * @throws Exception if an error occurs
 	 */
     @Bean
-	SecurityFilterChain securityFilterChain(
-		HttpSecurity http,
-		UserDetailsService userDetailsService
-	) throws AccessDeniedException {
+	SecurityFilterChain securityFilterChain(HttpSecurity http, UserDetailsService uds)
+		throws AccessDeniedException
+	{
 		try {
 			return http
 				.authorizeHttpRequests(requests -> requests
@@ -198,15 +192,18 @@ public class UmsWebSecurityConfig implements Serializable {
 				.formLogin(form -> form
 					.loginPage(LOGIN)
 					.permitAll()
-					.successHandler(authenticationSuccessHandler())
+					.successHandler(umsAuthenticationSuccessHandler())
 				)
 				.oauth2Login(oauth2 -> oauth2
 					.loginPage(LOGIN)
 					.userInfoEndpoint(userInfo -> userInfo
-						.oidcUserService(googleOAuth2UserService(userDetailsService))
-						.userService(gitHubOAuth2UserService(userDetailsService))
+						.oidcUserService(googleOAuth2UserService(uds))
+						.userService(gitHubOAuth2UserService(uds))
 					)
-					.successHandler(umsOAuth2LoginSuccessHandler())
+					.successHandler(umsOAuth2AuthenticationSuccessHandler())
+				)
+				.exceptionHandling(ex -> ex
+					.accessDeniedHandler(umsAccessDeniedHandler())
 				)
 				.logout(LogoutConfigurer::permitAll)
 				.csrf(csrf -> csrf.ignoringRequestMatchers("/ws/**")) // disabled cross site request forgery for web socket

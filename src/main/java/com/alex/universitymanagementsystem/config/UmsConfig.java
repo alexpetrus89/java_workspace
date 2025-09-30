@@ -85,7 +85,6 @@ public class UmsConfig {
 
         moduleViews.put("exception", List.of(
             "/exception/generic-exception",
-            "/exception/transient-object-exception",
             "/exception/access_denied/access-denied-exception",
             "/exception/already_exists/object-already-exists",
             "/exception/already_exists/professor-already-exists",
@@ -159,6 +158,7 @@ public class UmsConfig {
         "/",
 		"/shutdown",
         "/restart",
+        "/access-denied",
         "/login",
 		"/logout",
 		"/home",
@@ -166,12 +166,12 @@ public class UmsConfig {
         "/forgot-password",
         "/reset-password",
 		"/static/css/**",
-		"/static/js/ums-degree-courses.js",
-		"/static/js/ums-password-rules.js",
+		"/static/js/upload-degree-courses.js",
+		"/static/js/password-rules.js",
         "/static/images/**",
 		"/favicon.ico",
 		"/exception/**",
-        "/user_student/create/select-degree-course",
+        "/user_student/student/create/select-degree-course",
 		"/api/v1/user/create-admin",
 		"/api/v1/user/create-student",
 		"/api/v1/user/create-professor",
@@ -181,6 +181,7 @@ public class UmsConfig {
 
 
     protected static final String[] ADMIN_URLS = {
+        // URL accessibili solo agli utenti con ruolo ADMIN
         // user
 		"/user_admin/**",
 		"/api/v1/user/read/users",
@@ -357,7 +358,7 @@ public class UmsConfig {
 
     @Bean
     String accessDeniedExceptionUri() {
-        return "/exception/access_denied";
+        return "/exception/access_denied/access-denied-exception";
     }
 
     @Bean

@@ -13,13 +13,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @Component
-public class UmsCustomAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
+public class UmsAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 
     // instance variable
     private final RedirectLoginService redirectLoginService;
 
     // constructor
-    public UmsCustomAuthenticationSuccessHandler(RedirectLoginService redirectLoginService) {
+    public UmsAuthenticationSuccessHandler(RedirectLoginService redirectLoginService) {
         this.redirectLoginService = redirectLoginService;
     }
 

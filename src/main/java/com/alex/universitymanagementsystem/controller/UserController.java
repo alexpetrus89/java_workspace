@@ -1,6 +1,7 @@
 package com.alex.universitymanagementsystem.controller;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -77,32 +78,25 @@ public class UserController {
 
 
     /**
-     * Updates the user
+     * Updates a user (admin, student, professor)
      * @return ModelAndView
      */
-    @GetMapping(path = "/update")
-    public ModelAndView instantiateFormForAdminUpdate() {
-        return new ModelAndView("user_admin/admin/update/update", UPDATE_FORM, new UpdateForm());
-    }
+    @GetMapping({"/update", "/update/student", "/update/professor"})
+    public ModelAndView instantiateFormForUpdate(
+        @RequestParam("formUsername") String username,
+        HttpServletRequest request
+    ) {
+        // Mappa path -> view
+        Map<String, String> pathToView = Map.of(
+            "/update", "user_admin/admin/update/update",
+            "/update/student", "user_student/student/update/update",
+            "/update/professor", "user_professor/professor/update/update"
+        );
 
+        String path = request.getRequestURI();
+        String view = pathToView.getOrDefault(path, "user_admin/admin/update/update");
 
-    /**
-     * Updates the student
-     * @return ModelAndView
-     */
-    @GetMapping(path = "/update/student")
-    public ModelAndView instantiateFormForStudentUpdate() {
-        return new ModelAndView("user_student/student/update/update", UPDATE_FORM, new UpdateForm());
-    }
-
-
-    /**
-     * Updates the professor
-     * @return ModelAndView
-     */
-    @GetMapping(path = "/update/professor")
-    public ModelAndView instantiateFormForProfessorUpdate() {
-        return new ModelAndView("user_professor/professor/update/update", UPDATE_FORM, new UpdateForm());
+        return new ModelAndView(view, UPDATE_FORM, new UpdateForm());
     }
 
 

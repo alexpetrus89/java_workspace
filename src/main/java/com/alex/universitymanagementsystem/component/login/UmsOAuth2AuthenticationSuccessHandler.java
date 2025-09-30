@@ -20,12 +20,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @Component
-public class UmsOAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
+public class UmsOAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
     private final RedirectLoginService redirectLoginService;
     private final List<PrincipalExtractor> principalExtractors;
 
-    public UmsOAuth2LoginSuccessHandler(
+    public UmsOAuth2AuthenticationSuccessHandler(
         RedirectLoginService redirectLoginService,
         List<PrincipalExtractor> principalExtractors
     ) {

@@ -10,7 +10,7 @@ import com.alex.universitymanagementsystem.utils.CustomOAuth2User;
 import com.alex.universitymanagementsystem.utils.PrincipalExtractor;
 
 @Component
-public class CustomOAuth2UserExtractor implements PrincipalExtractor {
+public class OAuth2UserExtractor implements PrincipalExtractor {
 
     @Override
     public boolean supports(Object principal) {

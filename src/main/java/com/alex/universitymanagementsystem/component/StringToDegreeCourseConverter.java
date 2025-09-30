@@ -43,8 +43,8 @@ public class StringToDegreeCourseConverter implements Converter<String, DegreeCo
         if (normalized.isBlank()) return null;
 
         return degreeCourseRepository
-            .findById(new DegreeCourseId(normalized))
-            .or(() -> degreeCourseRepository.findByName(normalized))
+            .findByName(normalized)
+            .or(() -> degreeCourseRepository.findById(new DegreeCourseId(normalized)))
             .orElseThrow(() -> new ObjectNotFoundException(DomainType.DEGREE_COURSE));
     }
 

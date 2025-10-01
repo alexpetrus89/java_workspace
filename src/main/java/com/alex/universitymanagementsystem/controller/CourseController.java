@@ -67,7 +67,7 @@ public class CourseController {
     @GetMapping(path = "/read/course")
     public ModelAndView getCourse(@RequestParam String courseName, @RequestParam String degreeCourseName) {
         CourseDto course = courseService.getCourseByNameAndDegreeCourseName(courseName, degreeCourseName);
-        return new ModelAndView("User_admin/course/read/read-result", COURSE, course);
+        return new ModelAndView("user_admin/course/read/read-result", COURSE, course);
     }
 
 
@@ -89,7 +89,7 @@ public class CourseController {
      */
     @GetMapping(path = "/create")
     public ModelAndView instantiateCourseForCreate() {
-        return new ModelAndView("User_admin/course/create/create", COURSE, new CreateCourseDto());
+        return new ModelAndView("user_admin/course/create/create", COURSE, new CreateCourseDto());
     }
 
 

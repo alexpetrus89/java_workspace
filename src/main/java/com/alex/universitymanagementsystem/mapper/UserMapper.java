@@ -1,7 +1,6 @@
 package com.alex.universitymanagementsystem.mapper;
 
 
-import org.springframework.security.core.userdetails.UserDetails;
 
 import com.alex.universitymanagementsystem.dto.UserDto;
 import com.alex.universitymanagementsystem.entity.Address;
@@ -46,12 +45,5 @@ public class UserMapper {
         return dto;
     }
 
-    public static UserDetails toUserDetails(User user) {
-        return new org.springframework.security.core.userdetails.User(
-            user.getUsername(),
-            user.getPassword(),
-            user.getAuthorities()
-        );
-    }
 }
 

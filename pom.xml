@@ -184,6 +184,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
+                    <mainClass>com.alex.universitymanagementsystem.UniversityManagementSystemApplication</mainClass>
                     <image>
                         <builder>paketobuildpacks/builder:tiny</builder>
                         <env>
@@ -191,19 +192,6 @@
                         </env>
                     </image>
                 </configuration>
-            </plugin>
-
-            <!-- GraalVM Native (opzionale) -->
-            <plugin>
-                <groupId>org.graalvm.buildtools</groupId>
-                <artifactId>native-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>compile-no-fork</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
 
         </plugins>
@@ -216,6 +204,27 @@
             <properties>
                 <spring.aot.enabled>true</spring.aot.enabled>
             </properties>
+            <build>
+                <plugins>
+
+                    <!-- GraalVM Native Plugin -->
+                    <plugin>
+                        <groupId>org.graalvm.buildtools</groupId>
+                        <artifactId>native-maven-plugin</artifactId>
+                        <configuration>
+                            <mainClass>com.alex.universitymanagementsystem.UniversityManagementSystemApplication</mainClass>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>compile-no-fork</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                </plugins>
+            </build>
         </profile>
     </profiles>
 

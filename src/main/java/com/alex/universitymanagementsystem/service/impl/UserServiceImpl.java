@@ -82,7 +82,6 @@ public class UserServiceImpl implements UserService{
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return userRepository
             .findByUsername(username)
-            .map(UserMapper::toUserDetails)
             .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
     }
 
@@ -224,6 +223,7 @@ public class UserServiceImpl implements UserService{
                 userRepository.existsByFiscalCodeAndIdNot(new FiscalCode(form.getFiscalCode()), updatableUser.getId()))
             throw new DuplicateFiscalCodeException(form.getFiscalCode());
     }
+
 
 
 }

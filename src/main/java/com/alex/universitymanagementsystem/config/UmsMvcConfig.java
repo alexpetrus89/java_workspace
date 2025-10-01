@@ -29,6 +29,10 @@ public class UmsMvcConfig implements WebMvcConfigurer, Serializable {
     }
 
 
+    /**
+     * Configure view controllers
+     * @param registry
+     */
     @Override
     public void addViewControllers(@NonNull ViewControllerRegistry registry) {
 
@@ -58,11 +62,20 @@ public class UmsMvcConfig implements WebMvcConfigurer, Serializable {
     }
 
 
+    /**
+     * Configure static resources
+     * @param registry
+     */
     @Override
     public void addResourceHandlers(@NonNull ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/static/**").addResourceLocations("classpath:/static/");
     }
 
+
+    /**
+     * Configure formatters
+     * @param registry
+     */
     @Override
     public void addFormatters(@NonNull FormatterRegistry registry) {
         registry.addConverter(new StringToDegreeCourseConverter(degreeCourseRepository));

@@ -5,34 +5,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.boot.ExitCodeGenerator;
-import org.springframework.boot.SpringApplication;
-import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
-import com.alex.universitymanagementsystem.UniversityManagementSystemApplication;
-import com.alex.universitymanagementsystem.component.UmsExitCodeGenerator;
 
 
 @Configuration
 public class UmsConfig {
 
-    // logger
-    private final Logger logger = LoggerFactory.getLogger(UmsConfig.class);
-
     // instance variables
-    private final ConfigurableApplicationContext applicationContext;
     private final Map<String, List<String>> moduleViews = new HashMap<>();
     private final Map<String, String> fieldToView = new HashMap<>();
-    private static String[] mainArgs;
 
-    public UmsConfig(ConfigurableApplicationContext applicationContext) {
-        this.applicationContext = applicationContext;
-
+    public UmsConfig() {
         // --- MODULE VIEWS for MvcConfig ---
         moduleViews.put("user_admin", List.of(
             "/user_admin/admin-home",
@@ -156,8 +142,8 @@ public class UmsConfig {
     // --- Security filter chain URL's ---
     protected static final String[] PUBLIC_URLS = {
         "/",
-		"/shutdown",
-        "/restart",
+		"/api/v1/system/shutdown",
+        "/api/v1/system/restart",
         "/access-denied",
         "/login",
 		"/logout",
@@ -279,62 +265,6 @@ public class UmsConfig {
      */
     public String resolveView(String fieldName) {
         return fieldToView.getOrDefault(fieldName, "exception/illegal/illegal-parameter");
-    }
-
-
-    /**
-     * Shut down the application.
-     * @param exitCodeGenerator the exit code generator
-     * @see UmsExitCodeGenerator
-     */
-    public void shutDown(ExitCodeGenerator exitCodeGenerator) {
-        logger.info("Shutting down the application...");
-        SpringApplication.exit(applicationContext, exitCodeGenerator);
-    }
-
-
-    /**
-     * Save the main args.
-     * @param args the main args
-     */
-    public static void setMainArgs(String[] args) {
-        mainArgs = args;
-    }
-
-
-    /**
-     * Restart the application.
-     * @see UmsExitCodeGenerator
-     */
-    public void restart() {
-        Thread thread = new Thread(() -> {
-            try {
-                try (applicationContext) {
-                    logger.info("Closing application context for restart...");
-                }
-            } catch (Exception e) {
-                logger.error("Failed to close application context during restart", e);
-                return; // non ha senso riavviare se la chiusura fallisce
-            }
-
-            try {
-                logger.info("Restarting the application...");
-                SpringApplication.run(UniversityManagementSystemApplication.class, mainArgs);
-                logger.info("Application restarted successfully.");
-            } catch (Exception e) {
-                logger.error("Application failed to restart", e);
-            }
-        });
-
-        thread.setDaemon(false);
-        thread.start();
-    }
-
-
-    // beans
-    @Bean
-    ExitCodeGenerator exitCodeGenerator() {
-        return new UmsExitCodeGenerator();
     }
 
 

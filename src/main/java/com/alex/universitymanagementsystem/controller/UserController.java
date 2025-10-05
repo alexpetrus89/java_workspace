@@ -70,10 +70,10 @@ public class UserController {
      * Retrieves all users
      * @return ModelAndView
      */
-    @GetMapping(path = "/selection")
-    public ModelAndView getAllUsersForAction() {
+    @GetMapping(path = "/manage")
+    public ModelAndView getAllUsersForManage() {
         List<UserDto> users = userService.getUsers();
-        return new ModelAndView("user_admin/admin/update/user-selection", "users", users);
+        return new ModelAndView("user_admin/admin/manage-users", "users", users);
     }
 
 
@@ -81,9 +81,10 @@ public class UserController {
      * Updates a user (admin, student, professor)
      * @return ModelAndView
      */
-    @GetMapping({"/update", "/update/student", "/update/professor"})
+    @GetMapping(path = "/update")
     public ModelAndView instantiateFormForUpdate(
-        @RequestParam("formUsername") String username,
+        @RequestParam String role,
+        @RequestParam String username,
         HttpServletRequest request
     ) {
         // Mappa path -> view
@@ -96,7 +97,8 @@ public class UserController {
         String path = request.getRequestURI();
         String view = pathToView.getOrDefault(path, "user_admin/admin/update/update");
 
-        return new ModelAndView(view, UPDATE_FORM, new UpdateForm());
+        UpdateForm form = userService.getUpdateFormByUsername(username);
+        return new ModelAndView(view, UPDATE_FORM, form);
     }
 
 
@@ -158,7 +160,7 @@ public class UserController {
     @PutMapping(path = "/update")
     public ModelAndView updateUser(@Valid @ModelAttribute UpdateForm form) {
         return new ModelAndView(
-            "user_admin/update/update-result",
+            "user_admin/admin/update/update-result",
             "result",
             userService
                 .updateUser(form)
@@ -174,12 +176,13 @@ public class UserController {
      * @return ModelAndView
      */
     @DeleteMapping(path = "/delete")
-    public ModelAndView deleteUser(@RequestParam("id") String userId) {
+    public ModelAndView deleteUser(@RequestParam String username) {
+
         return new ModelAndView(
-            "user_admin/delete/delete-result",
+            "user_admin/admin/delete/delete-result",
             "result",
             userService
-                .deleteUser(userId)
+                .deleteUser(username)
                 .map(_ -> "User delete successfully")
                 .orElse("User not deleted")
         );

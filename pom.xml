@@ -154,8 +154,8 @@
 
         <!-- Logback Classic per logging avanzato -->
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-simple</artifactId>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
         </dependency>
 
     </dependencies>
@@ -187,9 +187,14 @@
                     <mainClass>com.alex.universitymanagementsystem.UniversityManagementSystemApplication</mainClass>
                     <image>
                         <builder>paketobuildpacks/builder:tiny</builder>
-                        <env>
+                        <environment>
                             <BP_NATIVE_IMAGE>true</BP_NATIVE_IMAGE>
-                        </env>
+                            <BP_NATIVE_IMAGE_BUILD_ARGUMENTS>
+                                -H:+ReportUnsupportedElementsAtRuntime
+                                -H:+UnlockExperimentalVMOptions
+                                -H:ServiceLoaderFeatureExcludeServices=org.hibernate.bytecode.spi.BytecodeProvider
+                            </BP_NATIVE_IMAGE_BUILD_ARGUMENTS>
+                        </environment>
                     </image>
                 </configuration>
             </plugin>
@@ -213,6 +218,13 @@
                         <artifactId>native-maven-plugin</artifactId>
                         <configuration>
                             <mainClass>com.alex.universitymanagementsystem.UniversityManagementSystemApplication</mainClass>
+                            <buildArgs>
+                                <!-- Risolvi warning ASM/Groovy -->
+                                <buildArg>-H:InitializeAtRunTime=org.codehaus.groovy.classgen.asm.util.TypeUtil</buildArg>
+                                <buildArg>-H:InitializeAtRunTime=groovyjarjarasm.asm.Type</buildArg>
+                                <!-- Logback + SLF4J -->
+                                <buildArg>-Dorg.slf4j.simpleLogger.defaultLogLevel=info</buildArg>
+                            </buildArgs>
                         </configuration>
                         <executions>
                             <execution>

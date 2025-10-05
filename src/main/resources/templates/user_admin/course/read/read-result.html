@@ -4,25 +4,58 @@
     xmlns:th="http://www.thymeleaf.org"
     xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
-    <meta name="viewport" charset="UTF-8" content="width=device-width, initial-scale=1.0">
-    <title>Uni Journey</title>
-    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
-    <link rel="stylesheet" type="text/css" href="/static/css/read-course-result.css">
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uni Journey | Course Result</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="/css/course.css">
 </head>
 <body>
-    <div th:if="${course}">
-        <p th:text="'COURSE FOUND:'"></p>
-        <p th:text="'name: ' + ${course.name}"></p>
-        <p th:text="'type: ' + ${course.type.name()}"></p>
-        <p th:text="'professor: ' + ${course.professor?.firstName} + ' ' + ${course.professor?.lastName}"></p>
-        <p th:text="'degree course: ' + ${course.degreeCourse.name}"></p>
+
+<main class="container">
+
+    <header class="page-header">
+        <h1 class="main-title">Course result</h1>
+        <p class="subtitle">Check the details of your selected course</p>
+    </header>
+
+    <section th:if="${course}" class="course-card">
+
+        <div class="course-title">
+            <span class="course-icon" title="Course info">📘</span>
+            <h2 class="course-name" th:text="${course.name}">Course Name</h2>
+        </div>
+
+        <div class="course-info">
+            <p><strong>CFU:</strong> <span th:text="${course.cfu}">6</span></p>
+            <p><strong>Type:</strong> <span th:text="${course.type.name()}">Lecture</span></p>
+            <p class="professor-info">
+                <strong>Professor:</strong>
+                <span th:text="${course.professor?.firstName} + ' ' + ${course.professor?.lastName}" 
+                    title="Email: [[${course.professor?.email}]] | Office: [[${course.professor?.office}]]">
+                    Prof. John Doe
+                </span>
+            </p>
+            <p><strong>Degree Course:</strong> <span th:text="${course.degreeCourse.name}">Computer Science</span></p>
+        </div>
+    </section>
+
+    <section th:if="${errorMessage}" class="error-message">
+        <p th:text="${errorMessage}">No course found!</p>
+    </section>
+
+    <div class="form-actions">
+        <a th:href="@{/user_admin/course/read/read}" class="action-button">Read Again</a>
+        <a th:href="@{/user_admin/course/course-menu}" class="action-button secondary">Back to Menu</a>
     </div>
-    <div th:if="${errorMessage}">
-        <p th:text="${errorMessage}"></p>
-    </div>
-    <br>
-    <a href="#" th:href="@{/course/read/read}">Read Again</a>
-    <br>
-    <a href="#" th:href="@{/course/course-menu}">Back to Menu</a>
+
+</main>
+
 </body>
 </html>
+
+
+
+
+
+
+

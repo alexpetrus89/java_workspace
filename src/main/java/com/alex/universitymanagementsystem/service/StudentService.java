@@ -81,4 +81,19 @@ public interface StudentService {
     @Retryable(retryFor = PersistenceException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
 	void deleteStudentRelationship(Student student);
 
+
+	/**
+ 	 * Moves a student to another degree course, removing all examinations
+ 	 * that do not belong to the new degree course.
+     *
+ 	 * @param register unique student register
+ 	 * @param newDegreeCourseName name of the new degree course
+ 	 * @throws ObjectNotFoundException if the student or degree course are not found
+ 	 * @throws DataAccessServiceException if database access fails
+ 	 */
+	@Transactional(rollbackOn = { ObjectNotFoundException.class, DataAccessServiceException.class })
+	@Retryable(retryFor = PersistenceException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
+	public boolean changeDegreeCourse(String register, String degreeCourse)
+        throws ObjectNotFoundException, DataAccessServiceException;
+
 }

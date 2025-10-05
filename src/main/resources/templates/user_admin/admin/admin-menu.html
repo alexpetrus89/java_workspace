@@ -6,8 +6,8 @@
 <head>
     <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
     <title>Uni Journey</title>
-    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
-    <link rel="stylesheet" type="text/css" href="/static/css/admin-menu.css">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="/css/admin-menu.css">
 </head>
 <body>
 
@@ -21,13 +21,8 @@
         </div>
 
         <div class="card">
-            <h2>Update user information</h2>
-            <p>Click <a th:href="@{/api/v1/user/selection}">here</a> to update user information</p>
-        </div>
-
-        <div class="card">
-            <h2>Delete user</h2>
-            <p>Click <a th:href="@{/user_admin/admin/delete/delete}">here</a> to delete a user</p>
+            <h2>Manage users</h2>
+            <p>Click <a th:href="@{/api/v1/user/manage}">here</a> to manage users</p>
         </div>
 
     </div>

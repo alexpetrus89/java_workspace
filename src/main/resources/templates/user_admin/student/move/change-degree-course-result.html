@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:th="https://www.thymeleaf.org"
+    xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+    <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
+    <title>Uni Journey</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="stylesheet" href="/css/change-degree-course-result.css">
+    <script src="/js/change-message-color.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Change student degree course</h1>
+
+        <!-- Message Result -->
+        <div class="result-message">
+            <p th:text="${message}"></p>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="form-actions">
+            <a th:href="@{/api/v1/student/change-degree-course}" class="btn primary-btn">Back to change form</a>
+            </br>
+            <a th:href="@{/user_admin/admin/admin-menu}" class="btn secondary-btn">Back to menu</a>
+        </div>
+
+    </div>
+</body>
+</html>

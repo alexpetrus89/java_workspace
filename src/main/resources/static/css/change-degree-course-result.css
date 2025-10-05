@@ -1,0 +1,140 @@
+/*  =========================
+    Reset & Body
+    ========================= */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f9fafb;
+    color: #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+/*  =========================
+    Container
+    ========================= */
+.container {
+    background-color: #ffffff;
+    padding: 40px 50px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    max-width: 500px;
+    width: 100%;
+    text-align: center;
+}
+
+/*  =========================
+    Heading
+    ========================= */
+h1 {
+    font-size: 1.8rem;
+    color: #1d4ed8;
+    margin-bottom: 25px;
+}
+
+/*  =========================
+    Result Message
+    ========================= */
+.result-message {
+    margin: 20px 0;
+    padding: 20px;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 500;
+    background-color: #f3f4f6; /* light neutral */
+    color: #374151;
+    border: 1px solid #e5e7eb;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+/* Dynamic feedback colors (optional if message type is styled via JS/Thymeleaf) */
+.result-message.success {
+    background-color: #dcfce7;
+    color: #166534;
+    border: 1px solid #22c55e;
+}
+
+.result-message.error {
+    background-color: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #ef4444;
+}
+
+/*  =========================
+    Buttons
+    ========================= */
+.btn {
+    display: inline-block;
+    padding: 10px 20px;
+    margin: 10px 8px;
+    border-radius: 6px;
+    font-weight: 500;
+    text-decoration: none;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+/* Primary button */
+.primary-btn {
+    background-color: #22c55e;
+    color: #fff;
+}
+
+.primary-btn:hover {
+    background-color: #16a34a;
+}
+
+/* Secondary button */
+.secondary-btn {
+    background-color: #1d4ed8;
+    color: #fff;
+}
+
+.secondary-btn:hover {
+    background-color: #1e40af;
+}
+
+/*  =========================
+    Form Actions
+    ========================= */
+.form-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 30px;
+}
+
+/*  =========================
+    Animation
+    ========================= */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/*  =========================
+    Responsive
+    ========================= */
+@media (max-width: 480px) {
+    .container {
+        padding: 25px;
+    }
+
+    h1 {
+        font-size: 1.5rem;
+    }
+
+    .btn {
+        width: 100%;
+        margin: 8px 0;
+    }
+}

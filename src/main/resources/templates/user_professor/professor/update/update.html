@@ -28,6 +28,8 @@
         <input type="text" th:field="*{username}" title="Enter new username"
             placeholder="new username">
 
+        <input type="hidden" th:field="*{usernameOriginal}">
+
         <label for="password">Password: </label>
         <input type="password" id="password" th:field="*{password}" required />
         <div id="password-rules">

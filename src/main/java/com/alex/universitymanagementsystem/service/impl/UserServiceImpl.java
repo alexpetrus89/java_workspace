@@ -2,13 +2,11 @@ package com.alex.universitymanagementsystem.service.impl;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,8 +19,6 @@ import com.alex.universitymanagementsystem.entity.Address;
 import com.alex.universitymanagementsystem.entity.Student;
 import com.alex.universitymanagementsystem.entity.User;
 import com.alex.universitymanagementsystem.entity.immutable.FiscalCode;
-import com.alex.universitymanagementsystem.entity.immutable.UserId;
-import com.alex.universitymanagementsystem.enum_type.DomainType;
 import com.alex.universitymanagementsystem.exception.DataAccessServiceException;
 import com.alex.universitymanagementsystem.exception.DuplicateFiscalCodeException;
 import com.alex.universitymanagementsystem.exception.DuplicateUsernameException;
@@ -38,6 +34,9 @@ import jakarta.transaction.Transactional;
 
 @Service
 public class UserServiceImpl implements UserService{
+
+    // constants
+    private static final String USER_NOT_FOUND = "User not found: ";
 
     // instance variable
     private final UserRepository userRepository;
@@ -82,7 +81,7 @@ public class UserServiceImpl implements UserService{
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return userRepository
             .findByUsername(username)
-            .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
+            .orElseThrow(() -> new UsernameNotFoundException(USER_NOT_FOUND + username));
     }
 
 
@@ -114,7 +113,7 @@ public class UserServiceImpl implements UserService{
      * This method is transactional and mapped to the HTTP PUT request for "/update".
      * @param form with new data of the user to be updated.
      * @return Optional<UserDto> data transfer object containing the updated user information.
-     * @throws ObjectNotFoundException if the authenticated user is not found.
+     * @throws UsernameNotFoundException if the authenticated user is not found.
      * @throws DuplicateUsernameException if the new username is already in use by another user.
      * @throws DuplicateFiscalCodeException if the new fiscal code is already in use by another user
      * @throws DataAccessServiceException if there are trouble accessing the database.
@@ -124,18 +123,11 @@ public class UserServiceImpl implements UserService{
     @Transactional(rollbackOn = ObjectNotFoundException.class)
     @Retryable(retryFor = PersistenceException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
     public Optional<UserDto> updateUser(UpdateForm form)
-        throws ObjectNotFoundException, DuplicateUsernameException, DuplicateFiscalCodeException, DataAccessServiceException
+        throws UsernameNotFoundException, DuplicateUsernameException, DuplicateFiscalCodeException, DataAccessServiceException
     {
-        // SecurityContextHolder.getContext()	Recupera il contesto di sicurezza
-        // getAuthentication()	Ottiene info sull’utente loggato
-        // getPrincipal()	Ritorna l’oggetto utente (tipicamente UserDetails)
-        User updatableUser =  Optional.ofNullable(
-            (User) SecurityContextHolder
-                .getContext()
-                .getAuthentication()
-                .getPrincipal()
-        ).orElseThrow(() -> new ObjectNotFoundException(DomainType.USER));
-
+        User updatableUser = userRepository
+            .findByUsername(form.getUsernameOriginal())
+            .orElseThrow(() -> new UsernameNotFoundException(USER_NOT_FOUND + form.getUsernameOriginal()));
 
         try {
 
@@ -143,14 +135,19 @@ public class UserServiceImpl implements UserService{
             checkDuplicateUsername(updatableUser, form);
             checkDuplicateFiscalCode(updatableUser, form);
 
-            updatableUser.setUsername(form.getUsername());
-            updatableUser.setPassword(passwordEncoder.encode(form.getPassword()));
-            updatableUser.setFirstName(form.getFirstName());
-            updatableUser.setLastName(form.getLastName());
-            updatableUser.setDob(form.getDob());
-            updatableUser.setFiscalCode(new FiscalCode(form.getFiscalCode()));
-            updatableUser.setPhone(form.getPhone());
-            updatableUser.setAddress(new Address(form.getStreet(), form.getCity(),form.getState(), form.getZip()));
+            if (!form.getUsername().isBlank()) updatableUser.setUsername(form.getUsername());
+            if (!form.getPassword().isBlank()) updatableUser.setPassword(passwordEncoder.encode(form.getPassword()));
+            if (!form.getFirstName().isBlank()) updatableUser.setFirstName(form.getFirstName());
+            if (!form.getLastName().isBlank()) updatableUser.setLastName(form.getLastName());
+            if (form.getDob() != null) updatableUser.setDob(form.getDob());
+            if (!form.getFiscalCode().isBlank()) updatableUser.setFiscalCode(new FiscalCode(form.getFiscalCode()));
+            if (!form.getPhone().isBlank()) updatableUser.setPhone(form.getPhone());
+            updatableUser.setAddress(new Address(
+                form.getStreet() != null ? form.getStreet() : updatableUser.getAddress().getStreet(),
+                form.getCity() != null ? form.getCity() : updatableUser.getAddress().getCity(),
+                form.getState() != null ? form.getState() : updatableUser.getAddress().getState(),
+                form.getZip() != null ? form.getZip() : updatableUser.getAddress().getZipCode()
+            ));
             Optional.ofNullable(form.getRole()).ifPresent(updatableUser::setRole);
 
             // save the user
@@ -164,7 +161,7 @@ public class UserServiceImpl implements UserService{
 
     /**
      * Deletes a user from the repository.
-     * @param userId user id of the user to be deleted
+     * @param username of the user to be deleted
      * @return Optional<UserDto> data transfer object containing the deleted user information
      * @throws AccessDeniedException if the authenticated user is not an admin
      * @throws UsernameNotFoundException if the user to be deleted is not found
@@ -174,14 +171,14 @@ public class UserServiceImpl implements UserService{
     @PreAuthorize("hasRole('ADMIN')")
     @Transactional(rollbackOn = {AccessDeniedException.class, UsernameNotFoundException.class})
     @Retryable(retryFor = PersistenceException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
-    public Optional<UserDto> deleteUser(String userId)
+    public Optional<UserDto> deleteUser(String username)
         throws AccessDeniedException, UsernameNotFoundException, DataAccessServiceException
     {
         try {
 
             User userToDelete = userRepository
-                .findById(new UserId(UUID.fromString(userId)))
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+                .findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException(USER_NOT_FOUND + username));
 
             if(userToDelete instanceof Student student)
                 studentService.deleteStudentRelationship(student);
@@ -190,8 +187,48 @@ public class UserServiceImpl implements UserService{
             userRepository.delete(userToDelete);
             return Optional.of(UserMapper.toDto(userToDelete));
         } catch (PersistenceException e) {
-            throw new DataAccessServiceException("Error accessing database for user " + userId + ": " + e.getMessage(), e);
+            throw new DataAccessServiceException("Error accessing database for user " + username + ": " + e.getMessage(), e);
         }
+    }
+
+
+    /**
+     * Converts a user to an UpdateForm
+     * @param username of the user to be converted
+     * @return an UpdateForm
+     * @throws UsernameNotFoundException if the user to be converted is not found
+     * @throws DataAccessServiceException if there is an error accessing the database
+     */
+    @Override
+    public UpdateForm getUpdateFormByUsername(String username)
+        throws UsernameNotFoundException, DataAccessServiceException {
+
+        try {
+            // Retry user
+            User user = userRepository
+                .findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException(USER_NOT_FOUND + username));
+
+            // Map User -> UpdateForm
+            UpdateForm form = new UpdateForm();
+            form.setUsername(user.getUsername());
+            form.setUsernameOriginal(user.getUsername());
+            form.setFirstName(user.getFirstName());
+            form.setLastName(user.getLastName());
+            form.setDob(user.getDob());
+            form.setFiscalCode(String.valueOf(user.getFiscalCode()));
+            form.setStreet(user.getAddress().getStreet());
+            form.setCity(user.getAddress().getCity());
+            form.setState(user.getAddress().getState());
+            form.setZip(user.getAddress().getZipCode());
+            form.setPhone(user.getPhone());
+            form.setRole(user.getRole());
+
+            return form;
+        } catch (PersistenceException e) {
+            throw new DataAccessServiceException("Error accessing database for user " + username + ": " + e.getMessage(), e);
+        }
+
     }
 
 

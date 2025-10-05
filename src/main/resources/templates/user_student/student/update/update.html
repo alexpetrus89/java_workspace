@@ -6,9 +6,9 @@
 <head>
     <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
     <title>Uni Journey</title>
-    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
-    <link rel="stylesheet" type="text/css" href="/static/css/update-student.css">
-    <link rel="stylesheet" type="text/css" href="/static/css/password-rules.css">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="/css/update-student.css">
+    <link rel="stylesheet" type="text/css" href="/css/password-rules.css">
 </head>
 
 <body>
@@ -45,6 +45,8 @@
         <label for="confirm">Confirm password: </label>
         <input type="password" th:field="*{confirm}" title="Please confirm your password"
             placeholder="confirm password">
+
+        <input type="hidden" th:field="*{usernameOriginal}">
 
         <label for="firstName">First name: </label>
             <input type="text" th:field="*{firstName}" title="Enter new first name"
@@ -102,6 +104,6 @@
             <a th:href="@{/user_student/student-home}" class="home-link">Back to Home</a>
         </div>
     </div>
-    <script src="/static/js/password-rules.js"></script>
+    <script src="/js/password-rules.js"></script>
 </body>
 </html>

@@ -4,50 +4,70 @@
     xmlns:th="https://www.thymeleaf.org"
     xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
-    <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
-    <title>Uni Journey</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Uni Journey | Admin Dashboard</title>
     <link rel="stylesheet" type="text/css" href="/static/css/admin-home.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 </head>
-
 <body>
 
-    <h1>Welcome admin <span sec:authentication="name"></span>!</h1>
+<main class="container">
+
+    <header class="page-header">
+        <h1>Welcome, <span sec:authentication="name"></span>!</h1>
+        <p class="subtitle">Manage all aspects of the university system</p>
+    </header>
 
     <div class="card-container">
 
         <div class="card">
-            <h2>Admin menu</h2>
-            <p>Click <a th:href="@{/user_admin/admin/admin-menu}">here</a> to manage users</p>
+            <i class="fas fa-user-shield fa-2x"></i>
+            <h2>Admin</h2>
+            <p>Manage users</p>
+            <a th:href="@{/user_admin/admin/admin-menu}">Go<span class="arrow">→</span></a>
         </div>
 
         <div class="card">
-            <h2>Student menu</h2>
-            <p>Click <a th:href="@{/user_admin/student/student-menu}">here</a> to manage students</p>
+            <i class="fas fa-user-graduate fa-2x"></i>
+            <h2>Student</h2>
+            <p>Manage students</p>
+            <a th:href="@{/user_admin/student/student-menu}">Go<span class="arrow">→</span></a>
         </div>
 
         <div class="card">
-            <h2>Professor menu</h2>
-            <p>Click <a th:href="@{/user_admin/professor/professor-menu}">here</a> to manage professors</p>
+            <i class="fas fa-chalkboard-teacher fa-2x"></i>
+            <h2>Professor</h2>
+            <p>Manage professors</p>
+            <a th:href="@{/user_admin/professor/professor-menu}">Go<span class="arrow">→</span></a>
         </div>
 
         <div class="card">
-            <h2>Course menu</h2>
-            <p>Click <a th:href="@{/user_admin/course/course-menu}">here</a> to manage courses</p>
+            <i class="fas fa-book fa-2x"></i>
+            <h2>Course</h2>
+            <p>Manage courses</p>
+            <a th:href="@{/user_admin/course/course-menu}">Go<span class="arrow">→</span></a>
         </div>
 
         <div class="card">
-            <h2>Degree Course menu</h2>
-            <p>Click <a th:href="@{/user_admin/degree_course/degree-course-menu}">here</a> to manage degree courses</p>
+            <i class="fas fa-graduation-cap fa-2x"></i>
+            <h2>Degree course</h2>
+            <p>Manage degree courses</p>
+            <a th:href="@{/user_admin/degree_course/degree-course-menu}">Go<span class="arrow">→</span></a>
         </div>
 
         <div class="card">
-            <h2>Examination menu</h2>
-            <p>Click <a th:href="@{/user_admin/examination/examination-menu}">here</a> to manage examinations</p>
+            <i class="fas fa-file-alt fa-2x"></i>
+            <h2>Examination</h2>
+            <p>Manage examinations</p>
+            <a th:href="@{/user_admin/examination/examination-menu}">Go<span class="arrow">→</span></a>
         </div>
 
         <div class="card logout-card">
+            <i class="fas fa-sign-out-alt fa-2x"></i>
             <h2>Logout</h2>
-            <p>Click <a th:href="@{/logout}">here</a> to log out</p>
+            <p>Sign out from your account</p>
+            <a th:href="@{/logout}">Go<span class="arrow">→</span></a>
         </div>
 
     </div>
@@ -56,5 +76,11 @@
         <a href="/" class="home-link">Home</a>
     </div>
 
+</main>
+
+<!-- JS separato -->
+<script src="/static/js/admin-home.js"></script>
+
 </body>
 </html>
+

@@ -6,8 +6,8 @@
 <head>
     <meta name="viewport" charset="UTF-8" content="width=device-width, initial-scale=1.0">
     <title>Access Denied</title>
-    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
-    <link rel="stylesheet" href="/static/css/access-denied.css">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="stylesheet" href="/css/access-denied.css">
 </head>
 <body>
 <div class="container">
@@ -16,7 +16,7 @@
     <p>If you believe this is a mistake, please contact an administrator.</p>
     <p th:text="${message}"></p>
     <p><a href="javascript:history.back()">Go back</a></p>
-    <p><a th:href="@{/home}">Return to home page</a></p>
+    <p><a th:href="@{/home}">Back to home</a></p>
 </div>
 </body>
 </html>

@@ -4,22 +4,49 @@
     xmlns:th="http://www.thymeleaf.org"
     xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
-    <meta name="viewport" charset="UTF-8" content="width=device-width, initial-scale=1.0">
-    <title>Uni Journey</title>
-    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
-    <link rel="stylesheet" type="text/css" href="/static/css/read-course.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uni Journey | Read Course</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="/css/read-course.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
-    <h1>Read Course information</h1>
-    <form th:action="@{/api/v1/course/read/name}" method="get">
-        <input type="text" name="courseName" placeholder="Enter course name" />
-    </p>
-        <input type="text" name="degreeCourseName" placeholder="Enter degree course name" />
-    </p>
-        <button type="submit">Search</button>
-        <input type="reset" value="Reset" />
-    </form>
-    <br>
-    <a href="#" th:href="@{/course/course-menu}">Back to Menu</a>
+
+<main class="container">
+
+    <header class="page-header">
+        <h1 class="main-title">Read Course Information</h1>
+        <p class="subtitle">Search courses by name and degree course</p>
+    </header>
+
+    <div class="form-container">
+        <form th:action="@{/api/v1/course/read/name}" method="get">
+
+            <div class="input-wrapper">
+                <i class="fas fa-search"></i>
+                <input type="text" id="courseName" name="courseName" placeholder="Enter course name" required />
+            </div>
+
+            <div class="input-wrapper">
+                <i class="fas fa-book"></i>
+                <input type="text" id="degreeCourseName" name="degreeCourseName" placeholder="Enter degree course name" required />
+            </div>
+
+            <button type="submit" class="btn">Search</button>
+            <input type="reset" value="Reset" class="btn reset-btn" />
+        </form>
+    </div>
+
+    <div th:if="${errorMessage}" class="error-message">
+        <p th:text="${errorMessage}">No course found!</p>
+    </div>
+
+    <div class="form-actions">
+        <a th:href="@{/course/course-menu}" class="home-link">← Back to Menu</a>
+    </div>
+
+</main>
+
 </body>
 </html>

@@ -1,9 +1,13 @@
 package com.alex.universitymanagementsystem.service.impl;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -13,7 +17,9 @@ import com.alex.universitymanagementsystem.component.ServiceHelpers;
 import com.alex.universitymanagementsystem.component.validator.ServiceValidators;
 import com.alex.universitymanagementsystem.dto.RegistrationForm;
 import com.alex.universitymanagementsystem.dto.StudentDto;
+import com.alex.universitymanagementsystem.entity.Course;
 import com.alex.universitymanagementsystem.entity.DegreeCourse;
+import com.alex.universitymanagementsystem.entity.Examination;
 import com.alex.universitymanagementsystem.entity.ExaminationAppeal;
 import com.alex.universitymanagementsystem.entity.Student;
 import com.alex.universitymanagementsystem.entity.StudyPlan;
@@ -21,7 +27,9 @@ import com.alex.universitymanagementsystem.exception.DataAccessServiceException;
 import com.alex.universitymanagementsystem.exception.ObjectAlreadyExistsException;
 import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
 import com.alex.universitymanagementsystem.mapper.StudentMapper;
+import com.alex.universitymanagementsystem.repository.DegreeCourseRepository;
 import com.alex.universitymanagementsystem.repository.ExaminationAppealRepository;
+import com.alex.universitymanagementsystem.repository.ExaminationRepository;
 import com.alex.universitymanagementsystem.repository.StudentRepository;
 import com.alex.universitymanagementsystem.repository.StudyPlanRepository;
 import com.alex.universitymanagementsystem.service.StudentService;
@@ -35,11 +43,17 @@ import jakarta.transaction.Transactional;
 @Service
 public class StudentServiceImpl implements StudentService {
 
+	// logger
+	private final Logger logger =
+        LoggerFactory.getLogger(StudentServiceImpl.class);
+
 	// constants
     private static final String REGISTER_ERROR = "Register cannot be null or empty";
 
 	// inject repository - instance variable
 	private final StudentRepository studentRepository;
+	private final DegreeCourseRepository degreeCourseRepository;
+	private final ExaminationRepository examinationRepository;
 	private final ExaminationAppealRepository examinationAppealRepository;
 	private final StudyPlanRepository studyPlanRepository;
 	private final PasswordEncoder passwordEncoder;
@@ -50,6 +64,8 @@ public class StudentServiceImpl implements StudentService {
 	// autowired - dependency injection - constructor
 	public StudentServiceImpl(
 		StudentRepository studentRepository,
+		DegreeCourseRepository degreeCourseRepository,
+		ExaminationRepository examinationRepository,
 		ExaminationAppealRepository examinationAppealRepository,
 		StudyPlanRepository studyPlanRepository,
 		PasswordEncoder passwordEncoder,
@@ -57,6 +73,8 @@ public class StudentServiceImpl implements StudentService {
 		ServiceValidators validators
 	) {
 		this.studentRepository = studentRepository;
+		this.degreeCourseRepository = degreeCourseRepository;
+		this.examinationRepository = examinationRepository;
 		this.examinationAppealRepository = examinationAppealRepository;
 		this.studyPlanRepository = studyPlanRepository;
 		this.passwordEncoder = passwordEncoder;
@@ -211,6 +229,65 @@ public class StudentServiceImpl implements StudentService {
 
 		examinationAppealRepository.saveAll(appealsToUpdate);
     }
+
+
+	/**
+ 	 * Moves a student to another degree course, removing all examinations
+ 	 * that do not belong to the new degree course.
+     *
+ 	 * @param register unique student register
+ 	 * @param newDegreeCourseName name of the new degree course
+ 	 * @throws ObjectNotFoundException if the student or degree course are not found
+ 	 * @throws DataAccessServiceException if database access fails
+ 	 */
+	@Override
+	@Transactional(rollbackOn = { ObjectNotFoundException.class, DataAccessServiceException.class })
+	@Retryable(retryFor = PersistenceException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
+	public boolean changeDegreeCourse(String register, String degreeCourse)
+        throws ObjectNotFoundException, DataAccessServiceException {
+
+		validators.validateNotNullOrNotBlank(register, REGISTER_ERROR);
+		validators.validateDegreeCourseExists(degreeCourse);
+
+		try {
+
+			Student student = helpers.fetchStudent(register);
+			DegreeCourse newDegreeCourse = helpers.fetchDegreeCourse(degreeCourse);
+			DegreeCourse oldDegreeCourse = helpers.fetchDegreeCourse(student.getDegreeCourse().getName());
+
+			if(!newDegreeCourse.getGraduationClass().equals(oldDegreeCourse.getGraduationClass()))
+				return false;
+
+			Set<Course> allowedCourses = new HashSet<>(newDegreeCourse.getCourses());
+			Collection<Examination> allExaminations = helpers.fetchExaminations(register);
+			List<Examination> invalidExaminations = allExaminations
+				.stream()
+				.filter(exam -> !allowedCourses.contains(exam.getCourse()))
+				.toList();
+
+			if (!invalidExaminations.isEmpty()) {
+				examinationRepository.deleteAll(invalidExaminations);
+				examinationRepository.flush();
+			}
+
+			student.setDegreeCourse(newDegreeCourse);
+			oldDegreeCourse.removeStudent(student);
+			newDegreeCourse.addStudent(student);
+
+			studentRepository.saveAndFlush(student);
+			degreeCourseRepository.saveAndFlush(oldDegreeCourse);
+			degreeCourseRepository.saveAndFlush(newDegreeCourse);
+
+			logger.info("Student {} moved to degree course '{}'. {} examinations removed.",
+                register, degreeCourse, invalidExaminations.size());
+
+			return true;
+
+		} catch (PersistenceException | ObjectNotFoundException e) {
+			logger.error("Error changing degree course for student {}: {}", register, e.getMessage(), e);
+			return false;
+		}
+	}
 
 
 }

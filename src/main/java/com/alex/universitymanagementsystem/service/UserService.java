@@ -52,7 +52,7 @@ public interface UserService extends UserDetailsService {
      * This method is transactional and mapped to the HTTP PUT request for "/update".
      * @param form with new data of the user to be updated.
      * @return Optional<UserDto> data transfer object containing the updated user information.
-     * @throws ObjectNotFoundException if the authenticated user is not found.
+     * @throws UsernameNotFoundException if the authenticated user is not found.
      * @throws DuplicateUsernameException if the new username is already in use by another user.
      * @throws DuplicateFiscalCodeException if the new fiscal code is already in use by another user
      * @throws DataAccessServiceException if there are trouble accessing the database.
@@ -61,12 +61,12 @@ public interface UserService extends UserDetailsService {
     @Transactional(rollbackOn = ObjectNotFoundException.class)
     @Retryable(retryFor = PersistenceException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
     public Optional<UserDto> updateUser(UpdateForm form)
-        throws ObjectNotFoundException, DuplicateUsernameException, DuplicateFiscalCodeException, DataAccessServiceException;
+        throws UsernameNotFoundException, DuplicateUsernameException, DuplicateFiscalCodeException, DataAccessServiceException;
 
 
 	/**
      * Deletes a user from the repository.
-     * @param userId user id of the user to be deleted
+     * @param username of the user to be deleted
      * @return Optional<UserDto> data transfer object containing the deleted user information
      * @throws AccessDeniedException if the authenticated user is not an admin
      * @throws UsernameNotFoundException if the user to be deleted is not found
@@ -74,7 +74,20 @@ public interface UserService extends UserDetailsService {
      */
     @Transactional(rollbackOn = {AccessDeniedException.class, UsernameNotFoundException.class})
     @Retryable(retryFor = PersistenceException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
-    Optional<UserDto> deleteUser(String userId)
+    Optional<UserDto> deleteUser(String username)
         throws AccessDeniedException, UsernameNotFoundException, DataAccessServiceException;
+
+
+    /**
+     * Converts a user to an UpdateForm
+     * @param username of the user to be converted
+     * @return an UpdateForm
+     * @throws UsernameNotFoundException if the user to be converted is not found
+     * @throws DataAccessServiceException if there is an error accessing the database
+     */
+    UpdateForm getUpdateFormByUsername(String username)
+        throws UsernameNotFoundException, DataAccessServiceException;
+
+
 
 }

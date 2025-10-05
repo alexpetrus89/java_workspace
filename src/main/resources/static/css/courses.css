@@ -1,74 +1,195 @@
-/* Resetting some default styles */
-body, h1, table {
+/* ========== RESET & BASE ========== */
+* {
+    box-sizing: border-box;
     margin: 0;
     padding: 0;
-    font-family: 'Arial', sans-serif;
 }
 
-/* Container for centering content */
+body {
+    font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+    background: linear-gradient(135deg, #f4f7fb, #e9eff8);
+    color: #333;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ========== HEADER ========== */
+.page-header {
+    text-align: center;
+    margin-top: 40px;
+}
+
+.main-title {
+    font-size: 2.5rem;
+    color: #1e3a8a;
+    letter-spacing: 1px;
+    margin-bottom: 0.3rem;
+    animation: fadeInDown 0.7s ease-in-out;
+}
+
+.subtitle {
+    font-size: 1.1rem;
+    color: #555;
+    opacity: 0.85;
+    animation: fadeIn 1s ease-in-out;
+}
+
+/* ========== CONTAINER ========== */
 .container {
-    width: 80%;
-    margin: 20px auto;
-    padding: 20px;
-    background-color: #f9f9f9;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 90%;
+    max-width: 1100px;
+    margin: 40px auto;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    padding: 30px 40px;
+    animation: fadeInUp 0.8s ease-in-out;
 }
 
-/* Styling the table */
+/* ========== TABLE ========== */
+.table-container {
+    overflow-x: auto;
+}
+
 .styled-table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 20px;
-    background-color: #fff;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    font-size: 0.95rem;
+}
+
+.styled-table thead {
+    background: linear-gradient(90deg, #1e3a8a, #2563eb);
+    color: white;
 }
 
 .styled-table th, .styled-table td {
-    padding: 12px 15px;
+    padding: 14px 16px;
     text-align: left;
-    border-bottom: 1px solid #ddd;
 }
 
-.styled-table th {
-    background-color: #0056b3;
-    color: white;
-    font-weight: bold;
+.styled-table tbody tr {
+    transition: background 0.2s ease, transform 0.1s ease;
+    border-bottom: 1px solid #e5e7eb;
 }
 
-.styled-table tr:nth-child(even) {
-    background-color: #f2f2f2;
+.styled-table tbody tr:nth-child(even) {
+    background-color: #f9fafb;
 }
 
-.styled-table tr:hover {
-    background-color: #ddd;
+.styled-table tbody tr:hover {
+    background-color: #e0ecff;
+    transform: scale(1.01);
 }
 
-/* Styling the back button */
+/* ========== ACTIONS ========== */
 .form-actions {
-    margin-top: 20px;
     text-align: center;
+    margin-top: 30px;
 }
 
 .home-button {
     display: inline-block;
-    font-size: 16px;
-    color: white;
-    background-color: #0056b3;
-    padding: 10px 20px;
+    font-size: 1rem;
+    color: #fff;
+    background: linear-gradient(90deg, #2563eb, #1d4ed8);
+    padding: 12px 28px;
     text-decoration: none;
-    font-weight: bold;
-    border-radius: 5px;
-    text-align: center;
-    transition: background-color 0.3s ease;
+    font-weight: 600;
+    border-radius: 50px;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+    transition: all 0.3s ease;
 }
 
 .home-button:hover {
-    background-color: #0056b3;
+    background: linear-gradient(90deg, #1d4ed8, #1e40af);
+    transform: translateY(-2px);
 }
 
 .home-button:active {
-    background-color: #0056b3;
+    transform: scale(0.98);
 }
+
+/* ========== HEADER ICON ========== */
+.title-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+    animation: fadeInDown 0.7s ease-in-out;
+}
+
+.icon-circle {
+    background: linear-gradient(135deg, #2563eb, #1e3a8a);
+    color: white;
+    font-size: 1.6rem;
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3);
+    animation: float 2.5s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+}
+
+
+/* ========== SEARCH BAR ========== */
+.search-bar {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 20px;
+}
+
+#searchInput {
+    width: 100%;
+    max-width: 350px;
+    padding: 10px 14px;
+    border: 2px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    outline: none;
+}
+
+#searchInput:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 8px rgba(37, 99, 235, 0.3);
+}
+
+
+/* ========== ANIMATIONS ========== */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInDown {
+    from { opacity: 0; transform: translateY(-15px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 768px) {
+    .main-title {
+        font-size: 2rem;
+    }
+    .container {
+        padding: 20px;
+    }
+    .styled-table th, .styled-table td {
+        padding: 10px;
+    }
+}
+

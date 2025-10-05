@@ -170,18 +170,13 @@ public class UmsWebSecurityConfig implements Serializable {
 		try {
 			return http
 				.authorizeHttpRequests(requests -> requests
-					.requestMatchers(PUBLIC_URLS)
-					.permitAll()
-					.requestMatchers(ADMIN_URLS)
-					.hasRole(ADMIN)
-					.requestMatchers(STUDENT_URLS)
-					.hasAnyRole(STUDENT, ADMIN)
-					.requestMatchers(PROFESSOR_URLS)
-					.hasAnyRole(PROFESSOR, ADMIN)
-					.requestMatchers("/api/v1/user/update/build")
-					.hasAnyRole(STUDENT, PROFESSOR, ADMIN)
-					.anyRequest()
-					.authenticated()
+					.requestMatchers(PUBLIC_URLS).permitAll()
+					.requestMatchers("/profile").authenticated()
+					.requestMatchers(ADMIN_URLS).hasRole(ADMIN)
+					.requestMatchers(STUDENT_URLS).hasAnyRole(STUDENT, ADMIN)
+					.requestMatchers(PROFESSOR_URLS).hasAnyRole(PROFESSOR, ADMIN)
+					.requestMatchers("/api/v1/user/update").hasAnyRole(STUDENT, PROFESSOR, ADMIN)
+					.anyRequest().authenticated()
 				)
 				.formLogin(form -> form
 					.loginPage(LOGIN)

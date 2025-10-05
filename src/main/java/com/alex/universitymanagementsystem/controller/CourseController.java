@@ -51,7 +51,7 @@ public class CourseController {
      * retrieves all courses
      * @return ModelAndView
      */
-    @GetMapping(path = "/read/courses")
+    @GetMapping(path = "/read/all")
     public ModelAndView getAllCourses() {
         Set<CourseDto> courses = courseService.getCourses();
         return new ModelAndView("user_admin/course/courses", "courses", courses);
@@ -64,7 +64,7 @@ public class CourseController {
      * @param degreeCourseName
      * @return ModelAndView
      */
-    @GetMapping(path = "/read/course")
+    @GetMapping(path = "/read/name")
     public ModelAndView getCourse(@RequestParam String courseName, @RequestParam String degreeCourseName) {
         CourseDto course = courseService.getCourseByNameAndDegreeCourseName(courseName, degreeCourseName);
         return new ModelAndView("user_admin/course/read/read-result", COURSE, course);

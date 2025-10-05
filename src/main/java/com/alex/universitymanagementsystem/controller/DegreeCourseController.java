@@ -121,7 +121,6 @@ public class DegreeCourseController {
     }
 
 
-
     // helper methods
     /**
      * Serializes a CourseDto object to a JSON string.

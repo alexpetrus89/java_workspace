@@ -3,17 +3,23 @@ package com.alex.universitymanagementsystem.controller;
 import java.util.List;
 import java.util.function.Supplier;
 
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.alex.universitymanagementsystem.annotation.ValidRegister;
+import com.alex.universitymanagementsystem.dto.ChangeDegreeCourseForm;
 import com.alex.universitymanagementsystem.dto.StudentDto;
 import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
 import com.alex.universitymanagementsystem.service.StudentService;
+
+import jakarta.validation.Valid;
 
 
 @Validated
@@ -24,6 +30,7 @@ public class StudentController {
     // constants
     private static final String STUDENT = "student";
     private static final String STUDENTS = "students";
+    private static final String MESSAGE = "message";
 
     // instance variable
     private final StudentService studentService;
@@ -72,6 +79,44 @@ public class StudentController {
     }
 
 
+    /**
+     * displays the change degree course form
+     * @return ModelAndView
+     */
+    @GetMapping("/change-degree-course")
+    public ModelAndView getChangeDegreeCourseForm() {
+        ChangeDegreeCourseForm form = new ChangeDegreeCourseForm();
+        return new ModelAndView("user_admin/student/move/change-degree-course", "form", form);
+    }
+
+
+    /**
+     * Updates the degree course of a student
+     *@Valid @ModelAttribute("form") ChangeDegreeCourseForm form
+     */
+    @PostMapping("/change-degree-course")
+    public ModelAndView changeDegreeCourse(
+        @Valid @ModelAttribute ChangeDegreeCourseForm form,
+        BindingResult bindingResult
+    ) {
+
+        if (bindingResult.hasErrors())
+            return new ModelAndView("user_admin/student/move/change-degree-course", "form", form);
+
+        ModelAndView mav = new ModelAndView("user_admin/student/move/change-degree-course-result");
+        String message = studentService.changeDegreeCourse(form.getRegister(), form.getDegreeCourse())
+            ? String.format("Student %s has been successfully moved to degree course %s.",
+                form.getRegister(), form.getDegreeCourse())
+            : String.format("Error: Unable to change degree course for student %s.",
+                form.getRegister());
+
+        mav.addObject(MESSAGE, message);
+
+        return mav;
+    }
+
+
+
     // helpers
     /**
      * Metodo di supporto per riutilizzare la logica di ricerca.
@@ -83,7 +128,7 @@ public class StudentController {
                 .addObject(STUDENT, student);
         } catch (ObjectNotFoundException _) {
             return new ModelAndView("user_admin/student/read/read-result")
-                .addObject("message", notFoundMessage);
+                .addObject(MESSAGE, notFoundMessage);
         }
     }
 

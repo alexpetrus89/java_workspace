@@ -1,5 +1,7 @@
 package com.alex.universitymanagementsystem.service.impl;
 
+import java.util.Comparator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -58,7 +60,8 @@ public class CourseServiceImpl implements CourseService {
                 .findAll()
                 .stream()
                 .map(CourseMapper::toDto)
-                .collect(Collectors.toSet());
+                .sorted(Comparator.comparing(CourseDto::getName, String.CASE_INSENSITIVE_ORDER))
+                .collect(Collectors.toCollection(LinkedHashSet::new));
         } catch (PersistenceException e) {
             throw new DataAccessServiceException("Error accessing database for fetching courses: " + e.getMessage(), e);
         }

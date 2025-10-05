@@ -1,82 +1,166 @@
 <!DOCTYPE html>
-<html lang="en"
+<html lang="it"
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:th="http://www.thymeleaf.org"
     xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
-    <meta name="viewport" charset="UTF-8" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Uni Journey</title>
     <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link rel="stylesheet" href="/static/css/home.css">
+
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="/css/home.css">
 </head>
 
 <body>
-    <header class="main-header">
-        <h1>UNI JOURNEY</h1>
-    </header>
+<!-- =============================== -->
+<!-- HEADER SECTION -->
+<!-- =============================== -->
+<header class="main-header" role="banner">
+    <div class="header-inner">
 
-    <section class="hero">
-        <div class="overlay">
-            <h2>Benvenuto in Uni Journey</h2>
+        <!-- 🏫 Brand Logo -->
+        <div class="logo">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none">
+                <rect x="2" y="3" width="20" height="6" rx="1.5" fill="#2563eb"/>
+                <rect x="2" y="13" width="20" height="8" rx="2" fill="#1e40af"/>
+            </svg>
+            <h1 class="brand">UNI JOURNEY</h1>
         </div>
-    </section>
 
-    <!-- Sezione descrittiva -->
-    <div class="description-box">
-        <p>Soluzione per la gestione di studenti, corsi e personale accademico.</p>
+        <!-- 🌗 Theme Toggle (Dark/Light mode) -->
+        <div class="theme-toggle" id="theme-toggle" title="Toggle theme">
+            <i class="fas fa-moon"></i>
+        </div>
+    </div>
+</header>
+
+
+
+<!-- =============================== -->
+<!-- HERO SECTION -->
+<!-- =============================== -->
+<section class="hero">
+    <div class="hero-content">
+        <h2>Benvenuto in <span class="accent">Uni Journey</span></h2>
+        <p class="lead">La piattaforma intelligente per gestire studenti, corsi e staff accademico con un design moderno e fluido.</p>
+        <div class="hero-ctas">
+            <a th:href="@{/about}" class="btn primary">Scopri di più</a>
+        </div>
     </div>
 
-    <!-- Gruppo allineato: Benvenuto, Login, Logout -->
-    <div class="card-group">
-        <div class="card">
-            <i class="fas fa-user-circle fa-3x"></i> <!-- Icona Benvenuto -->
-            <h3>Benvenuto</h3>
-            <p th:inline="text">Ciao <span th:remove="tag" sec:authentication="name">Utente</span>!</p>
-        </div>
-
-        <div class="card">
-            <i class="fas fa-sign-in-alt fa-3x"></i> <!-- Icona Login -->
-            <h3>Login</h3>
-            <p>Fai clic <a th:href="@{/login}">qui</a> per accedere.</p>
-        </div>
-
-        <div class="card">
-            <i class="fas fa-sign-out-alt fa-3x"></i> <!-- Icona Logout -->
-            <h3>Logout</h3>
-            <p>Fai clic <a th:href="@{/logout}">qui</a> per uscire.</p>
-        </div>
-
+    <div class="hero-visual" aria-hidden="true">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
     </div>
+</section>
 
-    </main>
-    <footer class="footer">
-        <div class="footer-content">
 
-            <div class="footer-left">
-                <h4>Contatti</h4>
-                <p>Email: info@universityapp.com</p>
-                <p>Telefono: +39 0123 456789</p>
+
+<!-- =============================== -->
+<!-- DESCRIPTION SECTION -->
+<!-- =============================== -->
+<section class="description-box enhanced-description">
+    <div class="desc-icon"><i class="fa-solid fa-lightbulb"></i></div>
+    <h3><span class="accent">Uni Journey</span></h3>
+    <p>
+        Uni Journey semplifica la vita universitaria con strumenti integrati per la gestione di studenti, esami e corsi.
+        Tutto in un'unica piattaforma moderna, sicura e intuitiva.
+    </p>
+</section>
+
+
+
+<!-- =============================== -->
+<!-- CARD GROUP SECTION -->
+<!-- =============================== -->
+<section class="card-group floating-cards">
+    <article class="card accent-card">
+        <div class="card-icon"><i class="fa-solid fa-hand-wave"></i></div>
+        <h4>Benvenuto</h4>
+        <p>Ciao <span sec:authentication="name">Utente</span> 👋</p>
+        <p class="card-actions"><a th:href="@{/profile}" class="link">Profilo</a></p>
+    </article>
+
+    <article class="card accent-card">
+        <div class="card-icon"><i class="fa-solid fa-right-to-bracket"></i></div>
+        <h4>Login</h4>
+        <p>Accedi alla tua area personale per gestire i tuoi dati e gli esami.</p>
+        <p class="card-actions"><a th:href="@{/login}" class="btn small">Accedi</a></p>
+    </article>
+
+    <article class="card accent-card">
+        <div class="card-icon"><i class="fa-solid fa-book-open"></i></div>
+        <h4>Corsi</h4>
+        <p>Consulta il catalogo dei corsi e i piani di studio disponibili.</p>
+        <p class="card-actions"><a th:href="@{/course/course-menu}" class="link">Vai ai corsi</a></p>
+    </article>
+</section>
+
+
+
+<!-- =============================== -->
+<!-- 🌙 FOOTER SECTION -->
+<!-- =============================== -->
+<footer class="footer animated-footer">
+    <div class="footer-inner">s
+
+        <!-- Upper part -->
+        <div class="footer-grid">
+            <div class="footer-col">
+                <h5><i class="fa-solid fa-envelope"></i> Contatti</h5>
+                <ul>
+                    <li><a href="mailto:info@universityapp.com">info@universityapp.com</a></li>
+                    <li><span><i class="fa-solid fa-phone"></i> +39 0123 456789</span></li>
+                </ul>
             </div>
 
-            <div class="footer-center">
-                <h4>Seguici</h4>
-                <p>
-                    <a href="#" target="_blank">Facebook</a> |
-                    <a href="#" target="_blank">LinkedIn</a> |
-                    <a href="#" target="_blank">Twitter</a>
-                </p>
+            <div class="footer-col">
+                <h5><i class="fa-solid fa-share-nodes"></i> Seguici</h5>
+                <div class="social-links">
+                    <a href="#" title="Facebook" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" title="LinkedIn" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#" title="Twitter" class="social-icon"><i class="fab fa-x-twitter"></i></a>
+                </div>
             </div>
-            <div class="footer-right">
-                <p>
-                    <a href="#">Termini e Condizioni</a> |
-                    <a href="#">Informativa sulla Privacy</a>
-                </p>
+
+            <div class="footer-col">
+                <h5><i class="fa-solid fa-circle-info"></i> Info</h5>
+                <ul>
+                    <li><a href="#">Termini e Condizioni</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                </ul>
             </div>
         </div>
 
+        <!-- Divider -->
+        <hr class="footer-divider">
+
+        <!-- Bottom text -->
         <div class="footer-bottom">
-            <p>&copy; 2025 Uni Journey - Tutti i diritti riservati</p>
+            <p>
+                &copy; <span th:text="${#dates.format(#dates.createNow(),'yyyy')}">2025</span> 
+                <strong>Uni Journey</strong> — Tutti i diritti riservati.
+            </p>
         </div>
-    </footer>
+    </div>
+</footer>
+
+
+<div id="toast-container"></div>
+
+<!-- Main JS -->
+<script src="/js/home.js" defer></script>
+</body>
 </html>
+
+
+
+
+
+
+

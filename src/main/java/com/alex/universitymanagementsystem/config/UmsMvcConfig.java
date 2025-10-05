@@ -8,7 +8,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.lang.NonNull;
 import org.springframework.web.filter.HiddenHttpMethodFilter;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -63,16 +62,6 @@ public class UmsMvcConfig implements WebMvcConfigurer, Serializable {
 
 
     /**
-     * Configure static resources
-     * @param registry
-     */
-    @Override
-    public void addResourceHandlers(@NonNull ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/static/**").addResourceLocations("classpath:/static/");
-    }
-
-
-    /**
      * Configure formatters
      * @param registry
      */
@@ -81,8 +70,8 @@ public class UmsMvcConfig implements WebMvcConfigurer, Serializable {
         registry.addConverter(new StringToDegreeCourseConverter(degreeCourseRepository));
     }
 
-    // --- Beans ---
 
+    // --- Beans ---
     /**
      * Abilita il supporto per i metodi HTTP PUT e DELETE nei form HTML.
      * @return HiddenHttpMethodFilter

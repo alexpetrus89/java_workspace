@@ -6,8 +6,8 @@
 <head>
     <meta name="viewport" charset="UTF-8" content="width=device-width, initial-scale=1.0">
     <title>Uni Journey</title>
-    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
-    <link rel="stylesheet" type="text/css" href="/static/css/course-menu.css"> <!-- Assicurati che il file esista -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="/css/course-menu.css">
 </head>
 <body>
 
@@ -17,12 +17,12 @@
 
         <div class="card">
             <h2>All courses</h2>
-            <p>Click <a th:href="@{/api/v1/course/read/courses}">here</a> to view all courses</p>
+            <p>Click <a th:href="@{/api/v1/course/read/all}">here</a> to view all courses</p>
         </div>
 
         <div class="card">
             <h2>Course information</h2>
-            <p>Click <a th:href="@{/course/read/read}">here</a> to read course information</p>
+            <p>Click <a th:href="@{/user_admin/course/read/read}">here</a> to read course information</p>
         </div>
 
         <div class="card">

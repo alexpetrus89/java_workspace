@@ -3,8 +3,6 @@ package com.alex.universitymanagementsystem.dto;
 import java.io.Serializable;
 import java.time.LocalDate;
 
-import com.alex.universitymanagementsystem.annotation.UniqueFiscalCode;
-import com.alex.universitymanagementsystem.annotation.UniqueUsername;
 import com.alex.universitymanagementsystem.annotation.ValidBirthDate;
 import com.alex.universitymanagementsystem.annotation.ValidFiscalCode;
 import com.alex.universitymanagementsystem.annotation.ValidPassword;
@@ -22,8 +20,11 @@ public class UpdateForm implements Serializable, PasswordCarrier {
     // instance variables
     @NotBlank(message = "username is required")
     @Size(min = 4, max = 30, message = "username must be between 4 and 30 characters")
-    @UniqueUsername
     private String username;
+
+    @NotBlank(message = "username is required")
+    @Size(min = 4, max = 30, message = "username must be between 4 and 30 characters")
+    private String usernameOriginal;
 
     @NotBlank(message = "Password is required")
     @ValidPassword
@@ -44,7 +45,6 @@ public class UpdateForm implements Serializable, PasswordCarrier {
 
     @NotBlank(message = "Fiscal code is required")
     @ValidFiscalCode
-    @UniqueFiscalCode
     private String fiscalCode;
 
     @NotBlank(message = "Street is required")
@@ -72,6 +72,7 @@ public class UpdateForm implements Serializable, PasswordCarrier {
 
     // getters
     public String getUsername() { return username; }
+    public String getUsernameOriginal() { return usernameOriginal; }
 
     @Override
     public String getPassword() { return password; }
@@ -95,6 +96,9 @@ public class UpdateForm implements Serializable, PasswordCarrier {
     // setters
     public void withUsername(String username) { this.username = username; }
     public void setUsername(String username) { this.username = username; }
+
+    public void withUsernameOriginal(String usernameOriginal) { this.usernameOriginal = usernameOriginal; }
+    public void setUsernameOriginal(String usernameOriginal) { this.usernameOriginal = usernameOriginal; }
 
     public void withPassword(String password) { this.password = password; }
     @Override

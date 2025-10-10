@@ -1,80 +1,207 @@
-/* ===== Table Styling (consistent with card style) ===== */
+/* ==========================================================
+    Uni Journey - Available Appeals Calendar
+    Coherent design with dark/light mode + fade transitions
+========================================================== */
+
+/* ---------- Root variables ---------- */
+:root {
+    --bg: #f5f7fa;
+    --card: #fff;
+    --text: #1e293b;
+    --muted: #64748b;
+    --primary: #2563eb;
+    --accent: #0ea5e9;
+    --border: #e2e8f0;
+    --transition: 0.4s ease;
+}
+:root.dark {
+    --bg: #0f172a;
+    --card: #1e293b;
+    --text: #f1f5f9;
+    --muted: #94a3b8;
+    --primary: #3b82f6;
+    --accent: #22d3ee;
+    --border: #334155;
+}
+
+/* ---------- Global ---------- */
+body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    transition: background var(--transition), color var(--transition);
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 1100px;
+    margin: 40px auto;
+    padding: 0 1rem;
+}
+
+/* ---------- Header ---------- */
+.main-header {
+    position: sticky;
+    top: 0;
+    background: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(10px);
+    padding: 15px 20px;
+    border-bottom: 1px solid var(--border);
+    transition: background var(--transition);
+    z-index: 1000;
+}
+:root.dark .main-header { background: rgba(30,41,59,0.75); }
+
+.header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1200px;
+    margin: auto;
+}
+
+.logo { display: flex; align-items: center; gap: 10px; }
+.brand { font-weight: 800; font-size: 1.3rem; color: var(--primary); }
+
+/* Dark Mode Toggle */
+.theme-toggle {
+    cursor: pointer;
+    font-size: 1.2rem;
+    color: var(--muted);
+    transition: transform 0.3s, color 0.3s;
+}
+.theme-toggle:hover {
+    color: var(--primary);
+    transform: rotate(20deg);
+}
+
+/* ---------- Page Header ---------- */
+.page-header {
+    text-align: center;
+    margin: 50px auto 20px;
+    animation: fadeInUp 1s ease forwards;
+}
+.page-header h1 {
+    font-size: 2rem;
+    color: var(--primary);
+    margin-bottom: 10px;
+}
+.page-header .subtitle {
+    color: var(--muted);
+    font-size: 1.1rem;
+}
+
+/* ---------- Table ---------- */
+.table-card {
+    max-width: 1000px;
+    margin: 30px auto;
+    background: var(--card);
+    border-radius: 12px;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+    padding: 20px;
+    overflow-x: auto;
+    transition: background-color var(--transition), color var(--transition);
+}
 
 table {
-    width: 90%;
-    margin: 30px auto;
+    width: 100%;
     border-collapse: collapse;
-    background-color: #ffffff;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    color: var(--text);
 }
 
-thead {
-    background-color: #0074d9;
-    color: white;
-}
-
-thead th {
-    padding: 12px 16px;
+th, td {
+    padding: 12px 15px;
     text-align: left;
-    font-weight: bold;
-    font-size: 1em;
+    border-bottom: 1px solid var(--border);
 }
 
-tbody tr {
-    border-bottom: 1px solid #e0e0e0;
+th {
+    color: var(--primary);
+    font-weight: 600;
+    background-color: rgba(0, 116, 217, 0.05);
 }
 
-tbody tr:last-child {
-    border-bottom: none;
+tr:hover {
+    background-color: rgba(0, 116, 217, 0.08);
 }
 
-tbody td {
-    padding: 12px 16px;
-    font-size: 0.95em;
-    color: #333;
+/* ---------- Buttons ---------- */
+.book-button {
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.2s ease-in-out, transform 0.2s ease;
+}
+.book-button:hover {
+    background: #005fa3;
+    transform: translateY(-2px);
 }
 
-tbody tr:hover {
-    background-color: #f5faff;
-}
-
-/* Responsive table container */
-.table-container {
-    overflow-x: auto;
-    padding: 0 20px;
-}
-
-/* ===== Summary Section ===== */
-.summary {
-    margin-top: 20px;
-    text-align: center;
-    font-size: 1.1em;
-    color: #333;
-}
-
-.summary div {
-    margin: 10px 0;
-    font-weight: bold;
-}
-
-/* ===== Back to Menu Button ===== */
+/* ---------- Back Button ---------- */
 .form-actions {
     text-align: center;
-    margin: 30px 0;
+    margin: 40px 0;
 }
 
 .home-link {
     display: inline-block;
-    background-color: #0074d9;
+    background-color: var(--primary);
     color: #fff;
     padding: 10px 20px;
-    border-radius: 5px;
+    border-radius: 6px;
     text-decoration: none;
-    transition: background-color 0.2s ease-in-out;
+    transition: background var(--transition), transform 0.2s ease;
 }
-
 .home-link:hover {
     background-color: #005fa3;
+    transform: translateY(-3px);
 }
+
+/* ---------- Toast ---------- */
+#toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 2000;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.toast {
+    background: var(--card);
+    border-left: 5px solid var(--primary);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    border-radius: 10px;
+    padding: 12px 18px;
+    font-weight: 500;
+    color: var(--text);
+    opacity: 0;
+    transform: translateY(-20px);
+    animation: slideIn 0.5s ease forwards;
+}
+.toast.success { border-color: #22c55e; }
+.toast.error { border-color: #ef4444; }
+
+@keyframes slideIn {
+    to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeOut {
+    to { opacity: 0; transform: translateY(-20px); }
+}
+
+/* ---------- Animations ---------- */
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Fade crossfade for theme change */
+html {
+    transition: background-color 0.5s ease, color 0.5s ease;
+}
+

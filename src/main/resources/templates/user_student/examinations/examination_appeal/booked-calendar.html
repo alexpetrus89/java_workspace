@@ -3,17 +3,54 @@
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:th="https://www.thymeleaf.org"
     xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+
+<!-- ========================================================== -->
+<!-- HEAD SECTION -->
+<!-- ========================================================== -->
 <head>
     <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
     <title>Uni Journey</title>
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
+
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Custom Styles -->
     <link rel="stylesheet" type="text/css" href="/css/booked-calendar.css">
 </head>
 <body>
 
-    <h1>Appeals booked</h1>
+<!-- ========================================================== -->
+<!-- HEADER SECTION -->
+<!-- ========================================================== -->
+<header class="main-header">
+    <div class="header-inner">
 
-    <div class="table-container">
+        <div class="logo">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none">
+                <rect x="2" y="3" width="20" height="6" rx="1.5" fill="#2563eb"/>
+                <rect x="2" y="13" width="20" height="8" rx="2" fill="#1e40af"/>
+            </svg>
+            <h1 class="brand">UNI JOURNEY</h1>
+        </div>
+
+        <div class="theme-toggle" id="theme-toggle" title="Toggle theme">
+            <i class="fas fa-moon"></i>
+        </div>
+
+    </div>
+</header>
+
+<!-- ========================================================== -->
+<!-- MAIN CONTENT -->
+<!-- ========================================================== -->
+<main class="content-wrapper">
+    <header class="page-header fade-in">
+        <h1>📅Appeals booked</h1>
+    <p class="subtitle">Browse and delete your booked examination appeals</p>
+    </header>
+
+    <section class="table-card fade-in">
         <table>
             <thead>
                 <tr>
@@ -39,11 +76,16 @@
                 </tr>
             </tbody>
         </table>
-    </div>
+    </section>
 
-    <div class="form-actions">
-        <a th:href="@{/user_student/examinations/examination-menu}" class="home-link">Back to menu</a>
+    <div class="form-actions fade-in">
+        <a th:href="@{/user_student/examinations/examination-menu}" class="home-link">🏠 Back to Menu</a>
     </div>
+</main>
 
+<!-- ===== TOASTS ===== -->
+<div id="toast-container"></div>
+
+<script src="/js/booked-calendar.js"></script>
 </body>
 </html>

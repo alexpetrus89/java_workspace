@@ -59,7 +59,7 @@ public class UserController {
      * Retrieves all users
      * @return ModelAndView
      */
-    @GetMapping(path = "/read/users")
+    @GetMapping(path = "/read/all")
     public ModelAndView getAllUsers() {
         List<UserDto> users = userService.getUsers();
         return new ModelAndView("user_admin/admin/read/users", "users", users);
@@ -88,14 +88,14 @@ public class UserController {
         HttpServletRequest request
     ) {
         // Mappa path -> view
-        Map<String, String> pathToView = Map.of(
-            "/update", "user_admin/admin/update/update",
-            "/update/student", "user_student/student/update/update",
-            "/update/professor", "user_professor/professor/update/update"
+        // Mappa ruolo -> view
+        Map<String, String> roleToView = Map.of(
+            "admin", "user_admin/admin/update/update",
+            "student", "user_student/student/update/update",
+            "professor", "user_professor/professor/update/update"
         );
 
-        String path = request.getRequestURI();
-        String view = pathToView.getOrDefault(path, "user_admin/admin/update/update");
+        String view = roleToView.getOrDefault(role.toLowerCase(), "user_admin/admin/update/update");
 
         UpdateForm form = userService.getUpdateFormByUsername(username);
         return new ModelAndView(view, UPDATE_FORM, form);

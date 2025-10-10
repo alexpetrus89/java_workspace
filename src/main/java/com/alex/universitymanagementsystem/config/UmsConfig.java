@@ -146,24 +146,35 @@ public class UmsConfig {
         "/about",
         "/login",
 		"/logout",
+        "/profile",
 		"/registration",
         "/forgot-password",
         "/reset-password",
+
+        // static resources
 		"/css/**",
         "/js/home.js",
+        "/js/login.js",
 		"/js/upload-degree-courses.js",
 		"/js/password-rules.js",
         "/images/**",
         "/sounds/**",
 		"/favicon.ico",
+        "/ws/**",
+
+        // exception view
         "/access-denied",
 		"/exception/**",
+
+        // registration view
         "/user_student/student/create/select-degree-course",
-		"/api/v1/user/create-admin",
+
+        // public API
 		"/api/v1/user/create-student",
 		"/api/v1/user/create-professor",
-		"/api/v1/degree-course/read/degree-courses/ajax",
-        "/ws/**"
+		"/api/v1/degree-course/read/all/ajax",
+
+        "/.well-known/**",
     };
 
 
@@ -171,7 +182,7 @@ public class UmsConfig {
         // URL accessibili solo agli utenti con ruolo ADMIN
         // user
 		"/user_admin/**",
-		"/api/v1/user/read/users",
+		"/api/v1/user/read/all",
         "/api/v1/user/manage",
 		"/api/v1/user/delete",
         "/api/v1/system/shutdown",
@@ -289,6 +300,11 @@ public class UmsConfig {
     }
 
     @Bean
+    String jsonProcessingExceptionUri() {
+        return "/exception/data/json-processing-exception";
+    }
+
+    @Bean
     String accessDeniedExceptionUri() {
         return "/exception/access_denied/access-denied-exception";
     }
@@ -306,11 +322,6 @@ public class UmsConfig {
     @Bean
     String alreadyExistsExceptionUri() {
         return "/exception/already_exists";
-    }
-
-    @Bean
-    String jsonProcessingExceptionUri() {
-        return "/exception/data/json-processing-exception";
     }
 
     @Bean

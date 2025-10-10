@@ -1,12 +1,11 @@
 /* ==========================================================
-    EXAMINATION MENU STYLESHEETS
-    Consistent with the main home page (without footer)
+    STUDENT BOOKLET VIEW (EXAMINATIONS)
+    Consistent with Uni Journey visual style
 ========================================================== */
 
-/* ---------- Root variables ---------- */
 :root {
     --bg: #f5f7fa;
-    --card: #fff;
+    --card: #ffffff;
     --text: #1e293b;
     --muted: #64748b;
     --primary: #2563eb;
@@ -24,7 +23,6 @@
     --border: #334155;
 }
 
-/* ---------- Base Layout ---------- */
 body {
     font-family: 'Inter', system-ui, sans-serif;
     background: var(--bg);
@@ -79,47 +77,73 @@ body {
     color: var(--muted);
 }
 
-/* ---------- Card Grid ---------- */
-.card-grid {
+/* ---------- Table ---------- */
+.table-card {
+    background: var(--card);
+    border-radius: 18px;
+    padding: 25px;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.05);
+    margin: 0 auto;
+    width: 90%;
+    overflow-x: auto;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+thead {
+    background-color: var(--primary);
+    color: #fff;
+}
+thead th {
+    padding: 12px 15px;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+}
+tbody td {
+    padding: 12px 15px;
+    border-bottom: 1px solid var(--border);
+}
+tbody tr:hover {
+    background-color: rgba(37, 99, 235, 0.07);
+}
+
+/* ---------- Summary Cards ---------- */
+.summary-cards {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     gap: 25px;
+    margin: 40px 0;
 }
-
-/* ---------- Cards ---------- */
-.card {
+.summary-card {
     background: var(--card);
-    border-radius: 18px;
-    padding: 25px;
-    width: 260px;
-    text-align: center;
+    border-radius: 16px;
     box-shadow: 0 6px 15px rgba(0,0,0,0.05);
-    transition: transform 0.4s, box-shadow 0.4s;
+    width: 240px;
+    text-align: center;
+    padding: 25px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
-.card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+.summary-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
 }
-.card-icon {
-    font-size: 2.5rem;
+.summary-card i {
+    font-size: 2rem;
     color: var(--primary);
     margin-bottom: 10px;
 }
-.card h3 {
+.summary-card h3 {
     color: var(--primary);
-    margin-bottom: 0.5rem;
+    margin-bottom: 5px;
 }
-.card p {
-    color: var(--muted);
-}
-.card a {
-    color: var(--accent);
-    font-weight: 600;
-    text-decoration: none;
-}
-.card a:hover {
-    text-decoration: underline;
+.summary-card p {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--text);
 }
 
 /* ---------- Button Section ---------- */
@@ -152,18 +176,13 @@ body {
     gap: 10px;
 }
 .toast {
-    background: var(--primary);
-    color: #fff;
-    padding: 12px 20px;
-    border-radius: 10px;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.2);
-    animation: fadeInUp 0.5s ease, fadeOut 0.5s ease 2.8s forwards;
+    background-color: #fff;
+    color: #333;
+    border-radius: 6px;
+    padding: 15px 20px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    animation: fadeOut 5s ease-out forwards;
 }
-@keyframes fadeInUp {
-    from {opacity: 0; transform: translateY(15px);}
-    to {opacity: 1; transform: translateY(0);}
-}
-@keyframes fadeOut {
-    to {opacity: 0; transform: translateY(20px);}
-}
+
 

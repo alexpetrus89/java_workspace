@@ -5,21 +5,63 @@
     xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta name="viewport" charset="UTF-8" content="width=device-width, initial-scale=1.0">
-    <title>Uni Journey</title>
+    <title>Uni Journey - Examination Result</title>
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
-    <link rel="stylesheet" type="text/css" href="/css/create-examination-result.css">
+
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/create-examination-result.css">
 </head>
 <body>
-    <div class="container">
-	<h1>Result</h1>
-        <p th:text="'course: ' + ${examination.courseName}">
-        <p th:text="'registration: ' + ${examination.register}">
-        <p th:text="'grade: ' + ${examination.grade}">
-        <p th:text="'date: ' + ${examination.date}">
-        <p th:if="${examination.withHonors}" th:text="'With honors: true'">
-        <h1>Examination insert</h1>
-        <br>
-        <a href="#" th:href="@{/user_student/examinations/examination-menu}">Back to Menu</a>
+
+<!-- ===== HEADER ===== -->
+<header class="main-header">
+    <div class="header-inner">
+        <div class="logo">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none">
+                <rect x="2" y="3" width="20" height="6" rx="1.5" fill="#2563eb"/>
+                <rect x="2" y="13" width="20" height="8" rx="2" fill="#1e40af"/>
+            </svg>
+            <h1 class="brand">UNI JOURNEY</h1>
+        </div>
+
+        <div class="theme-toggle" id="theme-toggle" title="Toggle theme">
+            <i class="fas fa-moon"></i>
+        </div>
     </div>
+</header>
+
+<!-- ===== MAIN CONTENT ===== -->
+<main class="content-wrapper">
+    <section class="card-container">
+        <div class="card fade-in">
+            <h1 class="title">📄 Examination Result</h1>
+
+            <div class="details" th:if="${examination}">
+                <p><strong>Course:</strong> <span th:text="${examination.courseName}"></span></p>
+                <p><strong>Registration:</strong> <span th:text="${examination.register}"></span></p>
+                <p><strong>Grade:</strong> <span th:text="${examination.grade}"></span></p>
+                <p><strong>Date:</strong> <span th:text="${examination.date}"></span></p>
+                <p th:if="${examination.withHonors}">
+                    <strong>With honors:</strong> ✅
+                </p>
+            </div>
+
+            <div class="success-message">
+                <i class="fas fa-check-circle"></i>
+                <p>Examination successfully inserted!</p>
+            </div>
+
+            <div class="action">
+                <a th:href="@{/user_student/examinations/examination-menu}" class="btn">🏠 Back to Menu</a>
+            </div>
+        </div>
+    </section>
+</main>
+
+<!-- Theme Script -->
+<script src="/js/create-examination-result.js"></script>
 </body>
 </html>

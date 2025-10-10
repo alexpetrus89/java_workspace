@@ -1,95 +1,183 @@
-/* Resetta margini e padding di default */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+/* ---------- Root Variables ---------- */
+:root {
+    --primary: #0074d9;
+    --background: #f7f9fc;
+    --text: #1e293b;
+    --card: #ffffff;
+    --border: #d1d5db;
+    --transition: 0.3s ease-in-out;
+}
+:root.dark {
+    --background: #0f172a;
+    --text: #f1f5f9;
+    --card: #1e293b;
+    --border: #334155;
 }
 
-/* Imposta il font di base */
+/* ---------- Global ---------- */
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f0f2f5;
+    margin: 0;
+    background-color: var(--background);
+    color: var(--text);
+    transition: background-color var(--transition), color var(--transition);
+}
+
+/* ---------- Header ---------- */
+.main-header {
+    position: sticky;
+    top: 0;
+    background: rgba(255,255,255,0.75);
+    backdrop-filter: blur(10px);
+    padding: 15px 20px;
+    border-bottom: 1px solid var(--border);
+    z-index: 1000;
+}
+:root.dark .main-header { background: rgba(30,41,59,0.75); }
+
+.header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1200px;
+    margin: auto;
+}
+
+.logo { display: flex; align-items: center; gap: 10px; }
+.brand { font-weight: 800; font-size: 1.3rem; color: var(--primary); }
+
+.theme-toggle { cursor: pointer; font-size: 1.2rem; color: var(--text); transition: 0.3s; }
+.theme-toggle:hover { transform: rotate(20deg); color: var(--primary); }
+
+/* ---------- Card ---------- */
+.card-container {
     display: flex;
     justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
+    margin: 40px 20px;
 }
-
-/* Contenitore centrale */
-.container {
-    background-color: white;
+.card {
+    background-color: var(--card);
+    border-radius: 12px;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.1);
     padding: 30px;
-    border-radius: 10px;
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
-    text-align: center;
+    max-width: 700px;
     width: 100%;
-    max-width: 600px;
+    transition: background-color var(--transition), color var(--transition);
 }
 
-/* Stile per l'intestazione */
-h1 {
-    font-size: 2rem;
-    color: #2c3e50;
+.title {
+    text-align: center;
+    font-size: 1.8rem;
+    color: var(--primary);
     margin-bottom: 20px;
 }
 
-/* Stile per il modulo */
-form {
+/* ---------- Appeal List ---------- */
+.appeal-list {
     display: flex;
     flex-direction: column;
+    gap: 15px;
+}
+
+/* Label cliccabile e selezione */
+.appeal-card label {
+    display: flex;
+    justify-content: space-between;
     align-items: center;
-    gap: 10px;
-}
-
-/* Stile per gli input e il bottone */
-input[type="text"],
-input[type="reset"],
-button {
-    padding: 5px 10px; /* riduci il padding dei bottoni */
-    font-size: 0.8rem; /* riduci la dimensione del font dei bottoni */
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    width: 100%;
-    max-width: 150px; /* riduci la larghezza massima dei bottoni */
-}
-
-select {
-    height: 40px; /* aumenta l'altezza della riga di selezione */
-}
-
-/* Colore di sfondo per il bottone */
-button {
-    background-color: #007bff;
-    color: white;
+    padding: 15px;
+    border: 2px solid var(--border);
+    border-radius: 10px;
     cursor: pointer;
-    border: none;
+    transition: all 0.3s;
+    background-color: var(--card);
+}
+.appeal-card label:hover {
+    border-color: var(--primary);
+    transform: translateY(-2px);
 }
 
-/* Effetto hover per il bottone */
-button:hover {
-    background-color: #0056b3;
+/* Checkbox nascosto */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    border: 0;
+    padding: 0;
+    clip: rect(0 0 0 0);
+    overflow: hidden;
 }
 
-/* Stile per i link */
-.link-container {
-    text-align: center;
+/* Card contenuto */
+.card-content { display: flex; flex-direction: column; gap: 5px; }
+.course { font-weight: 600; display: flex; align-items: center; gap: 8px; }
+.details { color: var(--text); font-size: 0.95rem; }
+.description { font-size: 0.9rem; color: var(--text); }
+
+/* Checkmark visibile solo se selezionata */
+.checkmark i {
+    opacity: 0.3;
+    color: var(--primary);
+    font-size: 1.4rem;
+    transition: opacity 0.3s;
+}
+.appeal-card input:checked ~ .checkmark i {
+    opacity: 1;
 }
 
-a {
-    display: inline-block;
+/* Evidenzia card selezionata */
+.appeal-card input:checked ~ .card-content {
+    border-color: var(--primary);
+    box-shadow: 0 0 10px rgba(0,116,217,0.3);
+    border-radius: 10px;
+}
+
+/* ---------- Buttons ---------- */
+.form-actions {
+    display: flex;
+    justify-content:center;
+    gap: 15px;
     margin-top: 20px;
-    padding: 10px 20px;
-    font-size: 1rem;
-    font-weight: 600;
-    color: #fff;
-    background-color: #007bff;
+}
+.btn { padding: 10px 20px; border-radius: 6px; font-weight: bold; border: none; cursor: pointer; transition: all 0.2s; }
+.btn-primary { background-color: var(--primary); color: #fff; }
+.btn-primary:hover { background-color: #005fa3; transform: translateY(-2px); }
+.btn-secondary { background-color: #ccc; color: #333; }
+.btn-secondary:hover { background-color: #aaa; transform: translateY(-2px); }
+
+.btn-link {
+    display: inline-block;
+    color: var(--primary);
+    font-weight: bold;
     text-decoration: none;
-    border-radius: 5px;
-    transition: background-color 0.3s ease;
+    padding: 10px 20px;
+    border-radius: 6px;
+    border: 2px solid var(--primary);
+    transition: all 0.2s ease;
+}
+.btn-link:hover {
+    background-color: var(--primary);
+    color: #fff;
+    transform: translateY(-2px);
 }
 
-/* Effetto hover per i link */
-a:hover {
-    background-color: #0056b3;
+/* Filtro input */
+.filter-input {
+    width: 100%;
+    padding: 10px 15px;
+    margin-bottom: 20px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    font-size: 1rem;
+    transition: border-color 0.3s;
 }
+.filter-input:focus {
+    border-color: var(--primary);
+    outline: none;
+}
+
+/* Media Queries */
+@media (max-width: 768px) {
+    .card-container { margin: 40px 0; }
+}
+

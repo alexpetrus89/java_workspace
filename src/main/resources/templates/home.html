@@ -6,7 +6,7 @@
 <head>
     <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Uni Journey</title>
-    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
 
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -45,10 +45,10 @@
 <!-- =============================== -->
 <section class="hero">
     <div class="hero-content">
-        <h2>Benvenuto in <span class="accent">Uni Journey</span></h2>
-        <p class="lead">La piattaforma intelligente per gestire studenti, corsi e staff accademico con un design moderno e fluido.</p>
+        <h2>Welcome to <span class="accent">Uni Journey</span></h2>
+        <p class="lead">The intelligent platform for managing students, courses and academic staff with a modern and fluid design.</p>
         <div class="hero-ctas">
-            <a th:href="@{/about}" class="btn primary">Scopri di più</a>
+            <a th:href="@{/about}" class="btn primary">Find out more</a>
         </div>
     </div>
 
@@ -68,8 +68,8 @@
     <div class="desc-icon"><i class="fa-solid fa-lightbulb"></i></div>
     <h3><span class="accent">Uni Journey</span></h3>
     <p>
-        Uni Journey semplifica la vita universitaria con strumenti integrati per la gestione di studenti, esami e corsi.
-        Tutto in un'unica piattaforma moderna, sicura e intuitiva.
+        Uni Journey simplifies university life with integrated tools for managing students, exams, and courses.
+        All in a single, modern, secure, and intuitive platform.
     </p>
 </section>
 
@@ -81,23 +81,23 @@
 <section class="card-group floating-cards">
     <article class="card accent-card">
         <div class="card-icon"><i class="fa-solid fa-hand-wave"></i></div>
-        <h4>Benvenuto</h4>
-        <p>Ciao <span sec:authentication="name">Utente</span> 👋</p>
-        <p class="card-actions"><a th:href="@{/profile}" class="link">Profilo</a></p>
+        <h4>Welcome</h4>
+        <p>Hello <span sec:authentication="name">User</span> 👋</p>
+        <p class="card-actions"><a th:href="@{/profile}" class="link">Profile</a></p>
     </article>
 
     <article class="card accent-card">
         <div class="card-icon"><i class="fa-solid fa-right-to-bracket"></i></div>
         <h4>Login</h4>
-        <p>Accedi alla tua area personale per gestire i tuoi dati e gli esami.</p>
-        <p class="card-actions"><a th:href="@{/login}" class="btn small">Accedi</a></p>
+        <p>Log in to your personal area to manage your data and exams.</p>
+        <p class="card-actions"><a th:href="@{/login}" class="btn small">Login</a></p>
     </article>
 
     <article class="card accent-card">
         <div class="card-icon"><i class="fa-solid fa-book-open"></i></div>
-        <h4>Corsi</h4>
-        <p>Consulta il catalogo dei corsi e i piani di studio disponibili.</p>
-        <p class="card-actions"><a th:href="@{/course/course-menu}" class="link">Vai ai corsi</a></p>
+        <h4>Courses</h4>
+        <p>Consult the course catalog and available study plans.</p>
+        <p class="card-actions"><a th:href="@{/course/course-menu}" class="link">Go to the courses</a></p>
     </article>
 </section>
 
@@ -107,12 +107,12 @@
 <!-- 🌙 FOOTER SECTION -->
 <!-- =============================== -->
 <footer class="footer animated-footer">
-    <div class="footer-inner">s
+    <div class="footer-inner">
 
         <!-- Upper part -->
         <div class="footer-grid">
             <div class="footer-col">
-                <h5><i class="fa-solid fa-envelope"></i> Contatti</h5>
+                <h5><i class="fa-solid fa-envelope"></i> Contacts</h5>
                 <ul>
                     <li><a href="mailto:info@universityapp.com">info@universityapp.com</a></li>
                     <li><span><i class="fa-solid fa-phone"></i> +39 0123 456789</span></li>
@@ -120,7 +120,7 @@
             </div>
 
             <div class="footer-col">
-                <h5><i class="fa-solid fa-share-nodes"></i> Seguici</h5>
+                <h5><i class="fa-solid fa-share-nodes"></i> Follow us</h5>
                 <div class="social-links">
                     <a href="#" title="Facebook" class="social-icon"><i class="fab fa-facebook-f"></i></a>
                     <a href="#" title="LinkedIn" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
@@ -131,7 +131,7 @@
             <div class="footer-col">
                 <h5><i class="fa-solid fa-circle-info"></i> Info</h5>
                 <ul>
-                    <li><a href="#">Termini e Condizioni</a></li>
+                    <li><a href="#">Terms and Conditions</a></li>
                     <li><a href="#">Privacy Policy</a></li>
                 </ul>
             </div>
@@ -143,8 +143,8 @@
         <!-- Bottom text -->
         <div class="footer-bottom">
             <p>
-                &copy; <span th:text="${#dates.format(#dates.createNow(),'yyyy')}">2025</span> 
-                <strong>Uni Journey</strong> — Tutti i diritti riservati.
+                &copy; <span th:text="${#dates.format(#dates.createNow(),'yyyy')}">2025</span>
+                <strong>Uni Journey</strong> — All rights reserved.
             </p>
         </div>
     </div>

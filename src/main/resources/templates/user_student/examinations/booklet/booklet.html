@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta name="viewport" charset="UTF-8" content="width=device-width, initial-scale=1.0">
+    <title>Uni Journey — Examinations</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Custom stylesheet -->
+    <link rel="stylesheet" href="/css/booklet.css">
+
+    <!-- JS for theme toggle (shared style) -->
+    <script src="/js/booklet.js" defer></script>
+</head>
+
+<body>
+
+<!-- ========================================================== -->
+<!-- HEADER -->
+<!-- ========================================================== -->
+<header class="main-header">
+    <div class="header-inner">
+        <div class="logo">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none">
+                <rect x="2" y="3" width="20" height="6" rx="1.5" fill="#2563eb"/>
+                <rect x="2" y="13" width="20" height="8" rx="2" fill="#1e40af"/>
+            </svg>
+            <h1 class="brand">UNI JOURNEY</h1>
+        </div>
+        <div class="theme-toggle" id="theme-toggle" title="Toggle theme">
+            <i class="fas fa-moon"></i>
+        </div>
+    </div>
+</header>
+
+<!-- ========================================================== -->
+<!-- MAIN CONTENT -->
+<!-- ========================================================== -->
+<main class="container">
+
+    <!-- Page Title -->
+    <section class="page-header">
+        <h1>Examination booklet</h1>
+        <p class="subtitle">Overview of all your completed exams</p>
+    </section>
+
+    <!-- Table -->
+    <div class="table-card">
+        <table>
+            <thead>
+            <tr>
+                <th>Course</th>
+                <th>CFU</th>
+                <th>Grade</th>
+                <th>Date</th>
+                <th>Degree Course</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="examination : ${examinations}">
+                <td th:text="${examination.courseName}">Course</td>
+                <td th:text="${examination.courseCfu}">CFU</td>
+                <td>
+                    <span th:text="${examination.grade}">Grade</span>
+                    <span th:if="${examination.withHonors}"> 🎓 with honors</span>
+                </td>
+                <td th:text="${examination.date}">Date</td>
+                <td th:text="${examination.degreeCourseName}">Degree course name</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Summary Section -->
+    <section class="summary-cards">
+        <div class="summary-card">
+            <i class="fa-solid fa-layer-group"></i>
+            <h3>Credits Acquired</h3>
+            <p th:text="${#aggregates.sum(examinations.![courseCfu])}">Total CFU</p>
+        </div>
+
+        <div class="summary-card">
+            <i class="fa-solid fa-star"></i>
+            <h3>Average Rating</h3>
+            <p th:text="${#numbers.formatDecimal(#aggregates.avg(examinations.![grade]), 2, 2)}">Average Rating</p>
+        </div>
+    </section>
+
+    <!-- Back Button -->
+    <div class="form-actions">
+        <a th:href="@{/user_student/examinations/examination-menu}" class="home-link">🏠 Back to Menu</a>
+    </div>
+
+</main>
+
+</body>
+</html>
+

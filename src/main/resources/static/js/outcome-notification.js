@@ -1,51 +1,58 @@
-const socket = new SockJS('http://localhost:8081/ws');
-const stompClient = Stomp.over(socket);
+document.addEventListener("DOMContentLoaded", () => {
 
+    const notifyContainer = document.getElementById("notify");
+    if (!notifyContainer) {
+        console.error("Notification container not found!");
+        return;
+    }
 
-// web socket connection
-stompClient.connect({}, function (frame) {
-    console.log('Connected: ' + frame);
+    // --- Funzione per mostrare toast interni alla card ---
+    function createNotificationCard(message, id = null) {
+        const notification = document.createElement("div");
+        notification.className = "notification-item";
+        notification.innerHTML = `
+            <p>${message}</p>
+            ${id !== null ? `<button class="btn-accept" data-id="${id}">Accept</button>` : ""}
+        `;
 
-    // subscription to personal topic
-    stompClient.subscribe('/user/topic/exam-outcome', function (notification) {
-        let message = notification.body;
+        if (id !== null) {
+            const btn = notification.querySelector(".btn-accept");
+            btn.addEventListener("click", () => markAsRead(id, notification));
+        }
 
-        // append to notification table
-        let row = "<tr><td>" + message + "</td></tr>";
-        document.getElementById("notify").insertAdjacentHTML("beforeend", row);
+        notifyContainer.prepend(notification); // le più recenti sopra
+    }
+
+    // --- Funzione per segnare come letto ---
+    function markAsRead(id, element) {
+        fetch(`/api/v1/notifications/${id}/read`, { method: "POST" })
+            .then(res => {
+                if (!res.ok) throw new Error("Failed to mark as read");
+                element.remove();
+            })
+            .catch(err => console.error("Error marking notification as read:", err));
+    }
+
+    // --- Recupera notifiche preesistenti ---
+    fetch('/api/v1/outcome-notifications')
+        .then(res => res.json())
+        .then(notifications => {
+            notifications.forEach(n => createNotificationCard(n.message, n.id));
+        })
+        .catch(err => console.error("Error fetching notifications:", err));
+
+    // --- WebSocket real-time ---
+    const socket = new SockJS('http://localhost:8081/ws');
+    const stompClient = Stomp.over(socket);
+
+    stompClient.connect({}, frame => {
+        console.log('Connected: ' + frame);
+
+        // Sottoscrizione al topic personale
+        stompClient.subscribe('/user/topic/exam-outcome', notification => {
+            const data = JSON.parse(notification.body);
+            createNotificationCard(data.message, data.id);
+        });
     });
 });
 
-
-// function to render notification
-function renderNotification(id, message) {
-    let row = `
-        <tr data-id="${id}">
-            <td>${message}</td>
-            <td>
-                <button onclick="markAsRead(${id})">Accetta</button>
-            </td>
-        </tr>`;
-    document.getElementById("notify").insertAdjacentHTML("beforeend", row);
-}
-
-
-// retrieve notifications
-fetch('/api/v1/outcome-notifications')
-    .then(res => res.json())
-    .then(notifications => {
-        notifications.forEach(n => {
-            let row = "<tr><td>" + n.message + "</td></tr>";
-            document.getElementById("notify").insertAdjacentHTML("beforeend", row);
-        });
-    });
-
-
-// function to mark notification as read
-function markAsRead(id) {
-    fetch(`/api/v1/notifications/${id}/read`, { method: "POST" })
-        .then(() => {
-            let row = document.querySelector(`tr[data-id='${id}']`);
-            if (row) row.remove();
-        });
-}

@@ -43,7 +43,7 @@ public class ProfessorController {
      * Retrieves all professors
      * @return ModelAndView
      */
-    @GetMapping(path = "/read/professors")
+    @GetMapping(path = "/read/all")
     public ModelAndView getAllProfessors() {
         List<ProfessorDto> professors = professorService.getProfessors();
         return new ModelAndView("user_admin/professor/read/professors", PROFESSORS, professors);

@@ -4,40 +4,64 @@
     xmlns:th="http://www.thymeleaf.org"
     xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
-    <meta name="viewport" charset="UTF-8" content="width=device-width, initial-scale=1.0">
-    <title>Uni Journey</title>
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uni Journey - Study Plan Courses</title>
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" type="text/css" href="/css/study-plan-courses.css">
 </head>
 <body>
 
-    <h1>Study plan</h1>
-
-    <div class="table-container">
-        <table>
-            <thead>
-                <tr>
-                    <th>Degree Course</th>
-                    <th>Course Name</th>
-                    <th>CFU</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr th:each="course : ${courses}">
-                    <td th:text="${course.degreeCourse.name}">Degree Course</td>
-                    <td th:text="${course.name}">Course Name</td>
-                    <td th:text="${course.cfu}">CFU</td>
-                </tr>
-            </tbody>
-        </table>
+<!-- ===== HEADER ===== -->
+<header class="main-header">
+    <div class="header-inner">
+        <div class="logo">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none">
+                <rect x="2" y="3" width="20" height="6" rx="1.5" fill="#2563eb"/>
+                <rect x="2" y="13" width="20" height="8" rx="2" fill="#1e40af"/>
+            </svg>
+            <h1 class="brand">UNI JOURNEY</h1>
+        </div>
+        <div class="theme-toggle" id="theme-toggle" title="Toggle theme">
+            <i class="fas fa-moon"></i>
+        </div>
     </div>
+</header>
 
-    <div class="form-actions">
-        <a th:href="@{/api/v1/study-plan/change}" class="home-link">Modify</a>
-        <a th:href="@{/user_student/student-home}" class="home-link">Back to Menu</a>
-    </div>
+<!-- ===== MAIN ===== -->
+<main class="content-wrapper">
+    <section class="card fade-in">
+        <h1 class="title">📚 Study Plan Courses</h1>
 
+        <div class="table-container">
+            <table class="styled-table">
+                <thead>
+                    <tr>
+                        <th>Degree Course</th>
+                        <th>Course Name</th>
+                        <th>CFU</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="course : ${courses}">
+                        <td th:text="${course.degreeCourse.name}">Degree Course</td>
+                        <td th:text="${course.name}">Course Name</td>
+                        <td th:text="${course.cfu}">CFU</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="form-actions">
+            <a th:href="@{/api/v1/study-plan/change}" class="btn btn-primary">✏️ Modify</a>
+            <a th:href="@{/user_student/student-home}" class="btn btn-secondary">🏠 Back to Menu</a>
+        </div>
+    </section>
+</main>
+
+<script src="/js/study-plan-courses.js" type="module"></script>
 </body>
 </html>
+
 
 

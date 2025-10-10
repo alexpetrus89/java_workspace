@@ -1,119 +1,142 @@
-/* Stile generale per il corpo della pagina */
+/* ---------- Root Variables ---------- */
+:root {
+    --primary: #0074d9;
+    --background: #f7f9fc;
+    --text: #1e293b;
+    --card: #ffffff;
+    --border: #d1d5db;
+    --success: #10b981;
+    --transition: 0.3s ease-in-out;
+}
+:root.dark {
+    --background: #0f172a;
+    --text: #f1f5f9;
+    --card: #1e293b;
+    --border: #334155;
+    --success: #34d399;
+}
+
+/* ---------- Global ---------- */
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f0f2f5;
     margin: 0;
     padding: 0;
+    background-color: var(--background);
+    color: var(--text);
+    transition: background-color var(--transition), color var(--transition);
 }
 
-/* Contenitore centrale per il contenuto */
-.container {
-    max-width: 600px;
-    margin: 60px auto;
+/* ---------- Header ---------- */
+.main-header {
+    position: sticky;
+    top: 0;
+    background: rgba(255,255,255,0.75);
+    backdrop-filter: blur(10px);
+    padding: 15px 20px;
+    border-bottom: 1px solid var(--border);
+    z-index: 1000;
+}
+:root.dark .main-header { background: rgba(30,41,59,0.75); }
+
+.header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1200px;
+    margin: auto;
+}
+
+.logo { display: flex; align-items: center; gap: 10px; }
+.brand { font-weight: 800; font-size: 1.3rem; color: var(--primary); }
+
+.theme-toggle { cursor: pointer; font-size: 1.2rem; color: var(--text); transition: 0.3s; }
+.theme-toggle:hover { transform: rotate(20deg); color: var(--primary); }
+
+/* ---------- Card ---------- */
+.card-container {
+    display: flex;
+    justify-content: center;
+    margin: 40px 20px;
+}
+
+.card {
+    background-color: var(--card);
+    border-radius: 12px;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.1);
     padding: 30px;
-    background-color: #ffffff;
-    border-radius: 10px;
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    width: 100%;
     text-align: center;
+    transition: background-color var(--transition), color var(--transition);
 }
 
-/* Intestazione principale */
-h1 {
-    font-size: 2rem;
-    color: #2c3e50;
+/* ---------- Animation ---------- */
+.fade-in {
+    opacity: 0;
+    transform: translateY(15px);
+    animation: fadeInUp 0.8s ease forwards;
+}
+
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ---------- Title ---------- */
+.title {
+    font-size: 1.8rem;
+    color: var(--primary);
     margin-bottom: 20px;
 }
 
-/* Paragrafi informativi */
-p {
-    font-size: 1rem;
-    color: #555;
+/* ---------- Details ---------- */
+.details p {
+    font-size: 1.1em;
     margin: 10px 0;
-}
-
-/* Etichette dei campi del modulo */
-label {
-    display: block;
-    font-weight: 600;
-    margin-bottom: 5px;
-    color: #333;
     text-align: left;
 }
 
-/* Input di testo */
-input[type="text"] {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 1rem;
-    box-sizing: border-box;
-    margin-bottom: 15px;
-}
+.details strong { color: var(--text); }
 
-/* Checkbox */
-input[type="checkbox"] {
-    margin-right: 10px;
-}
-
-/* Pulsanti di invio e reset */
-input[type="submit"],
-input[type="reset"],
-button {
-    padding: 10px 20px;
-    margin: 10px 5px 0 0;
-    border: none;
-    border-radius: 5px;
-    background-color: #007bff;
-    color: white;
-    cursor: pointer;
-    font-size: 1rem;
-    transition: background-color 0.3s ease;
-}
-
-/* Effetto hover per i pulsanti */
-input[type="submit"]:hover,
-input[type="reset"]:hover,
-button:hover {
-    background-color: #0056b3;
-}
-
-/* Link di navigazione */
-a {
-    display: inline-block;
+/* ---------- Success Message ---------- */
+.success-message {
+    background-color: rgba(16, 185, 129, 0.1);
+    border-left: 5px solid var(--success);
+    color: var(--success);
+    border-radius: 8px;
+    padding: 15px;
     margin-top: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-weight: 500;
+    font-size: 1.1em;
+}
+
+/* ---------- Action ---------- */
+.action { margin-top: 30px; text-align: center; }
+
+.btn {
+    display: inline-block;
     padding: 10px 20px;
-    font-size: 1rem;
-    font-weight: 600;
+    background-color: var(--primary);
     color: #fff;
-    background-color: #007bff;
     text-decoration: none;
-    border-radius: 5px;
-    transition: background-color 0.3s ease;
-}
-
-/* Effetto hover per i link */
-a:hover {
-    background-color: #0056b3;
-}
-
-/* Evidenzia la presenza dello studente */
-.present {
+    border-radius: 6px;
     font-weight: bold;
-    color: green;
+    transition: background var(--transition), transform 0.2s ease;
+}
+.btn:hover {
+    background-color: #005fa3;
+    transform: translateY(-2px);
 }
 
-/* Nasconde gli elementi con la classe 'hidden' */
-.hidden {
-    display: none;
+/* ---------- Responsive ---------- */
+@media (max-width: 768px) {
+    .card-container { margin: 20px 10px; }
+    .card { padding: 20px; }
+    .details p { font-size: 1em; }
+    .btn { width: 100%; margin-top: 10px; }
 }
 
-/* Nasconde inizialmente il contenitore dei campi */
-#fields {
-    display: none;
-}
-
-/* Nasconde inizialmente la sezione 'con lode' */
-#withHonors {
-    display: none;
-}

@@ -42,7 +42,7 @@ public class DegreeCourseController {
      * retrieves all degree courses
      * @return ModelAndView
      */
-    @GetMapping(path = "/read/degree-courses")
+    @GetMapping(path = "/read/all")
     public ModelAndView getAllDegreeCourses() {
         Set<DegreeCourseDto> degreeCourses = degreeCourseService.getDegreeCourses();
         return new ModelAndView("user_admin/degree_course/read/degree-courses", "degreeCourses", degreeCourses);

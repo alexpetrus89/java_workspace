@@ -85,11 +85,11 @@ public class StudyPlanController {
     public ModelAndView modifyStudyPlan(@AuthenticationPrincipal Student student) {
         // Retrieve all degree courses, student's degree course, student's study plan and security token
         Set<DegreeCourseDto> degreeCourses = degreeCourseService.getDegreeCourses();
-        String studentDegreeCourse = student.getDegreeCourse().getName();
+        String degreeCourse = student.getDegreeCourse().getName();
         Set<CourseDto> availableCourses = getFilteredCourses(student.getRegister());
         String token = getFirstAuthorityToken();
 
-        SwapCoursesDto courses = new SwapCoursesDto(degreeCourses, studentDegreeCourse, availableCourses, token);
+        SwapCoursesDto courses = new SwapCoursesDto(degreeCourses, degreeCourse, availableCourses, token);
 
         return new ModelAndView("user_student/study_plan/study-plan-change", "courses", courses);
     }

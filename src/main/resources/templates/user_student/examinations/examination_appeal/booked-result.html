@@ -4,30 +4,68 @@
     xmlns:th="http://www.thymeleaf.org"
     xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
-    <meta name="viewport" charset="UTF-8" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Uni Journey</title>
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
+
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Custom Styles -->
     <link rel="stylesheet" href="/css/booked-result.css">
 </head>
 <body>
-    <div class="container">
-        <h1 class="title">Appeal reservation details</h1>
 
-        <div class="error-message" th:if="${errorMessage}">
-            <p th:text="${errorMessage}"></p>
+<!-- ===== HEADER ===== -->
+<header class="main-header">
+    <div class="header-inner">
+
+        <div class="logo">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none">
+                <rect x="2" y="3" width="20" height="6" rx="1.5" fill="#2563eb"/>
+                <rect x="2" y="13" width="20" height="8" rx="2" fill="#1e40af"/>
+            </svg>
+            <h1 class="brand">UNI JOURNEY</h1>
         </div>
 
-        <div class="appeal" th:if="${appeal}">
-            <p><strong>Degree Course:</strong> <span th:text="${appeal.degreeCourse}"></span></p>
-            <p><strong>Course:</strong> <span th:text="${appeal.course}"></span></p>
-            <p><strong>Description:</strong> <span th:text="${appeal.description}"></span></p>
-            <p><strong>Date:</strong> <span th:text="${appeal.date}"></span></p>
+        <div class="theme-toggle" id="theme-toggle" title="Toggle theme">
+            <i class="fas fa-moon"></i>
         </div>
 
-        <div class="action">
-            <a href="#" th:href="@{/user_student/examinations/examination-menu}" class="btn">Back to Menu</a>
-        </div>
     </div>
+</header>
+
+<!-- ===== MAIN CONTENT ===== -->
+<main class="content-wrapper">
+    <section class="card-container">
+        <div class="card">
+            <h1 class="title">📌 Details</h1>
+
+            <!-- Messaggio di errore -->
+            <div class="error-message" th:if="${errorMessage}">
+                <p th:text="${errorMessage}"></p>
+            </div>
+
+            <!-- Dettagli dell'appello -->
+            <div class="appeal" th:if="${appeal}">
+                <p><strong>Degree Course:</strong> <span th:text="${appeal.degreeCourse}"></span></p>
+                <p><strong>Course:</strong> <span th:text="${appeal.course}"></span></p>
+                <p><strong>Description:</strong> <span th:text="${appeal.description}"></span></p>
+                <p><strong>Date:</strong> <span th:text="${appeal.date}"></span></p>
+            </div>
+
+            <div class="action">
+                <a th:href="@{/user_student/examinations/examination-menu}" class="btn">🏠 Back to Menu</a>
+            </div>
+        </div>
+    </section>
+</main>
+
+<!-- ===== TOASTS ===== -->
+<div id="toast-container"></div>
+
+<script src="/js/booked-result.js"></script>
 </body>
 </html>
+
 

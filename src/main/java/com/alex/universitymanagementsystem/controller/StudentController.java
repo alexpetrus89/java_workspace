@@ -48,7 +48,7 @@ public class StudentController {
      * Retrieves all students
      * @return ModelAndView
      */
-    @GetMapping(path = "/read/students")
+    @GetMapping(path = "/read/all")
 	public ModelAndView getAllStudents() {
         List<StudentDto> students = studentService.getStudents();
         return new ModelAndView("user_admin/student/read/students", STUDENTS, students);

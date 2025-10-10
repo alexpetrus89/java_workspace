@@ -1,237 +1,256 @@
+/* ==========================================================
+    STUDENT HOME STYLESHEETS
+    Mirrors the style hierarchy of home.css for consistency
+   ========================================================== */
+
+/* ---------- Root variables ---------- */
+:root {
+    --bg: #f5f7fa;
+    --card: #fff;
+    --text: #1e293b;
+    --muted: #64748b;
+    --primary: #2563eb;
+    --accent: #0ea5e9;
+    --border: #e2e8f0;
+    --transition: 0.4s ease;
+}
+:root.dark {
+    --bg: #0f172a;
+    --card: #1e293b;
+    --text: #f1f5f9;
+    --muted: #94a3b8;
+    --primary: #3b82f6;
+    --accent: #22d3ee;
+    --border: #334155;
+}
+
+/* ---------- Base Layout ---------- */
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(to bottom, #eef2f7, #dae3ec);
-    color: #333;
+    font-family: 'Inter', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    transition: background var(--transition), color var(--transition);
     margin: 0;
     padding: 0;
 }
 
 .container {
-    width: 90%;
-    max-width: 1200px;
+    max-width: 1100px;
     margin: 40px auto;
+    padding: 0 1rem;
 }
 
-/* HEADER */
+/* ---------- Header ---------- */
+.main-header {
+    position: sticky;
+    top: 0;
+    background: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(10px);
+    padding: 15px 20px;
+    border-bottom: 1px solid var(--border);
+    transition: background var(--transition);
+    z-index: 1000;
+}
+:root.dark .main-header { background: rgba(30,41,59,0.75); }
+
+.header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1200px;
+    margin: auto;
+}
+
+.logo { display: flex; align-items: center; gap: 10px; }
+.brand { font-weight: 800; font-size: 1.3rem; color: var(--primary); }
+
+/* Dark Mode Toggle */
+.theme-toggle {
+    cursor: pointer;
+    font-size: 1.2rem;
+    color: var(--muted);
+    transition: transform 0.3s, color 0.3s;
+}
+.theme-toggle:hover { color: var(--primary); transform: rotate(20deg); }
+
+/* ---------- Page Header ---------- */
 .page-header {
     text-align: center;
-    margin-bottom: 50px;
+    margin: 60px 0 40px;
 }
-
 .page-header h1 {
-    font-size: 3rem;
-    font-weight: 800;
-    background: linear-gradient(90deg, #2563eb, #1abc9c);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    margin-bottom: 10px;
+    font-size: 2rem;
+    color: var(--primary);
 }
-
 .page-header .subtitle {
-    font-size: 1.2rem;
-    color: #555;
-    font-weight: 500;
+    color: var(--muted);
 }
 
-/* CARD GRID */
-.card-container {
+/* ---------- Card Grid ---------- */
+.card-grid {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     gap: 25px;
 }
 
-/* CARDS */
+/* ---------- Cards ---------- */
 .card {
-    border-radius: 15px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
-    padding: 25px 20px;
+    background: var(--card);
+    border-radius: 18px;
+    padding: 25px;
     width: 260px;
     text-align: center;
-    color: #333;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    position: relative;
-    overflow: hidden;
-    cursor: pointer;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.05);
+    transition: transform 0.4s, box-shadow 0.4s;
 }
-
-/* Glow effect */
 .card:hover {
-    transform: translateY(-6px);
+    transform: translateY(-8px);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.15);
 }
-
-.study-card:hover {
-    box-shadow: 0 0 25px rgba(37, 99, 235, 0.6);
-}
-.exam-card:hover {
-    box-shadow: 0 0 25px rgba(255, 152, 0, 0.6);
-}
-.info-card:hover {
-    box-shadow: 0 0 25px rgba(0, 184, 148, 0.6);
-}
-.logout-card:hover {
-    box-shadow: 0 0 25px rgba(231, 76, 60, 0.6);
-}
-
-/* Ripple effect */
-.card::after {
-    content: "";
-    position: absolute;
-    border-radius: 50%;
-    transform: scale(0);
-    opacity: 0.5;
-    background: rgba(255, 255, 255, 0.6);
-    transition: transform 0.4s ease, opacity 0.6s ease;
-}
-
-.card.ripple::after {
-    transform: scale(10);
-    opacity: 0;
-}
-
-/* HEADER ICON + TITLE */
-.card-header {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
+.card-icon {
+    font-size: 2.5rem;
+    color: var(--primary);
     margin-bottom: 10px;
 }
+.card h3 { color: var(--primary); }
+.card p { color: var(--muted); }
 
-.card-symbol {
-    font-size: 1.6rem;
-    animation: pulse 2.5s infinite;
-}
+/* ---------- Card Variants ---------- */
+.study { border-top: 4px solid var(--primary); }
+.exam { border-top: 4px solid #ff9800; }
+.info { border-top: 4px solid #00b894; }
+.notify { border-top: 4px solid #9b59b6; }
+.logout { border-top: 4px solid #e74c3c; }
 
-@keyframes pulse {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.15); }
-}
-
-/* CARD COLOR THEMES */
-.study-card {
-    background: linear-gradient(145deg, #e6f0ff, #f8fbff);
-    border-top: 4px solid #2563eb;
-    color: #2563eb;
-}
-.exam-card {
-    background: linear-gradient(145deg, #fff4e6, #fff9f2);
-    border-top: 4px solid #ff9800;
-    color: #ff9800;
-}
-.info-card {
-    background: linear-gradient(145deg, #e6fff0, #f2fff8);
-    border-top: 4px solid #00b894;
-    color: #00b894;
-}
-.logout-card {
-    background: linear-gradient(145deg, #ffecec, #fff5f5);
-    border-top: 4px solid #e74c3c;
-    color: #e74c3c;
+/* ---------- Notification Container ---------- */
+.notification-container {
+    max-height: 220px;
+    overflow-y: auto;
+    margin-top: 12px;
 }
 
-/* LINK + ARROW */
+/* ---------- Notifications Enhancement ---------- */
+#notify {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+#notify tr {
+    background: var(--accent);
+    color: #fff;
+    border-radius: 12px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    opacity: 0;
+    transform: translateX(-20px);
+    transition: all 0.4s ease;
+}
+#notify tr.show {
+    opacity: 1;
+    transform: translateX(0);
+}
+#notify td {
+    border: none;
+    text-align: left;
+    font-size: 0.95rem;
+}
+#notify button {
+    background: #1d056c;
+    color: var(--accent);
+    border: none;
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+#notify button:hover {
+    background: #e0f2fe; /* leggero azzurro */
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+/* ---------- Card Hover Glow (Dark Mode) ---------- */
+:root.dark .card:hover {
+    box-shadow: 0 0 15px 2px var(--accent);
+}
+
+/* ---------- Links ---------- */
 .card a {
+    color: var(--accent);
+    font-weight: 600;
     text-decoration: none;
-    font-weight: bold;
-    color: inherit;
-    transition: all 0.3s ease;
 }
-
-.card a .arrow {
-    display: inline-block;
-    transition: transform 0.3s ease;
-}
-
 .card a:hover .arrow {
     transform: translateX(5px);
+    transition: transform 0.3s;
 }
 
-/* HOME BUTTON */
+/* ---------- Form Actions ---------- */
 .form-actions {
     text-align: center;
-    margin-top: 30px;
+    margin-top: 40px;
 }
-
-.home-link {
+.form-actions .home-link {
     display: inline-block;
-    padding: 12px 25px;
-    background-color: #2563eb;
-    color: white;
-    font-weight: bold;
-    border-radius: 8px;
+    background: var(--primary);
+    color: #fff;
+    font-weight: 600;
     text-decoration: none;
-    transition: background-color 0.3s ease, transform 0.3s ease;
+    padding: 12px 24px;
+    border-radius: 10px;
+    transition: background 0.3s, transform 0.3s;
+}
+.form-actions .home-link:hover {
+    background: var(--accent);
+    transform: translateY(-3px);
 }
 
-.home-link:hover {
-    background-color: #1e40af;
-    transform: translateY(-2px);
+/* ---------- Footer ---------- */
+.footer {
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    color: #fff;
+    padding: 40px 20px;
+    margin-top: 60px;
+    text-align: center;
 }
-
-/* RESPONSIVE */
-@media (max-width: 768px) {
-    .card-container {
-        flex-direction: column;
-        align-items: center;
-    }
-    .card {
-        width: 85%;
-    }
+.footer a { color: #fff; text-decoration: none; }
+.footer a:hover { text-decoration: underline; }
+.footer-divider {
+    border: none;
+    border-top: 1px solid rgba(255,255,255,0.3);
+    margin: 20px 0;
 }
+.footer-bottom p { font-size: 0.9rem; }
 
-/* TOAST SYSTEM */
+/* ---------- Toast Notifications ---------- */
 #toast-container {
     position: fixed;
-    bottom: 30px;
-    right: 30px;
+    bottom: 25px;
+    right: 25px;
     display: flex;
     flex-direction: column;
     gap: 10px;
-    z-index: 9999;
 }
-
 .toast {
-    background: #2563eb;
+    background: var(--primary);
     color: #fff;
-    font-weight: 600;
     padding: 12px 20px;
     border-radius: 10px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
-    animation: fadeInUp 0.5s ease, fadeOut 0.5s ease 2s forwards;
-    opacity: 0.95;
-    transform-origin: bottom right;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+    animation: fadeInUp 0.5s ease, fadeOut 0.5s ease 2.8s forwards;
 }
-
-.toast.success {
-    background: #00b894;
-}
-
-.toast.warning {
-    background: #f39c12;
-}
-
-.toast.danger {
-    background: #e74c3c;
-}
-
 @keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px) scale(0.95);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
+    from {opacity: 0; transform: translateY(15px);}
+    to {opacity: 1; transform: translateY(0);}
 }
-
 @keyframes fadeOut {
-    to {
-        opacity: 0;
-        transform: translateY(20px);
-    }
+    to {opacity: 0; transform: translateY(20px);}
 }
 
 

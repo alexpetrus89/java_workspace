@@ -251,7 +251,7 @@ body {
 
 
 /* ======================================================
-   ⚓ FOOTER SECTION
+    ⚓ FOOTER SECTION
    ====================================================== */
 .footer {
     background: linear-gradient(135deg, var(--primary), var(--accent));
@@ -374,7 +374,7 @@ body {
 }
 
 /* ======================================================
-   📱 RESPONSIVE DESIGN
+    📱 RESPONSIVE DESIGN
    ====================================================== */
 @media (max-width: 900px) {
     .footer-grid {

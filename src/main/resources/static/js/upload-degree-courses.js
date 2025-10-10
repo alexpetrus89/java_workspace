@@ -6,7 +6,7 @@ getDegreeCourses();
 function getDegreeCourses() {
     $.ajax({
         type: "GET",
-        url: "/api/v1/degree-course/read/degree-courses/ajax",
+        url: "/api/v1/degree-course/read/all/ajax",
         dataType: "json",
 
         // success

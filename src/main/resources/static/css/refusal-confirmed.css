@@ -5,14 +5,8 @@
     --text: #1e293b;
     --card: #ffffff;
     --border: #d1d5db;
-    --error-bg: #f8d7da;
-    --error-text: #721c24;
-    --passed-bg: #e6f4ea;
-    --passed-border: #22c55e;
-    --insufficient-bg: #fff8e1;
-    --insufficient-border: #facc15;
-    --failed-bg: #ffe6e6;
-    --failed-border: #ef4444;
+    --success-bg: #ecfdf5;
+    --success-border: #10b981;
     --transition: 0.3s ease-in-out;
 }
 :root.dark {
@@ -20,11 +14,8 @@
     --text: #f1f5f9;
     --card: #1e293b;
     --border: #334155;
-    --error-bg: #b91c1c33;
-    --error-text: #f87171;
-    --passed-bg: #164e2f33;
-    --insufficient-bg: #a1620733;
-    --failed-bg: #b91c1c33;
+    --success-bg: #064e3b66;
+    --success-border: #34d399;
 }
 
 /* ---------- Global ---------- */
@@ -74,42 +65,42 @@ body {
     border-radius: 12px;
     box-shadow: 0 6px 16px rgba(0,0,0,0.1);
     padding: 30px;
-    max-width: 600px;
+    max-width: 500px;
     width: 100%;
-    transition: background-color var(--transition), color var(--transition);
+    text-align: center;
+    transition: background-color var(--transition), border-color var(--transition), color var(--transition);
 }
 
+.card.success {
+    background-color: var(--success-bg);
+    border-left: 6px solid var(--success-border);
+}
+
+/* ---------- Icon & Animation ---------- */
+.success-icon {
+    font-size: 3.5rem;
+    color: var(--success-border);
+    margin-bottom: 10px;
+}
+
+@keyframes bounce {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+}
+
+.bounce {
+    animation: bounce 1.5s infinite ease-in-out;
+}
+
+/* ---------- Text ---------- */
 .title {
-    text-align: center;
     font-size: 1.8rem;
     color: var(--primary);
-    margin-bottom: 20px;
-}
-
-/* ---------- Appeal / Outcome Details ---------- */
-.appeal p {
-    font-size: 1.1em;
-    margin: 10px 0;
-}
-.appeal strong { color: var(--text); }
-.appeal {
-    padding: 15px;
-    border-radius: 10px;
-    border-left: 4px solid var(--border);
     margin-bottom: 15px;
-    transition: background-color var(--transition), border-color var(--transition);
 }
 
-/* Colori risultati */
-.passed { background-color: var(--passed-bg); border-color: var(--passed-border); }
-.insufficient { background-color: var(--insufficient-bg); border-color: var(--insufficient-border); }
-.failed { background-color: var(--failed-bg); border-color: var(--failed-border); }
-
-/* Pulsanti */
-.action {
-    text-align: center;
-    margin-top: 10px;
-}
+/* ---------- Button ---------- */
+.action { margin-top: 20px; }
 
 .btn {
     display: inline-block;
@@ -122,6 +113,7 @@ body {
     transition: background var(--transition), transform 0.2s ease;
     border: none;
     cursor: pointer;
+    margin: 5px;
 }
 .btn:hover {
     background-color: #005fa3;
@@ -134,4 +126,3 @@ body {
     .card { padding: 20px; }
     .btn { width: 100%; margin-bottom: 10px; }
 }
-

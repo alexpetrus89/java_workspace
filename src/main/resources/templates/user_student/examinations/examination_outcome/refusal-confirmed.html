@@ -1,20 +1,57 @@
 <!DOCTYPE html>
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+<html lang="en"
+    xmlns="http://www.w3.org/1999/xhtml"
     xmlns:th="https://www.thymeleaf.org"
     xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
     <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
-    <title>Uni Journey</title>
+    <title>Uni Journey - Refusal Confirmed</title>
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
-    <link rel="stylesheet" type="text/css" href="/css/refusal-confirmed.css">
+
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/refusal-confirmed.css">
 </head>
 <body>
 
-    <div class="container">
-    <h1>Grade refusal confirmed</h1>
-    <p>Your grade will no longer be available for registration.</p>
-    <p>If you have any questions or concerns, please contact your tutor or exam administrator.</p>
-    <button type="button" onclick="window.location.href='/user_student/examinations/examination-menu';">Back to Menu</button>
+<!-- ===== HEADER ===== -->
+<header class="main-header">
+    <div class="header-inner">
+        <div class="logo">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none">
+                <rect x="2" y="3" width="20" height="6" rx="1.5" fill="#2563eb"/>
+                <rect x="2" y="13" width="20" height="8" rx="2" fill="#1e40af"/>
+            </svg>
+            <h1 class="brand">UNI JOURNEY</h1>
+        </div>
+
+        <div class="theme-toggle" id="theme-toggle" title="Toggle theme">
+            <i class="fas fa-moon"></i>
+        </div>
     </div>
+</header>
+
+<!-- ===== MAIN CONTENT ===== -->
+<main class="content-wrapper">
+    <section class="card-container">
+        <div class="card success">
+            <div class="success-icon bounce">
+                <i class="fas fa-circle-check"></i>
+            </div>
+
+            <h1 class="title">Grade Refusal Confirmed</h1>
+            <p>Your grade will no longer be available for registration.</p>
+            <p>If you have any questions or concerns, please contact your tutor or exam administrator.</p>
+
+            <div class="action">
+                <a th:href="@{/user_student/examinations/examination-menu}" class="btn">🏠 Back to Menu</a>
+            </div>
+        </div>
+    </section>
+</main>
+
+<script src="/js/refusal-confirmed.js"></script>
 </body>
 </html>

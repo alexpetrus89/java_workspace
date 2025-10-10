@@ -1,48 +1,97 @@
-* {
+/* ---------- Root Variables ---------- */
+:root {
+    --primary: #0074d9;
+    --background: #f7f9fc;
+    --text: #1e293b;
+    --card: #ffffff;
+    --border: #d1d5db;
+    --error-bg: #f8d7da;
+    --error-text: #721c24;
+    --transition: 0.3s ease-in-out;
+}
+:root.dark {
+    --background: #0f172a;
+    --text: #f1f5f9;
+    --card: #1e293b;
+    --border: #334155;
+    --error-bg: #b91c1c33;
+    --error-text: #f87171;
+}
+
+/* ---------- Global ---------- */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
+    background-color: var(--background);
+    color: var(--text);
+    transition: background-color var(--transition), color var(--transition);
 }
 
-body {
-    font-family: 'Arial', sans-serif;
-    background-color: #f4f4f9;
-    color: #333;
-    line-height: 1.6;
+.main-header {
+    position: sticky;
+    top: 0;
+    background: rgba(255,255,255,0.75);
+    backdrop-filter: blur(10px);
+    padding: 15px 20px;
+    border-bottom: 1px solid var(--border);
+    z-index: 1000;
+}
+:root.dark .main-header { background: rgba(30,41,59,0.75); }
+
+.header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1200px;
+    margin: auto;
 }
 
-.container {
-    max-width: 800px;
-    margin: 20px auto;
-    padding: 20px;
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+.logo { display: flex; align-items: center; gap: 10px; }
+.brand { font-weight: 800; font-size: 1.3rem; color: var(--primary); }
+
+/* ---------- Card ---------- */
+.card-container {
+    display: flex;
+    justify-content: center;
+    margin: 40px 20px;
+}
+
+.card {
+    background-color: var(--card);
+    border-radius: 12px;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+    padding: 30px;
+    max-width: 600px;
+    width: 100%;
+    transition: background-color var(--transition), color var(--transition);
 }
 
 .title {
     text-align: center;
-    color: #4CAF50;
+    font-size: 1.8rem;
+    color: var(--primary);
     margin-bottom: 20px;
 }
 
 .error-message {
-    background-color: #f8d7da;
-    color: #721c24;
-    padding: 10px;
-    border-radius: 5px;
+    background-color: var(--error-bg);
+    color: var(--error-text);
+    padding: 12px 15px;
+    border-radius: 6px;
     margin-bottom: 20px;
+    font-weight: 500;
 }
 
+/* ---------- Appeal Details ---------- */
 .appeal p {
     font-size: 1.1em;
     margin: 10px 0;
 }
 
-.appeal strong {
-    color: #333;
-}
+.appeal strong { color: var(--text); }
 
+/* ---------- Action Button ---------- */
 .action {
     text-align: center;
     margin-top: 20px;
@@ -51,14 +100,15 @@ body {
 .btn {
     display: inline-block;
     padding: 10px 20px;
-    background-color: #4CAF50;
-    color: white;
+    background-color: var(--primary);
+    color: #fff;
     text-decoration: none;
-    border-radius: 5px;
+    border-radius: 6px;
     font-weight: bold;
-    transition: background-color 0.3s;
+    transition: background var(--transition), transform 0.2s ease;
+}
+.btn:hover {
+    background-color: #005fa3;
+    transform: translateY(-2px);
 }
 
-.btn:hover {
-    background-color: #45a049;
-}

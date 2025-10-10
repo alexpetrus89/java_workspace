@@ -3,6 +3,7 @@ package com.alex.universitymanagementsystem.controller;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -55,7 +56,7 @@ public class ExaminationController {
      * Returns a list of examinations
      * @return ModelAndView
      */
-    @GetMapping(path = "/read/examinations")
+    @GetMapping(path = "/read/all")
     public ModelAndView getAllExaminations() {
         List<ExaminationDto> examinations = examinationService.getExaminations();
         return new ModelAndView(EXAMINATIONS_LIST, EXAMINATIONS, examinations);
@@ -88,7 +89,23 @@ public class ExaminationController {
         Register studRegister = student != null ? student.getRegister() : new Register(register);
 
         List<ExaminationDto> examinations = examinationService.getExaminationsByStudentRegister(studRegister);
-        return new ModelAndView("user_student/examinations/examinations", EXAMINATIONS, examinations);
+        return new ModelAndView("user_student/examinations/booklet/booklet", EXAMINATIONS, examinations);
+    }
+
+
+    /**
+     * Returns a list of examinations by student register
+     * @param student student
+     * @param register register of the student
+     * @return ModelAndView
+     */
+    @GetMapping(path = "/read/student/register/ajax", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<ExaminationDto> getExaminationsByStudentJson(
+        @AuthenticationPrincipal Student student,
+        @RequestParam(required = false) String register
+    ) {
+        Register studRegister = student != null ? student.getRegister() : new Register(register);
+        return examinationService.getExaminationsByStudentRegister(studRegister);
     }
 
 

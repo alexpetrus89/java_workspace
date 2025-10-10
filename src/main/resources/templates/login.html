@@ -1,71 +1,120 @@
-<!DOCTYPE HTML>
-<html lang="en"
-    xmlns:th="https://www.thymeleaf.org"
+<!DOCTYPE html>
+<html lang="it"
     xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<!-- =============================== -->
+<!-- HEAD SECTION -->
+<!-- =============================== -->
 <head>
-    <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
-    <title>Uni Journey</title>
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | Uni Journey</title>
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
-    <link rel="stylesheet" type="text/css" href="/css/login.css">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="/css/login.css">
 </head>
+
+<!-- =============================== -->
+<!-- BODY SECTION -->
+<!-- =============================== -->
 <body>
 
-    <div class="title-container">
-        <h1 class="title">UNI JOURNEY Login</h1>
-
-        <div class="message-container" th:if="${param.logout}">
-            <p class="logout-message">You have been logged out.</p>
+<!-- =============================== -->
+<!-- HEADER SECTION -->
+<!-- =============================== -->
+<header class="main-header">
+    <div class="header-inner">
+        <div class="logo">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
+                <rect x="2" y="3" width="20" height="6" rx="1.5" fill="#2563eb"/>
+                <rect x="2" y="13" width="20" height="8" rx="2" fill="#1e40af"/>
+            </svg>
+            <h1 class="brand">UNI JOURNEY</h1>
         </div>
-
-        <div th:if="${errorMessage}">
-            <p class="error-message" th:text="${errorMessage}"></p>
+        <div class="theme-toggle" id="theme-toggle" title="Cambia tema">
+            <i class="fas fa-moon"></i>
         </div>
+    </div>
+</header>
 
-        <div th:if="${oauth2ErrorMessage}">
-            <p class="error-message" th:text="${oauth2ErrorMessage}"></p>
-        </div>
+<!-- =============================== -->
+<!-- FLOATING ORBS BACKGROUND -->
+<!-- =============================== -->
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+<div class="orb orb3"></div>
 
-        <!-- Messaggio di errore specifico login -->
-        <div th:if="${errorMessage}">
-            <p class="error-message">Unable to login. Check your username and password.</p>
-        </div>
+<!-- =============================== -->
+<!-- LOGIN SECTION -->
+<!-- =============================== -->
+<main class="login-wrapper">
 
-        <!-- FORM LOGIN -->
-        <form method="POST" th:action="@{/login}" id="loginForm">
+    <!-- =============================== -->
+    <!-- HERO VISUAL ORBS FOR LOGIN -->
+    <!-- =============================== -->
+    <div class="hero-visual login-orbs" aria-hidden="true">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
+
+    <div class="login-card">
+        <h2><i class="fa-solid fa-right-to-bracket"></i> Sign in</h2>
+        <p class="subtitle">Enter your personal space</p>
+
+        <!-- MESSAGGI -->
+        <div th:if="${errorMessage}" class="alert error" th:text="${errorMessage}"></div>
+        <div th:if="${param.logout}" class="alert success">Logout successful.</div>
+
+        <!-- =============================== -->
+        <!-- DYNAMIC GREETING -->
+        <!-- =============================== -->
+        <div id="greeting" class="greeting-message"></div>
+
+        <!-- FORM -->
+        <form method="post" th:action="@{/login}">
             <div class="form-group">
-                <input type="text" name="username" id="username" placeholder=" " required autocomplete="username"/>
-                <label for="username">Username</label>
+                <label for="username"><i class="fa-solid fa-user"></i> Username</label>
+                <input type="text" id="username" name="username" required autocomplete="username" />
             </div>
 
             <div class="form-group">
-                <input type="password" name="password" id="password" placeholder=" " required autocomplete="new-password"/>
-                <label for="password">Password</label>
+                <label for="password"><i class="fa-solid fa-lock"></i> Password</label>
+                <input type="password" id="password" name="password" required autocomplete="current-password" />
             </div>
 
-            <input type="submit" value="Login"/>
+            <button type="submit" class="btn primary">Login</button>
 
-            <hr>
+            <div class="divider"><span>Or</span></div>
 
-            <p>Or log in with:</p>
             <div class="social-login">
-                <a th:href="@{/oauth2/authorization/google}" class="google">Google</a>
-                <a th:href="@{/oauth2/authorization/github}" class="github">GitHub</a>
+                <a th:href="@{/oauth2/authorization/google}" class="btn social google">
+                    <i class="fab fa-google"></i> Google
+                </a>
+                <a th:href="@{/oauth2/authorization/github}" class="btn social github">
+                    <i class="fab fa-github"></i> GitHub
+                </a>
             </div>
 
-            <p class="register-link">
-                New user? Click <a th:href="@{/registration}">here</a> to register.
-            </p>
-
-            <p class="forgot-password">
-                Forgot your password? Click <a th:href="@{/forgot-password}">here</a> to reset it.
+            <p class="links">
+                New user? <a th:href="@{/registration}">Register</a><br>
+                Forgot your password? <a th:href="@{/forgot-password}">Recover</a>
             </p>
         </form>
 
-        <div class="form-actions">
-            <a href="/" class="home-link">Home</a>
-        </div>
+        <a href="/" class="home-link"><i class="fa-solid fa-house"></i> Back to home</a>
     </div>
+</main>
 
+<!-- =============================== -->
+<!-- SCRIPTS -->
+<!-- =============================== -->
+<script src="/js/login.js" defer></script>
 </body>
 </html>
+

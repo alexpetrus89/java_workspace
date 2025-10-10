@@ -74,7 +74,7 @@ public class ExaminationOutcomeController {
      * @param student of the student
      * @return ModelAndView
      */
-    @GetMapping(path = "/read/outcomes")
+    @GetMapping(path = "/read/all")
     public ModelAndView getAllExaminationOutcomes(@AuthenticationPrincipal Student student) {
         List<ExaminationOutcomeDto> outcomes = examinationOutcomeService.getStudentOutcomes(student.getRegister().toString());
         return new ModelAndView("user_student/examinations/examination_outcome/outcome", "outcomes", outcomes);
@@ -135,7 +135,7 @@ public class ExaminationOutcomeController {
             // Reindirizza alla pagina di conferma del rifiuto
             response.sendRedirect("/user_student/examinations/examination_outcome/refusal-confirmed");
         // Reindirizza alla pagina di outcome-result
-        response.sendRedirect("/api/v1/examination-outcome/view");
+        response.sendRedirect("/api/v1/examination-outcome/all");
     }
 
 

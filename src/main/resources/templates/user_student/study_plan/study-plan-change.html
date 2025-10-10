@@ -1,61 +1,100 @@
 <!DOCTYPE html>
 <html lang="en"
     xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:th="http://www.thymeleaf.org"
-    xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+    xmlns:th="https://www.thymeleaf.org"
+    xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
-    <meta name="viewport" charset="UTF-8" content="width=device-width, initial-scale=1.0">
-    <title>Uni Journey</title>
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uni Journey - Study Plan Change</title>
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
-    <link rel="stylesheet" type="text/css" href="/css/study-plan-change.css">
+
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/study-plan-change.css">
+
+    <!-- JS -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="/js/upload-courses.js" type="module"></script>
 </head>
 <body>
-    <header class="main-header">
-        <h1>UNI JOURNEY</h1>
-    </header>
-    <br>
-    <form action="#" th:action="@{/api/v1/study-plan/swap}"
-        th:object="${courses}" method="post">
-        <input type="hidden" name="_method" value="PUT"/>
 
-        <label for="degreeCourseOfNewCourse">Degree Course of new course:</label>
-        <select name="degreeCourseOfNewCourse" id="degreeCourseOfNewCourse">
-            <option value="">Select a degree course</option>
-            <option th:each="degreeCourse : ${courses.degreeCourses}"
-            th:text="${degreeCourse.name}"></option>
-        </select>
-        </p>
-
-        <label for="courseToAdd">Select course to add:</label>
-        <select name="courseToAdd" id="courseToAdd">
-            <option value="">Select a course</option>
-            <option th:each="course : ${courseToAdd}"
-            th:text="${course.name}"></option>
-        </select>
-        </p>
-
-        <input type="hidden" name="degreeCourseOfOldCourse" id="degreeCourseOfOldCourse" th:value="${courses.studyPlan[0].degreeCourse.name}"/>
-
-        <label for="courseToRemove">Select course to remove:</label>
-        <select name="courseToRemove" id="courseToRemove">
-            <option value="">Select a course</option>
-            <option th:each="course : ${courses.studyPlan}"
-            th:text="${course.name}"></option>
-        </select>
-        </p>
-
-        <input type="submit" value="Submit"/>
-        <input type="reset" value="Reset"/>
-        </p>
-    </form>
-    <!-- Links moved below the form -->
-    <div class="form-actions">
-        <a th:href="@{/api/v1/study-plan/read}" class="home-link">Back to study plan view</a>
+<!-- ===== HEADER ===== -->
+<header class="main-header">
+    <div class="header-inner">
+        <div class="logo">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none">
+                <rect x="2" y="3" width="20" height="6" rx="1.5" fill="#2563eb"/>
+                <rect x="2" y="13" width="20" height="8" rx="2" fill="#1e40af"/>
+            </svg>
+            <h1 class="brand">UNI JOURNEY</h1>
+        </div>
+        <div class="theme-toggle" id="theme-toggle" title="Toggle theme">
+            <i class="fas fa-moon"></i>
+        </div>
     </div>
-    <div class="form-actions">
-        <a th:href="@{/user_student/student-home}" class="home-link">Back to home</a>
-    </div>
+</header>
+
+<!-- ===== MAIN CONTENT ===== -->
+<main class="content-wrapper">
+    <section class="card-container">
+        <div class="card">
+            <h1 class="title">✏️ Change Study Plan</h1>
+
+            <form th:action="@{/api/v1/study-plan/swap}" th:object="${courses}" method="post">
+                <input type="hidden" name="_method" value="PUT"/>
+
+                <!-- Degree Course -->
+                <label for="degreeCourseOfNewCourse">Degree Course of new course:</label>
+                <select name="degreeCourseOfNewCourse" id="degreeCourseOfNewCourse" required>
+                    <option value="">Select a degree course</option>
+                    <option th:each="degreeCourse : ${courses.degreeCourses}" 
+                            th:value="${degreeCourse.name}" 
+                            th:text="${degreeCourse.name}">
+                    </option>
+                </select>
+
+                <!-- Course to Add -->
+                <label for="courseToAdd">Select course to add:</label>
+                <select name="courseToAdd" id="courseToAdd" required>
+                    <option value="">Select a course</option>
+                    <option th:each="course : ${courseToAdd}" 
+                            th:value="${course.name}" 
+                            th:text="${course.name}">
+                    </option>
+                </select>
+
+                <!-- Hidden Old Degree Course -->
+                <input type="hidden" name="degreeCourseOfOldCourse" id="degreeCourseOfOldCourse" 
+                       th:value="${courses.studyPlan[0].degreeCourse.name}"/>
+
+                <!-- Course to Remove -->
+                <label for="courseToRemove">Select course to remove:</label>
+                <select name="courseToRemove" id="courseToRemove" required>
+                    <option value="">Select a course</option>
+                    <option th:each="course : ${courses.studyPlan}" 
+                            th:value="${course.name}" 
+                            th:text="${course.name}">
+                    </option>
+                </select>
+
+                <!-- Form Buttons -->
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                    <button type="reset" class="btn btn-secondary">Reset</button>
+                </div>
+            </form>
+
+            <!-- Navigation Links -->
+            <div class="form-actions">
+                <a th:href="@{/api/v1/study-plan/read}" class="btn btn-link">📄 Back to Study Plan</a>
+                <a th:href="@{/user_student/student-home}" class="btn btn-link">🏠 Back to Home</a>
+            </div>
+        </div>
+    </section>
+</main>
+
+<script src="/js/study-plan-change.js"></script>
 </body>
 </html>

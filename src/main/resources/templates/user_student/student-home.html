@@ -3,91 +3,155 @@
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:th="http://www.thymeleaf.org"
     xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<!-- ========================================================== -->
+<!-- HEAD SECTION -->
+<!-- ========================================================== -->
 <head>
     <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Uni Journey</title>
+    <title>Uni Journey — Student Area</title>
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
+
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Custom Styles -->
     <link rel="stylesheet" href="/css/student-home.css">
+
+    <!-- Scripts -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
     <script src="/js/student-home.js" defer></script>
 </head>
 
 <body>
 
+<!-- ========================================================== -->
+<!-- HEADER SECTION -->
+<!-- ========================================================== -->
+<header class="main-header">
+    <div class="header-inner">
+
+        <div class="logo">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none">
+                <rect x="2" y="3" width="20" height="6" rx="1.5" fill="#2563eb"/>
+                <rect x="2" y="13" width="20" height="8" rx="2" fill="#1e40af"/>
+            </svg>
+            <h1 class="brand">UNI JOURNEY</h1>
+        </div>
+
+        <div class="theme-toggle" id="theme-toggle" title="Toggle theme">
+            <i class="fas fa-moon"></i>
+        </div>
+
+    </div>
+</header>
+
+<!-- ========================================================== -->
+<!-- MAIN CONTENT -->
+<!-- ========================================================== -->
 <main class="container">
 
-    <header class="page-header">
-        <h1>Welcome, <span sec:authentication="name"></span> 👋</h1>
-        <p class="subtitle">Access all your academic tools and updates</p>
-    </header>
-
-    <section class="card-container">
-
-        <div class="card study-card" data-sound="/static/sounds/mixkit-fast-rocket-whoosh-1714.wav">
-            <div class="card-header">
-                <span class="card-symbol">📘</span>
-                <h2>Study Plan</h2>
-            </div>
-            <p>
-                Click <a th:href="@{/api/v1/study-plan/read}">here <span class="arrow">→</span></a> to view your booklet
-            </p>
-        </div>
-
-        <div class="card exam-card" data-sound="/static/sounds/mixkit-fast-rocket-whoosh-1714.wav">
-            <div class="card-header">
-                <span class="card-symbol">🧾</span>
-                <h2>Examinations</h2>
-            </div>
-            <p>
-                Click <a th:href="@{/user_student/examinations/examination-menu}">here <span class="arrow">→</span></a> to view examinations
-            </p>
-        </div>
-
-        <div class="card info-card" data-sound="/static/sounds/mixkit-fast-rocket-whoosh-1714.wav">
-            <div class="card-header">
-                <span class="card-symbol">👤</span>
-                <h2>Information</h2>
-            </div>
-            <p>
-                Click <a th:href="@{/api/v1/user/update/student}">here <span class="arrow">→</span></a> to update your data
-            </p>
-        </div>
-
-        <div class="card logout-card" data-sound="/static/sounds/mixkit-fast-rocket-whoosh-1714.wav">
-            <div class="card-header">
-                <span class="card-symbol">🚪</span>
-                <h2>Logout</h2>
-            </div>
-            <p>
-                Click <a th:href="@{/logout}">here <span class="arrow">→</span></a> to log out
-            </p>
-        </div>
-
+    <!-- ===== Hero Section ===== -->
+    <section class="page-header">
+        <h1>Welcome, <span sec:authentication="name">Student</span> 👋</h1>
+        <p class="subtitle">Access all your student tools and personal updates</p>
     </section>
 
-    <section id="notifications">
-        <h2>🔔 Notifications</h2>
-        <table id="conversation" class="table table-striped">
-            <thead>
-                <tr>
-                    <th>Message</th>
-                </tr>
-            </thead>
-            <tbody id="notify"></tbody>
-        </table>
+    <!-- ===== Card Grid ===== -->
+    <section class="card-grid">
+        <!-- Study Plan -->
+        <article class="card accent-card study">
+            <div class="card-icon"><i class="fa-solid fa-book-open"></i></div>
+            <h3>Study Plan</h3>
+            <p>
+                Click <a th:href="@{/api/v1/study-plan/read}">here <span class="arrow">→</span></a> to view your booklet.
+            </p>
+        </article>
+
+        <!-- Examinations -->
+        <article class="card accent-card exam">
+            <div class="card-icon"><i class="fa-solid fa-file-lines"></i></div>
+            <h3>Examinations</h3>
+            <p>
+                Click <a th:href="@{/user_student/examinations/examination-menu}">here <span class="arrow">→</span></a> to view examinations.
+            </p>
+        </article>
+
+        <!-- Update Info -->
+        <article class="card accent-card info">
+            <div class="card-icon"><i class="fa-solid fa-user-pen"></i></div>
+            <h3>Update Info</h3>
+            <p>
+                Click <a th:href="@{/api/v1/user/update(role='student', username=${#authentication.name})}">
+                    here <span class="arrow">→</span>
+                </a> to update your profile data.
+            </p>
+        </article>
+
+        <!-- Notifications -->
+        <article class="card accent-card notify">
+            <div class="card-icon"><i class="fa-solid fa-bell"></i></div>
+                <h3>Notifications</h3>
+                <div class="notification-container" id="notify">
+                <!-- Notifiche inserite dinamicamente qui -->
+            </div>
+        </article>
+
+        <!-- Logout -->
+        <article class="card accent-card logout">
+            <div class="card-icon"><i class="fa-solid fa-right-from-bracket"></i></div>
+            <h3>Logout</h3>
+            <p>
+                Click <a th:href="@{/logout}">here <span class="arrow">→</span></a> to log out safely.
+            </p>
+        </article>
     </section>
 
+    <!-- ===== Home Button ===== -->
     <div class="form-actions">
-        <a href="/" class="home-link">🏠 Home</a>
+        <a href="/" class="home-link">🏠 Back to Home</a>
     </div>
-
 </main>
+
+<!-- ========================================================== -->
+<!-- FOOTER (identico a home.html) -->
+<!-- ========================================================== -->
+<footer class="footer animated-footer">
+    <div class="footer-inner">
+        <div class="footer-grid">
+            <div class="footer-col">
+                <h5><i class="fa-solid fa-envelope"></i> Contacts</h5>
+                <ul>
+                    <li><a href="mailto:info@universityapp.com">info@universityapp.com</a></li>
+                    <li><span><i class="fa-solid fa-phone"></i> +39 0123 456789</span></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h5><i class="fa-solid fa-share-nodes"></i> Follow us</h5>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#"><i class="fab fa-x-twitter"></i></a>
+                </div>
+            </div>
+        </div>
+        <hr class="footer-divider">
+        <div class="footer-bottom">
+            <p>&copy; <span th:text="${#dates.format(#dates.createNow(),'yyyy')}"></span> Uni Journey — All rights reserved.</p>
+        </div>
+    </div>
+</footer>
 
 <!-- Toast Container -->
 <div id="toast-container"></div>
 
+<script src="/js/outcome-notification.js" type="module"></script>
+
 </body>
 </html>
+
 
 
 

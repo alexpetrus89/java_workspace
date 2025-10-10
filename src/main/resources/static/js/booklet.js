@@ -1,15 +1,13 @@
 /* ==========================================================
-    STUDENT HOME SCRIPT
-    Handles theme toggle, card animation, and toast feedback
-   ========================================================== */
+    BOOKLET SCRIPT
+    Handles theme toggle and feedback toast
+========================================================== */
 
 document.addEventListener("DOMContentLoaded", () => {
-
-    // === Theme Toggle ===
     const toggle = document.getElementById("theme-toggle");
     const root = document.documentElement;
 
-    // Load stored theme
+    // Carica tema salvato
     if (localStorage.getItem("theme") === "dark") {
         root.classList.add("dark");
         toggle.innerHTML = '<i class="fas fa-sun"></i>';
@@ -22,26 +20,9 @@ document.addEventListener("DOMContentLoaded", () => {
         localStorage.setItem("theme", dark ? "dark" : "light");
         showToast(dark ? "🌙 Dark mode enabled" : "☀️ Light mode enabled");
     });
-
-    // === Card Scroll Animation ===
-    const cards = document.querySelectorAll(".card");
-    const observer = new IntersectionObserver(entries => {
-        entries.forEach(e => {
-            if (e.isIntersecting) e.target.classList.add("visible");
-        });
-    }, { threshold: 0.3 });
-    cards.forEach(card => observer.observe(card));
-
-    // === Welcome Toast ===
-    const nameSpan = document.querySelector("[sec\\:authentication='name']");
-    if (nameSpan && nameSpan.textContent.trim() !== "") {
-        setTimeout(() => showToast(`Welcome back, ${nameSpan.textContent.trim()}! 👋`), 700);
-    }
 });
 
-/* ==========================================================
-    Toast helper
-   ========================================================== */
+/* ---------- Toast utility ---------- */
 function showToast(msg) {
     const container = document.getElementById("toast-container");
     const toast = document.createElement("div");
@@ -55,7 +36,3 @@ function showToast(msg) {
         setTimeout(() => toast.remove(), 400);
     }, 2800);
 }
-
-
-
-

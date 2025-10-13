@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uni Journey — System</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/system.css">
+
+    <!-- Optional JS -->
+    <script>
+        async function triggerAction(action) {
+            try {
+                const response = await fetch(`/api/v1/system/${action}`);
+                const text = await response.text();
+                alert(text);
+            } catch (err) {
+                alert("Error: " + err);
+            }
+        }
+    </script>
+</head>
+<body>
+<header class="main-header">
+    <div class="header-inner">
+        <div class="logo">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none">
+                <rect x="2" y="3" width="20" height="6" rx="1.5" fill="#2563eb"/>
+                <rect x="2" y="13" width="20" height="8" rx="2" fill="#1e40af"/>
+            </svg>
+            <h1 class="brand">UNI JOURNEY</h1>
+        </div>
+    </div>
+</header>
+
+<main class="container">
+    <section class="page-header">
+        <h1>System Management</h1>
+        <p class="subtitle">Use these actions carefully. They affect the entire application.</p>
+    </section>
+
+    <section class="card-grid system-grid">
+        <div class="card system-card restart">
+            <i class="fas fa-redo fa-3x"></i>
+            <h2>Restart App</h2>
+            <p>Restart the application safely.</p>
+            <button onclick="triggerAction('restart')">Restart</button>
+        </div>
+
+        <div class="card system-card shutdown">
+            <i class="fas fa-power-off fa-3x"></i>
+            <h2>Shutdown App</h2>
+            <p>Shutdown the application completely.</p>
+            <button onclick="triggerAction('shutdown')">Shutdown</button>
+        </div>
+    </section>
+
+    <div class="form-actions">
+        <a th:href="@{/}" class="home-link">🏠 Back to Home</a>
+    </div>
+</main>
+
+<footer class="footer animated-footer">
+    <div class="footer-inner">
+        <div class="footer-bottom">
+            <p>&copy; <span th:text="${#dates.format(#dates.createNow(),'yyyy')}"></span> Uni Journey — All rights reserved.</p>
+        </div>
+    </div>
+</footer>
+</body>
+</html>

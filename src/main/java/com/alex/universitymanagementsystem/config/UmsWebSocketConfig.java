@@ -13,12 +13,13 @@ public class UmsWebSocketConfig implements WebSocketMessageBrokerConfigurer{
 
     @Override
     public void configureMessageBroker(@NonNull MessageBrokerRegistry config){
-        // Prefisso per il broker (client -> server)
+        // Prefix for the broker (client -> server)
         config.setApplicationDestinationPrefixes("/ums");
 
-        // Prefisso per il topic/broker interno (server -> client)
+        // Prefix for the internal topic/broker (server -> client)
         config.enableSimpleBroker("/topic");
 
+        // Prefix for the public topic/broker (server -> client)
         config.setUserDestinationPrefix("/user");
     }
 

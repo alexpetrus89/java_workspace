@@ -44,6 +44,8 @@ document.addEventListener("DOMContentLoaded", () => {
    ========================================================== */
 function showToast(msg) {
     const container = document.getElementById("toast-container");
+    if(!container) return;
+
     const toast = document.createElement("div");
     toast.className = "toast";
     toast.textContent = msg;
@@ -53,7 +55,7 @@ function showToast(msg) {
         toast.style.opacity = "0";
         toast.style.transform = "translateY(20px)";
         setTimeout(() => toast.remove(), 400);
-    }, 2800);
+    }, 3300);
 }
 
 

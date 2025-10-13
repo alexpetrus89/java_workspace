@@ -1,5 +1,12 @@
 package com.alex.universitymanagementsystem.component;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
@@ -30,6 +37,59 @@ public class SystemManager {
     }
 
 
+    public static synchronized void restartByJVM() throws URISyntaxException, IOException {
+
+        if (context == null) {
+            logger.warn("No application context available to restart.");
+            return;
+        }
+
+        try {
+            File currentJar = new File(SystemManager.class
+                    .getProtectionDomain()
+                    .getCodeSource()
+                    .getLocation()
+                    .toURI());
+
+            boolean isJar = currentJar.getName().endsWith(".jar");
+
+            if (!isJar) {
+                logger.warn("Running from IDE (not a jar). Restarting in-process...");
+                new Thread(() -> {
+                    try {
+                        SpringApplication app = new SpringApplication(UniversityManagementSystemApplication.class);
+                        app.setAdditionalProfiles(context.getEnvironment().getActiveProfiles());
+                        app.run(args);
+                    } catch (Exception e) {
+                        logger.error("Failed to restart application in IDE", e);
+                    }
+                }, "In-IDE-Restart-Thread").start();
+
+                SpringApplication.exit(context, () -> 0);
+                return;
+            }
+
+            logger.info("Running from jar. Restarting via new JVM process...");
+            List<String> command = new ArrayList<>();
+            command.add(System.getProperty("java.home") + "/bin/java");
+            command.add("-jar");
+            command.add(currentJar.getPath());
+            command.addAll(Arrays.asList(args));
+
+            new ProcessBuilder(command)
+                .inheritIO() // mostra log della nuova JVM
+                .start();
+
+            SpringApplication.exit(context, () -> 0);
+
+        } catch (URISyntaxException e) {
+            logger.error("Failed to determine application jar location", e);
+        } catch (IOException e) {
+            logger.error("Failed to restart application", e);
+        }
+    }
+
+
     /**
      * Restarts the application gracefully.
      * Compatible with Spring Boot DevTools.
@@ -51,9 +111,8 @@ public class SystemManager {
                 SpringApplication app = new SpringApplication(UniversityManagementSystemApplication.class);
 
                 // Mantieni i profili attivi
-                if (context != null) {
+                if (context != null)
                     app.setAdditionalProfiles(context.getEnvironment().getActiveProfiles());
-                }
 
                 // run app
                 app.run(args); // args salvati in SystemManager

@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
 
     const notifyContainer = document.getElementById("notify");
+
     if (!notifyContainer) {
         console.error("Notification container not found!");
         return;
@@ -20,12 +21,18 @@ document.addEventListener("DOMContentLoaded", () => {
             btn.addEventListener("click", () => markAsRead(id, notification));
         }
 
-        notifyContainer.prepend(notification); // le più recenti sopra
+        notifyContainer.prepend(notification); // newest at the top
     }
+
+    const token = document.querySelector('meta[name="_csrf"]').content;
+    const header = document.querySelector('meta[name="_csrf_header"]').content;
 
     // --- Funzione per segnare come letto ---
     function markAsRead(id, element) {
-        fetch(`/api/v1/notifications/${id}/read`, { method: "POST" })
+        fetch(`/api/v1/outcome-notifications/${id}/read`, {
+            method: "POST",
+            headers: { [header]: token }
+        })
             .then(res => {
                 if (!res.ok) throw new Error("Failed to mark as read");
                 element.remove();
@@ -52,6 +59,7 @@ document.addEventListener("DOMContentLoaded", () => {
         stompClient.subscribe('/user/topic/exam-outcome', notification => {
             const data = JSON.parse(notification.body);
             createNotificationCard(data.message, data.id);
+            showToast("New notification received!");
         });
     });
 });

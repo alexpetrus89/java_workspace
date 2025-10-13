@@ -2,6 +2,7 @@ package com.alex.universitymanagementsystem.controller;
 
 import java.util.List;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -43,10 +44,12 @@ public class OutcomeNotificationController {
     /**
      * This method is used to mark a notification as read
      * @param id
+     * @return a ResponseEntity
      */
     @PostMapping("/{id}/read")
-    public void markAsRead(@PathVariable Long id) {
+    public ResponseEntity<Void> markAsRead(@PathVariable Long id) {
         outcomeNotificationService.markAsRead(id);
+        return ResponseEntity.ok().build();
     }
 
 }

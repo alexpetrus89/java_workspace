@@ -9,6 +9,8 @@
 <!-- ========================================================== -->
 <head>
     <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="_csrf" th:content="${_csrf.token}">
+    <meta name="_csrf_header" th:content="${_csrf.headerName}">
     <title>Uni Journey — Student Area</title>
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
 
@@ -95,7 +97,6 @@
             <div class="card-icon"><i class="fa-solid fa-bell"></i></div>
                 <h3>Notifications</h3>
                 <div class="notification-container" id="notify">
-                <!-- Notifiche inserite dinamicamente qui -->
             </div>
         </article>
 

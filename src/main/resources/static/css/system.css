@@ -1,0 +1,109 @@
+/* ---------- Base ---------- */
+body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: #f5f7fa;
+    color: #1e293b;
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+    text-align: center;
+}
+
+.container {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 0 1rem;
+}
+
+/* ---------- Header ---------- */
+.main-header {
+    position: sticky;
+    top: 0;
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(10px);
+    padding: 15px 20px;
+    border-bottom: 1px solid #e2e8f0;
+    z-index: 1000;
+}
+
+.header-inner { display: flex; align-items: center; justify-content: center; }
+.logo { display: flex; align-items: center; gap: 10px; }
+.brand { font-weight: 800; font-size: 1.3rem; color: #2563eb; }
+
+/* ---------- Page Header ---------- */
+.page-header { margin: 40px 0 30px; }
+.page-header h1 { font-size: 2rem; color: #2563eb; }
+.page-header .subtitle { color: #64748b; }
+
+/* ---------- Card Grid ---------- */
+.system-grid {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+}
+
+/* ---------- Cards ---------- */
+.card {
+    background: #fff;
+    border-radius: 18px;
+    padding: 25px;
+    width: 260px;
+    text-align: center;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.05);
+    transition: transform 0.4s, box-shadow 0.4s;
+}
+
+.card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+}
+
+.card i { color: #2563eb; margin-bottom: 15px; }
+.card h2 { color: #2563eb; margin-bottom: 10px; }
+.card p { color: #64748b; margin-bottom: 20px; }
+
+.system-card button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 600;
+    color: #fff;
+    background: #2563eb;
+    transition: all 0.3s ease;
+}
+
+.system-card button:hover {
+    background: #0ea5e9;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+}
+
+/* Restart / Shutdown color variants */
+.restart button { background: #0ea5e9; }
+.restart button:hover { background: #2563eb; }
+.shutdown button { background: #ef4444; }
+.shutdown button:hover { background: #b91c1c; }
+
+/* ---------- Form Actions ---------- */
+.form-actions { text-align: center; margin-top: 30px; }
+.form-actions .home-link {
+    display: inline-block;
+    background: #2563eb;
+    color: #fff;
+    padding: 12px 24px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s;
+}
+.form-actions .home-link:hover {
+    background: #0ea5e9;
+}
+
+/* ---------- Media Queries ---------- */
+@media (max-width: 768px) {
+    .system-grid { gap: 20px; }
+    .card { width: 100%; }
+}

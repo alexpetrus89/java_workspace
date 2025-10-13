@@ -1,66 +1,156 @@
-/* --- Base --- */
+/* ---------- Root Variables ---------- */
+:root {
+    --bg: #f5f7fa;
+    --card: #fff;
+    --text: #1e293b;
+    --muted: #64748b;
+    --primary: #2563eb;
+    --accent: #0ea5e9;
+    --border: #e2e8f0;
+    --transition: 0.4s ease;
+}
+
+:root.dark {
+    --bg: #0f172a;
+    --card: #1e293b;
+    --text: #f1f5f9;
+    --muted: #94a3b8;
+    --primary: #3b82f6;
+    --accent: #22d3ee;
+    --border: #334155;
+}
+
+/* ---------- Base ---------- */
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(to bottom, #f0f4f8, #dfe9f3);
-    color: #333;
+    font-family: 'Inter', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
     margin: 0;
     padding: 0;
-    text-align: center;
+    transition: background var(--transition), color var(--transition);
 }
 
-/* --- Titolo --- */
-h1 { color: #0056b3; margin: 40px 0 20px; }
+.container {
+    max-width: 700px;
+    margin: 60px auto;
+    padding: 0 1rem;
+}
 
-/* --- Form --- */
-form {
-    max-width: 500px;
-    margin: 0 auto;
-    padding: 30px;
-    background: #fff;
-    border-radius: 12px;
+/* ---------- Header ---------- */
+.main-header {
+    position: sticky;
+    top: 0;
+    background: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(10px);
+    padding: 15px 20px;
+    border-bottom: 1px solid var(--border);
+    transition: background var(--transition);
+    z-index: 1000;
+}
+:root.dark .main-header { background: rgba(30,41,59,0.75); }
+
+.header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1200px;
+    margin: auto;
+}
+
+.logo { display: flex; align-items: center; gap: 10px; }
+.brand { font-weight: 800; font-size: 1.3rem; color: var(--primary); }
+
+/* ---------- Card Form ---------- */
+.update-card {
+    background: var(--card);
+    border-radius: 18px;
+    padding: 30px 25px;
     box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+    transition: transform 0.4s, box-shadow 0.4s, background var(--transition);
 }
 
-/* --- Etichette e campi --- */
-label { display: block; margin-bottom: 8px; font-weight: bold; color: #444; }
-input, select, textarea {
+.update-card h2 {
+    font-size: 1.8rem;
+    color: var(--primary);
+    margin-bottom: 20px;
+}
+
+/* ---------- Labels & Inputs ---------- */
+label { display: block; margin-bottom: 6px; font-weight: 600; color: var(--text); }
+input, select {
     width: 100%;
     padding: 12px;
     margin-bottom: 15px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
     font-size: 16px;
-    box-sizing: border-box;
-    transition: border 0.3s;
+    background: var(--card);
+    color: var(--text);
+    transition: border var(--transition), background var(--transition), color var(--transition);
 }
-input:focus, select:focus, textarea:focus { border-color: #3498db; outline: none; }
+input:focus, select:focus {
+    outline: none;
+    border-color: var(--accent);
+}
 
-/* --- Bottoni --- */
-button, input[type="submit"], input[type="reset"], .btn {
+/* ---------- Buttons ---------- */
+.btn {
     padding: 12px 20px;
-    border: none;
-    border-radius: 8px;
+    border-radius: 10px;
+    font-weight: 600;
     cursor: pointer;
-    font-weight: bold;
-    color: #fff;
-    transition: background 0.3s;
+    transition: background 0.3s, transform 0.2s;
+    border: none;
 }
-button:hover, input[type="submit"]:hover, .primary-btn:hover { background-color: #45a049; }
-input[type="reset"]:hover, .secondary-btn:hover { background-color: #e53935; }
 
-/* --- Colori bottoni --- */
-.primary-btn, input[type="submit"] { background: #4CAF50; }
-.secondary-btn, input[type="reset"] { background: #f44336; }
+.primary-btn { background: var(--primary); color: #fff; }
+.primary-btn:hover { background: var(--accent); transform: translateY(-2px); }
 
-/* --- Link --- */
-a, .home-link { color: #3498db; text-decoration: none; display: inline-block; margin-top: 15px; padding: 10px 20px; border-radius: 8px; transition: background 0.3s; }
-a:hover, .home-link:hover { background: #2980b9; color: #fff; }
+.secondary-btn { background: #e74c3c; color: #fff; }
+.secondary-btn:hover { background: #f87171; transform: translateY(-2px); }
 
-/* --- Form actions --- */
+/* ---------- Links ---------- */
+.home-link {
+    display: inline-block;
+    margin-top: 15px;
+    padding: 10px 20px;
+    border-radius: 10px;
+    text-decoration: none;
+    color: var(--primary);
+    transition: background 0.3s, color 0.3s;
+}
+.home-link:hover { background: var(--accent); color: #fff; }
+
+/* ---------- Form Actions ---------- */
 .form-actions { text-align: center; margin-top: 20px; }
 
-/* --- Campi inline --- */
+/* ---------- Error Messages ---------- */
+.error-message p {
+    color: #e74c3c;
+    font-weight: 600;
+    margin-bottom: 15px;
+}
+
+/* ---------- Password Rules ---------- */
+#password-rules {
+    background: var(--bg);
+    border-left: 4px solid var(--primary);
+    padding: 12px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    font-size: 0.9rem;
+    color: var(--text);
+}
+#password-rules ul { margin: 5px 0 0 20px; padding: 0; }
+
+/* ---------- Inline Fields ---------- */
 .inline-field { display: inline-block; width: 48%; margin-right: 4%; vertical-align: top; }
 .inline-field input, .inline-field select { width: 100%; }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 768px) {
+    .inline-field { width: 100%; margin-right: 0; }
+}
+
 
 

@@ -55,10 +55,8 @@ public class OutcomeNotificationServiceImpl implements OutcomeNotificationServic
         throws MessagingException, ObjectNotFoundException, DataAccessServiceException {
 
         try {
-            // send WebSocket notification
-            messagingTemplate.convertAndSendToUser(username, "/topic/exam-outcome", message);
 
-            // persistenza su DB
+            // persistence
             Student student = studentRepository
                 .findByUsername(username)
                 .orElseThrow(() -> new ObjectNotFoundException(DomainType.STUDENT));
@@ -68,8 +66,10 @@ public class OutcomeNotificationServiceImpl implements OutcomeNotificationServic
             notification.setCreatedAt(LocalDateTime.now());
             notification.setExpiresAt(LocalDateTime.now().plusDays(3));
             notification.setRead(false);
-
             outcomeNotificationRepository.save(notification);
+
+            // send WebSocket notification
+            messagingTemplate.convertAndSendToUser(username, "/topic/exam-outcome", message);
         } catch (PersistenceException e) {
             throw new DataAccessServiceException("Error accessing database for fetching notifications: ", e);
         }
@@ -131,5 +131,7 @@ public class OutcomeNotificationServiceImpl implements OutcomeNotificationServic
             throw new DataAccessServiceException("Error accessing database for cleaning expired notifications: ", e);
         }
     }
+
+
 }
 

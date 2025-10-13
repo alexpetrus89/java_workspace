@@ -1,100 +1,130 @@
-/* Generale */
+/* ==========================================================
+    LOGOUT PAGE STYLES
+    Consistente con student-home.css
+   ========================================================== */
+
+/* ---------- Root variables ---------- */
+:root {
+    --bg: #f5f7fa;
+    --card: #fff;
+    --text: #1e293b;
+    --muted: #64748b;
+    --primary: #2563eb;
+    --accent: #0ea5e9;
+    --border: #e2e8f0;
+    --transition: 0.4s ease;
+}
+:root.dark {
+    --bg: #0f172a;
+    --card: #1e293b;
+    --text: #f1f5f9;
+    --muted: #94a3b8;
+    --primary: #3b82f6;
+    --accent: #22d3ee;
+    --border: #334155;
+}
+
+/* ---------- Base Layout ---------- */
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(to bottom, #f0f4f8, #dfe9f3);
-    color: #333;
+    font-family: 'Inter', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
     margin: 0;
     padding: 0;
+    transition: background var(--transition), color var(--transition);
 }
 
-/* Titolo della pagina */
-h1 {
-    color: #0056b3;
-    font-size: 32px;
+.container {
+    max-width: 800px;
+    margin: 60px auto;
+    padding: 0 1rem;
     text-align: center;
-    margin-top: 40px;
-    margin-bottom: 20px;
 }
 
-/* Form container */
-form {
+/* ---------- Header ---------- */
+.main-header {
+    position: sticky;
+    top: 0;
+    background: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(10px);
+    padding: 15px 20px;
+    border-bottom: 1px solid var(--border);
+    transition: background var(--transition);
+    z-index: 1000;
+}
+:root.dark .main-header { background: rgba(30,41,59,0.75); }
+
+.header-inner { display: flex; align-items: center; justify-content: center; }
+.logo { display: flex; align-items: center; gap: 10px; }
+.brand { font-weight: 800; font-size: 1.3rem; color: var(--primary); }
+
+/* ---------- Page Header ---------- */
+.page-header h1 {
+    font-size: 2rem;
+    color: var(--primary);
+    margin-bottom: 10px;
+}
+.page-header .subtitle {
+    color: var(--muted);
+    font-size: 1rem;
+}
+
+/* ---------- Card ---------- */
+.card {
+    background: var(--card);
+    border-radius: 18px;
+    padding: 30px 25px;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.05);
+    text-align: center;
     max-width: 400px;
-    margin: 0 auto;
-    padding: 30px;
-    background-color: #fff;
-    border-radius: 12px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
-    border: 1px solid #e0e0e0;
+    margin: 0 auto 40px auto;
+    transition: transform 0.4s, box-shadow 0.4s;
+}
+.card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 25px rgba(0,0,0,0.15);
 }
 
-/* Etichette */
-label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: 600;
-    color: #444;
+.card-icon {
+    font-size: 3rem;
+    color: var(--primary);
+    margin-bottom: 15px;
 }
 
-/* Campi input */
-input[type="submit"] {
-    width: 100%;
-    padding: 12px;
-    background-color: #0056b3;
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    font-size: 16px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
+.card h3 { color: var(--primary); margin-bottom: 15px; }
+.card p { color: var(--muted); font-size: 0.95rem; margin-bottom: 20px; }
 
-input[type="submit"]:hover {
-    background-color: #2ecc71;
-}
-
-/* Link generali */
-a {
-    text-decoration: none;
-    color: #2ecc71;
-    transition: color 0.3s;
-}
-
-a:hover {
-    color: #1abc9c;
-}
-
-/* Paragrafi e testo centrato */
-p {
-    text-align: center;
-    margin-top: 20px;
-    color: #555;
-}
-
-/* Link alla homepage */
-.home-link {
-    display: block;
-    text-align: center;
-    margin-top: 15px;
-    font-weight: 500;
-    color: #3498db;
-}
-.form-actions {
-    text-align: center;
-    margin-top: 20px;
-}
-
-.home-link {
+/* ---------- Logout Button ---------- */
+.card form button,
+.card .home-link {
     display: inline-block;
-    padding: 12px 20px;
-    background-color: #3498db;
-    color: white;
-    font-weight: bold;
+    background: var(--primary);
+    color: #fff;
+    font-weight: 600;
     text-decoration: none;
-    border-radius: 8px;
-    transition: background-color 0.3s ease;
+    padding: 12px 24px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.3s;
+    margin: 5px 0;
 }
 
-.home-link:hover {
-    background-color: #2980b9;
+.card form button:hover,
+.card .home-link:hover {
+    background: var(--accent);
+    transform: translateY(-2px);
 }
+
+/* ---------- Footer ---------- */
+.footer {
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    color: #fff;
+    padding: 40px 20px;
+    text-align: center;
+}
+.footer a { color: #fff; text-decoration: none; }
+.footer a:hover { text-decoration: underline; }
+.footer-divider { border: none; border-top: 1px solid rgba(255,255,255,0.3); margin: 20px 0; }
+.footer-bottom p { font-size: 0.9rem; }

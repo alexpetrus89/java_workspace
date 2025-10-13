@@ -185,8 +185,7 @@ public class UmsConfig {
 		"/api/v1/user/read/all",
         "/api/v1/user/manage",
 		"/api/v1/user/delete",
-        "/api/v1/system/shutdown",
-        "/api/v1/system/restart",
+        "/api/v1/system/**",
 
 		// student
         "/api/v1/student/**",

@@ -5,20 +5,82 @@
     xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
     <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
-    <title>Uni Journey</title>
+    <title>Uni Journey — Logout</title>
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
-    <link rel="stylesheet" type="text/css" href="/css/logout.css">
+
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- App Styles (riutilizza gli stessi di student-home) -->
+    <link rel="stylesheet" href="/css/logout.css">
 </head>
 <body>
-    <h1>Hello <span sec:authentication="name"></span>!</h1>
 
-    <form th:action="@{/logout}" method="post">
-        <input type="submit" value="Sign Out"/>
-    </form>
-
-    <div class="form-actions">
-        <a href="/home" class="home-link">Back to Home</a>
+<!-- Header -->
+<header class="main-header">
+    <div class="header-inner">
+        <div class="logo">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none">
+                <rect x="2" y="3" width="20" height="6" rx="1.5" fill="#2563eb"/>
+                <rect x="2" y="13" width="20" height="8" rx="2" fill="#1e40af"/>
+            </svg>
+            <h1 class="brand">UNI JOURNEY</h1>
+        </div>
     </div>
+</header>
 
+<!-- Main -->
+<main class="container">
+    <section class="page-header">
+        <h1>Goodbye, <span sec:authentication="name">User</span> 👋</h1>
+        <p class="subtitle">You have successfully logged out.</p>
+    </section>
+
+    <!-- Logout Card -->
+    <section class="card-grid" style="justify-content:center;">
+        <article class="card logout">
+            <div class="card-icon"><i class="fa-solid fa-right-from-bracket"></i></div>
+            <h3>Logout</h3>
+            <p>Click the button below to safely sign out.</p>
+
+            <form th:action="@{/logout}" method="post">
+                <button type="submit" class="home-link" style="display:inline-block;">Sign Out</button>
+            </form>
+
+            <div class="form-actions">
+                <a href="/home" class="home-link">🏠 Back to Home</a>
+            </div>
+        </article>
+    </section>
+</main>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="footer-inner">
+        <div class="footer-grid">
+            <div class="footer-col">
+                <h5><i class="fa-solid fa-envelope"></i> Contacts</h5>
+                <ul>
+                    <li><a href="mailto:info@universityapp.com">info@universityapp.com</a></li>
+                    <li><span><i class="fa-solid fa-phone"></i> +39 0123 456789</span></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h5><i class="fa-solid fa-share-nodes"></i> Follow us</h5>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#"><i class="fab fa-x-twitter"></i></a>
+                </div>
+            </div>
+        </div>
+        <hr class="footer-divider">
+        <div class="footer-bottom">
+            <p>&copy; <span th:text="${#dates.format(#dates.createNow(),'yyyy')}"></span> Uni Journey — All rights reserved.</p>
+        </div>
+    </div>
+</footer>
+
+<script src="/js/logout.js" defer></script>
 </body>
 </html>

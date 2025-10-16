@@ -21,6 +21,8 @@ public class SystemManager {
 
     private static final Logger logger = LoggerFactory.getLogger(SystemManager.class);
 
+    private static final String APPLICATION_CONTEXT_ERROR = "No application context available to restart.";
+
     private static ConfigurableApplicationContext context;
     private static String[] args;
 
@@ -40,7 +42,7 @@ public class SystemManager {
     public static synchronized void restartByJVM() throws URISyntaxException, IOException {
 
         if (context == null) {
-            logger.warn("No application context available to restart.");
+            logger.warn(APPLICATION_CONTEXT_ERROR);
             return;
         }
 
@@ -90,13 +92,50 @@ public class SystemManager {
     }
 
 
+    public static synchronized void restartWithScript() {
+        if (context == null) {
+            logger.warn(APPLICATION_CONTEXT_ERROR);
+            return;
+        }
+
+        try {
+            // chiudi il contesto Spring
+            SpringApplication.exit(context, () -> 0);
+            logger.info("Application context closed. Launching restart script...");
+
+            // determina il comando in base al sistema operativo
+            String os = System.getProperty("os.name").toLowerCase();
+            ProcessBuilder pb;
+
+            if (os.contains("win")) {
+                // Windows PowerShell
+                String command = "powershell.exe mvn clean spring-boot:run -X -e --debug";
+                pb = new ProcessBuilder("cmd.exe", "/c", command);
+            } else {
+                // Linux/macOS
+                String command = "mvn clean spring-boot:run -X -e --debug";
+                pb = new ProcessBuilder("sh", "-c", command);
+            }
+
+            // opzionale: eredita output console
+            pb.inheritIO();
+            pb.start();
+
+            logger.info("Restart script executed successfully.");
+        } catch (Exception e) {
+            logger.error("Failed to restart application via script", e);
+        }
+    }
+
+
+
     /**
      * Restarts the application gracefully.
      * Compatible with Spring Boot DevTools.
      */
     public static synchronized void restart() {
         if (context == null) {
-            logger.warn("No application context available to restart.");
+            logger.warn(APPLICATION_CONTEXT_ERROR);
             return;
         }
 

@@ -1,5 +1,6 @@
 package com.alex.universitymanagementsystem.service.impl;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -20,6 +21,7 @@ import com.alex.universitymanagementsystem.enum_type.DomainType;
 import com.alex.universitymanagementsystem.exception.DataAccessServiceException;
 import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
 import com.alex.universitymanagementsystem.mapper.CourseMapper;
+import com.alex.universitymanagementsystem.mapper.StudyPlanMapper;
 import com.alex.universitymanagementsystem.repository.StudyPlanRepository;
 import com.alex.universitymanagementsystem.service.StudyPlanService;
 
@@ -47,6 +49,24 @@ public class StudyPlanServiceImpl implements StudyPlanService {
         this.studyPlanRepository = studyPlanRepository;
         this.helpers = helpers;
         this.validators = validators;
+    }
+
+
+    /**
+     * Retrieves all study plans
+     * @return List of study plans
+     * @throws DataAccessServiceException if there is an error accessing the database.
+     */
+    public List<StudyPlanDto> getStudyPlans() throws DataAccessServiceException {
+        try {
+            return studyPlanRepository
+                .findAll()
+                .stream()
+                .map(StudyPlanMapper::toDto)
+                .toList();
+        } catch (PersistenceException e) {
+            throw new DataAccessServiceException(DATA_ACCESS_ERROR, e);
+        }
     }
 
 
@@ -170,8 +190,10 @@ public class StudyPlanServiceImpl implements StudyPlanService {
      * @param courseName
      * @param degreeCourseName
      * @return the course
+     * @throws ObjectNotFoundException if the degree course does not exist
      */
-    private Course getCourse(String courseName, String degreeCourseName) {
+    private Course getCourse(String courseName, String degreeCourseName)
+        throws ObjectNotFoundException {
         try {
             String normalizedDegreeCourse = degreeCourseName.toUpperCase();
 

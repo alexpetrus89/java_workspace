@@ -14,12 +14,12 @@ function getDegreeCourses() {
             // populates the select element with the list of degree courses
             const select = document.getElementById("degreeCourse");
             select.innerHTML = "";
-            data.forEach(function(degreeCourse) {
+            for (const degreeCourse of data) {
                 const option = document.createElement("option");
                 option.value = degreeCourse.name;
                 option.text = degreeCourse.name;
                 select.appendChild(option);
-            });
+            };
         },
 
         // error

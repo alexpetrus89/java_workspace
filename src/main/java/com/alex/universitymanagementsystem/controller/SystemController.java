@@ -1,7 +1,5 @@
 package com.alex.universitymanagementsystem.controller;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,8 +20,8 @@ public class SystemController {
     }
 
     @GetMapping("/restart")
-    public ResponseEntity<String> restartApp() throws URISyntaxException, IOException {
-        SystemManager.restartByJVM();
+    public ResponseEntity<String> restartApp() {
+        SystemManager.restartWithScript();
         return ResponseEntity.ok("Restart triggered. Check logs for progress.");
     }
 

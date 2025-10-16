@@ -90,8 +90,8 @@ public class DegreeCourseController {
      * @return http response entity
      * @throws JsonProcessingException if the object cannot be serialized to JSON
      */
-    @GetMapping(path = "read/degree-courses/ajax")
-    public ResponseEntity<Set<DegreeCourseDto>> getJsonOfDegreeCourses() {
+    @GetMapping(path = "read/all/ajax")
+    public ResponseEntity<Set<DegreeCourseDto>> getJsonOfAllDegreeCourses() {
         try {
             return ResponseEntity.ok(degreeCourseService.getDegreeCourses());
         } catch (DataAccessServiceException e) {
@@ -107,7 +107,7 @@ public class DegreeCourseController {
      * @throws JsonProcessingException if the object cannot be serialized to JSON
      */
     @GetMapping(path = "read/courses/ajax")
-    public String getJsonOfCourses(@RequestParam String name) throws JsonProcessingException {
+    public String getJsonOfAllCourses(@RequestParam String name) throws JsonProcessingException {
         try {
             // retrieve the courses
             List<CourseDto> courses = degreeCourseService.getCourses(name.toUpperCase());

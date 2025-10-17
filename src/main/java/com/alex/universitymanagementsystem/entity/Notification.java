@@ -14,20 +14,20 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "OUTCOME_NOTIFICATIONS")
+@Table(name = "NOTIFICATIONS")
 @Access(AccessType.PROPERTY)
-public class OutcomeNotification implements Serializable {
+public class Notification implements Serializable {
 
     // instance variables
     private Long id;
-    private Student student;
+    private User user;
     private String message;
     private LocalDateTime createdAt;
     private LocalDateTime expiresAt;
     private boolean read; // true se lo studente ha già accettato l’esito
 
     // constructor
-    public OutcomeNotification() { /* no args constructor  */}
+    public Notification() { /* no args constructor  */}
 
     // getter
     @Id
@@ -37,8 +37,8 @@ public class OutcomeNotification implements Serializable {
     }
 
     @ManyToOne
-    public Student getStudent() {
-        return student;
+    public User getUser() {
+        return user;
     }
 
     @Column(nullable = false)
@@ -63,8 +63,8 @@ public class OutcomeNotification implements Serializable {
         this.id = id;
     }
 
-    public void setStudent(Student student) {
-        this.student = student;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public void setMessage(String message) {

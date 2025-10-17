@@ -4,38 +4,43 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.messaging.MessagingException;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import com.alex.universitymanagementsystem.entity.OutcomeNotification;
+import com.alex.universitymanagementsystem.entity.Notification;
 import com.alex.universitymanagementsystem.entity.Student;
+import com.alex.universitymanagementsystem.entity.User;
 import com.alex.universitymanagementsystem.enum_type.DomainType;
 import com.alex.universitymanagementsystem.exception.DataAccessServiceException;
 import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
-import com.alex.universitymanagementsystem.repository.OutcomeNotificationRepository;
+import com.alex.universitymanagementsystem.repository.NotificationRepository;
 import com.alex.universitymanagementsystem.repository.StudentRepository;
-import com.alex.universitymanagementsystem.service.OutcomeNotificationService;
+import com.alex.universitymanagementsystem.service.EmailService;
+import com.alex.universitymanagementsystem.service.NotificationService;
+import com.alex.universitymanagementsystem.service.WebSocketService;
 
 import jakarta.persistence.PersistenceException;
 import jakarta.transaction.Transactional;
 
 @Service
-public class OutcomeNotificationServiceImpl implements OutcomeNotificationService {
+public class NotificationServiceImpl implements NotificationService {
     // instance variables
-    private final SimpMessagingTemplate messagingTemplate;
-    private final OutcomeNotificationRepository outcomeNotificationRepository;
+    private final EmailService emailService;
+    private final WebSocketService webSocketService;
+    private final NotificationRepository notificationRepository;
     private final StudentRepository studentRepository;
 
-    public OutcomeNotificationServiceImpl(
-        SimpMessagingTemplate messagingTemplate,
-        OutcomeNotificationRepository outcomeNotificationRepository,
+    public NotificationServiceImpl(
+        WebSocketService webSocketService,
+        EmailService emailService,
+        NotificationRepository notificationRepository,
         StudentRepository studentRepository
     ) {
-        this.messagingTemplate = messagingTemplate;
-        this.outcomeNotificationRepository = outcomeNotificationRepository;
+        this.webSocketService = webSocketService;
+        this.emailService = emailService;
+        this.notificationRepository = notificationRepository;
         this.studentRepository = studentRepository;
     }
 
@@ -60,16 +65,17 @@ public class OutcomeNotificationServiceImpl implements OutcomeNotificationServic
             Student student = studentRepository
                 .findByUsername(username)
                 .orElseThrow(() -> new ObjectNotFoundException(DomainType.STUDENT));
-            OutcomeNotification notification = new OutcomeNotification();
-            notification.setStudent(student);
+            Notification notification = new Notification();
+            notification.setUser(student);
             notification.setMessage(message);
             notification.setCreatedAt(LocalDateTime.now());
             notification.setExpiresAt(LocalDateTime.now().plusDays(3));
             notification.setRead(false);
-            outcomeNotificationRepository.save(notification);
+            notificationRepository.save(notification);
 
             // send WebSocket notification
-            messagingTemplate.convertAndSendToUser(username, "/topic/exam-outcome", message);
+            emailService.sendEmail(username, "Exam outcome notification", message);
+            webSocketService.sendWebSocketMessage(username, "/topic/exam-outcome", message);
         } catch (PersistenceException e) {
             throw new DataAccessServiceException("Error accessing database for fetching notifications: ", e);
         }
@@ -78,17 +84,17 @@ public class OutcomeNotificationServiceImpl implements OutcomeNotificationServic
 
     /**
      * Retrieves the active notifications for a specific student.
-     * @param student the student for whom to retrieve notifications
+     * @param user the user for whom to retrieve notifications
      * @return a list of active notifications for the student
      * @throws DataAccessServiceException if there is an error accessing the database.
      */
     @Override
-    public List<OutcomeNotification> getActiveNotifications(Student student)
+    public List<Notification> getActiveNotifications(User user)
         throws DataAccessServiceException {
 
         try {
-            return outcomeNotificationRepository
-                .findByStudentAndReadFalseAndExpiresAtAfter(student, LocalDateTime.now());
+            return notificationRepository
+                .findByUserAndReadFalseAndExpiresAtAfter(user, LocalDateTime.now());
         } catch (PersistenceException e) {
             throw new DataAccessServiceException("Error accessing database for fetching notifications: ", e);
         }
@@ -105,11 +111,11 @@ public class OutcomeNotificationServiceImpl implements OutcomeNotificationServic
     @Retryable(retryFor = PersistenceException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000))
     public void markAsRead(Long notificationId) throws DataAccessServiceException {
         try {
-            outcomeNotificationRepository
+            notificationRepository
                 .findById(notificationId)
                 .ifPresent(n -> {
                     n.setRead(true);
-                    outcomeNotificationRepository.save(n);
+                    notificationRepository.save(n);
                 });
         } catch (PersistenceException e) {
             throw new DataAccessServiceException("Error accessing database for marking notification as read: ", e);
@@ -126,7 +132,7 @@ public class OutcomeNotificationServiceImpl implements OutcomeNotificationServic
     @Scheduled(cron = "0 0 2 * * ?")
     public void cleanExpiredNotifications() throws DataAccessServiceException {
         try {
-            outcomeNotificationRepository.deleteByExpiresAtBefore(LocalDateTime.now());
+            notificationRepository.deleteByExpiresAtBefore(LocalDateTime.now());
         } catch (PersistenceException e) {
             throw new DataAccessServiceException("Error accessing database for cleaning expired notifications: ", e);
         }

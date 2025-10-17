@@ -7,8 +7,8 @@ import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.scheduling.annotation.Scheduled;
 
-import com.alex.universitymanagementsystem.entity.OutcomeNotification;
-import com.alex.universitymanagementsystem.entity.Student;
+import com.alex.universitymanagementsystem.entity.Notification;
+import com.alex.universitymanagementsystem.entity.User;
 import com.alex.universitymanagementsystem.exception.DataAccessServiceException;
 import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
 
@@ -16,7 +16,7 @@ import jakarta.persistence.PersistenceException;
 import jakarta.transaction.Transactional;
 
 
-public interface OutcomeNotificationService {
+public interface NotificationService {
 
 
     /**
@@ -35,11 +35,11 @@ public interface OutcomeNotificationService {
 
     /**
      * Retrieves the active notifications for a specific student.
-     * @param student the student for whom to retrieve notifications
+     * @param user the user for whom to retrieve notifications
      * @return a list of active notifications for the student
      * @throws DataAccessServiceException if there is an error accessing the database.
      */
-    List<OutcomeNotification> getActiveNotifications(Student student) throws DataAccessServiceException;
+    List<Notification> getActiveNotifications(User user) throws DataAccessServiceException;
 
 
     /**

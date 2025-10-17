@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
         notification.className = "notification-item";
         notification.innerHTML = `
             <p>${message}</p>
-            ${id !== null ? `<button class="btn-accept" data-id="${id}">Accept</button>` : ""}
+            ${id === null ? "" : `<button class="btn-accept" data-id="${id}">Accept</button>`}
         `;
 
         if (id !== null) {
@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // --- Funzione per segnare come letto ---
     function markAsRead(id, element) {
-        fetch(`/api/v1/outcome-notifications/${id}/read`, {
+        fetch(`/api/v1/notification/${id}/read`, {
             method: "POST",
             headers: { [header]: token }
         })
@@ -41,10 +41,11 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // --- Recupera notifiche preesistenti ---
-    fetch('/api/v1/outcome-notifications')
+    fetch('/api/v1/notification/read/all')
         .then(res => res.json())
         .then(notifications => {
-            notifications.forEach(n => createNotificationCard(n.message, n.id));
+            for (const notification of notifications)
+                createNotificationCard(notification.message, notification.id);
         })
         .catch(err => console.error("Error fetching notifications:", err));
 

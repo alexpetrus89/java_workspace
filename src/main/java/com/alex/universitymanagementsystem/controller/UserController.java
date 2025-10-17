@@ -177,7 +177,6 @@ public class UserController {
      */
     @DeleteMapping(path = "/delete")
     public ModelAndView deleteUser(@RequestParam String username) {
-
         return new ModelAndView(
             "user_admin/admin/delete/delete-result",
             "result",

@@ -2,12 +2,12 @@ package com.alex.universitymanagementsystem.dto;
 
 import java.time.LocalDateTime;
 
-import com.alex.universitymanagementsystem.entity.OutcomeNotification;
+import com.alex.universitymanagementsystem.entity.Notification;
 
-public record OutcomeNotificationDto(Long id, String message, LocalDateTime createdAt, LocalDateTime expiresAt) {
-    public static OutcomeNotificationDto toDto(OutcomeNotification notification) {
+public record NotificationDto(Long id, String message, LocalDateTime createdAt, LocalDateTime expiresAt) {
+    public static NotificationDto toDto(Notification notification) {
         if (notification == null) return null;
-        return new OutcomeNotificationDto(
+        return new NotificationDto(
                 notification.getId(),
                 notification.getMessage(),
                 notification.getCreatedAt(),

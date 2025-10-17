@@ -173,8 +173,7 @@ public class UmsConfig {
 		"/api/v1/user/create-student",
 		"/api/v1/user/create-professor",
 		"/api/v1/degree-course/read/all/ajax",
-
-        "/.well-known/**",
+        "/api/v1/notification/read/all"
     };
 
 
@@ -230,10 +229,8 @@ public class UmsConfig {
 		"/api/v1/examination-appeal/delete-booked/{id}",
 		"/api/v1/examination-outcome/read/outcome",
 		"/api/v1/examination-outcome/read/outcomes",
-		"/api/v1/examination-outcome/confirm-refusal",
-		"/api/v1/outcome-notifications"
+		"/api/v1/examination-outcome/confirm-refusal"
     };
-
 
     protected static final String[] PROFESSOR_URLS = {
         // URL accessibili solo agli utenti con ruolo PROFESSOR o ADMIN

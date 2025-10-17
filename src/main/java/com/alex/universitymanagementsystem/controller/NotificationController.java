@@ -10,19 +10,19 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.alex.universitymanagementsystem.dto.OutcomeNotificationDto;
-import com.alex.universitymanagementsystem.entity.Student;
-import com.alex.universitymanagementsystem.service.OutcomeNotificationService;
+import com.alex.universitymanagementsystem.dto.NotificationDto;
+import com.alex.universitymanagementsystem.entity.User;
+import com.alex.universitymanagementsystem.service.NotificationService;
 
 @RestController
-@RequestMapping(path = "api/v1/outcome-notifications")
-public class OutcomeNotificationController {
+@RequestMapping(path = "api/v1/notification")
+public class NotificationController {
 
     // instance variable
-    private final OutcomeNotificationService outcomeNotificationService;
+    private final NotificationService notificationService;
 
-    public OutcomeNotificationController(OutcomeNotificationService outcomeNotificationService) {
-        this.outcomeNotificationService = outcomeNotificationService;
+    public NotificationController(NotificationService notificationService) {
+        this.notificationService = notificationService;
     }
 
 
@@ -31,11 +31,12 @@ public class OutcomeNotificationController {
      * @param student
      * @return a list of OutcomeNotificationDto
      */
-    @GetMapping
-    public List<OutcomeNotificationDto> getAllStudentNotifications(@AuthenticationPrincipal Student student) {
-        return outcomeNotificationService.getActiveNotifications(student)
+    @GetMapping("/read/all")
+    public List<NotificationDto> getAllUserNotifications(@AuthenticationPrincipal User user) {
+        return notificationService
+            .getActiveNotifications(user)
             .stream()
-            .map(OutcomeNotificationDto::toDto)
+            .map(NotificationDto::toDto)
             .toList();
     }
 
@@ -48,7 +49,7 @@ public class OutcomeNotificationController {
      */
     @PostMapping("/{id}/read")
     public ResponseEntity<Void> markAsRead(@PathVariable Long id) {
-        outcomeNotificationService.markAsRead(id);
+        notificationService.markAsRead(id);
         return ResponseEntity.ok().build();
     }
 

@@ -7,23 +7,23 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Repository;
 
-import com.alex.universitymanagementsystem.entity.OutcomeNotification;
-import com.alex.universitymanagementsystem.entity.Student;
+import com.alex.universitymanagementsystem.entity.Notification;
+import com.alex.universitymanagementsystem.entity.User;
 
 import jakarta.persistence.PersistenceException;
 
 @Repository
-public interface OutcomeNotificationRepository
-    extends JpaRepository<OutcomeNotification, Long>{
+public interface NotificationRepository
+    extends JpaRepository<Notification, Long>{
 
     /**
      * Retrieve all student's notification
-     * @param student
+     * @param user
      * @param now
      * @return Outcome notification
      * @throws PersistenceException persistence error
      */
-    List<OutcomeNotification> findByStudentAndReadFalseAndExpiresAtAfter(Student student, LocalDateTime now);
+    List<Notification> findByUserAndReadFalseAndExpiresAtAfter(User user, LocalDateTime now);
 
 
     /**

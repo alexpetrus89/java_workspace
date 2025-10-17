@@ -21,10 +21,9 @@ import com.alex.universitymanagementsystem.dto.ExaminationAppealDto;
 import com.alex.universitymanagementsystem.dto.ExaminationOutcomeDto;
 import com.alex.universitymanagementsystem.entity.Student;
 import com.alex.universitymanagementsystem.exception.DataAccessServiceException;
-import com.alex.universitymanagementsystem.service.EmailService;
 import com.alex.universitymanagementsystem.service.ExaminationAppealService;
 import com.alex.universitymanagementsystem.service.ExaminationOutcomeService;
-import com.alex.universitymanagementsystem.service.OutcomeNotificationService;
+import com.alex.universitymanagementsystem.service.NotificationService;
 import com.alex.universitymanagementsystem.service.StudentService;
 
 import jakarta.servlet.http.HttpServletResponse;
@@ -50,22 +49,19 @@ public class ExaminationOutcomeController {
     private final ExaminationOutcomeService examinationOutcomeService;
     private final ExaminationAppealService examinationAppealService;
     private final StudentService studentService;
-    private final OutcomeNotificationService outcomeNotificationService;
-    private final EmailService emailService;
+    private final NotificationService notificationService;
 
     // constructor
     public ExaminationOutcomeController(
         ExaminationOutcomeService examinationOutcomeService,
         ExaminationAppealService examinationAppealService,
         StudentService studentService,
-        OutcomeNotificationService outcomeNotificationService,
-        EmailService emailService
+        NotificationService notificationService
     ) {
         this.examinationOutcomeService = examinationOutcomeService;
         this.examinationAppealService = examinationAppealService;
         this.studentService = studentService;
-        this.outcomeNotificationService = outcomeNotificationService;
-        this.emailService = emailService;
+        this.notificationService = notificationService;
     }
 
 
@@ -162,8 +158,7 @@ public class ExaminationOutcomeController {
                 .getUsername();
 
             String message = buildNotificationMessage(outcome);
-            outcomeNotificationService.notifyExamOutcome(username, message);
-            emailService.sendEmail(username, "Exam Outcome Notification", message);
+            notificationService.notifyExamOutcome(username, message);
 
             return successView();
         } catch (DataAccessServiceException e) {

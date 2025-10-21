@@ -1,6 +1,7 @@
 package com.alex.universitymanagementsystem.exception;
 
 
+import com.alex.universitymanagementsystem.entity.immutable.AdminCode;
 import com.alex.universitymanagementsystem.entity.immutable.FiscalCode;
 import com.alex.universitymanagementsystem.entity.immutable.Register;
 import com.alex.universitymanagementsystem.entity.immutable.UniqueCode;
@@ -26,6 +27,7 @@ public class ObjectAlreadyExistsException extends RuntimeException {
             case Register register -> String.format("Student with registration number %s already exists", register.toString());
             case FiscalCode fiscalCode -> String.format("Professor with fiscal code %s already exists", fiscalCode.toString());
             case UniqueCode uniqueCode -> String.format("Professor with unique code %s already exists", uniqueCode.toString());
+            case AdminCode adminCode -> String.format("Admin with admin code %s not found", adminCode.toString());
             case DomainType domainType -> String.format("%s already exists", getIdentifierName(domainType));
             default -> "Unknown error";
         };
@@ -35,6 +37,7 @@ public class ObjectAlreadyExistsException extends RuntimeException {
     private static String getIdentifierName(DomainType type) {
         return switch (type) {
             case DomainType.USER -> "User";
+            case DomainType.ADMIN -> "Admin";
             case DomainType.STUDENT -> "Student";
             case DomainType.PROFESSOR -> "Professor";
             case DomainType.COURSE -> "Course";

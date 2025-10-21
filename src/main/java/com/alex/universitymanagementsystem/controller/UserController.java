@@ -16,12 +16,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.alex.universitymanagementsystem.dto.AdminDto;
 import com.alex.universitymanagementsystem.dto.ProfessorDto;
 import com.alex.universitymanagementsystem.dto.RegistrationForm;
 import com.alex.universitymanagementsystem.dto.StudentDto;
 import com.alex.universitymanagementsystem.dto.UpdateForm;
 import com.alex.universitymanagementsystem.dto.UserDto;
 import com.alex.universitymanagementsystem.entity.DegreeCourse;
+import com.alex.universitymanagementsystem.service.AdminService;
 import com.alex.universitymanagementsystem.service.ProfessorService;
 import com.alex.universitymanagementsystem.service.StudentService;
 import com.alex.universitymanagementsystem.service.UserService;
@@ -40,16 +42,19 @@ public class UserController {
 
     // instance variables
     private final UserService userService;
+    private final AdminService adminService;
     private final StudentService studentService;
     private final ProfessorService professorService;
 
     /** Autowired - dependency injection - constructor */
     public UserController(
         UserService userService,
+        AdminService adminService,
         StudentService studentService,
         ProfessorService professorService
     ) {
         this.userService = userService;
+        this.adminService = adminService;
         this.studentService = studentService;
         this.professorService = professorService;
     }
@@ -111,7 +116,7 @@ public class UserController {
     public ModelAndView createNewUserWithRoleAdmin(HttpServletRequest request) {
         return handleCreation(
             request,
-            userService::addNewUser,
+            adminService::addNewAdmin,
             this::adminSuccessView,
             this::adminFailureView
         );
@@ -221,7 +226,7 @@ public class UserController {
     // views
 
     /** admin success view */
-    private ModelAndView adminSuccessView(UserDto admin) {
+    private ModelAndView adminSuccessView(AdminDto admin) {
         return new ModelAndView("user_admin/admin/create/admin-success", "admin", admin);
     }
 

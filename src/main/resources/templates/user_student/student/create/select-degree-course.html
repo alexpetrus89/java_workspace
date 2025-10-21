@@ -19,14 +19,14 @@
 
             <label for="degreeCourse">Degree Course:</label>
             <select id="degreeCourse" name="degreeCourse" required>
-                <option value="">-- Select a course --</option>
+                <option value="">-- Select a degree course --</option>
                 <option th:each="degreeCourse : ${degreeCourses}"
-                        th:value="${degreeCourse.name}"
-                        th:text="${degreeCourse.name}">
+                    th:value="${degreeCourse.name}"
+                    th:text="${degreeCourse.name}">
                 </option>
             </select>
 
-            <label for="ordering">ordering</label>
+            <label for="ordering">Ordering:</label>
             <input type="text" name="ordering" id="ordering" placeholder="Enter degree course ordering" title="Enter degree course ordering" required>
 
             <div class="form-buttons">

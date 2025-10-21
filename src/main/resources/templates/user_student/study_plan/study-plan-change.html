@@ -49,8 +49,8 @@
                 <label for="degreeCourseOfNewCourse">Degree Course of new course:</label>
                 <select name="degreeCourseOfNewCourse" id="degreeCourseOfNewCourse" required>
                     <option value="">Select a degree course</option>
-                    <option th:each="degreeCourse : ${courses.degreeCourses}" 
-                            th:value="${degreeCourse.name}" 
+                    <option th:each="degreeCourse : ${courses.degreeCourses}"
+                            th:value="${degreeCourse.name}"
                             th:text="${degreeCourse.name}">
                     </option>
                 </select>
@@ -59,22 +59,22 @@
                 <label for="courseToAdd">Select course to add:</label>
                 <select name="courseToAdd" id="courseToAdd" required>
                     <option value="">Select a course</option>
-                    <option th:each="course : ${courseToAdd}" 
-                            th:value="${course.name}" 
+                    <option th:each="course : ${courseToAdd}"
+                            th:value="${course.name}"
                             th:text="${course.name}">
                     </option>
                 </select>
 
                 <!-- Hidden Old Degree Course -->
                 <input type="hidden" name="degreeCourseOfOldCourse" id="degreeCourseOfOldCourse" 
-                       th:value="${courses.studyPlan[0].degreeCourse.name}"/>
+                    th:value="${courses.studyPlan[0].degreeCourse.name}"/>
 
                 <!-- Course to Remove -->
                 <label for="courseToRemove">Select course to remove:</label>
                 <select name="courseToRemove" id="courseToRemove" required>
                     <option value="">Select a course</option>
-                    <option th:each="course : ${courses.studyPlan}" 
-                            th:value="${course.name}" 
+                    <option th:each="course : ${courses.studyPlan}"
+                            th:value="${course.name}"
                             th:text="${course.name}">
                     </option>
                 </select>

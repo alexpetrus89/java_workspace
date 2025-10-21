@@ -51,7 +51,6 @@ public class UmsConfig {
         moduleViews.put("user_student", List.of(
             "/user_student/student-home",
             "/user_student/student/create/select-degree-course",
-            "/user_student/study_plan/study_plan_modify",
             "/user_student/examinations/examination-menu",
             "/user_student/examinations/examination_appeal/available-calendar",
             "/user_student/examinations/examination_appeal/booked-calendar",

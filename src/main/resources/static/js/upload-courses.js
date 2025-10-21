@@ -32,12 +32,10 @@ function updateCourses() {
         // response is the data returned by the server
         success: function(data) {
             try {
-                const jsonData = data;
-                console.log(jsonData);
+                console.log(data);
 
-                // Make sure jsonData is a JSON object with a "degreeCourseName" property
-                if (!jsonData.degreeCourseName)
-                    throw new Error('Response is not a valid JSON object.');
+                if (!Array.isArray(data))
+                    throw new Error('Response is not a valid array of courses.');
 
                 // Remove the existing options from the select element
                 $('#courseToAdd').empty();
@@ -46,8 +44,8 @@ function updateCourses() {
                 $('#courseToAdd').append('<option value="">Select a course</option>');
 
                 // Populate the select element with the list of courses
-                $.each(jsonData.degreeCourseName, function(index, course) {
-                    const courseName = course.course.name;
+                $.each(data, function(index, course) {
+                    const courseName = course.name;
                     // Add the course name as an option to the select element
                     $('#courseToAdd').append('<option value="' + courseName + '">' + courseName + '</option>');
                 });

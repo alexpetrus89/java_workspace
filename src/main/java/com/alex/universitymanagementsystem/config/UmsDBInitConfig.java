@@ -18,6 +18,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.alex.universitymanagementsystem.dto.RegistrationForm;
+import com.alex.universitymanagementsystem.entity.Admin;
 import com.alex.universitymanagementsystem.entity.Course;
 import com.alex.universitymanagementsystem.entity.DegreeCourse;
 import com.alex.universitymanagementsystem.entity.Examination;
@@ -25,13 +26,13 @@ import com.alex.universitymanagementsystem.entity.ExaminationAppeal;
 import com.alex.universitymanagementsystem.entity.Professor;
 import com.alex.universitymanagementsystem.entity.Student;
 import com.alex.universitymanagementsystem.entity.StudyPlan;
-import com.alex.universitymanagementsystem.entity.User;
 import com.alex.universitymanagementsystem.entity.immutable.Register;
 import com.alex.universitymanagementsystem.entity.immutable.UniqueCode;
 import com.alex.universitymanagementsystem.enum_type.CourseType;
 import com.alex.universitymanagementsystem.enum_type.DegreeType;
 import com.alex.universitymanagementsystem.enum_type.MiurAcronymType;
 import com.alex.universitymanagementsystem.enum_type.RoleType;
+import com.alex.universitymanagementsystem.repository.AdminRepository;
 import com.alex.universitymanagementsystem.repository.CourseRepository;
 import com.alex.universitymanagementsystem.repository.DegreeCourseRepository;
 import com.alex.universitymanagementsystem.repository.ExaminationAppealRepository;
@@ -39,7 +40,6 @@ import com.alex.universitymanagementsystem.repository.ExaminationRepository;
 import com.alex.universitymanagementsystem.repository.ProfessorRepository;
 import com.alex.universitymanagementsystem.repository.StudentRepository;
 import com.alex.universitymanagementsystem.repository.StudyPlanRepository;
-import com.alex.universitymanagementsystem.repository.UserRepository;
 
 
 @Configuration
@@ -73,7 +73,7 @@ public class UmsDBInitConfig implements Serializable {
     @SuppressWarnings("unused")
     CommandLineRunner commandLineRunner(
         @Autowired
-        UserRepository userRepository,
+        AdminRepository adminRepository,
         @Autowired
         PasswordEncoder passwordEncoder,
         @Autowired
@@ -94,7 +94,7 @@ public class UmsDBInitConfig implements Serializable {
         return args -> {
 
             // user initializer
-            initializeUsers(userRepository, passwordEncoder);
+            initializeAdmins(adminRepository, passwordEncoder);
 
             // degree course initializer
             initializeDegreeCourse(degreeCourseRepository);
@@ -130,7 +130,7 @@ public class UmsDBInitConfig implements Serializable {
 
 
     // initialize user
-    private void initializeUsers(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    private void initializeAdmins(AdminRepository adminRepository, PasswordEncoder passwordEncoder) {
         logger.info("\n\n\n--- INITIALIZE ADMIN ---");
 
         // create user  - 2 admin + 18 students + 9 professors
@@ -163,15 +163,15 @@ public class UmsDBInitConfig implements Serializable {
         formTwo.setRole(RoleType.ADMIN);
 
         // create users
-        List<User> users = List.of(
-            form.toUser(passwordEncoder),
-            formTwo.toUser(passwordEncoder)
+        List<Admin> admins = List.of(
+            form.toAdmin(passwordEncoder),
+            formTwo.toAdmin(passwordEncoder)
         );
 
         // save user
-        users.forEach(user -> {
+        admins.forEach(admin -> {
             try {
-                userRepository.saveAndFlush(user);
+                adminRepository.saveAndFlush(admin);
             } catch (Exception e) {
                 logger.error("Error: {}", e.getMessage());
             }

@@ -9,6 +9,7 @@ import com.alex.universitymanagementsystem.annotation.UniqueUsername;
 import com.alex.universitymanagementsystem.annotation.ValidBirthDate;
 import com.alex.universitymanagementsystem.annotation.ValidFiscalCode;
 import com.alex.universitymanagementsystem.annotation.ValidPassword;
+import com.alex.universitymanagementsystem.entity.Admin;
 import com.alex.universitymanagementsystem.entity.Professor;
 import com.alex.universitymanagementsystem.entity.Student;
 import com.alex.universitymanagementsystem.entity.User;
@@ -115,6 +116,10 @@ public class RegistrationForm implements Serializable, PasswordCarrier {
 
     public User toUser(PasswordEncoder passwordEncoder) {
         return new User(this, passwordEncoder);
+    }
+
+    public Admin toAdmin(PasswordEncoder passwordEncoder) {
+        return new Admin(this, passwordEncoder);
     }
 
     public Student toStudent(PasswordEncoder passwordEncoder) {

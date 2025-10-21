@@ -111,7 +111,7 @@ public class StudyPlanController {
         dto.setRegister(student.getRegister().toString());
         studyPlanService.swapCourses(dto);
         Set<CourseDto> courses = studyPlanService.getCoursesByRegister(student.getRegister());
-        return new ModelAndView("user_student/study_plan/study-plan-courses", "courses", courses);
+        return new ModelAndView("user_student/study_plan/study-plan-updated", "courses", courses);
     }
 
 

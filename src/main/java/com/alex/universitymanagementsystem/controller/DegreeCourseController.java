@@ -1,9 +1,7 @@
 package com.alex.universitymanagementsystem.controller;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,7 +17,6 @@ import com.alex.universitymanagementsystem.dto.StudentDto;
 import com.alex.universitymanagementsystem.exception.DataAccessServiceException;
 import com.alex.universitymanagementsystem.exception.JsonProcessingException;
 import com.alex.universitymanagementsystem.service.impl.DegreeCourseServiceImpl;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 
@@ -103,35 +100,16 @@ public class DegreeCourseController {
     /**
      * retrieves all courses of a given degree course for ajax request
      * @param name of degree course
-     * @return String - a JSON string
+     * @return http response entity
      * @throws JsonProcessingException if the object cannot be serialized to JSON
      */
     @GetMapping(path = "read/courses/ajax")
-    public String getJsonOfAllCourses(@RequestParam String name) throws JsonProcessingException {
+    public ResponseEntity<List<CourseDto>> getJsonOfAllCourses(@RequestParam String name) {
         try {
-            // retrieve the courses
             List<CourseDto> courses = degreeCourseService.getCourses(name.toUpperCase());
-            return "{\"degreeCourseName\": [" + courses
-                .stream()
-                .map(this::serializeCourseDto)
-                .collect(Collectors.joining(",")) + "]}";
+            return ResponseEntity.ok(courses);
         } catch (DataAccessServiceException e) {
             throw new JsonProcessingException("Parsing not working a cause of data access error", e);
-        }
-    }
-
-
-    // helper methods
-    /**
-     * Serializes a CourseDto object to a JSON string.
-     * @param courseDto the CourseDto object to serialize
-     * @return a JSON string representation of the CourseDto object
-     */
-    private String serializeCourseDto(CourseDto courseDto) throws JsonProcessingException {
-        try {
-            return new ObjectMapper().writeValueAsString(courseDto);
-        } catch (IOException e) {
-            throw new JsonProcessingException("Error serializing CourseDto", e);
         }
     }
 

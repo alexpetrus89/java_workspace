@@ -3,6 +3,7 @@ package com.alex.universitymanagementsystem.enum_type;
 public enum DomainType {
 
     USER,
+    ADMIN,
     STUDENT,
     PROFESSOR,
     COURSE,

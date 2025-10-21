@@ -1,23 +1,19 @@
 package com.alex.universitymanagementsystem.dto;
 
-import com.alex.universitymanagementsystem.component.CourseSerializer;
 import com.alex.universitymanagementsystem.enum_type.CourseType;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
+import groovyjarjarantlr4.v4.runtime.misc.NotNull;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "courseId")
-@JsonSerialize(using = CourseSerializer.class)
+
 public class CourseDto {
 
     // instance variables
     @NotBlank(message = "Course name is mandatory")
     private String name;
 
-    @NotBlank(message = "Course type is mandatory")
+    @NotNull
     private CourseType type;
 
     @Positive(message = "CFU must be a positive number")

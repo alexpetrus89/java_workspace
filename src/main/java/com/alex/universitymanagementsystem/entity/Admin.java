@@ -6,8 +6,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.alex.universitymanagementsystem.dto.RegistrationForm;
+import com.alex.universitymanagementsystem.entity.immutable.AdminCode;
 import com.alex.universitymanagementsystem.entity.immutable.FiscalCode;
-import com.alex.universitymanagementsystem.entity.immutable.UniqueCode;
 
 import jakarta.persistence.Access;
 import jakarta.persistence.AccessType;
@@ -17,50 +17,51 @@ import jakarta.persistence.PrimaryKeyJoinColumn;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "PROFESSORS")
+@Table(name = "ADMINS")
 @Access(AccessType.PROPERTY)
 @PrimaryKeyJoinColumn(name = "id")
-public class Professor extends User {
+public class Admin extends User {
 
     // instance variables
-    private UniqueCode uniqueCode;
-    private static final AtomicInteger professorCounter = new AtomicInteger(100000);
+    private AdminCode adminCode;
+    private static final AtomicInteger adminCounter = new AtomicInteger(000000);
 
     // constructors
-    protected Professor() { super(); }
+    protected Admin() { super(); }
 
-    public Professor(RegistrationForm form, PasswordEncoder encoder) {
+    public Admin(RegistrationForm form, PasswordEncoder encoder) {
         super(form, encoder);
-        this.uniqueCode = new UniqueCode(generateUniqueCode());
+        this.adminCode = new AdminCode(generateAdminCode());
     }
 
 
-    public Professor(RegistrationForm form, PasswordEncoder passwordEncoder, UniqueCode uniqueCode) {
+    public Admin(RegistrationForm form, PasswordEncoder passwordEncoder, AdminCode adminCode) {
         super(form, passwordEncoder);
-        this.uniqueCode = uniqueCode;
+        this.adminCode = adminCode;
     }
 
-    public Professor(String username, String firstName, String lastName, String fiscalCode, String uniqueCode) {
+    public Admin(String username, String firstName, String lastName, String fiscalCode, String adminCode) {
         this.username = username;
         this.firstName = firstName;
         this.lastName = lastName;
         this.fiscalCode = new FiscalCode(fiscalCode);
-        this.uniqueCode = new UniqueCode(uniqueCode);
+        this.adminCode = new AdminCode(adminCode);
     }
 
 
     // getters
     @Embedded
-    public UniqueCode getUniqueCode() { return uniqueCode; }
+    public AdminCode getAdminCode() { return adminCode; }
 
     // setters
-    public void setUniqueCode(UniqueCode uniqueCode) { this.uniqueCode = uniqueCode; }
+    public void setAdminCode(AdminCode adminCode) { this.adminCode = adminCode; }
+
 
     // --- Object methods ---
     @Override
     public String toString() {
-        return "Professor [id=" + id +
-        ", uniqueCode=" + uniqueCode +
+        return "Admin [id=" + id +
+        ", adminCode=" + adminCode +
         ", name=" + firstName + " " + lastName +
         ", fiscal code=" + fiscalCode +
         ", email=" + username +
@@ -70,24 +71,22 @@ public class Professor extends User {
     // equals and hashCode
     @Override
     public int hashCode() {
-        return Objects.hash(uniqueCode);
+        return Objects.hash(adminCode);
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Professor)) return false;
-        Professor other = (Professor) o;
-        return Objects.equals(uniqueCode, other.uniqueCode);
+        if (!(o instanceof Admin)) return false;
+        Admin other = (Admin) o;
+        return Objects.equals(adminCode, other.adminCode);
     }
 
 
     // --- Private helper ---
-    private String generateUniqueCode() {
-        int code = professorCounter.getAndIncrement();
+    private String generateAdminCode() {
+        int code = adminCounter.getAndIncrement();
         return String.format("%08x", code);
     }
 
 }
-
-

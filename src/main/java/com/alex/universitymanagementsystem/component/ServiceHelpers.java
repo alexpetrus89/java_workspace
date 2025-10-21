@@ -10,6 +10,7 @@ import com.alex.universitymanagementsystem.dto.ExaminationAppealDto;
 import com.alex.universitymanagementsystem.dto.ExaminationDto;
 import com.alex.universitymanagementsystem.dto.ExaminationOutcomeDto;
 import com.alex.universitymanagementsystem.dto.StudentDto;
+import com.alex.universitymanagementsystem.entity.Admin;
 import com.alex.universitymanagementsystem.entity.Course;
 import com.alex.universitymanagementsystem.entity.DegreeCourse;
 import com.alex.universitymanagementsystem.entity.Examination;
@@ -17,6 +18,7 @@ import com.alex.universitymanagementsystem.entity.ExaminationAppeal;
 import com.alex.universitymanagementsystem.entity.ExaminationOutcome;
 import com.alex.universitymanagementsystem.entity.Professor;
 import com.alex.universitymanagementsystem.entity.Student;
+import com.alex.universitymanagementsystem.entity.immutable.AdminCode;
 import com.alex.universitymanagementsystem.entity.immutable.Register;
 import com.alex.universitymanagementsystem.entity.immutable.UniqueCode;
 import com.alex.universitymanagementsystem.enum_type.DomainType;
@@ -25,6 +27,7 @@ import com.alex.universitymanagementsystem.mapper.ExaminationAppealMapper;
 import com.alex.universitymanagementsystem.mapper.ExaminationMapper;
 import com.alex.universitymanagementsystem.mapper.ExaminationOutcomeMapper;
 import com.alex.universitymanagementsystem.mapper.StudentMapper;
+import com.alex.universitymanagementsystem.repository.AdminRepository;
 import com.alex.universitymanagementsystem.repository.CourseRepository;
 import com.alex.universitymanagementsystem.repository.DegreeCourseRepository;
 import com.alex.universitymanagementsystem.repository.ExaminationAppealRepository;
@@ -37,6 +40,7 @@ import com.alex.universitymanagementsystem.repository.StudentRepository;
 public class ServiceHelpers {
 
     // instance variables
+    private final AdminRepository adminRepository;
     private final StudentRepository studentRepository;
     private final ProfessorRepository professorRepository;
     private final CourseRepository courseRepository;
@@ -46,6 +50,7 @@ public class ServiceHelpers {
     private final ExaminationOutcomeRepository examinationOutcomeRepository;
 
     public ServiceHelpers(
+        AdminRepository adminRepository,
         StudentRepository studentRepository,
         ProfessorRepository professorRepository,
         CourseRepository courseRepository,
@@ -54,6 +59,7 @@ public class ServiceHelpers {
         ExaminationAppealRepository examinationAppealRepository,
         ExaminationOutcomeRepository examinationOutcomeRepository
     ) {
+        this.adminRepository = adminRepository;
         this.studentRepository = studentRepository;
         this.professorRepository = professorRepository;
         this.courseRepository = courseRepository;
@@ -61,6 +67,19 @@ public class ServiceHelpers {
         this.examinationRepository = examinationRepository;
         this.examinationAppealRepository = examinationAppealRepository;
         this.examinationOutcomeRepository = examinationOutcomeRepository;
+    }
+
+
+    /**
+     * Fetches an admin entity by its admin code.
+     * @param adminCode the admin code of the professor
+     * @return the Admin entity
+     * @throws ObjectNotFoundException if the admin does not exist
+     */
+    public Admin fetchAdmin(String adminCode) {
+        return adminRepository
+            .findByAdminCode(new AdminCode(adminCode))
+            .orElseThrow(() -> new ObjectNotFoundException(DomainType.ADMIN));
     }
 
 

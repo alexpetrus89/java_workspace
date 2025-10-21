@@ -1,6 +1,7 @@
 package com.alex.universitymanagementsystem.exception;
 
 
+import com.alex.universitymanagementsystem.entity.immutable.AdminCode;
 import com.alex.universitymanagementsystem.entity.immutable.FiscalCode;
 import com.alex.universitymanagementsystem.entity.immutable.Register;
 import com.alex.universitymanagementsystem.entity.immutable.UniqueCode;
@@ -26,6 +27,7 @@ public class ObjectNotFoundException extends RuntimeException {
             case Register register -> String.format("Student with registration number %s not found", register.toString());
             case FiscalCode fiscalCode -> String.format("User with this fiscal code %s not found", fiscalCode.toString());
             case UniqueCode uniqueCode -> String.format("Professor with unique code %s not found", uniqueCode.toString());
+            case AdminCode adminCode -> String.format("Admin with admin code %s not found", adminCode.toString());
             case DomainType domainType -> String.format("%s not found", getIdentifierName(domainType));
             default -> "Unknown error";
         };
@@ -35,6 +37,7 @@ public class ObjectNotFoundException extends RuntimeException {
     private static String getIdentifierName(DomainType type) {
         return switch (type) {
             case DomainType.USER -> "User";
+            case DomainType.ADMIN -> "Admin";
             case DomainType.STUDENT -> "Student";
             case DomainType.PROFESSOR -> "Professor";
             case DomainType.COURSE -> "Course";

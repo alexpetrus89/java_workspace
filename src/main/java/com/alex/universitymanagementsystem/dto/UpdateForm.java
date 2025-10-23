@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.time.LocalDate;
 
 import com.alex.universitymanagementsystem.annotation.ValidBirthDate;
+import com.alex.universitymanagementsystem.annotation.ValidCountry;
 import com.alex.universitymanagementsystem.annotation.ValidFiscalCode;
 import com.alex.universitymanagementsystem.annotation.ValidPassword;
 import com.alex.universitymanagementsystem.entity.Address;
@@ -53,8 +54,9 @@ public class UpdateForm implements Serializable, PasswordCarrier {
     @NotBlank(message = "City is required")
     private String city;
 
-    @NotBlank(message = "State is required")
-    private String state;
+    @NotBlank(message = "Country is required")
+    @ValidCountry
+    private String country;
 
     @NotBlank(message = "Zip code is required")
     @Pattern(regexp = "\\d{5}", message = "ZIP code must be 5 digits")
@@ -84,13 +86,13 @@ public class UpdateForm implements Serializable, PasswordCarrier {
     public String getFiscalCode() { return fiscalCode; }
     public String getStreet() { return street; }
     public String getCity() { return city; }
-    public String getState() { return state; }
+    public String getCountry() { return country; }
     public String getZip() { return zip; }
     public String getPhone() { return phone; }
     public RoleType getRole() { return role; }
 
     public Address getAddress() {
-        return new Address(street, city, state, zip);
+        return new Address(street, city, country, zip);
     }
 
     // setters
@@ -126,8 +128,8 @@ public class UpdateForm implements Serializable, PasswordCarrier {
     public void withCity(String city) { this.city = city; }
     public void setCity(String city) { this.city = city; }
 
-    public void withState(String state) { this.state = state; }
-    public void setState(String state) { this.state = state; }
+    public void withCountry(String country) { this.country = country; }
+    public void setCountry(String country) { this.country = country; }
 
     public void withZip(String zip) { this.zip = zip; }
     public void setZip(String zip) { this.zip = zip; }

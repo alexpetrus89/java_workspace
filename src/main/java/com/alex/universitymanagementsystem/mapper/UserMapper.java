@@ -25,7 +25,7 @@ public class UserMapper {
         Address address = new Address();
         address.setStreet(dto.getAddress().getStreet());
         address.setCity(dto.getAddress().getCity());
-        address.setState(dto.getAddress().getState());
+        address.setCountry(dto.getAddress().getCountry());
         address.setZipCode(dto.getAddress().getZipCode());
         user.setAddress(address);
         return user;

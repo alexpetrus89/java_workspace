@@ -143,7 +143,7 @@ public class UmsDBInitConfig implements Serializable {
         form.setFiscalCode("abc678rde217we56");
         form.setStreet("sky valley road");
         form.setCity("Palm Desert");
-        form.setState("Rockalandia");
+        form.setCountry("Rockalandia");
         form.setZip("12398");
         form.setPhone("7416328954");
         form.setRole(RoleType.ADMIN);
@@ -157,7 +157,7 @@ public class UmsDBInitConfig implements Serializable {
         formTwo.setFiscalCode("abc678rde217we47");
         formTwo.setStreet("calvario street");
         formTwo.setCity("  Oslo");
-        formTwo.setState("Norway");
+        formTwo.setCountry("Norway");
         formTwo.setZip("89632");
         formTwo.setPhone("1234567894");
         formTwo.setRole(RoleType.ADMIN);
@@ -302,7 +302,7 @@ public class UmsDBInitConfig implements Serializable {
         formStudentOne.setFiscalCode("abc678rde217we12");
         formStudentOne.setStreet("hollywood boulevard");
         formStudentOne.setCity("Bishkek");
-        formStudentOne.setState("Kyrgyzstan");
+        formStudentOne.setCountry("Kyrgyzstan");
         formStudentOne.setZip("96358");
         formStudentOne.setPhone("1111111110");
         formStudentOne.setRole(RoleType.STUDENT);
@@ -317,7 +317,7 @@ public class UmsDBInitConfig implements Serializable {
         formStudentTwo.setFiscalCode("abc678rde217we71");
         formStudentTwo.setStreet("Loreto Square");
         formStudentTwo.setCity("Milan");
-        formStudentTwo.setState("Italy");
+        formStudentTwo.setCountry("Italy");
         formStudentTwo.setZip("20127");
         formStudentTwo.setPhone("2804194500");
         formStudentTwo.setRole(RoleType.STUDENT);
@@ -332,7 +332,7 @@ public class UmsDBInitConfig implements Serializable {
         formStudentThree.setFiscalCode("abc678rde217we43");
         formStudentThree.setStreet("Pancho Villa Street");
         formStudentThree.setCity("San Juan del Río");
-        formStudentThree.setState("Messico");
+        formStudentThree.setCountry("Messico");
         formStudentThree.setZip("76800");
         formStudentThree.setPhone("9876543210");
         formStudentThree.setRole(RoleType.STUDENT);
@@ -347,7 +347,7 @@ public class UmsDBInitConfig implements Serializable {
         formStudentFour.setFiscalCode("abc678rde217we34");
         formStudentFour.setStreet("via delle lamie di olimpia");
         formStudentFour.setCity("laureto");
-        formStudentFour.setState("italia");
+        formStudentFour.setCountry("italia");
         formStudentFour.setZip("72015");
         formStudentFour.setPhone("38412369547");
         formStudentFour.setRole(RoleType.STUDENT);
@@ -362,7 +362,7 @@ public class UmsDBInitConfig implements Serializable {
         formStudentFive.setFiscalCode("abc678rde217we18");
         formStudentFive.setStreet("via delle lamie di olimpia");
         formStudentFive.setCity("laureto");
-        formStudentFive.setState("italia");
+        formStudentFive.setCountry("italia");
         formStudentFive.setZip("72015");
         formStudentFive.setPhone("38412369547");
         formStudentFive.setRole(RoleType.STUDENT);
@@ -377,7 +377,7 @@ public class UmsDBInitConfig implements Serializable {
         formStudentSix.setFiscalCode("abc678rde217we19");
         formStudentSix.setStreet("via delle lamie di olimpia");
         formStudentSix.setCity("laureto");
-        formStudentSix.setState("italia");
+        formStudentSix.setCountry("italia");
         formStudentSix.setZip("72015");
         formStudentSix.setPhone("38412369547");
         formStudentSix.setRole(RoleType.STUDENT);
@@ -392,7 +392,7 @@ public class UmsDBInitConfig implements Serializable {
         formStudentSeven.setFiscalCode("abc678rde217we20");
         formStudentSeven.setStreet("via delle lamie di olimpia");
         formStudentSeven.setCity("laureto");
-        formStudentSeven.setState("italia");
+        formStudentSeven.setCountry("italia");
         formStudentSeven.setZip("72015");
         formStudentSeven.setPhone("38412369547");
         formStudentSeven.setRole(RoleType.STUDENT);
@@ -407,7 +407,7 @@ public class UmsDBInitConfig implements Serializable {
         formStudentEight.setFiscalCode("abc678rde217we21");
         formStudentEight.setStreet("via delle lamie di olimpia");
         formStudentEight.setCity("laureto");
-        formStudentEight.setState("italia");
+        formStudentEight.setCountry("italia");
         formStudentEight.setZip("72015");
         formStudentEight.setPhone("38412369547");
         formStudentEight.setRole(RoleType.STUDENT);
@@ -422,7 +422,7 @@ public class UmsDBInitConfig implements Serializable {
         formStudentNine.setFiscalCode("abc678rde217we22");
         formStudentNine.setStreet("via les claypool 71");
         formStudentNine.setCity("Bari");
-        formStudentNine.setState("italia");
+        formStudentNine.setCountry("italia");
         formStudentNine.setZip("72100");
         formStudentNine.setPhone("38412369547");
         formStudentNine.setRole(RoleType.STUDENT);
@@ -679,7 +679,7 @@ public class UmsDBInitConfig implements Serializable {
         fbProfOne.setFiscalCode("abc678rde217we11");
         fbProfOne.setStreet("via di vancouver");
         fbProfOne.setCity("vancouver");
-        fbProfOne.setState("canada");
+        fbProfOne.setCountry("canada");
         fbProfOne.setZip("48759");
         fbProfOne.setPhone("8749652314");
         fbProfOne.setRole(RoleType.PROFESSOR);
@@ -705,7 +705,7 @@ public class UmsDBInitConfig implements Serializable {
         fbProfTwo.setFiscalCode("abc999rde217we48");
         fbProfTwo.setStreet("via di babel");
         fbProfTwo.setCity("firenze");
-        fbProfTwo.setState("italia");
+        fbProfTwo.setCountry("italia");
         fbProfTwo.setZip("41695");
         fbProfTwo.setPhone("8749652314");
         fbProfTwo.setRole(RoleType.PROFESSOR);
@@ -730,7 +730,7 @@ public class UmsDBInitConfig implements Serializable {
         fbProfThree.setFiscalCode("abc568rde217we76");
         fbProfThree.setStreet("via di florio");
         fbProfThree.setCity("palermo");
-        fbProfThree.setState("italia");
+        fbProfThree.setCountry("italia");
         fbProfThree.setZip("91000");
         fbProfThree.setPhone("8749652314");
         fbProfThree.setRole(RoleType.PROFESSOR);
@@ -755,7 +755,7 @@ public class UmsDBInitConfig implements Serializable {
         fbProfFour.setFiscalCode("zzz665rde217we56");
         fbProfFour.setStreet("via di vancouver");
         fbProfFour.setCity("vancouver");
-        fbProfFour.setState("canada");
+        fbProfFour.setCountry("canada");
         fbProfFour.setZip("48759");
         fbProfFour.setPhone("8749652314");
         fbProfFour.setRole(RoleType.PROFESSOR);

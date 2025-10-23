@@ -118,7 +118,7 @@ public class UmsConfig {
         final String invalidAddressView = "exception/illegal/invalid/invalid-address";
         fieldToView.put("street", invalidAddressView);
         fieldToView.put("city", invalidAddressView);
-        fieldToView.put("state", invalidAddressView);
+        fieldToView.put("country", invalidAddressView);
         fieldToView.put("zip", invalidAddressView);
 
         final String invalidChoiceView = "exception/illegal/invalid/invalid-choice";
@@ -154,8 +154,11 @@ public class UmsConfig {
 		"/css/**",
         "/js/home.js",
         "/js/login.js",
+        "/js/registration.js",
+        "/js/password-rules.js",
+        "/js/select-degree-course.js",
 		"/js/upload-degree-courses.js",
-		"/js/password-rules.js",
+        "/js/upload-countries.js",
         "/images/**",
         "/sounds/**",
 		"/favicon.ico",

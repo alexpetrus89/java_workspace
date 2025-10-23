@@ -5,110 +5,135 @@
     xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
     <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
-    <title>Uni Journey</title>
+    <title>Uni Journey - Registration</title>
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
+
+    <!-- Custom Styles -->
     <link rel="stylesheet" type="text/css" href="/css/registration.css">
     <link rel="stylesheet" type="text/css" href="/css/password-rules.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 </head>
+
 <body>
 
-    <!-- Messaggio errore -->
-    <div th:if="${error}" class="alert-error">
-        ⚠️ Unable to register. Please check your data.
+<header class="main-header">
+    <div class="header-inner">
+        <div class="logo">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none">
+                <rect x="2" y="3" width="20" height="6" rx="1.5" fill="#2563eb"/>
+                <rect x="2" y="13" width="20" height="8" rx="2" fill="#1e40af"/>
+            </svg>
+            <h1 class="brand">UNI JOURNEY</h1>
+        </div>
+
+        <!-- Dark/Light Toggle -->
+        <div class="theme-toggle" id="theme-toggle" title="Toggle theme">
+            <i class="fas fa-moon"></i>
+        </div>
     </div>
+</header>
 
-    <h1>Uni Journey</h1>
-    <p class="subtitle">Create your account and start your journey 🚀</p>
 
-    <form th:action="@{/registration}" th:object="${form}" method="post" class="card">
+<main class="container">
+    <div class="registration-card">
 
         <h2>Registration</h2>
 
-        <label for="username">Username</label>
-        <input type="text" th:field="*{username}" required placeholder="Enter your username">
-
-        <label for="password">Password</label>
-        <input type="password" id="password" th:field="*{password}" required placeholder="Enter your password">
-
-        <div id="password-rules" class="info-box">
-            <p>Password must meet the following criteria:</p>
-            <ul>
-                <li id="rule-length">At least 8 characters</li>
-                <li id="rule-uppercase">At least one uppercase letter</li>
-                <li id="rule-lowercase">At least one lowercase letter</li>
-                <li id="rule-number">At least one number</li>
-                <li id="rule-special">At least one special character (!@#$%^&*())</li>
-            </ul>
+        <!-- Messaggio errore -->
+        <div th:if="${error}" class="alert-error">
+            ⚠️ Unable to register. Please check your data.
         </div>
 
-        <label for="confirm">Confirm Password</label>
-        <input type="password" th:field="*{confirm}" required placeholder="Confirm your password">
+        <p class="subtitle">Create your account and start your journey 🚀</p>
 
-        <div class="inline-field">
+        <form th:action="@{/registration}" th:object="${form}" method="post" class="card">
+            <label for="username">Username</label>
+            <input type="text" th:field="*{username}" required placeholder="Enter your username" autocomplete="username">
+
+            <label for="password">Password</label>
+            <input type="password" id="password" th:field="*{password}" required placeholder="Enter your password" autocomplete="new-password">
+
+            <div id="password-rules" class="info-box">
+                <p>Password must meet the following criteria:</p>
+                <ul>
+                    <li id="rule-length">At least 8 characters</li>
+                    <li id="rule-uppercase">At least one uppercase letter</li>
+                    <li id="rule-lowercase">At least one lowercase letter</li>
+                    <li id="rule-number">At least one number</li>
+                    <li id="rule-special">At least one special character (!@#$%^&*())</li>
+                </ul>
+            </div>
+
+            <label for="confirm">Confirm Password</label>
+            <input type="password" th:field="*{confirm}" required placeholder="Confirm your password" autocomplete="new-password">
+
             <label for="firstName">First name</label>
             <input type="text" th:field="*{firstName}" required placeholder="John">
-        </div>
 
-        <div class="inline-field">
             <label for="lastName">Last name</label>
             <input type="text" th:field="*{lastName}" required placeholder="Doe">
-        </div>
 
-        <div class="inline-field">
             <label for="dob">Date of Birth</label>
             <input type="date" th:field="*{dob}" required placeholder="YYYY-MM-DD">
-        </div>
 
-        <div class="inline-field">
             <label for="role">Role</label>
             <select th:field="*{role}" id="role">
                 <option value="STUDENT">Student</option>
                 <option value="PROFESSOR">Professor</option>
                 <option value="ADMIN">Admin</option>
             </select>
-        </div>
 
-        <label for="fiscalCode">Fiscal Code</label>
-        <input type="text" th:field="*{fiscalCode}" required placeholder="Your fiscal code">
+            <label for="fiscalCode">Fiscal Code</label>
+            <input type="text" th:field="*{fiscalCode}" required placeholder="Your fiscal code">
 
-        <label for="street">Street</label>
-        <input type="text" th:field="*{street}" required placeholder="Your street">
+            <label for="street">Street</label>
+            <input type="text" th:field="*{street}" required placeholder="Your street">
 
-        <label for="city">City</label>
-        <input type="text" th:field="*{city}" required placeholder="Your city">
+            <label for="city">City</label>
+            <input type="text" th:field="*{city}" required placeholder="Your city">
 
-        <label for="state">State</label>
-        <input type="text" th:field="*{state}" required placeholder="Your state">
+            <label for="country">Country</label>
+            <select th:field="*{country}" id="country" required autocomplete="country">
+                <option value="">Select your country</option>
+            </select>
 
-        <label for="zip">Zip</label>
-        <input type="text" th:field="*{zip}" required placeholder="Your ZIP code">
+            <label for="zip">Zip</label>
+            <input type="text" th:field="*{zip}" required placeholder="Your ZIP code">
 
-        <label for="phone">Phone</label>
-        <input type="text" th:field="*{phone}" required placeholder="+39 333 1234567">
+            <label for="phone">Phone</label>
+            <input type="text" th:field="*{phone}" required placeholder="+393331234567" autocomplete="tel">
 
-        <div class="form-buttons">
-            <input type="submit" value="Register">
-            <input type="reset" value="Reset">
-        </div>
+            <div class="form-actions">
+                <input type="submit" value="Register" class="btn primary-btn"/>
+                <input type="reset" value="Reset" class="btn secondary-btn"/>
+            </div>
 
-        <!-- Registrazione social -->
-        <div class="social-register">
-            <p>Or register with:</p>
-            <a th:href="@{/oauth2/authorization/google}" class="btn-social google">Google</a>
-            <a th:href="@{/oauth2/authorization/github}" class="btn-social github">GitHub</a>
-        </div>
+            <!-- Registrazione social -->
+            <div class="social-register">
+                <p>or register with:</p>
+                <a th:href="@{/oauth2/authorization/google}" class="btn-social google">Google</a>
+                <a th:href="@{/oauth2/authorization/github}" class="btn-social github">GitHub</a>
+            </div>
+
+        </form>
 
         <p class="login-link">
             Already registered? <a th:href="@{/login}">Click here</a> to login.
         </p>
-    </form>
 
-    <div class="form-actions">
-        <a href="/" class="home-link">🏠 Home</a>
+        <div class="form-actions">
+            <a href="/" class="home-link">🏠 Home</a>
+        </div>
+
     </div>
 
-    <script src="/js/password-rules.js"></script>
+</main>
+
+<!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" defer></script>
+<script src="/js/password-rules.js"></script>
+<script src="/js/registration.js" defer></script>
+<script src="/js/upload-countries.js"></script>
 </body>
 </html>

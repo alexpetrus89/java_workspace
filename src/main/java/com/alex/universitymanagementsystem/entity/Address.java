@@ -25,16 +25,16 @@ public class Address implements Serializable {
     private Long id;
     private String street;
     private String city;
-    private String state;
+    private String country;
     private String zipCode;
 
     // constructors
     public Address() {}
 
-    public Address(String street, String city, String state, String zipCode) {
+    public Address(String street, String city, String country, String zipCode) {
         this.street = street;
         this.city = city;
-        this.state = state;
+        this.country = country;
         this.zipCode = zipCode;
     }
 
@@ -59,10 +59,10 @@ public class Address implements Serializable {
         return city;
     }
 
-    @Column(name = "state", nullable = false, unique = false, length = 50)
-    @NotBlank(message = "State is mandatory")
-    public String getState() {
-        return state;
+    @Column(name = "country", nullable = false, unique = false, length = 50)
+    @NotBlank(message = "Country is mandatory")
+    public String getCountry() {
+        return country;
     }
 
     @Column(name = "zip_code", nullable = false, unique = false, length = 50)
@@ -86,8 +86,8 @@ public class Address implements Serializable {
         this.city = city;
     }
 
-    public void setState(String state) {
-        this.state = state;
+    public void setCountry(String country) {
+        this.country = country;
     }
 
     public void setZipCode(String zipCode) {

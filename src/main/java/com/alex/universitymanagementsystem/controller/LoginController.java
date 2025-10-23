@@ -43,14 +43,14 @@ public class LoginController {
     public void redirectProfile(HttpServletResponse response) throws IOException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        // Caso: utente NON autenticato o anonimo
+        // Case: user not logged or anonymous
         if (authentication == null || !authentication.isAuthenticated()
                 || "anonymousUser".equals(authentication.getPrincipal())) {
             response.sendRedirect("/login");
             return;
         }
 
-        // Caso: utente autenticato → prendi il primo ruolo e reindirizza
+        // Case: user authenticated → get first role and redirect
         String role = authentication.getAuthorities().iterator().next().getAuthority();
         redirectLoginService.redirectBasedOnRole(role, response);
     }

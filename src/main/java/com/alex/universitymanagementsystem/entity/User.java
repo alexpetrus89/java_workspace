@@ -10,10 +10,10 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import com.alex.universitymanagementsystem.entity.immutable.FiscalCode;
-import com.alex.universitymanagementsystem.entity.immutable.UserId;
 import com.alex.universitymanagementsystem.dto.RegistrationForm;
 import com.alex.universitymanagementsystem.dto.UpdateForm;
+import com.alex.universitymanagementsystem.entity.immutable.FiscalCode;
+import com.alex.universitymanagementsystem.entity.immutable.UserId;
 import com.alex.universitymanagementsystem.enum_type.RoleType;
 
 import jakarta.persistence.CascadeType;
@@ -97,7 +97,7 @@ public class User implements UserDetails {
         this.fiscalCode = new FiscalCode(form.getFiscalCode());
         this.phone = form.getPhone();
         this.role = form.getRole();
-        this.address = new Address(form.getStreet(), form.getCity(), form.getState(), form.getZip());
+        this.address = new Address(form.getStreet(), form.getCity(), form.getCountry(), form.getZip());
         this.enabled = true;
         this.accountLocked = false;
         this.credentialsExpirationDate = LocalDate.of(2100, 1, 1);
@@ -113,7 +113,7 @@ public class User implements UserDetails {
         this.fiscalCode = new FiscalCode(form.getFiscalCode());
         this.phone = form.getPhone();
         this.role = form.getRole();
-        this.address = new Address(form.getStreet(), form.getCity(), form.getState(), form.getZip());
+        this.address = new Address(form.getStreet(), form.getCity(), form.getCountry(), form.getZip());
         this.enabled = true;
         this.accountLocked = false;
         this.credentialsExpirationDate = LocalDate.of(2100, 1, 1);

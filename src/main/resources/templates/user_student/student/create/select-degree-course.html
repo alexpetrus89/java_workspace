@@ -5,36 +5,69 @@
     xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
     <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
-    <title>Uni Journey</title>
+    <title>Uni Journey - Complete Registration</title>
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="/js/upload-degree-courses.js"></script>
+
+    <!-- Custom Styles -->
     <link rel="stylesheet" href="/css/select-degree-course.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
 </head>
+
 <body>
-    <div class="container">
-        <h1>Complete student registration</h1>
 
-        <form action="#" th:action="@{/api/v1/user/create-student}" method="post">
+<header class="main-header">
+    <div class="header-inner">
+        <div class="logo">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none">
+                <rect x="2" y="3" width="20" height="6" rx="1.5" fill="#2563eb"/>
+                <rect x="2" y="13" width="20" height="8" rx="2" fill="#1e40af"/>
+            </svg>
+            <h1 class="brand">UNI JOURNEY</h1>
+        </div>
 
-            <label for="degreeCourse">Degree Course:</label>
+        <!-- Dark/Light Toggle -->
+        <div class="theme-toggle" id="theme-toggle" title="Toggle theme">
+            <i class="fas fa-moon"></i>
+        </div>
+    </div>
+</header>
+
+<main class="container">
+    <div class="registration-card">
+        <h2>Complete student registration</h2>
+
+        <form th:action="@{/api/v1/user/create-student}" method="post">
+            <label for="degreeCourse">Degree Course</label>
             <select id="degreeCourse" name="degreeCourse" required>
                 <option value="">-- Select a degree course --</option>
                 <option th:each="degreeCourse : ${degreeCourses}"
-                    th:value="${degreeCourse.name}"
-                    th:text="${degreeCourse.name}">
+                        th:value="${degreeCourse.name}"
+                        th:text="${degreeCourse.name}">
                 </option>
             </select>
 
-            <label for="ordering">Ordering:</label>
+            <label for="ordering">Ordering</label>
             <input type="text" name="ordering" id="ordering" placeholder="Enter degree course ordering" title="Enter degree course ordering" required>
 
-            <div class="form-buttons">
-                <input type="submit" value="Submit">
-                <input type="reset" value="Reset">
+            <div class="form-actions">
+                <input type="submit" value="Submit" class="btn primary-btn">
+                <input type="reset" value="Reset" class="btn secondary-btn">
             </div>
         </form>
-        <a class="back-link" href="#" th:href="@{/home}">Back to Menu</a>
+
+        <div class="form-actions">
+            <a href="#" th:href="@{/home}" class="home-link">Back to Menu</a>
+        </div>
     </div>
+</main>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="/js/upload-degree-courses.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" defer></script>
+<script src="/js/select-degree-course.js" defer></script>
+
 </body>
 </html>
+

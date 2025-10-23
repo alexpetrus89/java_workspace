@@ -26,5 +26,6 @@ public class OAuth2UserExtractor implements PrincipalExtractor {
     public Collection<? extends GrantedAuthority> extractAuthorities(Object principal) {
         return ((CustomOAuth2User) principal).getAuthorities();
     }
+
 }
 

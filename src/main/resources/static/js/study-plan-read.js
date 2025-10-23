@@ -18,7 +18,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const progressInfo = document.getElementById("progress-info");
     const totalCFUElement = document.getElementById("total-cfu");
 
-    const totalCFU = parseInt(totalCFUElement?.textContent || "180", 10);
+    const totalCFU = Number.parseInt(totalCFUElement?.textContent || "180", 10);
     progressInfo.textContent = "⏳ Loading your academic progress...";
 
     fetch("/api/v1/examination/read/student/register/ajax")

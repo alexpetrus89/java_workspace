@@ -7,6 +7,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import com.alex.universitymanagementsystem.annotation.UniqueFiscalCode;
 import com.alex.universitymanagementsystem.annotation.UniqueUsername;
 import com.alex.universitymanagementsystem.annotation.ValidBirthDate;
+import com.alex.universitymanagementsystem.annotation.ValidCountry;
 import com.alex.universitymanagementsystem.annotation.ValidFiscalCode;
 import com.alex.universitymanagementsystem.annotation.ValidPassword;
 import com.alex.universitymanagementsystem.entity.Admin;
@@ -58,8 +59,9 @@ public class RegistrationForm implements Serializable, PasswordCarrier {
     @NotBlank(message = "City is required")
     private String city;
 
-    @NotBlank(message = "State is required")
-    private String state;
+    @NotBlank(message = "Country is required")
+    @ValidCountry
+    private String country;
 
     @NotBlank(message = "ZIP code is required")
     @Pattern(regexp = "\\d{5}", message = "ZIP code must be 5 digits")
@@ -88,7 +90,7 @@ public class RegistrationForm implements Serializable, PasswordCarrier {
     public String getFiscalCode() { return fiscalCode; }
     public String getStreet() { return street; }
     public String getCity() { return city; }
-    public String getState() { return state; }
+    public String getCountry() { return country; }
     public String getZip() { return zip; }
     public String getPhone() { return phone; }
     public RoleType getRole() { return role; }
@@ -106,7 +108,7 @@ public class RegistrationForm implements Serializable, PasswordCarrier {
     public void setFiscalCode(String fiscalCode) { this.fiscalCode = fiscalCode.toUpperCase(); }
     public void setStreet(String street) { this.street = street; }
     public void setCity(String city) { this.city = city; }
-    public void setState(String state) { this.state = state; }
+    public void setCountry(String country) { this.country = country; }
     public void setZip(String zip) { this.zip = zip; }
     public void setPhone(String phone) { this.phone = (phone == null || phone.isEmpty()) ? "N/A" : phone; }
     public void setRole(RoleType role) { this.role = role; }

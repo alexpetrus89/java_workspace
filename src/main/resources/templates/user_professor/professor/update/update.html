@@ -72,9 +72,10 @@
         <input type="text" th:field="*{city}" title="Enter new city"
             placeholder="new city">
 
-        <label for="state">State: </label>
-        <input type="text" th:field="*{state}" title="Enter new state"
-            placeholder="new state">
+        <label for="country">Country: </label>
+        <select th:field="*{country}" id="country" required>
+            <option value="">Select your country</option>
+        </select>
 
         <label for="zip">Zip: </label>
         <input type="text" th:field="*{zip}" title="Enter new zip code"
@@ -106,5 +107,6 @@
         </div>
     </div>
     <script src="/static/js/password-rules.js"></script>
+    <script src="/static/js/upload-countries.js"></script>
 </body>
 </html>

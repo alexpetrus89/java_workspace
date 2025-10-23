@@ -7,12 +7,13 @@ document.addEventListener("DOMContentLoaded", () => {
     input.addEventListener("input", () => {
         const filter = input.value.toLowerCase().trim();
 
-        cards.forEach(card => {
+        for (const card of cards) {
             const text = card.textContent.toLowerCase();
             const isVisible = text.includes(filter);
             card.style.display = isVisible ? "" : "none";
 
-            card.querySelectorAll("p").forEach(p => {
+            const ps = card.querySelectorAll("p");
+            for (const p of ps) {
                 const originalText = p.textContent;
 
                 if (filter && isVisible) {
@@ -22,8 +23,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 } else {
                     p.textContent = originalText;
                 }
-            });
-        });
+            }
+        }
     });
 });
 

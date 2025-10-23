@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const value = input.value.trim();
         const regex = /^[A-Za-z0-9]{8,}$/;
 
-        if (!regex.test(value)) {
+        if (regex.test(value) === false) {
             event.preventDefault();
             error.textContent = "The unique code must contain at least 8 alphanumeric characters.";
         } else {

@@ -1,8 +1,15 @@
 package com.alex.universitymanagementsystem.config;
 
+import java.io.IOException;
 import java.io.Serializable;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.AccessDeniedException;
@@ -33,14 +40,25 @@ import static com.alex.universitymanagementsystem.config.UmsConfig.ADMIN_URLS;
 import static com.alex.universitymanagementsystem.config.UmsConfig.PROFESSOR_URLS;
 import static com.alex.universitymanagementsystem.config.UmsConfig.PUBLIC_URLS;
 import static com.alex.universitymanagementsystem.config.UmsConfig.STUDENT_URLS;
+import com.alex.universitymanagementsystem.exception.GitHubEmailFetchException;
 import com.alex.universitymanagementsystem.service.RedirectLoginService;
 import com.alex.universitymanagementsystem.utils.CustomOAuth2User;
 import com.alex.universitymanagementsystem.utils.CustomOidcUser;
 import com.alex.universitymanagementsystem.utils.PrincipalExtractor;
 
+import net.minidev.json.JSONArray;
+import net.minidev.json.JSONObject;
+import net.minidev.json.parser.JSONParser;
+
 @Configuration
 @EnableWebSecurity
 public class UmsWebSecurityConfig implements Serializable {
+
+	// logger
+	private final transient Logger logger =
+        LoggerFactory.getLogger(UmsWebSecurityConfig.class);
+
+	private static final HttpClient HTTP_CLIENT = HttpClient.newHttpClient();
 
 	// constant
 	private static final String ADMIN = "ADMIN";
@@ -150,6 +168,13 @@ public class UmsWebSecurityConfig implements Serializable {
 			OAuth2User oauth2User = new DefaultOAuth2UserService().loadUser(userRequest);
 
 			String email = (String) oauth2User.getAttribute("email");
+
+			if (email == null) {
+            	// Fallback API call
+				String token = userRequest.getAccessToken().getTokenValue();
+				email = fetchPrimaryEmailFromGitHub(token);
+			}
+
 			UserDetails userDetails = uds.loadUserByUsername(email);
 
 			return new CustomOAuth2User(userDetails, oauth2User);
@@ -202,6 +227,50 @@ public class UmsWebSecurityConfig implements Serializable {
 			throw new AccessDeniedException("Access Denied: " + e.getMessage(), e);
 		}
 	}
+
+
+	/**
+	 * Fetches the primary email address of the authenticated user from GitHub using the provided access token.
+	 * @param token the OAuth2 access token
+	 * @return the primary email address, or null if not found
+	 */
+	private String fetchPrimaryEmailFromGitHub(String token) {
+		try {
+			HttpRequest request = HttpRequest.newBuilder()
+				.uri(URI.create("https://api.github.com/user/emails"))
+				.header("Authorization", "token " + token)
+				.header("Accept", "application/vnd.github.v3+json")
+				.GET()
+				.build();
+
+			HttpResponse<String> response = HTTP_CLIENT.send(request, HttpResponse.BodyHandlers.ofString());
+
+			if (response.statusCode() == 200) {
+				String json = response.body();
+
+				JSONParser parser = new JSONParser(JSONParser.MODE_PERMISSIVE);
+				JSONArray emails = (JSONArray) parser.parse(json);
+
+				for (Object obj : emails) {
+					JSONObject emailObj = (JSONObject) obj;
+					Boolean primary = (Boolean) emailObj.get("primary");
+					if (Boolean.TRUE.equals(primary))
+						return (String) emailObj.get("email");
+				}
+			} else {
+				logger.error("GitHub API returned status: {}", response.statusCode());
+			}
+
+		} catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
+			throw new GitHubEmailFetchException("Thread interrupted while fetching email from GitHub", e);
+		} catch (IOException | net.minidev.json.parser.ParseException e) {
+			throw new GitHubEmailFetchException("Failed to fetch email from GitHub", e);
+		}
+
+		return null;
+	}
+
 
 
 

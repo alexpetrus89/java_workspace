@@ -5,14 +5,55 @@
     xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta name="viewport" charset="UTF-8" content="width=device-width, initial-scale=1.0">
-    <title>Uni Journey</title>
+    <title>Uni Journey - Registration failure</title>
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
+
+    <!-- Custom Styles -->
     <link rel="stylesheet" type="text/css" href="/css/student-failure.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 </head>
+
 <body>
-	<h1>Error: failure to create new student</h1>
-    <p th:text="${message}"></p>
-    <p><a href="javascript:history.back()">Go back</a></p>
-    <a href="#" th:href="@{/home}">Back to home</a>
+
+<header class="main-header">
+    <div class="header-inner">
+        <div class="logo">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none">
+                <rect x="2" y="3" width="20" height="6" rx="1.5" fill="#2563eb"/>
+                <rect x="2" y="13" width="20" height="8" rx="2" fill="#1e40af"/>
+            </svg>
+            <h1 class="brand">UNI JOURNEY</h1>
+        </div>
+
+        <!-- Dark/Light Toggle -->
+        <div class="theme-toggle" id="theme-toggle" title="Toggle theme">
+            <i class="fas fa-moon"></i>
+        </div>
+    </div>
+</header>
+
+<main class="container">
+    <div class="failure-card" th:if="${student != null}">
+        <h2>🎉 Registration completed successfully!</h2>
+    </div>
+
+    <div class="failure-card error" th:if="${student == null}">
+        <h2>⚠️ Error: profile not created</h2>
+        <a class="btn primary-btn" th:href="@{/login}">Login</a>
+    </div>
+
+    <div>
+        <a class="btn primary-btn" th:href="@{/home}">Back to home</a>
+    </div>
+
+    <div>
+        <a class="btn secondary-btn" href="javascript:history.back()">Go back</a>
+    </div>
+</main>
+
+<!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" defer></script>
+<script src="/js/student-failure.js" defer></script>
 </body>
 </html>

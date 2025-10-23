@@ -1,44 +1,97 @@
+:root {
+    --bg: #f5f7fa;
+    --card: #fff;
+    --text: #1e293b;
+    --primary: #2563eb;
+    --accent: #0ea5e9;
+    --border: #e2e8f0;
+    --transition: 0.4s ease;
+}
+
+:root.dark {
+    --bg: #0f172a;
+    --card: #1e293b;
+    --text: #f1f5f9;
+    --primary: #3b82f6;
+    --accent: #22d3ee;
+    --border: #334155;
+}
+
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f8d7da; /* rosso molto chiaro (error background) */
+    font-family: 'Poppins', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
     margin: 0;
     padding: 0;
+    transition: background var(--transition), color var(--transition);
 }
 
 .container {
-    max-width: 600px;
+    max-width: 700px;
     margin: 60px auto;
-    padding: 30px;
-    background-color: #ffffff;
-    border-radius: 10px;
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+    padding: 0 1rem;
     text-align: center;
 }
 
-h1 {
-    color: #721c24; /* rosso scuro (errore) */
-    margin-bottom: 25px;
+.main-header {
+    position: sticky;
+    top: 0;
+    background: rgba(255, 255, 255, 0.75);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    padding: 15px 20px;
+    border-bottom: 1px solid var(--border);
+    transition: background var(--transition);
+    z-index: 1000;
+}
+:root.dark .main-header { background: rgba(30,41,59,0.75); }
+
+.header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1200px;
+    margin: auto;
 }
 
-p {
+.logo { display: flex; align-items: center; gap: 10px; }
+.brand { font-weight: 800; font-size: 1.3rem; color: var(--primary); }
+
+.failure-card {
+    background: var(--card);
+    border-radius: 18px;
+    padding: 30px 35px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+    margin: 30px 0;
+    transition: background var(--transition), color var(--transition);
+}
+
+.failure-card h2 {
+    font-size: 1.8rem;
+    color: var(--primary);
+    margin-bottom: 20px;
+}
+
+.failure-card p {
     font-size: 1rem;
-    color: #333;
-    margin: 10px 0;
+    margin: 8px 0;
+    color: var(--text);
 }
 
-a {
+.failure-card a.btn {
     display: inline-block;
-    margin-top: 20px;
-    padding: 12px 24px;
-    font-size: 1rem;
-    font-weight: bold;
-    color: #fff;
-    background-color: #dc3545; /* rosso (errore) */
+    padding: 12px 20px;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
     text-decoration: none;
-    border-radius: 5px;
-    transition: background-color 0.3s ease;
+    transition: background 0.3s, transform 0.2s;
 }
 
-a:hover {
-    background-color: #a71d2a; /* rosso più scuro */
-}
+.primary-btn { background: var(--primary); color: #fff; }
+.primary-btn:hover { background: var(--accent); transform: translateY(-2px); }
+
+.failure-card.error { border-left: 4px solid #e74c3c; }
+.failure-card.error h2 { color: #e74c3c; }
+.failure-card.error a.btn { background: #e74c3c; }
+.failure-card.error a.btn:hover { background: #c0392b; }

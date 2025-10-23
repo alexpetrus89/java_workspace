@@ -145,7 +145,7 @@ public class UserServiceImpl implements UserService{
             updatableUser.setAddress(new Address(
                 form.getStreet() != null ? form.getStreet() : updatableUser.getAddress().getStreet(),
                 form.getCity() != null ? form.getCity() : updatableUser.getAddress().getCity(),
-                form.getState() != null ? form.getState() : updatableUser.getAddress().getState(),
+                form.getCountry() != null ? form.getCountry() : updatableUser.getAddress().getCountry(),
                 form.getZip() != null ? form.getZip() : updatableUser.getAddress().getZipCode()
             ));
             Optional.ofNullable(form.getRole()).ifPresent(updatableUser::setRole);
@@ -219,7 +219,7 @@ public class UserServiceImpl implements UserService{
             form.setFiscalCode(String.valueOf(user.getFiscalCode()));
             form.setStreet(user.getAddress().getStreet());
             form.setCity(user.getAddress().getCity());
-            form.setState(user.getAddress().getState());
+            form.setCountry(user.getAddress().getCountry());
             form.setZip(user.getAddress().getZipCode());
             form.setPhone(user.getPhone());
             form.setRole(user.getRole());

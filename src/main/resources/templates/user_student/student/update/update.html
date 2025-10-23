@@ -12,7 +12,6 @@
     <!-- Custom Styles -->
     <link rel="stylesheet" type="text/css" href="/css/update-student.css">
     <link rel="stylesheet" type="text/css" href="/css/password-rules.css">
-
 </head>
 
 <body>
@@ -37,21 +36,21 @@
 <main class="container">
     <div class="update-card">
 
-        <h2>Update Information</h2>
+        <h2>Update information</h2>
 
         <div th:if="${error}" class="error-message">
             <p>Unable to update information. Please check your data.</p>
         </div>
 
         <form action="#" th:action="@{/api/v1/user/update}" th:object="${form}" method="post">
-            <input type="hidden" name="_method" value="PUT" />
+            <input type="hidden" name="_method" value="PUT"/>
 
             <label for="username">Username:</label>
             <input type="text" th:field="*{username}" placeholder="new username" title="Enter new username"/>
 
             <label for="password">Password:</label>
             <input type="password" id="password" th:field="*{password}" required />
-            
+
             <div id="password-rules">
                 <p>Password must meet the following criteria:</p>
                 <ul>
@@ -87,8 +86,10 @@
             <label for="city">City:</label>
             <input type="text" th:field="*{city}" placeholder="new city" title="Enter new city"/>
 
-            <label for="state">State:</label>
-            <input type="text" th:field="*{state}" placeholder="new state" title="Enter new state"/>
+            <label for="country">Country</label>
+            <select th:field="*{country}" id="country" required>
+                <option value="">Select your country</option>
+            </select>
 
             <label for="zip">Zip:</label>
             <input type="text" th:field="*{zip}" placeholder="new zip code" title="Enter new zip code"/>
@@ -123,6 +124,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" defer></script>
 <script src="/js/password-rules.js" defer></script>
 <script src="/js/update-student.js" defer></script>
+<script src="/js/upload-countries.js" defer></script>
 </body>
 </html>
 

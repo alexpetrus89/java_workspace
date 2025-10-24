@@ -26,14 +26,18 @@ document.addEventListener("DOMContentLoaded", () => {
     // === Card Scroll Animation ===
     const cards = document.querySelectorAll(".card");
     const observer = new IntersectionObserver(entries => {
-        entries.forEach(e => {
-            if (e.isIntersecting) e.target.classList.add("visible");
-        });
+        for (const entry of entries) {
+            if (entry.isIntersecting) {
+                entry.target.classList.add("visible");
+            }
+        }
     }, { threshold: 0.3 });
-    cards.forEach(card => observer.observe(card));
+    for (const card of cards) {
+        observer.observe(card);
+    }
 
     // === Welcome Toast ===
-    const nameSpan = document.querySelector("[sec\\:authentication='name']");
+    const nameSpan = document.querySelector(String.raw`[sec\:authentication='name']`);
     if (nameSpan && nameSpan.textContent.trim() !== "") {
         setTimeout(() => showToast(`Welcome back, ${nameSpan.textContent.trim()}! 👋`), 700);
     }

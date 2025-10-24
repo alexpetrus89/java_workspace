@@ -23,8 +23,8 @@ import com.alex.universitymanagementsystem.entity.ExaminationAppeal;
 import com.alex.universitymanagementsystem.entity.ExaminationOutcome;
 import com.alex.universitymanagementsystem.entity.Professor;
 import com.alex.universitymanagementsystem.entity.immutable.CourseId;
+import com.alex.universitymanagementsystem.entity.immutable.ProfessorCode;
 import com.alex.universitymanagementsystem.entity.immutable.Register;
-import com.alex.universitymanagementsystem.entity.immutable.UniqueCode;
 import com.alex.universitymanagementsystem.exception.DataAccessServiceException;
 import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
 import com.alex.universitymanagementsystem.mapper.ExaminationAppealMapper;
@@ -46,7 +46,7 @@ public class ExaminationAppealServiceImpl implements ExaminationAppealService {
 
 	// constants
     private static final String REGISTER_ERROR = "Register cannot be null or empty";
-    private static final String UNIQUE_CODE_ERROR = "Unique code cannot be null or empty";
+    private static final String PROFESSOR_CODE_ERROR = "Professor code cannot be null or empty";
     private static final String ID_ERROR = "Id cannot be null or empty";
     private static final String DATA_ACCESS_ERROR = "data access error";
 
@@ -171,7 +171,7 @@ public class ExaminationAppealServiceImpl implements ExaminationAppealService {
                 .map(appeal -> {
                     ExaminationAppealDto dto = helpers.mapAppealToDto(appeal);
                     professorRepository
-                        .findByUniqueCode(new UniqueCode(dto.getProfessorCode()))
+                        .findByProfessorCode(new ProfessorCode(dto.getProfessorCode()))
                         .ifPresent(profDto -> {
                             String fullName = profDto.getFirstName() + " " + profDto.getLastName();
                             dto.setProfessorFullName(fullName);
@@ -227,22 +227,22 @@ public class ExaminationAppealServiceImpl implements ExaminationAppealService {
 
     /**
      * Retrieves all examination appeals made by professor
-     * @param uniqueCode professor unique code
+     * @param professorCode professor code
      * @return a list of examination appeals data transfer objects
-     * @throws IllegalArgumentException if the unique code is blank
+     * @throws IllegalArgumentException if the professor code is blank
      * @throws ObjectNotFoundException if the professor does not exist
      * @throws DataAccessServiceException if there is an error accessing the database
      */
     @Override
-    public List<ExaminationAppealDto> getExaminationAppealsMadeByProfessor(UniqueCode uniqueCode)
+    public List<ExaminationAppealDto> getExaminationAppealsMadeByProfessor(ProfessorCode professorCode)
         throws IllegalArgumentException, ObjectNotFoundException, DataAccessServiceException
     {
         // sanity check
-        validators.validateNotNullOrNotBlank(uniqueCode.toString(), UNIQUE_CODE_ERROR);
-        validators.validateProfessorExists(uniqueCode);
+        validators.validateNotNullOrNotBlank(professorCode.toString(), PROFESSOR_CODE_ERROR);
+        validators.validateProfessorExists(professorCode);
 
         try {
-            List<UUID> courseIds = helpers.fetchCourses(uniqueCode.toString())
+            List<UUID> courseIds = helpers.fetchCourses(professorCode.toString())
                 .stream()
                 .map(Course::getId)
                 .map(CourseId::id)
@@ -279,7 +279,7 @@ public class ExaminationAppealServiceImpl implements ExaminationAppealService {
             Course course = helpers.fetchCourse(dto.getCourse(), dto.getDegreeCourse());
             Professor professor = helpers.fetchProfessor(dto.getProfessorCode());
 
-            if(!professor.getUniqueCode().toString().equals(course.getProfessor().getUniqueCode().toString()))
+            if(!professor.getProfessorCode().toString().equals(course.getProfessor().getProfessorCode().toString()))
                 throw new IllegalStateException("Professor does not teach this course");
 
             ExaminationAppeal appeal = ExaminationAppeal.of(course, dto.getDescription(), dto.getDate());
@@ -312,7 +312,7 @@ public class ExaminationAppealServiceImpl implements ExaminationAppealService {
 
         // sanity check
         validators.validateNotNullOrNotBlank(id.toString(), ID_ERROR);
-        validators.validateProfessorExists(new UniqueCode(professorDto.getUniqueCode()));
+        validators.validateProfessorExists(new ProfessorCode(professorDto.getProfessorCode()));
 
         try {
             ExaminationAppeal appeal = helpers.fetchExaminationAppeal(id);
@@ -365,7 +365,14 @@ public class ExaminationAppealServiceImpl implements ExaminationAppealService {
             ExaminationAppeal appeal = helpers.fetchExaminationAppeal(id);
             appeal.addRegister(register);
             ExaminationAppeal updatedAppeal = examinationAppealRepository.saveAndFlush(appeal);
-            return helpers.mapAppealToDto(updatedAppeal);
+            ExaminationAppealDto dto = helpers.mapAppealToDto(updatedAppeal);
+            professorRepository
+                .findByProfessorCode(new ProfessorCode(dto.getProfessorCode()))
+                .ifPresent(profDto -> {
+                    String fullName = profDto.getFirstName() + " " + profDto.getLastName();
+                    dto.setProfessorFullName(fullName);
+                });
+            return dto;
         } catch (PersistenceException e) {
             throw new DataAccessServiceException(DATA_ACCESS_ERROR, e);
         }

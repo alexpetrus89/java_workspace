@@ -14,8 +14,8 @@ import com.alex.universitymanagementsystem.entity.Course;
 import com.alex.universitymanagementsystem.entity.DegreeCourse;
 import com.alex.universitymanagementsystem.entity.Examination;
 import com.alex.universitymanagementsystem.entity.Student;
+import com.alex.universitymanagementsystem.entity.immutable.ProfessorCode;
 import com.alex.universitymanagementsystem.entity.immutable.Register;
-import com.alex.universitymanagementsystem.entity.immutable.UniqueCode;
 import com.alex.universitymanagementsystem.exception.DataAccessServiceException;
 import com.alex.universitymanagementsystem.exception.ObjectAlreadyExistsException;
 import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
@@ -34,7 +34,7 @@ public class ExaminationServiceImpl implements ExaminationService {
 
 	// constants
     private static final String REGISTER_ERROR = "Register cannot be null or empty";
-    private static final String UNIQUE_CODE_ERROR = "Unique code cannot be null or empty";
+    private static final String PROFESSOR_CODE_ERROR = "Professor code cannot be null or empty";
     private static final String COURSE_NAME_ERROR = "Course name cannot be null or empty";
     private static final String DEGREE_COURSE_NAME_ERROR = "Degree course name cannot be null or empty";
 
@@ -126,24 +126,24 @@ public class ExaminationServiceImpl implements ExaminationService {
 
 
     /**
-     * Get all examinations by professor unique code
-     * @param uniqueCode unique code of the professor
+     * Get all examinations by professor code
+     * @param professorCode of the professor
      * @return List<ExaminationDto>
-     * @throws IllegalArgumentException if the unique code is blank
+     * @throws IllegalArgumentException if the professor code is blank
      * @throws ObjectNotFoundException if the professor does not exist
      * @throws DataAccessServiceException if there is an error accessing the database.
      */
     @Override
-    public List<ExaminationDto> getExaminationsByProfessorUniqueCode(UniqueCode uniqueCode)
+    public List<ExaminationDto> getExaminationsByProfessorCode(ProfessorCode professorCode)
         throws IllegalArgumentException, ObjectNotFoundException, DataAccessServiceException
     {
         // sanity check
-        validators.validateNotNullOrNotBlank(uniqueCode.toString(), UNIQUE_CODE_ERROR);
-        validators.validateProfessorExists(uniqueCode);
+        validators.validateNotNullOrNotBlank(professorCode.toString(), PROFESSOR_CODE_ERROR);
+        validators.validateProfessorExists(professorCode);
 
         try {
             return courseRepository
-                .findByProfessor(uniqueCode)
+                .findByProfessor(professorCode)
                 .stream()
                 .flatMap(course -> examinationRepository
                     .findByCourse_Id_Id(course.getId().getId())

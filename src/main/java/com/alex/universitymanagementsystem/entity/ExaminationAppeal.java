@@ -10,8 +10,8 @@ import java.util.Set;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import com.alex.universitymanagementsystem.entity.immutable.ProfessorCode;
 import com.alex.universitymanagementsystem.entity.immutable.Register;
-import com.alex.universitymanagementsystem.entity.immutable.UniqueCode;
 
 import jakarta.persistence.Access;
 import jakarta.persistence.AccessType;
@@ -35,7 +35,7 @@ public class ExaminationAppeal implements Serializable {
     // instance variables
     private Long id;
     private Course course;
-    private UniqueCode professor;
+    private ProfessorCode professor;
     private String description;
     private LocalDate date;
     private Set<Register> registers = new HashSet<>();
@@ -45,7 +45,7 @@ public class ExaminationAppeal implements Serializable {
 
     private ExaminationAppeal(Course course, String description, LocalDate date, Set<Register> registers) {
         this.course = course;
-        this.professor = course.getProfessor().getUniqueCode();
+        this.professor = course.getProfessor().getProfessorCode();
         this.description = description;
         this.date = date;
         initializeRegisters(registers);
@@ -71,7 +71,7 @@ public class ExaminationAppeal implements Serializable {
     public Course getCourse() { return course; }
 
     @Column(name = "professor_unique_code", nullable = false)
-    public UniqueCode getProfessor() { return professor; }
+    public ProfessorCode getProfessor() { return professor; }
 
     @Column(name = "description", length = 255)
     public String getDescription() { return description; }
@@ -87,7 +87,7 @@ public class ExaminationAppeal implements Serializable {
     // setters
     public void setId(Long id) { this.id = id; }
     public void setCourse(Course course) { this.course = course; }
-    public void setProfessor(UniqueCode professor) { this.professor = professor; }
+    public void setProfessor(ProfessorCode professor) { this.professor = professor; }
     public void setDescription(String description) { this.description = description; }
     public void setDate(LocalDate date) { this.date = date; }
     public void setRegisters(Set<Register> registers) {

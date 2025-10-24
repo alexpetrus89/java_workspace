@@ -76,7 +76,7 @@ public class ExaminationAppealController {
      */
     @GetMapping(path = "/read/professor")
     public ModelAndView getExaminationAppealsMadeByProfessor(@AuthenticationPrincipal Professor professor) {
-        List<ExaminationAppealDto> appeals = examinationAppealService.getExaminationAppealsMadeByProfessor(professor.getUniqueCode());
+        List<ExaminationAppealDto> appeals = examinationAppealService.getExaminationAppealsMadeByProfessor(professor.getProfessorCode());
         return new ModelAndView("user_professor/examinations/examination_appeal/calendar", EXAMINATION_APPEALS, appeals);
     }
 
@@ -114,7 +114,7 @@ public class ExaminationAppealController {
      */
     @GetMapping(path = "/delete")
     public ModelAndView deleteExaminationAppeal(@AuthenticationPrincipal Professor professor) {
-        List<ExaminationAppealDto> appeals = examinationAppealService.getExaminationAppealsMadeByProfessor(professor.getUniqueCode());
+        List<ExaminationAppealDto> appeals = examinationAppealService.getExaminationAppealsMadeByProfessor(professor.getProfessorCode());
         return new ModelAndView("user_professor/examinations/examination_appeal/delete/delete-examination-appeal", EXAMINATION_APPEALS, appeals);
     }
 
@@ -141,7 +141,7 @@ public class ExaminationAppealController {
         dto.setCourse(courseName);
         dto.setDegreeCourse(degreeCourseName);
         dto.setCourseCfu(courseCfu);
-        dto.setProfessorCode(professor.getUniqueCode().toString());
+        dto.setProfessorCode(professor.getProfessorCode().toString());
         dto.setDescription(description);
         dto.setDate(date);
         ExaminationAppealDto appeal = examinationAppealService.addNewExaminationAppeal(dto);

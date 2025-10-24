@@ -13,13 +13,13 @@
     <h1>Professors</h1>
     <table>
         <tr>
-            <th>Unique Code</th>
+            <th>Professor code</th>
             <th>Name</th>
             <th>Email</th>
             <th>Course</th>
         </tr>
         <tr th:each="professor : ${professors}">
-            <td th:text="${professor.uniqueCode.code}">Unique Code</td>
+            <td th:text="${professor.professorCode.code}">Professor code</td>
             <td th:text="${professor.firstName} + ' ' + ${professor.lastName}">Name</td>
             <td th:text="${professor.username}">Email</td>
         </tr>

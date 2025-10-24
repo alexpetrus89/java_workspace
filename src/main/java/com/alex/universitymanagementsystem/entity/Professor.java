@@ -7,7 +7,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.alex.universitymanagementsystem.dto.RegistrationForm;
 import com.alex.universitymanagementsystem.entity.immutable.FiscalCode;
-import com.alex.universitymanagementsystem.entity.immutable.UniqueCode;
+import com.alex.universitymanagementsystem.entity.immutable.ProfessorCode;
 
 import jakarta.persistence.Access;
 import jakarta.persistence.AccessType;
@@ -23,7 +23,7 @@ import jakarta.persistence.Table;
 public class Professor extends User {
 
     // instance variables
-    private UniqueCode uniqueCode;
+    private ProfessorCode professorCode;
     private static final AtomicInteger professorCounter = new AtomicInteger(100000);
 
     // constructors
@@ -31,36 +31,36 @@ public class Professor extends User {
 
     public Professor(RegistrationForm form, PasswordEncoder encoder) {
         super(form, encoder);
-        this.uniqueCode = new UniqueCode(generateUniqueCode());
+        this.professorCode = new ProfessorCode(generateProfessorCode());
     }
 
 
-    public Professor(RegistrationForm form, PasswordEncoder passwordEncoder, UniqueCode uniqueCode) {
+    public Professor(RegistrationForm form, PasswordEncoder passwordEncoder, ProfessorCode professorCode) {
         super(form, passwordEncoder);
-        this.uniqueCode = uniqueCode;
+        this.professorCode = professorCode;
     }
 
-    public Professor(String username, String firstName, String lastName, String fiscalCode, String uniqueCode) {
+    public Professor(String username, String firstName, String lastName, String fiscalCode, String professorCode) {
         this.username = username;
         this.firstName = firstName;
         this.lastName = lastName;
         this.fiscalCode = new FiscalCode(fiscalCode);
-        this.uniqueCode = new UniqueCode(uniqueCode);
+        this.professorCode = new ProfessorCode(professorCode);
     }
 
 
     // getters
     @Embedded
-    public UniqueCode getUniqueCode() { return uniqueCode; }
+    public ProfessorCode getProfessorCode() { return professorCode; }
 
     // setters
-    public void setUniqueCode(UniqueCode uniqueCode) { this.uniqueCode = uniqueCode; }
+    public void setProfessorCode(ProfessorCode professorCode) { this.professorCode = professorCode; }
 
     // --- Object methods ---
     @Override
     public String toString() {
         return "Professor [id=" + id +
-        ", uniqueCode=" + uniqueCode +
+        ", professorCode=" + professorCode +
         ", name=" + firstName + " " + lastName +
         ", fiscal code=" + fiscalCode +
         ", email=" + username +
@@ -70,7 +70,7 @@ public class Professor extends User {
     // equals and hashCode
     @Override
     public int hashCode() {
-        return Objects.hash(uniqueCode);
+        return Objects.hash(professorCode);
     }
 
     @Override
@@ -78,12 +78,12 @@ public class Professor extends User {
         if (this == o) return true;
         if (!(o instanceof Professor)) return false;
         Professor other = (Professor) o;
-        return Objects.equals(uniqueCode, other.uniqueCode);
+        return Objects.equals(professorCode, other.professorCode);
     }
 
 
     // --- Private helper ---
-    private String generateUniqueCode() {
+    private String generateProfessorCode() {
         int code = professorCounter.getAndIncrement();
         return String.format("%08x", code);
     }

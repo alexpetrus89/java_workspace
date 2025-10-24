@@ -1,46 +1,114 @@
 <!DOCTYPE html>
 <html lang="en"
     xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:th="https://www.thymeleaf.org"
-    xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
     <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
-    <title>Uni Journey</title>
+    <title>Uni Journey — Professor Area</title>
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
-    <link rel="stylesheet" type="text/css" href="/css/professor-home.css">
+
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="/css/professor-home.css">
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="/js/professor-home.js" defer></script>
 </head>
 <body>
-    <h1>Welcome <span sec:authentication="name"></span>!</h1>
 
-    <div class="card-container">
-
-        <div class="card">
-            <h2>Courses</h2>
-            <p>My <a th:href="@{/api/v1/course/read/professor}">courses</a></p>
+<header class="main-header">
+    <div class="header-inner">
+        <div class="logo">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none">
+                <rect x="2" y="3" width="20" height="6" rx="1.5" fill="#2563eb"/>
+                <rect x="2" y="13" width="20" height="8" rx="2" fill="#1e40af"/>
+            </svg>
+            <h1 class="brand">UNI JOURNEY</h1>
         </div>
 
-        <div class="card">
-            <h2>Appeals</h2>
-            <p>Click <a th:href="@{/user_professor/examinations/examination_appeal/examination-appeal-menu}">here</a> to manage examination appeals</p>
+        <div class="theme-toggle" id="theme-toggle" title="Toggle theme">
+            <i class="fas fa-moon"></i>
         </div>
-
-        <div class="card">
-            <h2>Information</h2>
-            <a th:href="@{/api/v1/user/update(role='professor', username=${#authentication.name})}">
-                here <span class="arrow">→</span>
-            </a>
-        </div>
-
-        <div class="card logout-card">
-            <h2>Logout</h2>
-            <p>Click <a th:href="@{/logout}">here</a> to log out</p>
-        </div>
-
     </div>
+</header>
+
+<main class="container">
+
+    <section class="page-header">
+        <h1>Welcome, <span sec:authentication="name">Professor</span> 👋</h1>
+        <p class="subtitle">Manage your courses, appeals and profile</p>
+    </section>
+
+    <section class="card-grid">
+        <article class="card accent-card courses">
+            <div class="card-icon"><i class="fa-solid fa-chalkboard-user"></i></div>
+            <h3>Courses</h3>
+            <p>Manage your <a th:href="@{/api/v1/course/read/professor}">courses <span class="arrow">→</span></a></p>
+        </article>
+
+        <article class="card accent-card appeals">
+            <div class="card-icon"><i class="fa-solid fa-calendar-check"></i></div>
+            <h3>Appeals</h3>
+            <p>Manage examination appeals <a th:href="@{/user_professor/examinations/examination_appeal/examination-appeal-menu}"><span class="arrow">→</span></a></p>
+        </article>
+
+        <article class="card accent-card info">
+            <div class="card-icon"><i class="fa-solid fa-user-pen"></i></div>
+            <h3>Profile</h3>
+            <p>Update your info <a th:href="@{/api/v1/user/update(role='professor', username=${#authentication.name})}"><span class="arrow">→</span></a></p>
+        </article>
+
+        <article class="card accent-card notify">
+            <div class="card-icon"><i class="fa-solid fa-bell"></i></div>
+            <h3>Notifications</h3>
+            <div class="notification-container" id="notify"></div>
+        </article>
+
+        <article class="card accent-card logout">
+            <div class="card-icon"><i class="fa-solid fa-right-from-bracket"></i></div>
+            <h3>Logout</h3>
+            <p>Click <a th:href="@{/logout}">here <span class="arrow">→</span></a> to log out safely.</p>
+        </article>
+    </section>
 
     <div class="form-actions">
-        <a href="/" class="home-link">Home</a>
+        <a href="/" class="home-link">🏠 Back to Home</a>
     </div>
+
+</main>
+
+<footer class="footer">
+    <div class="footer-inner">
+        <div class="footer-grid">
+            <div class="footer-col">
+                <h5><i class="fa-solid fa-envelope"></i> Contacts</h5>
+                <ul>
+                    <li><a href="mailto:info@universityapp.com">info@universityapp.com</a></li>
+                    <li><span><i class="fa-solid fa-phone"></i> +39 0123 456789</span></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h5><i class="fa-solid fa-share-nodes"></i> Follow us</h5>
+                <div class="social-links">
+                    <a href="#" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#" title="Twitter"><i class="fab fa-x-twitter"></i></a>
+                </div>
+            </div>
+        </div>
+        <hr class="footer-divider">
+        <div class="footer-bottom">
+            <p>&copy; <span th:text="${#dates.format(#dates.createNow(),'yyyy')}"></span> Uni Journey — All rights reserved.</p>
+        </div>
+    </div>
+</footer>
+
+<!-- Toast Container -->
+<div id="toast-container"></div>
 
 </body>
 </html>

@@ -1,6 +1,6 @@
 package com.alex.universitymanagementsystem.dto;
 
-import com.alex.universitymanagementsystem.annotation.ValidUniqueCode;
+import com.alex.universitymanagementsystem.annotation.ValidProfessorCode;
 import com.alex.universitymanagementsystem.enum_type.CourseType;
 
 import jakarta.validation.constraints.NotBlank;
@@ -18,9 +18,9 @@ public class CreateCourseDto {
     @Positive(message = "CFU must be positive")
     private Integer cfu;
 
-    @NotBlank(message = "Professor unique code is mandatory")
-    @ValidUniqueCode
-    private String uniqueCode;
+    @NotBlank(message = "Professor code is mandatory")
+    @ValidProfessorCode
+    private String professorCode;
 
     @NotBlank(message = "Degree course is mandatory")
     private String degreeCourseName;
@@ -38,8 +38,8 @@ public class CreateCourseDto {
         return cfu;
     }
 
-    public String getUniqueCode() {
-        return uniqueCode;
+    public String getProfessorCode() {
+        return professorCode;
     }
 
     public String getDegreeCourseName() {
@@ -59,8 +59,8 @@ public class CreateCourseDto {
         this.cfu = cfu;
     }
 
-    public void setUniqueCode(String uniqueCode) {
-        this.uniqueCode = uniqueCode;
+    public void setProfessorCode(String professorCode) {
+        this.professorCode = professorCode;
     }
 
     public void setDegreeCourseName(String degreeCourseName) {

@@ -14,7 +14,7 @@ public class ProfessorMapper {
             dto.getFirstName(),
             dto.getLastName(),
             dto.getFiscalCode(),
-            dto.getUniqueCode()
+            dto.getProfessorCode()
 
         );
     }
@@ -26,7 +26,7 @@ public class ProfessorMapper {
             professor.getFirstName(),
             professor.getLastName(),
             professor.getFiscalCode().toString(),
-            professor.getUniqueCode().toString()
+            professor.getProfessorCode().toString()
         );
     }
 

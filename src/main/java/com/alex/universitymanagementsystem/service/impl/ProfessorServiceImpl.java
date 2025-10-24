@@ -73,22 +73,22 @@ public class ProfessorServiceImpl implements ProfessorService {
 
 
     /**
-     * Retrieves a professor by unique code
-     * @param uniqueCode the unique code of the professor to retrieve
+     * Retrieves a professor by professor code
+     * @param professorCode the code of the professor to retrieve
      * @return ProfessorDto object containing the professor's data
-     * @throws IllegalArgumentException if the unique code is blank
+     * @throws IllegalArgumentException if the professor code is blank
      * @throws ObjectNotFoundException if no professor found
      * @throws DataAccessServiceException if there is an error accessing the database
      */
     @Override
-    public ProfessorDto getProfessorByUniqueCode(String uniqueCode)
+    public ProfessorDto getProfessorByProfessorCode(String professorCode)
         throws IllegalArgumentException, DataAccessServiceException
     {
         // sanity check
-        validators.validateNotNullOrNotBlank(uniqueCode, UNIQUE_CODE_ERROR);
+        validators.validateNotNullOrNotBlank(professorCode, UNIQUE_CODE_ERROR);
 
         try {
-            return ProfessorMapper.toDto(helpers.fetchProfessor(uniqueCode));
+            return ProfessorMapper.toDto(helpers.fetchProfessor(professorCode));
         } catch (PersistenceException e) {
             throw new DataAccessServiceException("Error accessing database for fetching professor by unique code: " + e.getMessage(), e);
         }

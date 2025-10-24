@@ -7,8 +7,8 @@ import org.springframework.retry.annotation.Retryable;
 
 import com.alex.universitymanagementsystem.dto.ExaminationAppealDto;
 import com.alex.universitymanagementsystem.dto.ProfessorDto;
+import com.alex.universitymanagementsystem.entity.immutable.ProfessorCode;
 import com.alex.universitymanagementsystem.entity.immutable.Register;
-import com.alex.universitymanagementsystem.entity.immutable.UniqueCode;
 import com.alex.universitymanagementsystem.exception.DataAccessServiceException;
 import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
 
@@ -66,13 +66,13 @@ public interface ExaminationAppealService {
 
     /**
      * Retrieves all examination appeals made by professor
-     * @param uniqueCode professor unique code
+     * @param professorCode professor code
      * @return a list of examination appeals data transfer objects
-     * @throws IllegalArgumentException if the unique code is blank
+     * @throws IllegalArgumentException if the professor code is blank
      * @throws ObjectNotFoundException if the professor does not exist
      * @throws DataAccessServiceException if there is an error accessing the database
      */
-    List<ExaminationAppealDto> getExaminationAppealsMadeByProfessor(UniqueCode uniqueCode)
+    List<ExaminationAppealDto> getExaminationAppealsMadeByProfessor(ProfessorCode professorCode)
         throws IllegalArgumentException, ObjectNotFoundException, DataAccessServiceException;
 
 

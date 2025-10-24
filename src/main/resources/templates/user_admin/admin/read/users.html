@@ -5,7 +5,7 @@
     xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
     <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
-    <title>Uni Journey - Users</title>
+    <title>Uni Journey - users</title>
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
     <link rel="stylesheet" type="text/css" href="/css/users.css">
     <script src="/js/filtering-users.js"></script>
@@ -30,8 +30,8 @@
                 <tr>
                     <th>Username</th>
                     <th>Name</th>
-                    <th>DOB</th>
-                    <th>Fiscal Code</th>
+                    <th>Date of birth</th>
+                    <th>Fiscal code</th>
                     <th>Address</th>
                     <th>Phone</th>
                     <th>Role</th>
@@ -43,7 +43,7 @@
                     <td th:text="${user.firstName + ' ' + user.lastName}"></td>
                     <td th:text="${#temporals.format(user.dob, 'dd/MM/yyyy')}"></td>
                     <td th:text="${user.fiscalCode}"></td>
-                    <td th:text="${user.address.street + ', ' + user.address.city + ', ' + user.address.state + ' ' + user.address.zipCode}"></td>
+                    <td th:text="${user.address.street + ', ' + user.address.city + ', ' + user.address.country + ' ' + user.address.zipCode}"></td>
                     <td th:text="${user.phone}"></td>
                     <td th:text="${user.role}"></td>
                 </tr>
@@ -55,9 +55,9 @@
             <div class="card" th:each="user : ${users}">
                 <p><strong>Username:</strong> <span th:text="${user.username}"></span></p>
                 <p><strong>Name:</strong> <span th:text="${user.firstName + ' ' + user.lastName}"></span></p>
-                <p><strong>DOB:</strong> <span th:text="${#temporals.format(user.dob, 'dd/MM/yyyy')}"></span></p>
-                <p><strong>Fiscal Code:</strong> <span th:text="${user.fiscalCode}"></span></p>
-                <p><strong>Address:</strong> <span th:text="${user.address.street + ', ' + user.address.city + ', ' + user.address.state + ' ' + user.address.zipCode}"></span></p>
+                <p><strong>Date of birth:</strong> <span th:text="${#temporals.format(user.dob, 'dd/MM/yyyy')}"></span></p>
+                <p><strong>Fiscal code:</strong> <span th:text="${user.fiscalCode}"></span></p>
+                <p><strong>Address:</strong> <span th:text="${user.address.street + ', ' + user.address.city + ', ' + user.address.country + ' ' + user.address.zipCode}"></span></p>
                 <p><strong>Phone:</strong> <span th:text="${user.phone}"></span></p>
                 <p><strong>Role:</strong> <span th:text="${user.role}"></span></p>
             </div>

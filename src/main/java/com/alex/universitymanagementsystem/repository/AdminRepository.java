@@ -10,7 +10,6 @@ import org.springframework.data.jpa.repository.Query;
 import com.alex.universitymanagementsystem.entity.Admin;
 import com.alex.universitymanagementsystem.entity.immutable.AdminCode;
 import com.alex.universitymanagementsystem.entity.immutable.FiscalCode;
-import com.alex.universitymanagementsystem.entity.immutable.UniqueCode;
 import com.alex.universitymanagementsystem.entity.immutable.UserId;
 
 public interface AdminRepository

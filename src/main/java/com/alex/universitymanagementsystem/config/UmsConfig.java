@@ -85,7 +85,7 @@ public class UmsConfig {
             "/exception/illegal/invalid/invalid-password",
             "/exception/illegal/invalid/invalid-register",
             "/exception/illegal/invalid/invalid-username",
-            "/exception/illegal/invalid/invalid-unique-code",
+            "/exception/illegal/invalid/invalid-professor-code",
             "/exception/illegal/invalid/username-already-taken",
             "/exception/illegal/invalid/fiscal-code-already-taken",
             "/exception/illegal/invalid/password-not-match",
@@ -113,7 +113,7 @@ public class UmsConfig {
         fieldToView.put("register", "exception/illegal/invalid/invalid-register");
         fieldToView.put("phone", "exception/illegal/invalid/invalid-phone");
         fieldToView.put("role", "exception/illegal/invalid/invalid-role");
-        fieldToView.put("uniqueCode", "exception/illegal/invalid/invalid-unique-code");
+        fieldToView.put("professorCode", "exception/illegal/invalid/invalid-professor-code");
 
         final String invalidAddressView = "exception/illegal/invalid/invalid-address";
         fieldToView.put("street", invalidAddressView);
@@ -219,7 +219,6 @@ public class UmsConfig {
         // URL accessibili solo agli utenti con ruolo STUDENT o ADMIN
 		"/user_student/**",
 		"/api/v1/user/create/student",
-		"/api/v1/user/update",
 		"/api/v1/study-plan/**",
 		"/api/v1/degree-course/read/courses",
 		"/api/v1/degree-course/read/courses/ajax",
@@ -238,7 +237,6 @@ public class UmsConfig {
         // URL accessibili solo agli utenti con ruolo PROFESSOR o ADMIN
         "/user_professor/**",
         "/api/v1/user/create/professor",
-        "/api/v1/user/update",
         "/api/v1/course/read/professor",
         "/api/v1/examination-appeal/read/professor",
 		"/api/v1/examination-appeal/make",

@@ -20,7 +20,7 @@ import com.alex.universitymanagementsystem.dto.UpdateExaminationDto;
 import com.alex.universitymanagementsystem.entity.Examination;
 import com.alex.universitymanagementsystem.entity.Student;
 import com.alex.universitymanagementsystem.entity.immutable.Register;
-import com.alex.universitymanagementsystem.entity.immutable.UniqueCode;
+import com.alex.universitymanagementsystem.entity.immutable.ProfessorCode;
 import com.alex.universitymanagementsystem.service.ExaminationOutcomeService;
 import com.alex.universitymanagementsystem.service.ExaminationService;
 
@@ -111,12 +111,12 @@ public class ExaminationController {
 
     /**
      * Returns a list of examinations by professor unique code
-     * @param uniqueCode unique code of the professor
+     * @param professorCode professor code
      * @return ModelAndView
      */
     @GetMapping(path = "read/professor/unique-code")
-    public ModelAndView getExaminationsByProfessor(@RequestParam String uniqueCode) {
-        List<ExaminationDto> examinations = examinationService.getExaminationsByProfessorUniqueCode(new UniqueCode(uniqueCode));
+    public ModelAndView getExaminationsByProfessor(@RequestParam String professorCode) {
+        List<ExaminationDto> examinations = examinationService.getExaminationsByProfessorCode(new ProfessorCode(professorCode));
         return new ModelAndView(EXAMINATIONS_LIST, EXAMINATIONS, examinations);
     }
 

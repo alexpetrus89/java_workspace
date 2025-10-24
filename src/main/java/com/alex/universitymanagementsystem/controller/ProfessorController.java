@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.alex.universitymanagementsystem.annotation.ValidUniqueCode;
+import com.alex.universitymanagementsystem.annotation.ValidProfessorCode;
 import com.alex.universitymanagementsystem.dto.ProfessorDto;
 import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
 import com.alex.universitymanagementsystem.service.ProfessorService;
@@ -51,14 +51,14 @@ public class ProfessorController {
 
 
     /**
-     * Retrieves a professor by unique code
-     * @param uniqueCode the unique code of the professor
+     * Retrieves a professor by professor code
+     * @param professorCode the professor code of the professor
      * @return ModelAndView
      */
-    @GetMapping(path = "/read/uniquecode")
-    public ModelAndView getProfessorByUniqueCode(@RequestParam @ValidUniqueCode String uniqueCode) {
-        return handleProfessorSearch(() -> professorService.getProfessorByUniqueCode(uniqueCode),
-            "No professors found with unique code: " + uniqueCode);
+    @GetMapping(path = "/read/professor-code")
+    public ModelAndView getProfessorByProfessorCode(@RequestParam @ValidProfessorCode String professorCode) {
+        return handleProfessorSearch(() -> professorService.getProfessorByProfessorCode(professorCode),
+            "No professors found with professor code: " + professorCode);
     }
 
 

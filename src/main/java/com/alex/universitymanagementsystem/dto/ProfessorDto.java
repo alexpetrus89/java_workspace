@@ -1,7 +1,7 @@
 package com.alex.universitymanagementsystem.dto;
 
 import com.alex.universitymanagementsystem.annotation.ValidFiscalCode;
-import com.alex.universitymanagementsystem.annotation.ValidUniqueCode;
+import com.alex.universitymanagementsystem.annotation.ValidProfessorCode;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -27,21 +27,21 @@ public class ProfessorDto {
     @ValidFiscalCode
     private String fiscalCode;
 
-    @NotBlank(message = "Unique code is mandatory")
-    @ValidUniqueCode
-    private String uniqueCode;
+    @NotBlank(message = "Professor code is mandatory")
+    @ValidProfessorCode
+    private String professorCode;
 
 
     // default constructor
     public ProfessorDto() {}
 
     // constructor
-    public ProfessorDto(String username, String firstName, String lastName, String fiscalCode, String uniqueCode) {
+    public ProfessorDto(String username, String firstName, String lastName, String fiscalCode, String professorCode) {
         this.username = username;
         this.firstName = firstName;
         this.lastName = lastName;
         this.fiscalCode = fiscalCode;
-        this.uniqueCode = uniqueCode;
+        this.professorCode = professorCode;
     }
 
 
@@ -62,8 +62,8 @@ public class ProfessorDto {
         return fiscalCode;
     }
 
-    public String getUniqueCode() {
-        return uniqueCode;
+    public String getProfessorCode() {
+        return professorCode;
     }
 
     public String getFullName() {
@@ -87,8 +87,8 @@ public class ProfessorDto {
         this.fiscalCode = fiscalCode;
     }
 
-    public void setUniqueCode(String uniqueCode) {
-        this.uniqueCode = uniqueCode;
+    public void setProfessorCode(String professorCode) {
+        this.professorCode = professorCode;
     }
 
 

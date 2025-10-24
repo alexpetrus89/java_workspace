@@ -7,8 +7,8 @@ import org.springframework.retry.annotation.Retryable;
 
 import com.alex.universitymanagementsystem.dto.ExaminationDto;
 import com.alex.universitymanagementsystem.dto.UpdateExaminationDto;
+import com.alex.universitymanagementsystem.entity.immutable.ProfessorCode;
 import com.alex.universitymanagementsystem.entity.immutable.Register;
-import com.alex.universitymanagementsystem.entity.immutable.UniqueCode;
 import com.alex.universitymanagementsystem.exception.DataAccessServiceException;
 import com.alex.universitymanagementsystem.exception.ObjectAlreadyExistsException;
 import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
@@ -56,14 +56,14 @@ public interface ExaminationService {
 
 
     /**
-     * Get all examinations by professor unique code
-     * @param uniqueCode of the professor
+     * Get all examinations by professor code
+     * @param professorCode of the professor
      * @return List<ExaminationDto>
-     * @throws IllegalArgumentException if the unique code is blank
+     * @throws IllegalArgumentException if the professor code is blank
      * @throws ObjectNotFoundException if the professor does not exist
      * @throws DataAccessServiceException if there is an error accessing the database.
      */
-    List<ExaminationDto> getExaminationsByProfessorUniqueCode(UniqueCode uniqueCode)
+    List<ExaminationDto> getExaminationsByProfessorCode(ProfessorCode professorCode)
         throws IllegalArgumentException, ObjectNotFoundException, DataAccessServiceException;
 
 

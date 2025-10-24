@@ -8,22 +8,22 @@
     <title>Uni Journey</title>
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
     <link rel="stylesheet" type="text/css" href="/css/read-professor.css">
-    <script src="/js/unique-code-validator.js" type="module"></script>
+    <script src="/js/professor-code-validator.js" type="module"></script>
 </head>
 <body>
 
     <h1 class="main-title">Professor information</h1>
 
     <div class="form-container">
-        <h2>Search by unique code</h2>
-        <form id="uniqueCodeForm" th:action="@{/api/v1/professor/read/uniquecode}" method="get">
-            <input type="text" id="uniqueCode" name="uniqueCode" placeholder="Enter professor Unique Code" required />
+        <h2>Search by professor code</h2>
+        <form id="professorCodeForm" th:action="@{/api/v1/professor/read/professor-code}" method="get">
+            <input type="text" id="professorCode" name="professorCode" placeholder="Enter professor code" required />
             <button type="submit">Search</button>
             <input type="reset" value="Reset" />
         </form>
     </div>
 
-    <p id="uniqueCodeError" class="error-message"></p>
+    <p id="professorCodeError" class="error-message"></p>
 
     <div class="form-container">
         <h2>Search by professor fullname</h2>

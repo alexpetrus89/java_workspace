@@ -109,7 +109,7 @@ public class CourseServiceImpl implements CourseService {
     {
         try {
             return helpers
-                .fetchCourses(professor.getUniqueCode())
+                .fetchCourses(professor.getProfessorCode())
                 .stream()
                 .map(CourseMapper::toDto)
                 .toList();
@@ -140,7 +140,7 @@ public class CourseServiceImpl implements CourseService {
         // Check for duplicate course name in the same degree course
         validators.validateCourseExists(dto.getName(), dto.getDegreeCourse().getName());
         try {
-            Professor professor = helpers.fetchProfessor(dto.getProfessor().getUniqueCode());
+            Professor professor = helpers.fetchProfessor(dto.getProfessor().getProfessorCode());
             DegreeCourse degreeCourse = helpers.fetchDegreeCourse(dto.getDegreeCourse().getName());
             Course course = new Course(dto.getName(), dto.getType(), dto.getCfu(), professor, degreeCourse);
             // save
@@ -169,7 +169,7 @@ public class CourseServiceImpl implements CourseService {
         try {
             Course course = helpers.fetchCourse(dto.getNewName(), dto.getNewDegreeCourseName());
             DegreeCourse newDegreeCourse = helpers.fetchDegreeCourse(dto.getNewDegreeCourseName());
-            Professor professor = helpers.fetchProfessor(dto.getUniqueCode());
+            Professor professor = helpers.fetchProfessor(dto.getProfessorCode());
 
             // Update course fields
             course.setName(dto.getNewName());

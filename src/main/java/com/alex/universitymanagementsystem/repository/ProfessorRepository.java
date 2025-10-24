@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import com.alex.universitymanagementsystem.entity.Professor;
 import com.alex.universitymanagementsystem.entity.immutable.FiscalCode;
-import com.alex.universitymanagementsystem.entity.immutable.UniqueCode;
+import com.alex.universitymanagementsystem.entity.immutable.ProfessorCode;
 import com.alex.universitymanagementsystem.entity.immutable.UserId;
 
 
@@ -22,14 +22,14 @@ public interface ProfessorRepository
 {
 
     /**
-     * Retrieves a professor by unique code
-     * @param uniqueCode the unique code of the professor to retrieve
+     * Retrieves a professor by professor code
+     * @param professorCode the professor code of the professor to retrieve
      * @return Optional<Professor> with the professor if found, or an empty
      *        Optional if no professor is found
-     * @see UniqueCode
+     * @see ProfessorCode
      */
-    @Query(value = "SELECT s FROM Professor s WHERE s.uniqueCode = ?1")
-    Optional<Professor> findByUniqueCode(UniqueCode uniqueCode);
+    @Query(value = "SELECT s FROM Professor s WHERE s.professorCode = ?1")
+    Optional<Professor> findByProfessorCode(ProfessorCode professorCode);
 
 
 
@@ -55,12 +55,12 @@ public interface ProfessorRepository
 
 
     /**
-     * Checks if a professor exists by unique code
-     * @param uniqueCode the unique code of the professor
+     * Checks if a professor exists by professor code
+     * @param professorCode the professor code of the professor
      * @return true if the professor exists, false otherwise
-     * @see UniqueCode
+     * @see ProfessorCode
      */
-    boolean existsByUniqueCode(UniqueCode uniqueCode);
+    boolean existsByProfessorCode(ProfessorCode professorCode);
 
 
     /**
@@ -73,11 +73,11 @@ public interface ProfessorRepository
 
 
     /**
-     * Deletes a professor by unique code
-     * @param uniqueCode the unique code of the professor to delete
-     * @see UniqueCode
+     * Deletes a professor by professor code
+     * @param professorCode the professor code of the professor to delete
+     * @see ProfessorCode
      */
     @Modifying
-    void deleteByUniqueCode(UniqueCode uniqueCode);
+    void deleteByProfessorCode(ProfessorCode professorCode);
 
 }

@@ -48,10 +48,11 @@
 
             <!-- Dettagli dell'appello -->
             <div class="appeal" th:if="${appeal}">
-                <p><strong>Degree Course:</strong> <span th:text="${appeal.degreeCourse}"></span></p>
-                <p><strong>Course:</strong> <span th:text="${appeal.course}"></span></p>
-                <p><strong>Description:</strong> <span th:text="${appeal.description}"></span></p>
-                <p><strong>Date:</strong> <span th:text="${appeal.date}"></span></p>
+                <p><strong>Degree course: </strong> <span th:text="${appeal.degreeCourse}"></span></p>
+                <p><strong>Course: </strong><span th:text="${appeal.course}"></span></p>
+                <p><strong>Professor: </strong><span th:text="${appeal.professorFullName}"></span></p>
+                <p><strong>Description: </strong> <span th:text="${appeal.description}"></span></p>
+                <p><strong>Date: </strong> <span th:text="${appeal.date}"></span></p>
             </div>
 
             <div class="action">

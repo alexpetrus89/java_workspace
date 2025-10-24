@@ -6,18 +6,18 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import com.alex.universitymanagementsystem.component.validator.UniqueCodeValidator;
+import com.alex.universitymanagementsystem.component.validator.ProfessorCodeValidator;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 
 
 @Documented
-@Constraint(validatedBy = UniqueCodeValidator.class)
+@Constraint(validatedBy = ProfessorCodeValidator.class)
 @Target({ ElementType.FIELD, ElementType.PARAMETER })
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ValidUniqueCode {
-    String message() default "Invalid Unique code, Unique code must be exactly 8 characters";
+public @interface ValidProfessorCode {
+    String message() default "Invalid professor code, professor code must be exactly 8 characters";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }

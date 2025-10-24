@@ -27,13 +27,13 @@ public interface ProfessorService {
 
     /**
      * Retrieves a professor by unique code
-     * @param uniqueCode the unique code of the professor to retrieve
+     * @param professorCode the code of the professor to retrieve
      * @return ProfessorDto object containing the professor's data
      * @throws IllegalArgumentException if the unique code is blank
      * @throws ObjectNotFoundException if no professor found
      * @throws DataAccessServiceException if there is an error accessing the database
      */
-    ProfessorDto getProfessorByUniqueCode(String uniqueCode)
+    ProfessorDto getProfessorByProfessorCode(String professorCode)
         throws IllegalArgumentException, DataAccessServiceException;
 
 

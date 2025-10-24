@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import com.alex.universitymanagementsystem.entity.Course;
 import com.alex.universitymanagementsystem.entity.immutable.CourseId;
-import com.alex.universitymanagementsystem.entity.immutable.UniqueCode;
+import com.alex.universitymanagementsystem.entity.immutable.ProfessorCode;
 import com.alex.universitymanagementsystem.enum_type.CourseType;
 
 
@@ -45,13 +45,13 @@ public interface CourseRepository
 
     /**
      * Retrieves a list of courses associated with a specific professor.
-     * @param uniqueCode the unique code of the professor whose courses
+     * @param professorCode the professor code of the professor whose courses
      *                   are to be retrieved
      * @return a set of courses if found, null otherwise
-     * @see UniqueCode
+     * @see ProfessorCode
      */
-    @Query("SELECT c FROM Course c JOIN c.professor p WHERE p.uniqueCode = ?1")
-    Set<Course> findByProfessor(UniqueCode uniqueCode);
+    @Query("SELECT c FROM Course c JOIN c.professor p WHERE p.professorCode = ?1")
+    Set<Course> findByProfessor(ProfessorCode professorCode);
 
 
     /**

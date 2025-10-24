@@ -18,9 +18,9 @@
     <h1 class="main-title">Find exams by professor</h1>
 
     <div class="form-container">
-        <h2>Search by professor's unique code</h2>
-        <form th:action="@{/api/v1/examination/professor-unique-code}" method="get">
-            <input type="text" name="uniqueCode" placeholder="Enter Professor Unique Code" required />
+        <h2>Search by professor's code</h2>
+        <form th:action="@{/api/v1/examination/professor-code}" method="get">
+            <input type="text" name="professorCode" placeholder="Enter professor code" required />
             <button type="submit">Search</button>
             <input type="reset" value="Reset" />
         </form>

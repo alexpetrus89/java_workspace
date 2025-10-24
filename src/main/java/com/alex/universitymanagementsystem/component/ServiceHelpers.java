@@ -19,8 +19,8 @@ import com.alex.universitymanagementsystem.entity.ExaminationOutcome;
 import com.alex.universitymanagementsystem.entity.Professor;
 import com.alex.universitymanagementsystem.entity.Student;
 import com.alex.universitymanagementsystem.entity.immutable.AdminCode;
+import com.alex.universitymanagementsystem.entity.immutable.ProfessorCode;
 import com.alex.universitymanagementsystem.entity.immutable.Register;
-import com.alex.universitymanagementsystem.entity.immutable.UniqueCode;
 import com.alex.universitymanagementsystem.enum_type.DomainType;
 import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
 import com.alex.universitymanagementsystem.mapper.ExaminationAppealMapper;
@@ -98,13 +98,13 @@ public class ServiceHelpers {
 
     /**
      * Fetches a Professor entity by its unique code.
-     * @param uniqueCode the unique code of the professor
+     * @param professorCode
      * @return the Professor entity
      * @throws ObjectNotFoundException if the professor does not exist
      */
-    public Professor fetchProfessor(String uniqueCode) {
+    public Professor fetchProfessor(String professorCode) {
         return professorRepository
-            .findByUniqueCode(new UniqueCode(uniqueCode))
+            .findByProfessorCode(new ProfessorCode(professorCode))
             .orElseThrow(() -> new ObjectNotFoundException(DomainType.PROFESSOR));
     }
 
@@ -124,12 +124,12 @@ public class ServiceHelpers {
 
 
     /**
-     * Fetches courses by their unique code.
-     * @param uniqueCode the unique code of the course
+     * Fetches courses by professor code.
+     * @param professorCode professor code of owner the course
      * @return a set of course entities
      */
-    public Set<Course> fetchCourses(String uniqueCode) {
-        return courseRepository.findByProfessor(new UniqueCode(uniqueCode));
+    public Set<Course> fetchCourses(String professorCode) {
+        return courseRepository.findByProfessor(new ProfessorCode(professorCode));
     }
 
 

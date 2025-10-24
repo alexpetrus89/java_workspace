@@ -15,7 +15,7 @@
         <p th:text="'Name: ' + ${professor.firstName} + ' ' + ${professor.lastName}"></p>
         <p th:text="'Email: ' + ${professor.username}"></p>
         <p th:text="'Fiscal Code: ' + ${professor.fiscalCode}"></p>
-        <p th:text="'Unique Code: ' + ${professor.uniqueCode}"></p>
+        <p th:text="'Professor Code: ' + ${professor.professorCode}"></p>
         <a href="#" th:href="@{/login}">Login</a>
     </div>
     <div th:if="${professor == null}">

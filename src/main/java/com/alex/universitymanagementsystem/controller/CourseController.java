@@ -111,7 +111,7 @@ public class CourseController {
     @PostMapping(path = "/create")
     public ModelAndView createNewCourse(@Valid @ModelAttribute("course") CreateCourseDto formDto) {
 
-        ProfessorDto professor = professorService.getProfessorByUniqueCode(formDto.getUniqueCode());
+        ProfessorDto professor = professorService.getProfessorByProfessorCode(formDto.getProfessorCode());
         DegreeCourseDto degreeCourse = degreeCourseService.getDegreeCourseByName(formDto.getDegreeCourseName());
 
         CourseDto courseDto = new CourseDto(

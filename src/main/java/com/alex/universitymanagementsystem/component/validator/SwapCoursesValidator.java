@@ -80,9 +80,8 @@ public class SwapCoursesValidator implements ConstraintValidator<SwapCoursesCons
             valid = false;
         }
 
-        if (courseToAddOpt.isPresent() && courseToRemoveOpt.isPresent()) {
+        if (courseToAddOpt.isPresent() && courseToRemoveOpt.isPresent())
             valid &= checkCfu(courseToAddOpt.get(), courseToRemoveOpt.get(), context);
-        }
 
         return valid;
     }

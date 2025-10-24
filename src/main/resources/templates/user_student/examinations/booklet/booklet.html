@@ -87,7 +87,7 @@
 
         <div class="summary-card">
             <i class="fa-solid fa-star"></i>
-            <h3>Average Rating</h3>
+            <h3>Average rating</h3>
             <p th:text="${#numbers.formatDecimal(#aggregates.avg(examinations.![grade]), 2, 2)}">Average Rating</p>
         </div>
     </section>

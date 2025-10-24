@@ -7,8 +7,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import com.alex.universitymanagementsystem.entity.immutable.ExaminationId;
+import com.alex.universitymanagementsystem.entity.immutable.ProfessorCode;
 import com.alex.universitymanagementsystem.entity.immutable.Register;
-import com.alex.universitymanagementsystem.entity.immutable.UniqueCode;
 import com.alex.universitymanagementsystem.enum_type.DomainType;
 import com.alex.universitymanagementsystem.exception.ObjectAlreadyExistsException;
 import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
@@ -78,21 +78,21 @@ public class ServiceValidators {
 
     /**
      * Validates that a professor exists.
-     * @param uniqueCode the unique code of the professor
+     * @param professorCode
      * @throws ObjectNotFoundException if the professor does not exist
      */
-    public void validateProfessorExists(UniqueCode uniqueCode) {
-        validateEntityExists(() -> professorRepository.existsByUniqueCode(uniqueCode), DomainType.PROFESSOR);
+    public void validateProfessorExists(ProfessorCode professorCode) {
+        validateEntityExists(() -> professorRepository.existsByProfessorCode(professorCode), DomainType.PROFESSOR);
     }
 
 
     /**
      * Validates that a professor already exists.
-     * @param uniqueCode the unique code of the professor
+     * @param professorCode
      * @throws ObjectAlreadyExistsException if the professor already exists
      */
-    public void validateProfessorAlreadyExists(UniqueCode uniqueCode) {
-        validateEntityNotExists(() -> professorRepository.existsByUniqueCode(uniqueCode), DomainType.PROFESSOR);
+    public void validateProfessorAlreadyExists(ProfessorCode professorCode) {
+        validateEntityNotExists(() -> professorRepository.existsByProfessorCode(professorCode), DomainType.PROFESSOR);
     }
 
 

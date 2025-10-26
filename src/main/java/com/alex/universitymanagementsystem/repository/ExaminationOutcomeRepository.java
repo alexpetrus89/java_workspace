@@ -53,5 +53,15 @@ public interface ExaminationOutcomeRepository
      */
     boolean existsByIdAndRegister(Long id, String register);
 
+
+    /**
+     * Check if an examination outcome exists by there appeal id and student register
+     * @param appealId of the appeal
+     * @param register of the student
+     * @return boolean
+     * @throws PersistenceException persistence error
+     */
+    boolean existsByAppealIdAndRegister(Long appealId, String register);
+
 }
 

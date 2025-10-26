@@ -3,60 +3,104 @@
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:th="https://www.thymeleaf.org"
     xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+
 <head>
     <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
-    <title>Uni Journey</title>
+    <title>Uni Journey — Evaluation</title>
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
-    <link rel="stylesheet" type="text/css" href="/css/evaluation.css">
-    <script src="/js/evaluation-rules.js"></script>
-</head>
-<body>
-    <div class="container">
-        <h1>Enter grade</h1>
-        <p>Student register: <span th:text="${outcome.register}"></span></p>
-        <p>Degree course: <span th:text="${outcome.appeal.degreeCourse}"></span></p>
-        <p>Course: <span th:text="${outcome.appeal.course}"></span></p>
-        <p>Date: <span th:text="${#temporals.format(outcome.appeal.date, 'dd-MM-yyyy')}"></span></p>
 
-        <form action="#" th:action="@{/api/v1/examination-outcome/create}" method="post" th:object="${outcome}">
+    <!-- Styles -->
+    <link rel="stylesheet" type="text/css" href="/css/evaluation.css">
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" defer></script>
+    <script src="/js/evaluation.js" defer></script>
+    <script src="/js/evaluation-rules.js" defer></script>
+</head>
+
+<body>
+<header class="main-header">
+    <div class="header-inner">
+        <div class="logo">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none">
+                <rect x="2" y="3" width="20" height="6" rx="1.5" fill="#2563eb"/>
+                <rect x="2" y="13" width="20" height="8" rx="2" fill="#1e40af"/>
+            </svg>
+            <h1 class="brand">UNI JOURNEY</h1>
+        </div>
+
+        <!-- Dark/Light Toggle -->
+        <div class="theme-toggle" id="theme-toggle" title="Toggle theme">
+            <i class="fas fa-moon"></i>
+        </div>
+    </div>
+</header>
+
+<main class="container">
+    <div class="evaluation-card fade-in">
+        <h2>Enter Grade</h2>
+
+        <div class="student-info">
+            <p><strong>Student register:</strong> <span th:text="${outcome.register}"></span></p>
+            <p><strong>Degree course:</strong> <span th:text="${outcome.appeal.degreeCourse}"></span></p>
+            <p><strong>Course:</strong> <span th:text="${outcome.appeal.course}"></span></p>
+            <p><strong>Date:</strong> <span th:text="${#temporals.format(outcome.appeal.date, 'dd-MM-yyyy')}"></span></p>
+        </div>
+
+        <form th:action="@{/api/v1/examination-outcome/create}" method="post" th:object="${outcome}">
             <input type="hidden" th:field="*{appeal.id}" />
             <input type="hidden" th:field="*{appeal.degreeCourse}" />
             <input type="hidden" th:field="*{appeal.course}" />
             <input type="hidden" th:field="*{appeal.date}" />
             <input type="hidden" th:field="*{register}" />
 
-            <div class="present-checkbox">
-                <label for="present">Present:</label>
-                <input type="checkbox" th:field="*{present}" value="true"
-                    title="Select if present"
-                    onclick="showHideFields(this)" onKeyPress="handleKeyPress(event)">
+            <!-- Present checkbox -->
+            <div class="form-group checkbox-group">
+                <label>
+                    <input type="checkbox"
+                        id="present"
+                        th:field="*{present}"
+                        value="true"
+                        title="Select if present"
+                        onclick="showHideFields(this)"
+                        onKeyPress="handleKeyPress(event)">
+                    Present
+                </label>
             </div>
 
-            <div id="fields">
+            <!-- Grade field -->
+            <div id="fields" class="form-group hidden">
                 <label for="grade">Grade:</label>
                 <input type="text" th:field="*{grade}" title="Enter grade"
-                    placeholder="grade"
+                    placeholder="Enter grade (0-30)"
                     oninput="checkGrade()">
             </div>
 
-            <div id="withHonors" class="hidden">
-                <label for="withHonors">With honors:</label>
-                <input type="checkbox" th:field="*{withHonors}" id="withHonors"
-                    value="false" checked="false"
-                    onchange="this.value = this.checked ? 'true' : 'false'"/>
+            <!-- With honors checkbox -->
+            <div id="withHonorsBlock" class="checkbox-group hidden fade-in">
+                <label>
+                    <input type="checkbox"
+                        id="withHonors"
+                        th:field="*{withHonors}"
+                        value="false"
+                        checked="false"
+                        onchange="this.value = this.checked ? 'true' : 'false'"/>
+                    With honors
+                </label>
             </div>
 
-            <p>
-            <div id="buttons">
-                <input type="submit" value="Submit" />
-                <input type="reset" value="Reset" />
+            <div class="form-actions">
+                <input type="submit" value="Submit" class="btn primary-btn"/>
+                <input type="reset" value="Reset" class="btn secondary-btn"/>
             </div>
-            </p>
         </form>
 
-        <a href="#" th:href="@{/api/v1/examination-appeal/read/professor}">Back to check</a>
-        <br>
-        <a href="#" th:href="@{/user_professor/examinations/examination_appeal/examination-appeal-menu}">Back to Menu</a>
+        <div class="nav-links">
+            <a th:href="@{/api/v1/examination-appeal/read/professor}" class="home-link">Back to Check</a>
+            <a th:href="@{/user_professor/examinations/examination_appeal/examination-appeal-menu}" class="home-link">Back to Menu</a>
+        </div>
     </div>
+</main>
 </body>
 </html>
+

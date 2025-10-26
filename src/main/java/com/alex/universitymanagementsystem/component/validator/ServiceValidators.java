@@ -161,10 +161,6 @@ public class ServiceValidators {
         validateEntityExists(() -> examinationAppealRepository.existsById(id), DomainType.EXAMINATION_APPEAL);
     }
 
-    public void validateExaminationOutcomeAlreadyExists(Long id) {
-        validateEntityNotExists(() -> examinationOutcomeRepository.existsById(id), DomainType.EXAMINATION_OUTCOME);
-    }
-
 
     /**
      * Validates that an examination outcome exists.
@@ -173,7 +169,7 @@ public class ServiceValidators {
      * @throws ObjectNotFoundException if the examination outcome does not exist
      */
     public void validateExaminationOutcomeExists(Long id, String register) {
-        validateEntityExists(() -> examinationOutcomeRepository.existsByIdAndRegister(id, register), DomainType.EXAMINATION_OUTCOME);
+        validateEntityExists(() -> examinationOutcomeRepository.existsByAppealIdAndRegister(id, register), DomainType.EXAMINATION_OUTCOME);
     }
 
 
@@ -183,7 +179,7 @@ public class ServiceValidators {
      * @param register the register of the student
      */
     public void validateExaminationOutcomeAlreadyExists(Long id, String register) {
-        validateEntityNotExists(() -> examinationOutcomeRepository.existsByIdAndRegister(id, register), DomainType.EXAMINATION_OUTCOME);
+        validateEntityNotExists(() -> examinationOutcomeRepository.existsByAppealIdAndRegister(id, register), DomainType.EXAMINATION_OUTCOME);
     }
 
 

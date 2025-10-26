@@ -1,146 +1,132 @@
-/* Stile generale per il corpo della pagina */
+:root {
+    --bg: #f5f7fa;
+    --card: #fff;
+    --text: #1e293b;
+    --muted: #64748b;
+    --primary: #2563eb;
+    --accent: #0ea5e9;
+    --border: #e2e8f0;
+    --transition: 0.4s ease;
+}
+
+:root.dark {
+    --bg: #0f172a;
+    --card: #1e293b;
+    --text: #f1f5f9;
+    --muted: #94a3b8;
+    --primary: #3b82f6;
+    --accent: #22d3ee;
+    --border: #334155;
+}
+
 body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
+    font-family: 'Inter', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
     margin: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f0f2f5;
-    text-align: center;
+    transition: background var(--transition), color var(--transition);
 }
 
-/* Contenitore centrale per il modulo */
-.container {
-    width: 100%;
+/* Header */
+.main-header {
+    position: sticky;
+    top: 0;
+    background: rgba(255,255,255,0.8);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    padding: 15px 20px;
+    border-bottom: 1px solid var(--border);
+    z-index: 1000;
+}
+:root.dark .main-header { background: rgba(30,41,59,0.8); }
+
+.header-inner { display: flex; align-items: center; justify-content: space-between; max-width: 900px; margin: auto; }
+.logo { display: flex; align-items: center; gap: 10px; }
+.brand { font-weight: 800; font-size: 1.3rem; color: var(--primary); }
+
+/* Card */
+.container { display: flex; justify-content: center; margin-top: 60px; padding: 0 1rem; }
+.evaluation-card {
+    background: var(--card);
+    border-radius: 18px;
+    padding: 35px;
     max-width: 600px;
-    padding: 30px;
-    background-color: #ffffff;
-    border-radius: 10px;
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
-    box-sizing: border-box;
-}
-
-/* Intestazione principale */
-h1 {
-    font-size: 2rem;
-    color: #2c3e50;
-    margin-bottom: 20px;
-    text-align: center;
-}
-
-/* Paragrafi informativi */
-p {
-    font-size: 1rem;
-    color: #555;
-    margin: 10px 0;
-    text-align: center;
-}
-
-/* Etichette dei campi del modulo */
-label {
-    display: block;
-    font-weight: 600;
-    margin-bottom: 5px;
-    color: #333;
-}
-
-/* Input di testo */
-input[type="text"] {
     width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 1rem;
-    box-sizing: border-box;
-    margin-bottom: 15px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    transition: background var(--transition), box-shadow var(--transition);
 }
+
+h2 { margin-top: 0; color: var(--primary); }
+.student-info { margin-bottom: 20px; color: var(--muted); }
+.student-info p { margin: 5px 0; }
 
 /* Checkbox */
-.present-checkbox {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.present-checkbox span {
-    font-size: 14px;
-    margin-right: 10px;
-    text-align: center;
-}
-
-.present-checkbox input[type="checkbox"] {
-    width: 20px;
-    height: 20px;
-}
-
-
-
-/* Pulsanti di invio e reset */
-input[type="submit"],
-input[type="reset"] {
-    padding: 10px 20px;
-    margin: 10px 5px 0 0;
-    border: none;
-    border-radius: 5px;
-    background-color: #007bff;
-    color: white;
+.checkbox-group { display: flex; justify-content: center; align-items: center; gap: 10px; margin: 15px 0; width: 100%; }
+.checkbox-group label { display: flex; align-items: center; gap: 10px; font-size: 1rem; font-weight: 500; color: var(--text); cursor: pointer; }
+.checkbox-group input[type="checkbox"] {
+    appearance: none;
+    width: 22px;
+    height: 22px;
+    border: 2px solid var(--accent);
+    border-radius: 6px;
     cursor: pointer;
-    font-size: 1rem;
-    transition: background-color 0.3s ease;
+    background: transparent;
+    position: relative;
+    transition: all 0.25s ease-in-out;
 }
-
-/* Effetto hover per i pulsanti */
-input[type="submit"]:hover,
-input[type="reset"]:hover {
-    background-color: #0056b3;
+.checkbox-group input[type="checkbox"]:checked {
+    background-color: var(--accent);
+    border-color: var(--accent);
+    box-shadow: 0 0 10px var(--accent);
 }
-
-/* Link di navigazione */
-a {
-    display: inline-block;
-    margin-top: 20px;
-    padding: 10px 20px;
-    font-size: 1rem;
-    font-weight: 600;
-    color: #fff;
-    background-color: #007bff;
-    text-decoration: none;
-    border-radius: 5px;
-    transition: background-color 0.3s ease;
-}
-
-/* Effetto hover per i link */
-a:hover {
-    background-color: #0056b3;
-}
-
-/* Evidenzia la presenza dello studente */
-.present {
-    font-weight: bold;
-    color: green;
-}
-
-/* Nasconde gli elementi con la classe 'hidden' */
-.hidden {
-    display: none;
-}
-
-/* Nasconde inizialmente il contenitore dei campi */
-#fields {
-    display: none;
-}
-
-#withHonors {
-    display: none;
-}
-
-#withHonors input[type="checkbox"] {
-    margin: 0 auto;
-}
-
-
-#withHonors span {
+.checkbox-group input[type="checkbox"]::after {
+    content: '✔';
+    position: absolute;
+    top: 0;
+    left: 4px;
     font-size: 14px;
-    margin-right: 10px;
+    color: white;
+    opacity: 0;
+    transition: opacity 0.2s ease-in-out;
 }
+.checkbox-group input[type="checkbox"]:checked::after { opacity: 1; }
+
+.hidden { display: none; }
+.fade-in { animation: fadeIn 0.4s ease-in-out; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Form */
+.form-group { display: flex; flex-direction: column; margin-bottom: 15px; }
+label { font-weight: 600; margin-bottom: 5px; }
+input[type="text"], input[type="date"], select {
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--text);
+    font-size: 1rem;
+    transition: border var(--transition), background var(--transition);
+}
+input:focus { border-color: var(--primary); outline: none; }
+
+/* Buttons */
+.btn { padding: 10px 20px; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; transition: background var(--transition), color var(--transition); }
+.primary-btn { background: var(--primary); color: #fff; }
+.primary-btn:hover { background: var(--accent); }
+.secondary-btn { background: transparent; color: var(--primary); border: 1px solid var(--primary); }
+.secondary-btn:hover { background: var(--accent); color: #fff; }
+
+/* Links */
+.nav-links { margin-top: 25px; text-align: center; }
+.home-link { display: inline-block; margin: 5px; padding: 8px 15px; color: var(--primary); text-decoration: none; border-radius: 8px; transition: background 0.3s, color 0.3s; }
+.home-link:hover { background: var(--accent); color: #fff; }
+
+@media (max-width: 600px) { .evaluation-card { padding: 25px; } }
+
+/* Dark mode toggle */
+.dark-mode-toggle { background: transparent; border: none; cursor: pointer; font-size: 1.2rem; color: var(--text); transition: color var(--transition); }
+.dark-mode-toggle:hover { color: var(--primary); }

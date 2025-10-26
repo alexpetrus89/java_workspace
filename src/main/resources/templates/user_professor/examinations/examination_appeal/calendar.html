@@ -3,46 +3,76 @@
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:th="https://www.thymeleaf.org"
     xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+
 <head>
     <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
-    <title>Uni Journey</title>
+    <title>Uni Journey — Check appeals</title>
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
+
+    <!-- Styles -->
     <link rel="stylesheet" type="text/css" href="/css/calendar.css">
 </head>
+
 <body>
-    <header class="main-header">
-        <h1>Check appeals</h1>
-    </header>
+<header class="main-header">
+    <div class="header-inner">
+        <div class="logo">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none">
+                <rect x="2" y="3" width="20" height="6" rx="1.5" fill="#2563eb"/>
+                <rect x="2" y="13" width="20" height="8" rx="2" fill="#1e40af"/>
+            </svg>
+            <h1 class="brand">UNI JOURNEY</h1>
+        </div>
 
-    <div class="table-container">
-    <table>
-        <thead>
-            <tr>
-                <th>Degree Course</th>
-                <th>Course</th>
-                <th>Description</th>
-                <th>Date</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr th:each="appeal : ${appeals}">
-                <td th:text="${appeal.degreeCourse}">Degree course</td>
-                <td th:text="${appeal.course}">Course</td>
-                <td th:text="${appeal.description}">Description</td>
-                <td th:text="${appeal.date}">Date</td>
-                <td>
-                    <a th:href="@{/api/v1/examination-appeal/read/students-booked/{id}/{date}(id=${appeal.id}, date=${appeal.date.format(T(java.time.format.DateTimeFormatter).ofPattern('yyyy-MM-dd'))})}">
-                        Show students booked
-                    </a>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+        <!-- Dark/Light Toggle -->
+        <div class="theme-toggle" id="theme-toggle" title="Toggle theme">
+            <i class="fas fa-moon"></i>
+        </div>
     </div>
+</header>
 
-    <div class="form-actions">
-        <a th:href="@{/user_professor/examinations/examination_appeal/examination-appeal-menu}" class="home-link">Back to menu</a>
+<main class="container">
+    <div class="content-card fade-in">
+        <h2>Examination Appeals</h2>
+        <p class="subtitle">Here you can check all the available appeals for your courses.</p>
+
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Degree Course</th>
+                        <th>Course</th>
+                        <th>Description</th>
+                        <th>Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="appeal : ${appeals}">
+                        <td th:text="${appeal.degreeCourse}">Degree course</td>
+                        <td th:text="${appeal.course}">Course</td>
+                        <td th:text="${appeal.description}">Description</td>
+                        <td th:text="${appeal.date}">Date</td>
+                        <td>
+                            <a class="action-link"
+                                th:href="@{/api/v1/examination-appeal/read/students-booked/{id}/{date}(id=${appeal.id}, date=${appeal.date.format(T(java.time.format.DateTimeFormatter).ofPattern('yyyy-MM-dd'))})}">
+                                Show students booked
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="form-actions">
+            <a th:href="@{/user_professor/examinations/examination_appeal/examination-appeal-menu}"
+            class="home-link">Back to menu</a>
+        </div>
     </div>
+</main>
+
+<!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" defer></script>
+<script src="/js/calendar.js" defer></script>
 </body>
 </html>

@@ -5,38 +5,77 @@
     xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
     <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
-    <title>Uni Journey</title>
+    <title>Uni Journey — Examination appeal</title>
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
-    <link rel="stylesheet" type="text/css" href="/css/examination-appeal-menu.css">
-    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="/css/examination-appeal-menu.css">
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@stomp/stompjs@7.0.0/bundles/stomp.umd.min.js"></script>
+    <script src="/js/examination-appeal-menu.js" defer></script>
 </head>
 <body>
 
-    <h1>Appeal management menu</h1>
+<header class="main-header">
+    <div class="header-inner">
+        <div class="logo">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none">
+                <rect x="2" y="3" width="20" height="6" rx="1.5" fill="#2563eb"/>
+                <rect x="2" y="13" width="20" height="8" rx="2" fill="#1e40af"/>
+            </svg>
+            <h1 class="brand">UNI JOURNEY</h1>
+        </div>
+
+        <div class="theme-toggle" id="theme-toggle" title="Toggle theme">
+            <i class="fas fa-moon"></i>
+        </div>
+    </div>
+</header>
+
+<main class="container">
+    <section class="page-header">
+        <h1><i class="fa-solid fa-calendar-check"></i> Examination appeal menu</h1>
+        <p class="subtitle">Manage your exam appeals quickly and efficiently</p>
+    </section>
 
     <div class="card-container">
-
         <div class="card">
+            <i class="fa-solid fa-eye"></i>
             <h2>Check</h2>
-            <p>Click <a th:href="@{/api/v1/examination-appeal/read/professor}">here</a> to get a view of your appeals</p>
+            <p>Click <a th:href="@{/api/v1/examination-appeal/read/professor}">here</a> to view your appeals.</p>
         </div>
 
         <div class="card">
+            <i class="fa-solid fa-plus-circle"></i>
             <h2>Create</h2>
-            <p>Click <a th:href="@{/api/v1/examination-appeal/make}">here</a> to create a new appeal</p>
+            <p>Click <a th:href="@{/api/v1/examination-appeal/make}">here</a> to create a new appeal.</p>
         </div>
 
         <div class="card">
+            <i class="fa-solid fa-trash"></i>
             <h2>Delete</h2>
-            <p>Click <a th:href="@{/api/v1/examination-appeal/delete}">here</a> to delete an appeal</p>
+            <p>Click <a th:href="@{/api/v1/examination-appeal/delete}">here</a> to delete an appeal.</p>
         </div>
-
     </div>
 
     <div class="form-actions">
-        <a th:href="@{/user_professor/professor-home}" class="home-link">Back to Home</a>
+        <a href="#" th:href="@{/user_professor/professor-home}" class="home-link">
+            <i class="fa-solid fa-arrow-left"></i> Back to Home
+        </a>
     </div>
+</main>
 
+<footer class="footer">
+    <div class="footer-inner">
+        <p>&copy; <span th:text="${#dates.format(#dates.createNow(),'yyyy')}"></span> Uni Journey — All rights reserved.</p>
+    </div>
+</footer>
+
+<div id="toast-container"></div>
 </body>
 </html>

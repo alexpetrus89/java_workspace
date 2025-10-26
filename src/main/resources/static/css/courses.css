@@ -1,195 +1,196 @@
-/* ========== RESET & BASE ========== */
-* {
-    box-sizing: border-box;
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+/* Variabili tema */
+:root {
+    --bg: #f5f7fa;
+    --card: #fff;
+    --text: #1e293b;
+    --muted: #64748b;
+    --primary: #2563eb;
+    --accent: #0ea5e9;
+    --border: #e2e8f0;
+    --transition: 0.4s ease;
+}
+:root.dark {
+    --bg: #0f172a;
+    --card: #1e293b;
+    --text: #f1f5f9;
+    --muted: #94a3b8;
+    --primary: #3b82f6;
+    --accent: #22d3ee;
+    --border: #334155;
+}
+
+/* Layout base */
+body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
     margin: 0;
     padding: 0;
+    transition: background var(--transition), color var(--transition);
 }
 
-body {
-    font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
-    background: linear-gradient(135deg, #f4f7fb, #e9eff8);
-    color: #333;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-}
-
-/* ========== HEADER ========== */
-.page-header {
-    text-align: center;
-    margin-top: 40px;
-}
-
-.main-title {
-    font-size: 2.5rem;
-    color: #1e3a8a;
-    letter-spacing: 1px;
-    margin-bottom: 0.3rem;
-    animation: fadeInDown 0.7s ease-in-out;
-}
-
-.subtitle {
-    font-size: 1.1rem;
-    color: #555;
-    opacity: 0.85;
-    animation: fadeIn 1s ease-in-out;
-}
-
-/* ========== CONTAINER ========== */
 .container {
-    width: 90%;
     max-width: 1100px;
     margin: 40px auto;
-    background: #fff;
-    border-radius: 16px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-    padding: 30px 40px;
-    animation: fadeInUp 0.8s ease-in-out;
+    padding: 0 1rem;
 }
 
-/* ========== TABLE ========== */
-.table-container {
-    overflow-x: auto;
+/* Header */
+.main-header {
+    position: sticky;
+    top: 0;
+    background: rgba(255, 255, 255, 0.75);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+    padding: 15px 20px;
+    z-index: 100;
+}
+:root.dark .main-header { background: rgba(30,41,59,0.75); }
+
+.header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1200px;
+    margin: auto;
+}
+.logo { display: flex; align-items: center; gap: 10px; }
+.brand { font-weight: 800; font-size: 1.3rem; color: var(--primary); }
+
+.theme-toggle {
+    cursor: pointer;
+    font-size: 1.2rem;
+    color: var(--muted);
+    transition: color 0.3s, transform 0.3s;
+}
+.theme-toggle:hover { color: var(--primary); transform: rotate(15deg); }
+
+/* Titolo pagina */
+.page-header {
+    text-align: center;
+    margin: 50px 0 30px;
+}
+.page-header h1 {
+    color: var(--primary);
+    font-size: 2rem;
+}
+.page-header .subtitle {
+    color: var(--muted);
+    font-size: 1rem;
 }
 
+/* Tabella */
 .styled-table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 0.95rem;
+    background: var(--card);
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    transition: background var(--transition), color var(--transition);
 }
-
 .styled-table thead {
-    background: linear-gradient(90deg, #1e3a8a, #2563eb);
-    color: white;
+    background: var(--primary);
+    color: #fff;
 }
-
 .styled-table th, .styled-table td {
-    padding: 14px 16px;
+    padding: 14px 18px;
     text-align: left;
 }
-
 .styled-table tbody tr {
-    transition: background 0.2s ease, transform 0.1s ease;
-    border-bottom: 1px solid #e5e7eb;
+    border-bottom: 1px solid var(--border);
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.4s ease;
 }
-
-.styled-table tbody tr:nth-child(even) {
-    background-color: #f9fafb;
+.styled-table tbody tr.visible {
+    opacity: 1;
+    transform: translateY(0);
 }
-
 .styled-table tbody tr:hover {
-    background-color: #e0ecff;
-    transform: scale(1.01);
+    background: rgba(37,99,235,0.08);
 }
 
-/* ========== ACTIONS ========== */
+/* Pulsante Back */
 .form-actions {
     text-align: center;
-    margin-top: 30px;
+    margin-top: 40px;
 }
-
-.home-button {
-    display: inline-block;
-    font-size: 1rem;
+.home-link {
+    background: var(--primary);
     color: #fff;
-    background: linear-gradient(90deg, #2563eb, #1d4ed8);
-    padding: 12px 28px;
-    text-decoration: none;
     font-weight: 600;
-    border-radius: 50px;
-    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
-    transition: all 0.3s ease;
+    text-decoration: none;
+    padding: 12px 24px;
+    border-radius: 10px;
+    display: inline-block;
+    transition: background 0.3s, transform 0.3s;
+}
+.home-link:hover {
+    background: var(--accent);
+    transform: translateY(-3px);
 }
 
-.home-button:hover {
-    background: linear-gradient(90deg, #1d4ed8, #1e40af);
-    transform: translateY(-2px);
+/* Footer */
+.footer {
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    color: #fff;
+    padding: 30px 20px;
+    text-align: center;
+    margin-top: 60px;
 }
 
-.home-button:active {
-    transform: scale(0.98);
-}
-
-/* ========== HEADER ICON ========== */
-.title-wrapper {
+/* Toast */
+#toast-container {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
     display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 8px;
-    animation: fadeInDown 0.7s ease-in-out;
+    flex-direction: column;
+    gap: 10px;
 }
-
-.icon-circle {
-    background: linear-gradient(135deg, #2563eb, #1e3a8a);
-    color: white;
-    font-size: 1.6rem;
-    border-radius: 50%;
-    width: 48px;
-    height: 48px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3);
-    animation: float 2.5s ease-in-out infinite;
+.toast {
+    background: var(--primary);
+    color: #fff;
+    padding: 12px 20px;
+    border-radius: 10px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+    animation: fadeInUp 0.5s ease, fadeOut 0.5s ease 2.8s forwards;
 }
-
-@keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-6px); }
-}
-
-
-/* ========== SEARCH BAR ========== */
-.search-bar {
-    display: flex;
-    justify-content: flex-end;
-    margin-bottom: 20px;
-}
-
-#searchInput {
-    width: 100%;
-    max-width: 350px;
-    padding: 10px 14px;
-    border: 2px solid #d1d5db;
-    border-radius: 8px;
-    font-size: 1rem;
-    transition: all 0.3s ease;
-    outline: none;
-}
-
-#searchInput:focus {
-    border-color: #2563eb;
-    box-shadow: 0 0 8px rgba(37, 99, 235, 0.3);
-}
-
-
-/* ========== ANIMATIONS ========== */
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
 @keyframes fadeInUp {
     from { opacity: 0; transform: translateY(15px); }
     to { opacity: 1; transform: translateY(0); }
 }
-
-@keyframes fadeInDown {
-    from { opacity: 0; transform: translateY(-15px); }
-    to { opacity: 1; transform: translateY(0); }
+@keyframes fadeOut {
+    to { opacity: 0; transform: translateY(20px); }
 }
 
-/* ========== RESPONSIVE ========== */
+/* Responsività */
 @media (max-width: 768px) {
-    .main-title {
-        font-size: 2rem;
+    .styled-table thead { display: none; }
+    .styled-table, .styled-table tbody, .styled-table tr, .styled-table td {
+        display: block;
+        width: 100%;
     }
-    .container {
-        padding: 20px;
+    .styled-table tr {
+        margin-bottom: 15px;
+        border-bottom: 2px solid var(--border);
     }
-    .styled-table th, .styled-table td {
-        padding: 10px;
+    .styled-table td {
+        padding: 12px;
+        text-align: right;
+        position: relative;
+    }
+    .styled-table td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 12px;
+        font-weight: 600;
+        color: var(--muted);
     }
 }
+
 

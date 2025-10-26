@@ -5,14 +5,50 @@
     xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
     <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
-    <title>Uni Journey</title>
+    <title>Uni Journey — Outcome result</title>
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
+
+    <!-- Styles -->
     <link rel="stylesheet" type="text/css" href="/css/outcome-result-professor.css">
+
 </head>
 <body>
-    <div class="container">
-        <h1 th:text="${result}">Outcome Result</h1>
-        <a href="#" th:href="@{/user_professor/examinations/examination_appeal/examination-appeal-menu}">Back to Menu</a>
+
+<header class="main-header">
+    <div class="header-inner">
+        <div class="logo">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none">
+                <rect x="2" y="3" width="20" height="6" rx="1.5" fill="#2563eb"/>
+                <rect x="2" y="13" width="20" height="8" rx="2" fill="#1e40af"/>
+            </svg>
+            <h1 class="brand">UNI JOURNEY</h1>
+        </div>
+
+        <!-- Dark/Light Toggle -->
+        <div class="theme-toggle" id="theme-toggle" title="Toggle theme">
+            <i class="fas fa-moon"></i>
+        </div>
     </div>
+</header>
+
+<main class="container">
+    <div class="evaluation-card fade-in">
+        <h2>Outcome Result</h2>
+        <p th:text="${result}" class="student-info outcome-message"></p>
+
+        <div class="nav-links">
+            <a th:href="@{/user_professor/examinations/examination_appeal/examination-appeal-menu}" class="home-link">
+                Back to Menu
+            </a>
+        </div>
+    </div>
+</main>
+
+<!-- ===== TOASTS ===== -->
+<div id="toast-container"></div>
+
+<script src="/js/outcome-result-professor.js"></script>
+
 </body>
 </html>
+

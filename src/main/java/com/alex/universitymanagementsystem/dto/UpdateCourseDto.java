@@ -2,12 +2,14 @@ package com.alex.universitymanagementsystem.dto;
 
 import com.alex.universitymanagementsystem.annotation.ValidProfessorCode;
 import com.alex.universitymanagementsystem.enum_type.CourseType;
+import com.alex.universitymanagementsystem.utils.CourseDtoCarrier;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
-public class UpdateCourseDto {
+
+public class UpdateCourseDto implements CourseDtoCarrier {
 
 
     @NotBlank(message = "Course name is mandatory")
@@ -27,6 +29,9 @@ public class UpdateCourseDto {
 
     @Positive(message = "CFU must be positive")
     private Integer cfu;
+
+    @NotNull(message = "Year of study is mandatory")
+    private Integer yearOfStudy;
 
     @NotBlank(message = "Professor code is mandatory")
     @ValidProfessorCode
@@ -58,9 +63,20 @@ public class UpdateCourseDto {
         return cfu;
     }
 
+    @Override
+    public Integer getYearOfStudy() {
+        return yearOfStudy;
+    }
+
+    @Override
+    public String getDegreeCourseName() {
+        return getNewDegreeCourseName();
+    }
+
     public String getProfessorCode() {
         return professorCode;
     }
+
 
     // setters
     public void setNewName(String newName) {
@@ -79,12 +95,16 @@ public class UpdateCourseDto {
         this.oldDegreeCourseName = oldDegreeCourseName;
     }
 
-      public void setType(CourseType type) {
+    public void setType(CourseType type) {
         this.type = type;
     }
 
     public void setCfu(Integer cfu) {
         this.cfu = cfu;
+    }
+
+    public void setYearOfStudy(Integer yearOfStudy) {
+        this.yearOfStudy = yearOfStudy;
     }
 
     public void setProfessorCode(String professorCode) {

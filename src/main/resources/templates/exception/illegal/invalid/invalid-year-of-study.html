@@ -7,13 +7,12 @@
     <meta name="viewport" charset="UTF-8" content="width=device-width, initial-scale=1.0">
     <title>Uni Journey</title>
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
-    <link rel="stylesheet" type="text/css" href="/css/appeal-delete-result.css">
 </head>
 <body>
-	<h1 th:text="${result}">Delete result</h1>
+    <h1>Error: invalid year of study</h1>
+    <p th:text="${message}"></p>
+    <p>The year of study must be a positive integer. Please enter a valid year related to courses.</p>
     <br>
-    <a href="#" th:href="@{/user_professor/examinations/examination_appeal/examination-appeal-menu}">Back to Menu</a>
-    <br>
-    <a href="#" th:href="@{/user_professor/professor-home}">Back to home</a>
+    <p><a href="javascript:history.back()">Go back</a></p>
 </body>
 </html>

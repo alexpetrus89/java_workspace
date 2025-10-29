@@ -834,6 +834,7 @@ public class UmsDBInitConfig implements Serializable {
                 "analisi matematica",
                 CourseType.MATEMATICA,
                 12,
+                1,
                 professorRepository
                     .findByProfessorCode(new ProfessorCode(UC_GIACINTO))
                     .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
@@ -847,6 +848,7 @@ public class UmsDBInitConfig implements Serializable {
                 "analisi matematica",
                 CourseType.MATEMATICA,
                 12,
+                1,
                 professorRepository
                     .findByProfessorCode(new ProfessorCode(UC_GENESIO))
                     .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
@@ -860,6 +862,7 @@ public class UmsDBInitConfig implements Serializable {
                 "analisi matematica",
                 CourseType.MATEMATICA,
                 12,
+                1,
                 professorRepository
                     .findByProfessorCode(new ProfessorCode(UC_GENESIO))
                     .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
@@ -873,6 +876,7 @@ public class UmsDBInitConfig implements Serializable {
                 "analisi matematica",
                 CourseType.MATEMATICA,
                 12,
+                1,
                 professorRepository
                     .findByProfessorCode(new ProfessorCode(UC_GENESIO))
                     .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
@@ -886,6 +890,7 @@ public class UmsDBInitConfig implements Serializable {
                 "elementi di economia",
                 CourseType.ECONOMIA,
                 6,
+                1,
                 professorRepository
                     .findByProfessorCode(new ProfessorCode(UC_GIACINTO))
                     .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
@@ -899,6 +904,7 @@ public class UmsDBInitConfig implements Serializable {
                 "elementi di economia",
                 CourseType.ECONOMIA,
                 6,
+                1,
                 professorRepository
                     .findByProfessorCode(new ProfessorCode(UC_GENESIO))
                     .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
@@ -912,6 +918,7 @@ public class UmsDBInitConfig implements Serializable {
                 "elementi di economia",
                 CourseType.ECONOMIA,
                 6,
+                1,
                 professorRepository
                     .findByProfessorCode(new ProfessorCode(UC_GENESIO))
                     .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
@@ -925,6 +932,7 @@ public class UmsDBInitConfig implements Serializable {
                 "geometria e algebra",
                 CourseType.MATEMATICA,
                 6,
+                1,
                 professorRepository
                     .findByProfessorCode(new ProfessorCode(UC_GIACINTO))
                     .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
@@ -938,6 +946,7 @@ public class UmsDBInitConfig implements Serializable {
                 "geometria e algebra",
                 CourseType.MATEMATICA,
                 6,
+                1,
                 professorRepository
                     .findByProfessorCode(new ProfessorCode(UC_GIACINTO))
                     .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
@@ -951,6 +960,7 @@ public class UmsDBInitConfig implements Serializable {
                 "geometria e algebra",
                 CourseType.MATEMATICA,
                 6,
+                1,
                 professorRepository
                     .findByProfessorCode(new ProfessorCode(UC_GIACINTO))
                     .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
@@ -964,6 +974,7 @@ public class UmsDBInitConfig implements Serializable {
                 "analisi dei sistemi dinamici",
                 CourseType.MATEMATICA,
                 6,
+                1,
                 professorRepository
                     .findByProfessorCode(new ProfessorCode(UC_GIACINTO))
                     .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
@@ -977,6 +988,7 @@ public class UmsDBInitConfig implements Serializable {
                 "analisi dei sistemi dinamici",
                 CourseType.MATEMATICA,
                 6,
+                1,
                 professorRepository
                     .findByProfessorCode(new ProfessorCode(UC_GIOELE))
                     .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
@@ -990,6 +1002,7 @@ public class UmsDBInitConfig implements Serializable {
                 "fisica generale",
                 CourseType.FISICA,
                 12,
+                1,
                 professorRepository
                     .findByProfessorCode(new ProfessorCode(UC_GIACOMO))
                     .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
@@ -1003,6 +1016,7 @@ public class UmsDBInitConfig implements Serializable {
                 "fisica generale",
                 CourseType.FISICA,
                 12,
+                1,
                 professorRepository
                     .findByProfessorCode(new ProfessorCode(UC_GIACOMO))
                     .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
@@ -1016,6 +1030,7 @@ public class UmsDBInitConfig implements Serializable {
                 "fisica generale",
                 CourseType.FISICA,
                 12,
+                1,
                 professorRepository
                     .findByProfessorCode(new ProfessorCode(UC_GIACOMO))
                     .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
@@ -1029,6 +1044,7 @@ public class UmsDBInitConfig implements Serializable {
                 "fisica generale",
                 CourseType.FISICA,
                 12,
+                1,
                 professorRepository
                     .findByProfessorCode(new ProfessorCode(UC_GIACOMO))
                     .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
@@ -1042,6 +1058,7 @@ public class UmsDBInitConfig implements Serializable {
                 "fondamenti di informatica",
                 CourseType.INFORMATICA,
                 6,
+                1,
                 professorRepository
                     .findByProfessorCode(new ProfessorCode(UC_GIACINTO))
                     .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
@@ -1055,6 +1072,7 @@ public class UmsDBInitConfig implements Serializable {
                 "fondamenti di informatica",
                 CourseType.INFORMATICA,
                 6,
+                1,
                 professorRepository
                     .findByProfessorCode(new ProfessorCode(UC_GENESIO))
                     .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
@@ -1068,6 +1086,7 @@ public class UmsDBInitConfig implements Serializable {
                 "fondamenti di informatica",
                 CourseType.INFORMATICA,
                 6,
+                1,
                 professorRepository
                     .findByProfessorCode(new ProfessorCode(UC_GENESIO))
                     .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
@@ -1081,6 +1100,7 @@ public class UmsDBInitConfig implements Serializable {
                 "fondamenti di informatica",
                 CourseType.INFORMATICA,
                 6,
+                1,
                 professorRepository
                     .findByProfessorCode(new ProfessorCode(UC_GENESIO))
                     .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
@@ -1094,6 +1114,7 @@ public class UmsDBInitConfig implements Serializable {
                 "chimica generale",
                 CourseType.CHIMICA,
                 6,
+                1,
                 professorRepository
                     .findByProfessorCode(new ProfessorCode(UC_GIOELE))
                     .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
@@ -1107,6 +1128,7 @@ public class UmsDBInitConfig implements Serializable {
                 "chimica generale",
                 CourseType.CHIMICA,
                 6,
+                1,
                 professorRepository
                     .findByProfessorCode(new ProfessorCode(UC_GIOELE))
                     .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
@@ -1120,6 +1142,7 @@ public class UmsDBInitConfig implements Serializable {
                 "chimica generale",
                 CourseType.CHIMICA,
                 9,
+                1,
                 professorRepository
                     .findByProfessorCode(new ProfessorCode(UC_GIOELE))
                     .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
@@ -1133,6 +1156,7 @@ public class UmsDBInitConfig implements Serializable {
                 "chimica generale",
                 CourseType.CHIMICA,
                 9,
+                1,
                 professorRepository
                     .findByProfessorCode(new ProfessorCode(UC_GIOELE))
                     .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
@@ -1146,6 +1170,7 @@ public class UmsDBInitConfig implements Serializable {
                 "scienza delle costruzioni",
                 CourseType.ING_MECCANICA,
                 6,
+                2,
                 professorRepository
                     .findByProfessorCode(new ProfessorCode(UC_GIACOMO))
                     .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
@@ -1159,6 +1184,7 @@ public class UmsDBInitConfig implements Serializable {
                 "scienza delle costruzioni",
                 CourseType.ING_MECCANICA,
                 12,
+                2,
                 professorRepository
                     .findByProfessorCode(new ProfessorCode(UC_GIACOMO))
                     .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
@@ -1172,6 +1198,7 @@ public class UmsDBInitConfig implements Serializable {
                 "metodi di ottimizzazione",
                 CourseType.MATEMATICA,
                 6,
+                1,
                 professorRepository
                     .findByProfessorCode(new ProfessorCode(UC_GIACINTO))
                     .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
@@ -1185,6 +1212,7 @@ public class UmsDBInitConfig implements Serializable {
                 "metodi di rappresentazione tecnica",
                 CourseType.DISEGNO,
                 6,
+                1,
                 professorRepository
                     .findByProfessorCode(new ProfessorCode(UC_GIACINTO))
                     .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
@@ -1198,6 +1226,7 @@ public class UmsDBInitConfig implements Serializable {
                 "elementi di meccanica delle macchine e progettazione meccanica",
                 CourseType.ING_MECCANICA,
                 12,
+                2,
                 professorRepository
                     .findByProfessorCode(new ProfessorCode(UC_GIACOMO))
                     .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
@@ -1211,6 +1240,7 @@ public class UmsDBInitConfig implements Serializable {
                 "fisica tecnica e sistemi energetici",
                 CourseType.FISICA,
                 12,
+                2,
                 professorRepository
                     .findByProfessorCode(new ProfessorCode(UC_GIACOMO))
                     .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
@@ -1224,6 +1254,7 @@ public class UmsDBInitConfig implements Serializable {
                 "gestione aziendale",
                 CourseType.ECONOMIA,
                 6,
+                2,
                 professorRepository
                     .findByProfessorCode(new ProfessorCode(UC_GIACOMO))
                     .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
@@ -1237,6 +1268,7 @@ public class UmsDBInitConfig implements Serializable {
                 "meccanica dei fluidi",
                 CourseType.IDRAULICA,
                 6,
+                2,
                 professorRepository
                     .findByProfessorCode(new ProfessorCode(UC_GIOELE))
                     .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
@@ -1250,6 +1282,7 @@ public class UmsDBInitConfig implements Serializable {
                 "principi di ingegneria elettrica",
                 CourseType.ING_ELETTRICA,
                 6,
+                2,
                 professorRepository
                     .findByProfessorCode(new ProfessorCode(UC_GIACOMO))
                     .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
@@ -1263,6 +1296,7 @@ public class UmsDBInitConfig implements Serializable {
                 "tecnologia meccaniche e dei materiali",
                 CourseType.ING_MECCANICA,
                 12,
+                2,
                 professorRepository
                     .findByProfessorCode(new ProfessorCode(UC_GIACOMO))
                     .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
@@ -1276,6 +1310,7 @@ public class UmsDBInitConfig implements Serializable {
                 "calcolo numerico",
                 CourseType.MATEMATICA,
                 6,
+                2,
                 professorRepository
                     .findByProfessorCode(new ProfessorCode(UC_GIACINTO))
                     .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
@@ -1289,6 +1324,7 @@ public class UmsDBInitConfig implements Serializable {
                 "gestione dei progetti",
                 CourseType.ING_GESTIONALE,
                 9,
+                3,
                 professorRepository
                     .findByProfessorCode(new ProfessorCode(UC_GIACINTO))
                     .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
@@ -1302,6 +1338,7 @@ public class UmsDBInitConfig implements Serializable {
                 "impianti industriali",
                 CourseType.ING_MECCANICA,
                 9,
+                3,
                 professorRepository
                     .findByProfessorCode(new ProfessorCode(UC_GIACOMO))
                     .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
@@ -1315,6 +1352,7 @@ public class UmsDBInitConfig implements Serializable {
                 "inglese",
                 CourseType.LINGUA_STRANIERA,
                 3,
+                1,
                 professorRepository
                     .findByProfessorCode(new ProfessorCode(UC_GIOELE))
                     .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
@@ -1328,6 +1366,7 @@ public class UmsDBInitConfig implements Serializable {
                 "progettazione dei processi produttivi e qualità dei processi produttivi",
                 CourseType.ING_GESTIONALE,
                 12,
+                3,
                 professorRepository
                     .findByProfessorCode(new ProfessorCode(UC_GENESIO))
                     .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
@@ -1341,6 +1380,7 @@ public class UmsDBInitConfig implements Serializable {
                 "sicurezza degli impianti industriali",
                 CourseType.ING_GESTIONALE,
                 6,
+                3,
                 professorRepository
                     .findByProfessorCode(new ProfessorCode(UC_GIACINTO))
                     .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
@@ -1354,6 +1394,7 @@ public class UmsDBInitConfig implements Serializable {
                 "materiali innovativi per l'ingegneria elettrica",
                 CourseType.ING_ELETTRICA,
                 6,
+                3,
                 professorRepository
                     .findByProfessorCode(new ProfessorCode(UC_GIACINTO))
                     .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
@@ -1367,6 +1408,7 @@ public class UmsDBInitConfig implements Serializable {
                 "tirocinio",
                 CourseType.ING_GESTIONALE,
                 6,
+                3,
                 professorRepository
                     .findByProfessorCode(new ProfessorCode(UC_GIOELE))
                     .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
@@ -1380,6 +1422,7 @@ public class UmsDBInitConfig implements Serializable {
                 "prova finale",
                 CourseType.ING_GESTIONALE,
                 3,
+                3,
                 professorRepository
                     .findByProfessorCode(new ProfessorCode(UC_GIACINTO))
                     .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
@@ -1393,6 +1436,7 @@ public class UmsDBInitConfig implements Serializable {
                 "sistemi informativi",
                 CourseType.ING_INFORMATICA,
                 12,
+                1,
                 professorRepository
                     .findByProfessorCode(new ProfessorCode(UC_GENESIO))
                     .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
@@ -1406,6 +1450,7 @@ public class UmsDBInitConfig implements Serializable {
                 "sistemi informativi",
                 CourseType.ING_INFORMATICA,
                 12,
+                1,
                 professorRepository
                     .findByProfessorCode(new ProfessorCode(UC_GENESIO))
                     .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
@@ -1419,6 +1464,7 @@ public class UmsDBInitConfig implements Serializable {
                 "big data analytics",
                 CourseType.ING_INFORMATICA,
                 6,
+                2,
                 professorRepository
                     .findByProfessorCode(new ProfessorCode(UC_GIACINTO))
                     .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
@@ -1432,6 +1478,7 @@ public class UmsDBInitConfig implements Serializable {
                 "internet of things",
                 CourseType.ING_INFORMATICA,
                 6,
+                2,
                 professorRepository
                     .findByProfessorCode(new ProfessorCode(UC_GIOELE))
                     .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
@@ -1445,6 +1492,7 @@ public class UmsDBInitConfig implements Serializable {
                 "internet of things",
                 CourseType.ING_INFORMATICA,
                 6,
+                2,
                 professorRepository
                     .findByProfessorCode(new ProfessorCode(UC_GIOELE))
                     .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
@@ -1458,6 +1506,7 @@ public class UmsDBInitConfig implements Serializable {
                 "fondamenti di cybersecurity",
                 CourseType.ING_INFORMATICA,
                 6,
+                2,
                 professorRepository
                     .findByProfessorCode(new ProfessorCode(UC_GIOELE))
                     .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
@@ -1471,6 +1520,7 @@ public class UmsDBInitConfig implements Serializable {
                 "basi di dati",
                 CourseType.ING_INFORMATICA,
                 6,
+                2,
                 professorRepository
                     .findByProfessorCode(new ProfessorCode(UC_GIACINTO))
                     .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
@@ -1484,6 +1534,7 @@ public class UmsDBInitConfig implements Serializable {
                 "basi di dati",
                 CourseType.ING_INFORMATICA,
                 6,
+                2,
                 professorRepository
                     .findByProfessorCode(new ProfessorCode(UC_GIACINTO))
                     .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
@@ -1497,6 +1548,7 @@ public class UmsDBInitConfig implements Serializable {
                 "produzione avanzata nella fabbrica digitale",
                 CourseType.ING_MECCANICA,
                 6,
+                1,
                 professorRepository
                     .findByProfessorCode(new ProfessorCode(UC_GENESIO))
                     .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
@@ -1510,6 +1562,7 @@ public class UmsDBInitConfig implements Serializable {
                 "analisi dei sistemi dinamici",
                 CourseType.MATEMATICA,
                 6,
+                1,
                 professorRepository
                     .findByProfessorCode(new ProfessorCode(UC_GENESIO))
                     .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
@@ -1523,6 +1576,7 @@ public class UmsDBInitConfig implements Serializable {
                 "algoritmi e strutture dati in java",
                 CourseType.ING_INFORMATICA,
                 6,
+                2,
                 professorRepository
                     .findByProfessorCode(new ProfessorCode(UC_GENESIO))
                     .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
@@ -1536,6 +1590,7 @@ public class UmsDBInitConfig implements Serializable {
                 "fondamenti di telecomunicazioni",
                 CourseType.ING_INFORMATICA,
                 6,
+                2,
                 professorRepository
                     .findByProfessorCode(new ProfessorCode(UC_GIACOMO))
                     .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
@@ -1549,6 +1604,7 @@ public class UmsDBInitConfig implements Serializable {
                 "fondamenti di elettronica",
                 CourseType.ING_INFORMATICA,
                 6,
+                2,
                 professorRepository
                     .findByProfessorCode(new ProfessorCode(UC_GIACOMO))
                     .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
@@ -1562,6 +1618,7 @@ public class UmsDBInitConfig implements Serializable {
                 "compilatori",
                 CourseType.ING_INFORMATICA,
                 12,
+                2,
                 professorRepository
                     .findByProfessorCode(new ProfessorCode(UC_GIACOMO))
                     .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
@@ -1575,6 +1632,7 @@ public class UmsDBInitConfig implements Serializable {
                 "big data",
                 CourseType.ING_INFORMATICA,
                 6,
+                2,
                 professorRepository
                     .findByProfessorCode(new ProfessorCode(UC_GIOELE))
                     .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
@@ -1588,6 +1646,7 @@ public class UmsDBInitConfig implements Serializable {
                 "impianti meccanici",
                 CourseType.ING_MECCANICA,
                 3,
+                3,
                 professorRepository
                     .findByProfessorCode(new ProfessorCode(UC_GENESIO))
                     .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
@@ -1598,9 +1657,10 @@ public class UmsDBInitConfig implements Serializable {
         courses.add(
             new Course(
                 MiurAcronymType.ING,
-                "energetica e macchine a fluido",
+                "sistemi energetici e macchine a fluido",
                 CourseType.ING_MECCANICA,
-                6,
+                12,
+                2,
                 professorRepository
                     .findByProfessorCode(new ProfessorCode(UC_GIACINTO))
                     .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
@@ -1614,6 +1674,7 @@ public class UmsDBInitConfig implements Serializable {
                 "misure meccaniche e termiche",
                 CourseType.ING_MECCANICA,
                 12,
+                3,
                 professorRepository
                     .findByProfessorCode(new ProfessorCode(UC_GIACINTO))
                     .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
@@ -1627,6 +1688,7 @@ public class UmsDBInitConfig implements Serializable {
                 "turbomacchine",
                 CourseType.ING_MECCANICA,
                 12,
+                2,
                 professorRepository
                     .findByProfessorCode(new ProfessorCode(UC_GIACINTO))
                     .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
@@ -1640,6 +1702,7 @@ public class UmsDBInitConfig implements Serializable {
                 "gasdinamica e fluidodinamica",
                 CourseType.ING_MECCANICA,
                 12,
+                1,
                 professorRepository
                     .findByProfessorCode(new ProfessorCode(UC_GIACINTO))
                     .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
@@ -1653,6 +1716,7 @@ public class UmsDBInitConfig implements Serializable {
                 "macchine elettriche",
                 CourseType.ING_ELETTRICA,
                 12,
+                3,
                 professorRepository
                     .findByProfessorCode(new ProfessorCode(UC_GIACINTO))
                     .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
@@ -1666,6 +1730,7 @@ public class UmsDBInitConfig implements Serializable {
                 "elettrica di potenza",
                 CourseType.ING_ELETTRICA,
                 12,
+                3,
                 professorRepository
                     .findByProfessorCode(new ProfessorCode(UC_GIOELE))
                     .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),
@@ -1679,6 +1744,7 @@ public class UmsDBInitConfig implements Serializable {
                 "impianti elettrici civili e industriali",
                 CourseType.ING_MECCANICA,
                 12,
+                3,
                 professorRepository
                     .findByProfessorCode(new ProfessorCode(UC_GIOELE))
                     .orElseThrow(() -> new NoSuchElementException(PROFESSOR_NOT_FOUND_ERROR)),

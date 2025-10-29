@@ -1,5 +1,7 @@
 package com.alex.universitymanagementsystem.dto;
 
+import java.util.Comparator;
+
 import com.alex.universitymanagementsystem.entity.immutable.DegreeCourseId;
 import com.alex.universitymanagementsystem.enum_type.DegreeType;
 
@@ -67,5 +69,12 @@ public class DegreeCourseDto {
     public void setDuration(int duration) {
         this.duration = duration;
     }
+
+
+    public static final Comparator<DegreeCourseDto> BY_GRADUATION =
+        Comparator.comparingInt((DegreeCourseDto dto) -> dto.getGraduationClass().getLevel());
+
+    public static final Comparator<DegreeCourseDto> BY_NAME =
+        Comparator.comparing(DegreeCourseDto::getName, String.CASE_INSENSITIVE_ORDER);
 
 }

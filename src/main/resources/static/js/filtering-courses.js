@@ -1,17 +1,15 @@
 function filterCourses() {
-
     const searchInput = document.getElementById("searchInput");
-
-    // Filter desktop table
     const table = document.getElementById("coursesTable");
-    const rows = table.getElementsByTagName("tr");
+    const rows = table.querySelectorAll("tbody tr"); // solo tbody
 
     searchInput.addEventListener("keyup", function () {
         const filter = this.value.toLowerCase();
-
-        for (let i = 1; i < rows.length; i++) {
-            const rowText = rows[i].innerText.toLowerCase();
-            rows[i].style.display = rowText.includes(filter) ? "" : "none";
+        for (const row of rows) {
+            const rowText = row.innerText.toLowerCase();
+            row.style.display = rowText.includes(filter) ? "" : "none";
         }
     });
 }
+
+document.addEventListener("DOMContentLoaded", filterCourses);

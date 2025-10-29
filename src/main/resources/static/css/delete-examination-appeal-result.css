@@ -4,6 +4,7 @@
     --text: #111827;
     --primary: #2563eb;
     --secondary: #1e40af;
+    --success: #16a34a;
     --transition: 0.3s ease;
 }
 
@@ -13,6 +14,7 @@
     --text: #f1f5f9;
     --primary: #60a5fa;
     --secondary: #3b82f6;
+    --success: #22c55e;
 }
 
 body {
@@ -66,13 +68,14 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 2rem;
+    padding: 3rem;
+    min-height: 70vh;
 }
 
 .card {
     background: var(--card);
     border-radius: 18px;
-    padding: 35px;
+    padding: 40px;
     max-width: 600px;
     width: 100%;
     box-shadow: 0 8px 20px rgba(0,0,0,0.08);
@@ -81,51 +84,33 @@ body {
 }
 
 .card h2 {
-    color: var(--primary);
-    margin-bottom: 1.5rem;
+    color: var(--success);
+    font-size: 1.6rem;
+    margin-bottom: 1rem;
 }
 
-/* ---------- Form ---------- */
-.form-group {
-    margin-bottom: 1.5rem;
-    text-align: left;
-}
-
-label {
-    display: block;
-    font-weight: 500;
-    margin-bottom: 0.5rem;
-}
-
-select {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #cbd5e1;
-    border-radius: 8px;
-    font-size: 1rem;
-    transition: border-color var(--transition);
-}
-
-select:focus {
-    outline: none;
-    border-color: var(--primary);
+.message {
+    font-size: 1.1rem;
+    color: var(--text);
+    opacity: 0.85;
+    margin-bottom: 2rem;
 }
 
 /* ---------- Buttons ---------- */
-.form-actions {
+.nav-links {
     display: flex;
     justify-content: center;
     gap: 1rem;
-    margin-top: 1rem;
 }
 
 .btn {
     text-decoration: none;
-    padding: 0.6rem 1.2rem;
+    padding: 0.6rem 1.3rem;
     border-radius: 8px;
     transition: background var(--transition), transform var(--transition);
     cursor: pointer;
     font-weight: 500;
+    font-size: 0.95rem;
 }
 
 .primary-btn {
@@ -145,11 +130,6 @@ select:focus {
     filter: brightness(1.1);
 }
 
-/* ---------- Links ---------- */
-.nav-links {
-    margin-top: 2rem;
-}
-
 .fade-in {
     animation: fadeIn 0.4s ease;
 }
@@ -157,4 +137,13 @@ select:focus {
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
+}
+@media (max-width: 600px) {
+    .card {
+        padding: 20px;
+    }
+
+    .header-inner {
+        width: 95%;
+    }
 }

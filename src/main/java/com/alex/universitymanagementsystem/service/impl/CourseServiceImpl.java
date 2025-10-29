@@ -138,11 +138,11 @@ public class CourseServiceImpl implements CourseService {
     {
 
         // Check for duplicate course name in the same degree course
-        validators.validateCourseExists(dto.getName(), dto.getDegreeCourse().getName());
+        validators.validateCourseAlreadyExists(dto.getName(), dto.getDegreeCourse().getName());
         try {
             Professor professor = helpers.fetchProfessor(dto.getProfessor().getProfessorCode());
             DegreeCourse degreeCourse = helpers.fetchDegreeCourse(dto.getDegreeCourse().getName());
-            Course course = new Course(dto.getName(), dto.getType(), dto.getCfu(), professor, degreeCourse);
+            Course course = new Course(dto.getName(), dto.getType(), dto.getCfu(), dto.getYearOfStudy(), professor, degreeCourse);
             // save
             courseRepository.saveAndFlush(course);
             return CourseMapper.toDto(course);

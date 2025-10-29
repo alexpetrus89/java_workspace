@@ -9,7 +9,6 @@
     <title>Uni Journey | Courses</title>
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
     <link rel="stylesheet" type="text/css" href="/css/courses.css">
-    <script src="/js/filtering-users.js"></script>
 </head>
 <body>
 
@@ -20,7 +19,7 @@
             </div>
             <h1 class="main-title">Courses</h1>
         </div>
-        <p class="subtitle">Explore all available courses in your uni journey</p>
+        <p class="subtitle">Explore all available courses in uni journey</p>
     </header>
 
     <main class="container">
@@ -38,18 +37,20 @@
                         <th>Name</th>
                         <th>Type</th>
                         <th>CFU</th>
+                        <th>Year of study</th>
                         <th>Professor</th>
                         <th>Degree Course</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr th:each="course : ${courses}">
-                        <td th:text="${course.name}">Course name</td>
-                        <td th:text="${course.type.name()}">Course type</td>
-                        <td th:text="${course.cfu}">Cfu</td>
-                        <td th:text="${course.professor?.fullName}">Professor</td>
-                        <td th:text="${course.degreeCourse.name}">Degree Course</td>
-                    </tr>
+                <tr th:each="course : ${courses}">
+                    <td data-label="Name" th:text="${course.name}">Course name</td>
+                    <td data-label="Type" th:text="${course.type.name}">Course type</td>
+                    <td data-label="CFU" th:text="${course.cfu}">CFU</td>
+                    <td data-label="Year" th:text="${course.yearOfStudy}">Year</td>
+                    <td data-label="Professor" th:text="${course.professor != null ? course.professor.fullName : 'N/A'}">Professor</td>
+                    <td data-label="Degree Course" th:text="${course.degreeCourse != null ? course.degreeCourse.name : 'N/A'}">Degree Course</td>
+                </tr>
                 </tbody>
             </table>
         </div>
@@ -60,7 +61,7 @@
             </a>
         </div>
     </main>
-    <script src="/static/js/filtering-users.js"></script>
+    <script src="/js/filtering-courses.js"></script>
 </body>
 </html>
 

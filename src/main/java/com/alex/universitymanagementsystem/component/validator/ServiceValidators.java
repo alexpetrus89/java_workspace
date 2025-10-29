@@ -57,6 +57,7 @@ public class ServiceValidators {
      * Validates that an object exists.
      * @param exists whether the object exists
      * @param type the type of the object
+     * @throws ObjectNotFoundException if the object not exists
      */
     private void validateEntityExists(BooleanSupplier existsCheck, DomainType type) {
         if (!existsCheck.getAsBoolean()) throw new ObjectNotFoundException(type);
@@ -67,6 +68,7 @@ public class ServiceValidators {
      * Validates that an object exists.
      * @param exists whether the object exists
      * @param type the type of the object
+     * @throws ObjectAlreadyExistsException if the object already exists
      */
     private void validateEntityNotExists(BooleanSupplier existsCheck, DomainType type) {
         if (existsCheck.getAsBoolean()) throw new ObjectAlreadyExistsException(type);
@@ -106,6 +108,11 @@ public class ServiceValidators {
     }
 
 
+    /**
+     * Validates that a student already exists.
+     * @param register the register of the student
+     * @throws ObjectAlreadyExistsException if the student already exists
+     */
     public void validateStudentAlreadyExists(Register register) {
         validateEntityNotExists(() -> studentRepository.existsByRegister(register), DomainType.STUDENT);
     }
@@ -118,6 +125,17 @@ public class ServiceValidators {
      */
     public void validateCourseExists(String courseName, String degreeCourseName) {
         validateEntityExists(() -> courseRepository.existsByNameAndDegreeCourseName(
+            courseName, degreeCourseName.toUpperCase()), DomainType.COURSE);
+    }
+
+    /**
+     * Validates that a course exists.
+     * @param courseName the name of the course
+     * @param degreeCourseName the name of the degree course
+     * @throws ObjectNotFoundException if the course already exist
+     */
+    public void validateCourseAlreadyExists(String courseName, String degreeCourseName) {
+        validateEntityNotExists(() -> courseRepository.existsByNameAndDegreeCourseName(
             courseName, degreeCourseName.toUpperCase()), DomainType.COURSE);
     }
 

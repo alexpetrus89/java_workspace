@@ -5,37 +5,67 @@
     xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
     <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
-    <title>Uni Journey</title>
+    <title>Uni Journey — Delete Appeal</title>
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
-    <link rel="stylesheet" type="text/css" href="/css/delete-examination-appeal.css">
-</head>
-<body>
-    <header class="main-header">
-        <h1>Delete appeal</h1>
-    </header>
 
-    <h1 th:text="${title}">Select examination appeal to delete</h1>
-    <div class="form-container">
-        <form action="#" th:action="@{/api/v1/examination-appeal/delete}" method="post">
+    <!-- Styles -->
+    <link rel="stylesheet" type="text/css" href="/css/delete-examination-appeal.css">
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" defer></script>
+    <script src="/js/delete-examination-appeal.js" defer></script>
+</head>
+
+<body>
+<header class="main-header">
+    <div class="header-inner">
+        <div class="logo">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none">
+                <rect x="2" y="3" width="20" height="6" rx="1.5" fill="#2563eb"/>
+                <rect x="2" y="13" width="20" height="8" rx="2" fill="#1e40af"/>
+            </svg>
+            <h1 class="brand">UNI JOURNEY</h1>
+        </div>
+
+        <!-- Dark/Light Toggle -->
+        <div class="theme-toggle" id="theme-toggle" title="Toggle theme">
+            <i class="fas fa-moon"></i>
+        </div>
+    </div>
+</header>
+
+<main class="container fade-in">
+    <div class="card">
+        <h2 th:text="${title}">Select examination appeal to delete</h2>
+
+        <form th:action="@{/api/v1/examination-appeal/delete}" method="post" class="appeal-form">
             <input type="hidden" name="_method" value="DELETE" />
 
-            <label for="appeal">Appeal to delete :</label>
-            <select id="appeal" name="id" >
-                <option value="">Select appeal</option>
-                <option th:if="${appeals != null}"
-                    th:each="appeal : ${appeals}" th:value="${appeal.id}" th:with="text=${appeal.course + ' - ' + appeal.degreeCourse + ' - ' + appeal.date}" th:text="${text}">Appeal</option>
-            </select>
-            </p>
+            <div class="form-group">
+                <label for="appeal">Appeal to delete</label>
+                <select id="appeal" name="id" required>
+                    <option value="">Select appeal</option>
+                    <option th:if="${appeals != null}"
+                            th:each="appeal : ${appeals}"
+                            th:value="${appeal.id}"
+                            th:text="${appeal.course + ' - ' + appeal.degreeCourse + ' - ' + #temporals.format(appeal.date, 'dd-MM-yyyy')}">
+                        Appeal
+                    </option>
+                </select>
+            </div>
 
             <div class="form-actions">
-                <button type="submit" class="btn btn-primary">Submit</button>
-                <button type="reset" class="btn btn-secondary">Reset</button>
+                <button type="submit" class="btn primary-btn">Submit</button>
+                <button type="reset" class="btn secondary-btn">Reset</button>
             </div>
         </form>
 
-        <div class="back-link">
-            <a th:href="@{/user_professor/examinations/examination_appeal/examination-appeal-menu}">Back to menu</a>
+        <div class="nav-links">
+            <a th:href="@{/user_professor/examinations/examination_appeal/examination-appeal-menu}" class="btn secondary-btn">
+                Back to menu
+            </a>
         </div>
-
+    </div>
+</main>
 </body>
 </html>

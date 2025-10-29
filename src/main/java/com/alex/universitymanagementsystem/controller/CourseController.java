@@ -118,6 +118,7 @@ public class CourseController {
             formDto.getName(),
             formDto.getType(),
             formDto.getCfu(),
+            formDto.getYearOfStudy(),
             professor,
             degreeCourse
         );

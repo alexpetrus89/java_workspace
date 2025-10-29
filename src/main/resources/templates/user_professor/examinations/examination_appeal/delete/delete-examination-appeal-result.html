@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta name="viewport" charset="UTF-8" content="width=device-width, initial-scale=1.0">
+    <title>Uni Journey — Delete Result</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+
+    <!-- Styles -->
+    <link rel="stylesheet" type="text/css" href="/css/delete-examination-appeal-result.css">
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" defer></script>
+    <script src="/js/delete-examination-appeal-result.js" defer></script>
+</head>
+
+<body>
+<header class="main-header">
+    <div class="header-inner">
+        <div class="logo">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none">
+                <rect x="2" y="3" width="20" height="6" rx="1.5" fill="#2563eb"/>
+                <rect x="2" y="13" width="20" height="8" rx="2" fill="#1e40af"/>
+            </svg>
+            <h1 class="brand">UNI JOURNEY</h1>
+        </div>
+
+        <div class="theme-toggle" id="theme-toggle" title="Toggle theme">
+            <i class="fas fa-moon"></i>
+        </div>
+    </div>
+</header>
+
+<main class="container fade-in">
+    <div class="card">
+        <h2 th:text="${result}">Delete result</h2>
+        <p class="message">The operation completed successfully.</p>
+
+        <div class="nav-links">
+            <a th:href="@{/user_professor/examinations/examination_appeal/examination-appeal-menu}" class="btn primary-btn">
+                Back to menu
+            </a>
+            <a th:href="@{/user_professor/professor-home}" class="btn secondary-btn">
+                Back to home
+            </a>
+        </div>
+    </div>
+</main>
+</body>
+</html>

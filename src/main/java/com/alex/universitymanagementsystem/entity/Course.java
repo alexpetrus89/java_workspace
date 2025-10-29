@@ -37,34 +37,38 @@ public class Course implements Serializable {
     private String name;
     private CourseType type;
     private Integer cfu;
+    private Integer yearOfStudy;
     private Professor professor;
     private DegreeCourse degreeCourse;
 
     // constructors
     protected Course() {}
 
-    public Course(String name, CourseType type, Integer cfu) {
+    public Course(String name, CourseType type, Integer cfu, Integer yearOfStudy) {
         this.id = CourseId.newId();
         this.name = name;
         this.type = type;
         this.cfu = cfu;
+        this.yearOfStudy = yearOfStudy;
     }
 
-    public Course(String name, CourseType type, Integer cfu, Professor professor, DegreeCourse degreeCourse) {
+    public Course(String name, CourseType type, Integer cfu, Integer yearOfStudy, Professor professor, DegreeCourse degreeCourse) {
         this.id = CourseId.newId();
         this.name = name;
         this.type = type;
         this.cfu = cfu;
+        this.yearOfStudy = yearOfStudy;
         this.professor = professor;
         this.degreeCourse = degreeCourse;
     }
 
-    public Course(MiurAcronymType acronym, String name, CourseType type, Integer cfu, Professor professor, DegreeCourse degreeCourse) {
+    public Course(MiurAcronymType acronym, String name, CourseType type, Integer cfu, Integer yearOfStudy, Professor professor, DegreeCourse degreeCourse) {
         this.id = CourseId.newId();
         this.code = MiurCourseCode.generate(acronym);
         this.name = name;
         this.type = type;
         this.cfu = cfu;
+        this.yearOfStudy = yearOfStudy;
         this.professor = professor;
         this.degreeCourse = degreeCourse;
     }
@@ -100,6 +104,11 @@ public class Course implements Serializable {
     @Column(name = "cfu", nullable = false)
     public Integer getCfu() {
         return cfu;
+    }
+
+    @Column(name = "year_of_study", nullable = false)
+    public Integer getYearOfStudy() {
+        return yearOfStudy;
     }
 
     // owning side
@@ -139,6 +148,10 @@ public class Course implements Serializable {
         this.cfu = cfu;
     }
 
+    public void setYearOfStudy(Integer yearOfStudy) {
+        this.yearOfStudy = yearOfStudy;
+    }
+
     public void setProfessor(Professor professor) {
         this.professor = professor;
     }
@@ -156,6 +169,7 @@ public class Course implements Serializable {
             ", name='" + name + '\'' +
             ", type=" + type +
             ", cfu=" + cfu +
+            ", year of study=" + yearOfStudy +
             ", professorId=" + (professor != null ? professor.getId() : null) +
             ", degreeCourseId=" + (degreeCourse != null ? degreeCourse.getId() : null) +
             '}';

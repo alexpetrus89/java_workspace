@@ -145,7 +145,7 @@ public class ExaminationAppealController {
         dto.setDescription(description);
         dto.setDate(date);
         ExaminationAppealDto appeal = examinationAppealService.addNewExaminationAppeal(dto);
-        return new ModelAndView("user_professor/examinations/examination_appeal/create/create-result", EXAMINATION_APPEAL, appeal);
+        return new ModelAndView("user_professor/examinations/examination_appeal/create/create-examination-appeal-result", EXAMINATION_APPEAL, appeal);
     }
 
 
@@ -165,12 +165,12 @@ public class ExaminationAppealController {
 
         if (examinationAppealService.hasRegisteredStudents(id))
             return new ModelAndView(
-                "user_professor/examinations/examination_appeal/delete/delete-warning",
+                "user_professor/examinations/examination_appeal/delete/delete-examination-appeal-warning",
                 Map.of("appealId", id)
             );
 
         return new ModelAndView(
-            "user_professor/examinations/examination_appeal/delete/delete-result",
+            "user_professor/examinations/examination_appeal/delete/delete-examination-appeal-result",
             "result",
             examinationAppealService.deleteExaminationAppeal(professorDto, id) ?
                 "appeal delete successfully" : "appeal not deleted"
@@ -190,7 +190,7 @@ public class ExaminationAppealController {
         ProfessorDto professorDto = ProfessorMapper.toDto(professor);
 
         return new ModelAndView(
-            "user_professor/examinations/examination_appeal/delete/delete-result",
+            "user_professor/examinations/examination_appeal/delete/delete-examination-appeal-result",
             "result",
             examinationAppealService.deleteExaminationAppeal(professorDto, id)?
                 "Appeal deleted successfully" : "Appeal not deleted"

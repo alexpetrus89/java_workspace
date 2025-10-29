@@ -13,6 +13,7 @@ public class CourseMapper {
             dto.getName(),
             dto.getType(),
             dto.getCfu(),
+            dto.getYearOfStudy(),
             ProfessorMapper.toEntity(dto.getProfessor()),
             DegreeCourseMapper.toEntity(dto.getDegreeCourse())
         );
@@ -24,6 +25,7 @@ public class CourseMapper {
             course.getName(),
             course.getType(),
             course.getCfu(),
+            course.getYearOfStudy(),
             ProfessorMapper.toDto(course.getProfessor()),
             DegreeCourseMapper.toDto(course.getDegreeCourse())
         );

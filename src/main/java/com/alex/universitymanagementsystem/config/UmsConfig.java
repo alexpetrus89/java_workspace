@@ -82,6 +82,7 @@ public class UmsConfig {
             "/exception/illegal/invalid/invalid-choice",
             "/exception/illegal/invalid/invalid-dob",
             "/exception/illegal/invalid/invalid-fiscal-code",
+            "/exception/illegal/invalid/invalid-year-of-study",
             "/exception/illegal/invalid/invalid-password",
             "/exception/illegal/invalid/invalid-register",
             "/exception/illegal/invalid/invalid-username",
@@ -110,6 +111,7 @@ public class UmsConfig {
         fieldToView.put("dob", "exception/illegal/invalid/invalid-dob");
         fieldToView.put("fiscalCode", "exception/illegal/invalid/invalid-fiscal-code");
         fieldToView.put("fiscalCodeAlreadyTaken", "exception/illegal/invalid/fiscal-code-already-taken");
+        fieldToView.put("yearOfStudy", "exception/illegal/invalid/invalid-year-of-study");
         fieldToView.put("register", "exception/illegal/invalid/invalid-register");
         fieldToView.put("phone", "exception/illegal/invalid/invalid-phone");
         fieldToView.put("role", "exception/illegal/invalid/invalid-role");
@@ -156,6 +158,7 @@ public class UmsConfig {
         "/js/login.js",
         "/js/registration.js",
         "/js/password-rules.js",
+        "/js/degree-courses-catalog.js",
         "/js/select-degree-course.js",
 		"/js/upload-degree-courses.js",
         "/js/upload-countries.js",
@@ -175,7 +178,8 @@ public class UmsConfig {
 		"/api/v1/user/create-student",
 		"/api/v1/user/create-professor",
 		"/api/v1/degree-course/read/all/ajax",
-        "/api/v1/notification/read/all"
+        "/api/v1/notification/read/all",
+        "/api/v1/degree-course/catalog"
     };
 
 

@@ -10,6 +10,7 @@
     <link rel="stylesheet" type="text/css" href="/css/create-course.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="/js/upload-degree-courses.js"></script>
+    <script src="/js/upload-professors.js"></script>
 </head>
 <body>
 
@@ -26,7 +27,7 @@
             </div>
 
             <div class="form-group">
-                <label for="type-select">Course Type</label>
+                <label for="type-select">Course type</label>
                 <select th:field="*{type}" id="type-select" title="Select course type" required>
                     <option value="" disabled selected>Select a type</option>
                     <option th:each="type : ${T(com.alex.universitymanagementsystem.enum_type.CourseType).values()}"
@@ -42,14 +43,23 @@
             </div>
 
             <div class="form-group">
-                <label for="uniqueCode">Professor Unique Code</label>
-                <input type="text" th:field="*{uniqueCode}" id="uniqueCode"
-                    placeholder="Enter professor's unique code" title="Enter unique code" required>
+                <label for="yearOfStudy">Year of study</label>
+                <input type="number" th:field="*{yearOfStudy}" id="yearOfStudy"
+                    placeholder="Enter year of study" title="Enter year of study" required>
             </div>
 
-            <label for="degreeCourse">Degree Course:</label>
+            <label for="professor">Professor:</label>
+            <select th:field="*{professorCode}" id="professor" required>
+                <option value="">-- Select a professor --</option>
+                <option th:each="professor : ${professors}"
+                        th:value="${professor.professorCode}"
+                        th:text="${professor.fullName}">
+                </option>
+            </select>
+
+            <label for="degreeCourse">Degree course:</label>
             <select th:field="*{degreeCourseName}" id="degreeCourse" required>
-                <option value="">-- Select a Course --</option>
+                <option value="">-- Select a course --</option>
                 <option th:each="degreeCourse : ${degreeCourses}"
                         th:value="${degreeCourse.name}"
                         th:text="${degreeCourse.name}">

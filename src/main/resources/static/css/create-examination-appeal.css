@@ -1,109 +1,186 @@
-/* Layout base */
+/* ---------- Root Variables ---------- */
+:root {
+    --primary: #2563eb;
+    --background: #f8fafc;
+    --text: #1e293b;
+    --card: #ffffff;
+    --border: #d1d5db;
+    --transition: 0.3s ease-in-out;
+}
+:root.dark {
+    --background: #0f172a;
+    --text: #f1f5f9;
+    --card: #1e293b;
+    --border: #334155;
+}
+
+/* ---------- Global ---------- */
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f3f6fa;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--background);
+    color: var(--text);
     margin: 0;
-    padding: 0;
+    transition: background-color var(--transition), color var(--transition);
+}
+
+/* ---------- Header ---------- */
+.main-header {
+    background: rgba(255, 255, 255, 0.75);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+    padding: 15px 20px;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+:root.dark .main-header {
+    background: rgba(30, 41, 59, 0.75);
+}
+
+.header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.brand {
+    font-weight: 800;
+    font-size: 1.3rem;
+    color: var(--primary);
+}
+.theme-toggle {
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: 0.3s;
+}
+.theme-toggle:hover {
+    transform: rotate(20deg);
+    color: var(--primary);
+}
+
+/* ---------- Card ---------- */
+.container {
+    display: flex;
+    justify-content: center;
+    padding: 40px 20px;
+}
+
+.appeal-card {
+    background-color: var(--card);
+    border-radius: 16px;
+    padding: 40px;
+    max-width: 600px;
+    width: 100%;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+    transition: background-color var(--transition), color var(--transition);
+}
+
+.appeal-card h2 {
+    text-align: center;
+    color: var(--primary);
+    margin-bottom: 25px;
+}
+
+/* ---------- Form ---------- */
+.appeal-form .form-group {
     display: flex;
     flex-direction: column;
-    align-items: center;
-}
-
-/* Intestazione */
-.main-header {
-    background-color: #004080;
-    width: 100%;
-    padding: 20px 0;
-    color: white;
-    text-align: center;
-}
-
-/* Contenitore del modulo */
-.form-container {
-    background-color: #ffffff;
-    margin-top: 30px;
-    padding: 30px;
-    border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    width: 100%;
-    max-width: 500px;
-}
-
-/* Gruppo form */
-.form-group {
     margin-bottom: 20px;
 }
 
-label {
-    display: block;
+.appeal-form label {
     font-weight: 600;
     margin-bottom: 8px;
-    color: #333;
 }
 
-input[type="text"],
-input[type="date"],
-select {
-    width: 100%;
+.appeal-form input,
+.appeal-form select {
     padding: 10px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
     font-size: 1rem;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    background-color: #fdfdfd;
+    background-color: var(--card);
+    color: var(--text);
+    transition: border-color var(--transition), box-shadow var(--transition);
 }
 
-input:focus,
-select:focus {
-    border-color: #004080;
+.appeal-form input:focus,
+.appeal-form select:focus {
     outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
 }
 
-/* Pulsanti */
+/* ---------- Buttons ---------- */
 .form-actions {
     display: flex;
-    justify-content: space-between;
-    gap: 10px;
-    margin-top: 20px;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 15px;
 }
 
 .btn {
     padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: bold;
     border: none;
-    font-size: 1rem;
-    border-radius: 4px;
     cursor: pointer;
+    transition: background var(--transition), transform 0.2s ease;
 }
 
 .btn-primary {
-    background-color: #004080;
-    color: white;
+    background-color: var(--primary);
+    color: #fff;
 }
-
 .btn-primary:hover {
-    background-color: #003366;
+    background-color: #1e40af;
+    transform: translateY(-2px);
 }
-
 .btn-secondary {
-    background-color: #e0e0e0;
-    color: #333;
+    background-color: var(--border);
+    color: var(--text);
 }
-
 .btn-secondary:hover {
-    background-color: #ccc;
+    background-color: #cbd5e1;
 }
 
-/* Link di ritorno */
-.back-link {
-    margin-top: 20px;
+/* ---------- Back Link ---------- */
+.nav-links {
     text-align: center;
+    margin-top: 25px;
 }
-
-.back-link a {
+.nav-links a {
+    color: var(--primary);
     text-decoration: none;
-    color: #004080;
-    font-weight: 500;
+    font-weight: bold;
+    transition: color var(--transition);
+}
+.nav-links a:hover {
+    color: #1e40af;
 }
 
-.back-link a:hover {
-    text-decoration: underline;
+/* ---------- Animation ---------- */
+.fade-in {
+    animation: fadeIn 0.6s ease-in-out;
 }
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 768px) {
+    .appeal-card {
+        padding: 25px;
+    }
+    .btn {
+        width: 100%;
+    }
+}
+

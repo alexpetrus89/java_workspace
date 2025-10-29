@@ -1,7 +1,9 @@
 package com.alex.universitymanagementsystem.controller;
 
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -43,6 +45,21 @@ public class DegreeCourseController {
     public ModelAndView getAllDegreeCourses() {
         Set<DegreeCourseDto> degreeCourses = degreeCourseService.getDegreeCourses();
         return new ModelAndView("user_admin/degree_course/read/degree-courses", "degreeCourses", degreeCourses);
+    }
+
+    /**
+     * retrieves all degree courses for catalog view
+     * @return ModelAndView
+     */
+    @GetMapping(path = "/catalog")
+    public ModelAndView getDegreeCoursesCatalog() {
+
+        Set<DegreeCourseDto> sortedCourses = degreeCourseService
+            .getDegreeCourses()
+            .stream()
+            .sorted(DegreeCourseDto.BY_GRADUATION.thenComparing(DegreeCourseDto.BY_NAME))
+            .collect(Collectors.toCollection(LinkedHashSet::new));
+        return new ModelAndView("degree-courses-catalog", "degreeCourses", sortedCourses);
     }
 
 

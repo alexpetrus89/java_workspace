@@ -24,7 +24,6 @@ body {
     transition: background var(--transition), color var(--transition);
 }
 
-/* ---------- Header ---------- */
 .main-header {
     display: flex;
     justify-content: center;
@@ -61,7 +60,6 @@ body {
     transform: scale(1.1);
 }
 
-/* ---------- Layout ---------- */
 .container {
     display: flex;
     justify-content: center;
@@ -69,7 +67,7 @@ body {
     padding: 2rem;
 }
 
-.card {
+.result-card {
     background: var(--card);
     border-radius: 18px;
     padding: 35px;
@@ -80,43 +78,21 @@ body {
     transition: background var(--transition), box-shadow var(--transition);
 }
 
-.card h2 {
+.result-card h2 {
     color: var(--primary);
     margin-bottom: 1.5rem;
 }
 
-/* ---------- Form ---------- */
-.form-group {
-    margin-bottom: 1.5rem;
-    text-align: left;
+.appeal-details p {
+    margin: 0.5rem 0;
 }
 
-label {
-    display: block;
-    font-weight: 500;
-    margin-bottom: 0.5rem;
-}
-
-select {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #cbd5e1;
-    border-radius: 8px;
-    font-size: 1rem;
-    transition: border-color var(--transition);
-}
-
-select:focus {
-    outline: none;
-    border-color: var(--primary);
-}
-
-/* ---------- Buttons ---------- */
-.form-actions {
+.nav-links {
+    margin-top: 2rem;
     display: flex;
     justify-content: center;
     gap: 1rem;
-    margin-top: 1rem;
+    flex-wrap: wrap;
 }
 
 .btn {
@@ -124,14 +100,11 @@ select:focus {
     padding: 0.6rem 1.2rem;
     border-radius: 8px;
     transition: background var(--transition), transform var(--transition);
-    cursor: pointer;
-    font-weight: 500;
 }
 
 .primary-btn {
     background: var(--primary);
     color: white;
-    border: none;
 }
 
 .secondary-btn {
@@ -143,11 +116,6 @@ select:focus {
 .btn:hover {
     transform: translateY(-2px);
     filter: brightness(1.1);
-}
-
-/* ---------- Links ---------- */
-.nav-links {
-    margin-top: 2rem;
 }
 
 .fade-in {

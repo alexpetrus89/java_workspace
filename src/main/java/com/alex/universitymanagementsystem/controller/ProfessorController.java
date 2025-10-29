@@ -4,6 +4,7 @@ package com.alex.universitymanagementsystem.controller;
 import java.util.List;
 import java.util.function.Supplier;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,6 +14,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.alex.universitymanagementsystem.annotation.ValidProfessorCode;
 import com.alex.universitymanagementsystem.dto.ProfessorDto;
+import com.alex.universitymanagementsystem.exception.DataAccessServiceException;
+import com.alex.universitymanagementsystem.exception.JsonProcessingException;
 import com.alex.universitymanagementsystem.exception.ObjectNotFoundException;
 import com.alex.universitymanagementsystem.service.ProfessorService;
 
@@ -47,6 +50,21 @@ public class ProfessorController {
     public ModelAndView getAllProfessors() {
         List<ProfessorDto> professors = professorService.getProfessors();
         return new ModelAndView("user_admin/professor/read/professors", PROFESSORS, professors);
+    }
+
+
+    /**
+     * Retrieves all professors
+     * @return http response entity
+     * @throws JsonProcessingException if the object cannot be serialized to JSON
+     */
+    @GetMapping(path = "/read/all/ajax")
+    public ResponseEntity<List<ProfessorDto>> getJsonOfAllProfessors() {
+        try {
+            return ResponseEntity.ok(professorService.getProfessors());
+        } catch (DataAccessServiceException e) {
+            throw new JsonProcessingException("Parsing not working a cause of data access error", e);
+        }
     }
 
 

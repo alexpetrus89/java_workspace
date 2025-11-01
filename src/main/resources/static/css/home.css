@@ -427,6 +427,6 @@ body {
     ✨ ANIMATIONS
     ====================================================== */
 @keyframes fadeInUp { 0% {opacity:0; transform:translateY(20px);} 100%{opacity:1; transform:translateY(0);} }
-@keyframes popIn { 0%{transform:scale(0.5); opacity:0;}100%{transform:scale(1);opacity:1;} }
+@keyframes popIn {0%{transform:scale(0.5); opacity:0;}100%{transform:scale(1);opacity:1;} }
 @keyframes float { 0%{transform:translateY(0) translateX(0);}50%{transform:translateY(-20px) translateX(10px);}100%{transform:translateY(0) translateX(0);} }
 

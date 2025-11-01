@@ -36,14 +36,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // 📌 Toast for booked appeal buttons
     const bookButtons = document.querySelectorAll(".book-button");
-    bookButtons.forEach(button => {
+    for (const button of bookButtons) {
         button.addEventListener("click", () => {
             // Mostra il toast senza impedire il submit del form
             showToast("✅ Booking your appeal...");
         });
-    });
-
+    }
 });
+
 
 /* --- TOAST FUNCTION --- */
 function showToast(message, type = "success", duration = 2200) {

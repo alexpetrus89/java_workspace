@@ -1,0 +1,35 @@
+{
+
+    "username": "exception/illegal/invalid/invalid-username",
+    "usernameAlreadyTaken": "exception/illegal/invalid/username-already-taken",
+    "password": "exception/illegal/invalid/invalid-password",
+    "firstName": "exception/illegal/invalid/invalid-first-name",
+    "lastName": "exception/illegal/invalid/invalid-last-name",
+    "dob": "exception/illegal/invalid/invalid-dob",
+    "fiscalCode": "exception/illegal/invalid/invalid-fiscal-code",
+    "fiscalCodeAlreadyTaken": "exception/illegal/invalid/fiscal-code-already-taken",
+    "register": "exception/illegal/invalid/invalid-register",
+    "phone": "exception/illegal/invalid/invalid-phone",
+    "role": "exception/illegal/invalid/invalid-role",
+    "professorCode": "exception/illegal/invalid/invalid-professor-code",
+
+
+    "street": "exception/illegal/invalid/invalid-address",
+    "city": "exception/illegal/invalid/invalid-address",
+    "country": "exception/illegal/invalid/invalid-address",
+    "zip": "exception/illegal/invalid/invalid-address",
+
+
+    "courseToAdd": "exception/illegal/invalid/invalid-choice",
+    "courseToRemove": "exception/illegal/invalid/invalid-choice",
+    "degreeCourseOfNewCourse": "exception/illegal/invalid/invalid-choice",
+    "degreeCourseOfOldCourse": "exception/illegal/invalid/invalid-choice",
+
+
+    "invalidChoice": "exception/illegal/invalid/invalid-choice",
+    "passwordsDoNotMatch": "exception/illegal/invalid/password-not-match",
+    "yearOfStudy": "exception/illegal/invalid/invalid-year-of-study",
+
+
+    "error": "exception/generic-exception"
+}

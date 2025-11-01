@@ -10,6 +10,7 @@ import com.alex.universitymanagementsystem.entity.immutable.CourseId;
 import com.alex.universitymanagementsystem.entity.immutable.MiurCourseCode;
 import com.alex.universitymanagementsystem.enum_type.CourseType;
 import com.alex.universitymanagementsystem.enum_type.MiurAcronymType;
+import com.alex.universitymanagementsystem.mapper.CourseTypeMapper;
 
 import jakarta.persistence.Access;
 import jakarta.persistence.AccessType;
@@ -54,6 +55,7 @@ public class Course implements Serializable {
 
     public Course(String name, CourseType type, Integer cfu, Integer yearOfStudy, Professor professor, DegreeCourse degreeCourse) {
         this.id = CourseId.newId();
+        this.code = MiurCourseCode.generate(CourseTypeMapper.getCourseToMiurMap().get(type));
         this.name = name;
         this.type = type;
         this.cfu = cfu;

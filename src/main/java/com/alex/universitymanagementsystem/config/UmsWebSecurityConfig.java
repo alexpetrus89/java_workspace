@@ -34,12 +34,9 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 import com.alex.universitymanagementsystem.component.UmsAccessDeniedHandler;
+import com.alex.universitymanagementsystem.component.UmsViewRegistry;
 import com.alex.universitymanagementsystem.component.login.UmsAuthenticationSuccessHandler;
 import com.alex.universitymanagementsystem.component.login.UmsOAuth2AuthenticationSuccessHandler;
-import static com.alex.universitymanagementsystem.config.UmsConfig.ADMIN_URLS;
-import static com.alex.universitymanagementsystem.config.UmsConfig.PROFESSOR_URLS;
-import static com.alex.universitymanagementsystem.config.UmsConfig.PUBLIC_URLS;
-import static com.alex.universitymanagementsystem.config.UmsConfig.STUDENT_URLS;
 import com.alex.universitymanagementsystem.exception.GitHubEmailFetchException;
 import com.alex.universitymanagementsystem.service.RedirectLoginService;
 import com.alex.universitymanagementsystem.utils.CustomOAuth2User;
@@ -66,10 +63,12 @@ public class UmsWebSecurityConfig implements Serializable {
 	private static final String PROFESSOR = "PROFESSOR";
 	private static final String LOGIN = "/login";
 
+	private final transient UmsViewRegistry umsViewRegistry;
 	private final transient RedirectLoginService redirectLoginService;
 	private final transient List<PrincipalExtractor> principalExtractors;
 
-	public UmsWebSecurityConfig(RedirectLoginService redirectLoginService, List<PrincipalExtractor> principalExtractors) {
+	public UmsWebSecurityConfig(UmsViewRegistry umsViewRegistry, RedirectLoginService redirectLoginService, List<PrincipalExtractor> principalExtractors) {
+		this.umsViewRegistry = umsViewRegistry;
 		this.redirectLoginService = redirectLoginService;
 		this.principalExtractors = principalExtractors;
 	}
@@ -195,11 +194,11 @@ public class UmsWebSecurityConfig implements Serializable {
 		try {
 			return http
 				.authorizeHttpRequests(requests -> requests
-					.requestMatchers(PUBLIC_URLS).permitAll()
+					.requestMatchers(umsViewRegistry.getRoleBasedUrlMappings().getPublicUrlsArray()).permitAll()
 					.requestMatchers("/profile").authenticated()
-					.requestMatchers(ADMIN_URLS).hasRole(ADMIN)
-					.requestMatchers(STUDENT_URLS).hasAnyRole(STUDENT, ADMIN)
-					.requestMatchers(PROFESSOR_URLS).hasAnyRole(PROFESSOR, ADMIN)
+					.requestMatchers(umsViewRegistry.getRoleBasedUrlMappings().getAdminUrlsArray()).hasRole(ADMIN)
+					.requestMatchers(umsViewRegistry.getRoleBasedUrlMappings().getStudentUrlsArray()).hasAnyRole(STUDENT, ADMIN)
+					.requestMatchers(umsViewRegistry.getRoleBasedUrlMappings().getProfessorUrlsArray()).hasAnyRole(PROFESSOR, ADMIN)
 					.requestMatchers("/api/v1/user/update").hasAnyRole(STUDENT, PROFESSOR, ADMIN)
 					.anyRequest().authenticated()
 				)

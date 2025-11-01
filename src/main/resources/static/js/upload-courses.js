@@ -1,71 +1,83 @@
-import { COURSES_TOKEN } from './config.js';
+// upload-courses.js
+/**
+ * Module to fetch courses for a selected degree course and populate a select element.
+ * Independent from the view; designed to interface with any script that handles the UI.
+ */
 
-// When the "page ready" event occurs
-// calls the course list update function
-$(document).ready(function() {
-    updateCourses();
-});
+/**
+ * Fetch the list of courses for a given degree course from the backend.
+ * @param {string} degreeCourseName - The degree course name to fetch.
+ * @param {string} token - Authorization token.
+ * @returns {Promise<Array>} - Array of courses ({name: string}).
+ */
+export async function fetchCourses(degreeCourseName, token) {
+    if (!degreeCourseName) return [];
 
+    const url = `/api/v1/degree-course/read/courses/ajax?name=${encodeURIComponent(degreeCourseName)}`;
 
-// When the "degree course selection" event occurs
-// calls the course list update function
-$('#degreeCourseOfNewCourse').on('change', function() {
-    updateCourses();
-});
-
-
-// When the "select degree course" event occurs, this function
-// updates the available courses based on the selected degree program
-// retrieves them via AJAX request.
-function updateCourses() {
-    const degreeCourseName = $('#degreeCourseOfNewCourse').val();
-
-    $.ajax({
-        type: 'GET',
-        url: '/api/v1/degree-course/read/courses/ajax?name=' + degreeCourseName,
-        headers: {
-            'Authorization': 'Bearer ' + COURSES_TOKEN,
-        },
-        dataType: 'json',
-
-        // Function executed in case of success of the AJAX request.
-        // response is the data returned by the server
-        success: function(data) {
-            try {
-                console.log(data);
-
-                if (!Array.isArray(data))
-                    throw new Error('Response is not a valid array of courses.');
-
-                // Remove the existing options from the select element
-                $('#courseToAdd').empty();
-
-                // Add an empty option at the beginning
-                $('#courseToAdd').append('<option value="">Select a course</option>');
-
-                // Populate the select element with the list of courses
-                $.each(data, function(index, course) {
-                    const courseName = course.name;
-                    // Add the course name as an option to the select element
-                    $('#courseToAdd').append('<option value="' + courseName + '">' + courseName + '</option>');
-                });
-            } catch (e) {
-                console.error('Error parsing JSON response:', e);
+    try {
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Accept': 'application/json'
             }
-        },
-        // Function executed in case of error of the AJAX request
-        // xhr is the XMLHttpRequest object that contains the error details
-        // status and error are the details of the error
-        error: function(xhr, status, error) {
-            console.log("Error: " + error + " - Status: " + status + " - Response: " + xhr.responseText);
-        }
-    });
-    // end of ajax request
+        });
+
+        if (!response.ok)
+            throw new Error(`HTTP ${response.status} - ${response.statusText}`);
+
+        const data = await response.json();
+
+        if (!Array.isArray(data))
+            throw new TypeError('Response is not a valid array of courses.');
+
+        return data;
+    } catch (error) {
+        console.error('Error fetching courses:', error);
+        return [];
+    }
 }
 
+/**
+ * Populate a select element with an array of courses.
+ * @param {HTMLSelectElement} select - The select element to populate.
+ * @param {Array} courses - Array of course objects {name: string}.
+ */
+export function populateCourseSelect(select, courses) {
+    if (!select) return;
 
-// Hide the degreeCourseOfOldCourse field
-$('#degreeCourseOfOldCourse').hide();
+    select.disabled = true;
+    select.innerHTML = '<option value="">Select a course</option>';
+
+    for (const course of courses) {
+        const option = document.createElement('option');
+        option.value = course.name;
+        option.textContent = course.name;
+        select.appendChild(option);
+    }
+
+    select.disabled = false;
+}
+
+/**
+ * Main function to fetch and populate courses for a given degree course select element.
+ * @param {HTMLSelectElement} degreeSelect - The select for the degree course.
+ * @param {HTMLSelectElement} courseSelect - The select to populate with courses.
+ * @param {string} token - Authorization token.
+ */
+export async function uploadCourses(degreeSelect, courseSelect, token) {
+    if (!degreeSelect || !courseSelect) return;
+
+    const degreeCourseName = degreeSelect.value;
+
+    // Optional: show temporary loading message
+    courseSelect.innerHTML = '<option>Loading courses...</option>';
+
+    const courses = await fetchCourses(degreeCourseName, token);
+    populateCourseSelect(courseSelect, courses);
+}
+
 
 
 

@@ -4,9 +4,8 @@ import com.alex.universitymanagementsystem.annotation.ValidYearOfStudy;
 
 
 @ValidYearOfStudy
-public interface CourseDtoCarrier {
-
+public interface CourseValidatable {
     Integer getYearOfStudy();
     String getDegreeCourseName();
-
 }
+

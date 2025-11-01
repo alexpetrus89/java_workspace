@@ -70,7 +70,6 @@ public class UmsDBInitConfig implements Serializable {
         LoggerFactory.getLogger(UmsDBInitConfig.class);
 
     @Bean
-    @SuppressWarnings("unused")
     CommandLineRunner commandLineRunner(
         @Autowired
         AdminRepository adminRepository,

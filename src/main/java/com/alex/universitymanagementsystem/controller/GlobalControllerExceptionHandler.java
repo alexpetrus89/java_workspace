@@ -54,7 +54,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
-import com.alex.universitymanagementsystem.config.UmsConfig;
+import com.alex.universitymanagementsystem.component.UmsViewRegistry;
 import com.alex.universitymanagementsystem.exception.DataAccessServiceException;
 import com.alex.universitymanagementsystem.exception.DuplicateFiscalCodeException;
 import com.alex.universitymanagementsystem.exception.DuplicateUsernameException;
@@ -96,11 +96,11 @@ public class GlobalControllerExceptionHandler {
     private String duplicateFiscalCodeUri;
 
     // instance variables
-    private final UmsConfig umsConfig;
+    private final UmsViewRegistry umsViewRegistry;
 
     // constructor
-    public GlobalControllerExceptionHandler(UmsConfig umsConfig) {
-        this.umsConfig = umsConfig;
+    public GlobalControllerExceptionHandler(UmsViewRegistry umsViewRegistry) {
+        this.umsViewRegistry = umsViewRegistry;
     }
 
 
@@ -405,7 +405,7 @@ public class GlobalControllerExceptionHandler {
             default -> new ValidationInfo("", UNKNOWN_VALIDATION_ERROR);
         };
 
-        String viewName = umsConfig.resolveView(info.fieldName());
+        String viewName = umsViewRegistry.getFieldErrorViewMappings().resolveErrorView(info.fieldName());
         return new ModelAndView(viewName, MESSAGE, Optional.ofNullable(info.message()).orElse(UNKNOWN_VALIDATION_ERROR));
     }
 
@@ -540,6 +540,7 @@ public class GlobalControllerExceptionHandler {
         return switch (code) {
             case "PasswordMatches" -> "passwordsDoNotMatch";
             case "SwapCoursesConstraint" -> "invalidChoice";
+            case "ValidYearOfStudy" -> "yearOfStudy";
             default -> "";
         };
     }

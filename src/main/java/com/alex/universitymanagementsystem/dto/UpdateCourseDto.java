@@ -2,14 +2,14 @@ package com.alex.universitymanagementsystem.dto;
 
 import com.alex.universitymanagementsystem.annotation.ValidProfessorCode;
 import com.alex.universitymanagementsystem.enum_type.CourseType;
-import com.alex.universitymanagementsystem.utils.CourseDtoCarrier;
+import com.alex.universitymanagementsystem.utils.CourseValidatable;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
 
-public class UpdateCourseDto implements CourseDtoCarrier {
+public class UpdateCourseDto implements CourseValidatable {
 
 
     @NotBlank(message = "Course name is mandatory")
@@ -110,5 +110,6 @@ public class UpdateCourseDto implements CourseDtoCarrier {
     public void setProfessorCode(String professorCode) {
         this.professorCode = professorCode;
     }
+
 
 }

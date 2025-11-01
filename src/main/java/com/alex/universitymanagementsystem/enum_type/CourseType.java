@@ -15,6 +15,7 @@ public enum CourseType {
     ING_CIVILE,
     ING_INFORMATICA,
     ING_ELETTRONICA,
-    LINGUA_STRANIERA
+    LINGUA_STRANIERA,
+    ALTRO
 
 }

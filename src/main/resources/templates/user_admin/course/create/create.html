@@ -4,13 +4,16 @@
     xmlns:th="http://www.thymeleaf.org"
     xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
-    <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
-    <title>Uni Journey</title>
+    <meta meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
+    <title>Uni Journey | Create course</title>
+
+    <!-- Favicon & CSS -->
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
-    <link rel="stylesheet" type="text/css" href="/css/create-course.css">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="/js/upload-degree-courses.js"></script>
-    <script src="/js/upload-professors.js"></script>
+    <link rel="stylesheet" href="/css/create-course.css">
+
+    <!-- JS -->
+    <script defer src="/js/upload-degree-courses.js"></script>
+    <script defer src="/js/upload-professors.js"></script>
 </head>
 <body>
 
@@ -19,52 +22,56 @@
     </header>
 
     <main class="form-container">
-        <form action="#" th:action="@{/api/v1/course/create}" th:object="${course}" method="post" class="course-form">
+        <form th:action="@{/api/v1/course/create}"
+            th:object="${course}"
+            method="post"
+            class="course-form">
 
             <div class="form-group">
-                <input type="text" th:field="*{name}" id="name"
-                    placeholder="Enter course name" title="Enter course name" required>
+                <label for="name">Course name</label>
+                <input type="text" id="name" th:field="*{name}"
+                    placeholder="Enter course name"
+                    title="Enter course name" required>
             </div>
 
             <div class="form-group">
                 <label for="type-select">Course type</label>
-                <select th:field="*{type}" id="type-select" title="Select course type" required>
+                <select id="type-select" th:field="*{type}" title="Select course type" required>
                     <option value="" disabled selected>Select a type</option>
                     <option th:each="type : ${T(com.alex.universitymanagementsystem.enum_type.CourseType).values()}"
                             th:value="${type}"
-                            th:text="${type.name()}">Type</option>
+                            th:text="${type.name()}">
+                    </option>
                 </select>
             </div>
 
             <div class="form-group">
                 <label for="cfu">CFU</label>
-                <input type="number" th:field="*{cfu}" id="cfu"
-                    placeholder="Enter CFU" title="Enter credits" required>
+                <input type="number" id="cfu" th:field="*{cfu}"
+                    placeholder="Enter CFU"
+                    title="Enter credits" required>
             </div>
 
             <div class="form-group">
                 <label for="yearOfStudy">Year of study</label>
-                <input type="number" th:field="*{yearOfStudy}" id="yearOfStudy"
-                    placeholder="Enter year of study" title="Enter year of study" required>
+                <input type="number" id="yearOfStudy" th:field="*{yearOfStudy}"
+                    placeholder="Enter year of study"
+                    title="Enter year of study" required>
             </div>
 
-            <label for="professor">Professor:</label>
-            <select th:field="*{professorCode}" id="professor" required>
-                <option value="">-- Select a professor --</option>
-                <option th:each="professor : ${professors}"
-                        th:value="${professor.professorCode}"
-                        th:text="${professor.fullName}">
-                </option>
-            </select>
+            <div class="form-group">
+                <label for="professor">Professor</label>
+                <select id="professor" th:field="*{professorCode}" required>
+                    <option value="">-- Select a professor --</option>
+                </select>
+            </div>
 
-            <label for="degreeCourse">Degree course:</label>
-            <select th:field="*{degreeCourseName}" id="degreeCourse" required>
-                <option value="">-- Select a course --</option>
-                <option th:each="degreeCourse : ${degreeCourses}"
-                        th:value="${degreeCourse.name}"
-                        th:text="${degreeCourse.name}">
-                </option>
-            </select>
+            <div class="form-group">
+                <label for="degreeCourse">Degree course</label>
+                <select id="degreeCourse" th:field="*{degreeCourseName}" required>
+                    <option value="">-- Select a degree course --</option>
+                </select>
+            </div>
 
             <div class="form-actions">
                 <button type="submit" class="btn btn-primary">Submit</button>
@@ -73,7 +80,7 @@
         </form>
 
         <div class="back-link">
-            <a th:href="@{/course/course-menu}">Back to Menu</a>
+            <a th:href="@{/user_admin/course/course-menu}">← Back to Menu</a>
         </div>
     </main>
 

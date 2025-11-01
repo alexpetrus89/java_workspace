@@ -11,7 +11,10 @@
 <body>
     <h1>Error: invalid year of study</h1>
     <p th:text="${message}"></p>
-    <p>The year of study must be a positive integer. Please enter a valid year related to courses.</p>
+    <p>The year of study must be a positive integer.
+        The year of attendance must be between 1 and 3 for BACHELOR courses, between 1 and 2 for MASTER courses.
+        Please enter a valid year related to courses.
+    </p>
     <br>
     <p><a href="javascript:history.back()">Go back</a></p>
 </body>

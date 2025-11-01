@@ -327,7 +327,7 @@ body {
     height: 38px;
     border-radius: 50%;
     background: rgba(255, 255, 255, 0.15);
-    color: white;
+    color: #333333; /* Use a darker color for the text */
     font-size: 1.1rem;
     transition: background 0.3s, transform 0.3s;
 }

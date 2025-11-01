@@ -5,18 +5,13 @@
     xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
     <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Uni Journey - Study Plan Change</title>
+    <title>Uni Journey | Study plan change</title>
+
+    <!-- Favicon & FontAwesome & Custom CSS -->
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
-
-    <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    <!-- Custom CSS -->
     <link rel="stylesheet" href="/css/study-plan-change.css">
 
-    <!-- JS -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="/js/upload-courses.js" type="module"></script>
 </head>
 <body>
 
@@ -40,13 +35,13 @@
 <main class="content-wrapper">
     <section class="card-container">
         <div class="card">
-            <h1 class="title">✏️ Change Study Plan</h1>
+            <h1 class="title">✏️ Change study plan</h1>
 
             <form th:action="@{/api/v1/study-plan/swap}" th:object="${courses}" method="post">
                 <input type="hidden" name="_method" value="PUT"/>
 
                 <!-- Degree Course -->
-                <label for="degreeCourseOfNewCourse">Degree Course of new course:</label>
+                <label for="degreeCourseOfNewCourse">Degree course of new course:</label>
                 <select name="degreeCourseOfNewCourse" id="degreeCourseOfNewCourse" required>
                     <option value="">Select a degree course</option>
                     <option th:each="degreeCourse : ${courses.degreeCourses}"
@@ -88,13 +83,16 @@
 
             <!-- Navigation Links -->
             <div class="form-actions">
-                <a th:href="@{/api/v1/study-plan/read}" class="btn btn-link">📄 Back to Study Plan</a>
-                <a th:href="@{/user_student/student-home}" class="btn btn-link">🏠 Back to Home</a>
+                <a th:href="@{/api/v1/study-plan/read}" class="btn btn-link">📄 Back to study plan</a>
+                <a th:href="@{/user_student/student-home}" class="btn btn-link">🏠 Back to home</a>
             </div>
         </div>
     </section>
 </main>
 
+<!-- JS -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="/js/study-plan-change.js"></script>
+<script src="/js/study-plan-init.js" type="module"></script>
 </body>
 </html>

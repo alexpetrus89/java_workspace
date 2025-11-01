@@ -1,14 +1,14 @@
 package com.alex.universitymanagementsystem.dto;
 
 import com.alex.universitymanagementsystem.enum_type.CourseType;
-import com.alex.universitymanagementsystem.utils.CourseDtoCarrier;
+import com.alex.universitymanagementsystem.utils.CourseValidatable;
 
-import groovyjarjarantlr4.v4.runtime.misc.NotNull;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
 
-public class CourseDto implements CourseDtoCarrier {
+public class CourseDto implements CourseValidatable {
 
     // instance variables
     @NotBlank(message = "Course name is mandatory")
